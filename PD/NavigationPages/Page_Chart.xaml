@@ -1,0 +1,239 @@
+﻿<UserControl
+    x:Class="PD.NavigationPages.Page_Chart"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PD.NavigationPages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    xmlns:ui="clr-namespace:PD.NavigationPages"
+    xmlns:vm="clr-namespace:PD.ViewModel"
+    d:DesignHeight="800"
+    d:DesignWidth="1000"
+    Background="White"
+    mc:Ignorable="d">
+
+    <!--<UserControl.DataContext>
+        <vm:ComViewModel />
+    </UserControl.DataContext>-->
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*" />
+            <ColumnDefinition Width="6*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="0*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="2" Background="#FF494949">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.2*"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="0.2*"/>
+                </Grid.ColumnDefinitions>
+                <Button Name="btn_previous"
+                            Grid.Column="1"
+                            Click="btn_previous_Click"
+                            Tag="../../Resources/left-arrow.png"
+                            Style="{DynamicResource style_PictureBtn}" />
+                <Viewbox Grid.Column="2">
+                    <TextBlock Name="txt_chart_number" Style="{DynamicResource Chart_txtBlock}" >
+                    <Run Name="txt_chart_now" Text="{Binding int_chart_now}"/>
+                    <Run Text=" / "/>
+                    <Run Name="txt_chart_all" Text="{Binding int_chart_count}"/>
+                    </TextBlock>
+                </Viewbox>
+                <Button Name="btn_next"
+                            Grid.Column="3"
+                            Click="btn_next_Click"
+                            Tag="../../Resources/r-arrow.png"
+                            Style="{DynamicResource style_PictureBtn}" />
+            </Grid>
+
+            <CheckBox
+                    Name="cbox_all"
+                    Grid.Row="2"
+                    Click="CheckBox_Click"
+                    Content="ALL"
+                      Tag="../../Resources/right-arrow.png"
+                      Style="{DynamicResource style_Chart_CheckBox}"
+                    Foreground="Black" />
+            <CheckBox
+                    Grid.Row="3"
+                    Click="CheckBox_Checked"
+                    Content="Ch 1"
+                      Tag="../../Resources/right-arrow.png"
+                      Style="{DynamicResource style_Chart_CheckBox}"
+                    Foreground="Green"
+                    IsChecked="{Binding IsCheck[0]}" />
+            <CheckBox
+                    Grid.Row="4"
+                    Click="CheckBox_Checked"
+                    Content="Ch 2"
+                      Tag="../../Resources/right-arrow.png"
+                      Style="{DynamicResource style_Chart_CheckBox}"
+                    Foreground="Red"
+                    IsChecked="{Binding IsCheck[1]}" />
+            <CheckBox
+                    Grid.Row="5"
+                    Click="CheckBox_Checked"
+                    Content="Ch 3"
+                      Tag="../../Resources/right-arrow.png"
+                      Style="{DynamicResource style_Chart_CheckBox}"
+                    Foreground="Blue"
+                    IsChecked="{Binding IsCheck[2]}" />
+            <CheckBox
+                    Grid.Row="6"
+                    Click="CheckBox_Checked"
+                    Content="Ch 4"
+                      Tag="../../Resources/right-arrow.png"
+                      Style="{DynamicResource style_Chart_CheckBox}"
+                    Foreground="Orange"
+                    IsChecked="{Binding IsCheck[3]}" />
+            <CheckBox
+                    Grid.Row="7"
+                    Click="CheckBox_Checked"
+                    Content="Ch 5"
+                      Tag="../../Resources/right-arrow.png"
+                      Style="{DynamicResource style_Chart_CheckBox}"
+                    Foreground="GreenYellow"
+                    IsChecked="{Binding IsCheck[4]}" />
+            <CheckBox
+                    Grid.Row="8"
+                    Click="CheckBox_Checked"
+                    Content="Ch 6"
+                      Tag="../../Resources/right-arrow.png"
+                      Style="{DynamicResource style_Chart_CheckBox}"
+                    Foreground="Purple"
+                    IsChecked="{Binding IsCheck[5]}" />
+            <CheckBox
+                    Grid.Row="9"
+                    Click="CheckBox_Checked"
+                    Content="Ch 7"
+                      Tag="../../Resources/right-arrow.png"
+                      Style="{DynamicResource style_Chart_CheckBox}"
+                      Foreground="#FF858585"
+                      IsChecked="{Binding IsCheck[6]}" />
+            <CheckBox
+                    Grid.Row="10"
+                    Click="CheckBox_Checked"
+                    Content="Ch 8"
+                      Tag="../../Resources/right-arrow.png"
+                      Style="{DynamicResource style_Chart_CheckBox}"
+                    Foreground="Chocolate"
+                    IsChecked="{Binding IsCheck[7]}" />
+
+            <Grid Grid.Row="11">
+                <Button
+                        Name="btn_deltaIL"      
+                    Content="Delta IL"
+                    Style="{DynamicResource style_Chart_btn}"
+                        Click="btn_deltaIL_Click" />
+            </Grid>
+        </Grid>
+
+        <oxy:Plot
+            x:Name="Plot_Chart"
+            Title="Power"
+            Grid.Column="1"
+            Margin="5,5,15,5"
+            FontFamily="Segoe Print"
+            Loaded="Plot_Chart_Loaded">
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis Title="{Binding Chart_x_title, FallbackValue=1}" Position="Bottom" />
+                <oxy:LinearAxis Title="{Binding Chart_y_title, FallbackValue=2}" Position="Left" />
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries
+                    Name="No1"
+                    Title="ch1"
+                    ItemsSource="{Binding Chart_DataPoints, Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[0]}"
+                    Color="Green" />
+                <oxy:LineSeries
+                    Name="No2"
+                    Title="ch2"
+                    ItemsSource="{Binding Chart_All_DataPoints[1], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[1]}"
+                    Color="Red" />
+                <oxy:LineSeries
+                    Name="No3"
+                    Title="ch3"
+                    ItemsSource="{Binding Chart_All_DataPoints[2], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[2]}"
+                    Color="Blue" />
+                <oxy:LineSeries
+                    Name="No4"
+                    Title="ch4"
+                    ItemsSource="{Binding Chart_All_DataPoints[3], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[3]}"
+                    Color="Orange" />
+                <oxy:LineSeries
+                    Name="No5"
+                    Title="ch5"
+                    ItemsSource="{Binding Chart_All_DataPoints[4], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[4]}"
+                    Color="GreenYellow" />
+                <oxy:LineSeries
+                    Name="No6"
+                    Title="ch6"
+                    ItemsSource="{Binding Chart_All_DataPoints[5], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[5]}"
+                    Color="Purple" />
+                <oxy:LineSeries
+                    Name="No7"
+                    Title="ch7"
+                    ItemsSource="{Binding Chart_All_DataPoints[6], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[6]}"
+                    Color="Gray" />
+                <oxy:LineSeries
+                    Name="No8"
+                    Title="ch8"
+                    ItemsSource="{Binding Chart_All_DataPoints[7], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[7]}"
+                    Color="Chocolate" />
+                <oxy:LineSeries
+                    Name="No9"
+                    Title="ch9"
+                    ItemsSource="{Binding Chart_All_DataPoints[8], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[8]}"
+                    Color="Brown" />
+                <oxy:LineSeries
+                    Name="No10"
+                    Title="ch10"
+                    ItemsSource="{Binding Chart_All_DataPoints[9], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[9]}"
+                    Color="Purple" />
+                <oxy:LineSeries
+                    Name="No11"
+                    Title="ch11"
+                    ItemsSource="{Binding Chart_All_DataPoints[10], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[10]}"
+                    Color="Aqua" />
+                <oxy:LineSeries
+                    Name="No12"
+                    Title="ch12"
+                    ItemsSource="{Binding Chart_All_DataPoints[11], Mode=OneWay}"
+                    Visibility="{Binding LineSeries_Visible[11]}"
+                    Color="CadetBlue" />
+            </oxy:Plot.Series>
+        </oxy:Plot>
+    </Grid>
+</UserControl>

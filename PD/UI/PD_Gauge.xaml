@@ -1,0 +1,111 @@
+﻿<UserControl
+    x:Class="PD.UI.PD_Gauge"    
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"             
+    xmlns:local="clr-namespace:PD.UI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="450"
+    mc:Ignorable="d">
+    
+    <!--version 1-->
+    <Grid>
+        <Grid Margin="18">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.15*" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.15*" />
+            </Grid.ColumnDefinitions>
+            <ed:Arc Width="185"
+                    Grid.ColumnSpan="2"
+                    Grid.RowSpan="2"
+                    Height="185"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    ArcThickness="{Binding ArcThickness, ElementName=Process_Arc_1}"
+                    ArcThicknessUnit="Pixel"
+                    EndAngle="150"
+                    Fill="#dbdcdc"
+                    StartAngle="-150"
+                    Stretch="None"
+                    Stroke="Transparent" />
+           
+            <ed:Arc x:Name="Process_Arc_1"
+                    Grid.ColumnSpan="2"
+                    Grid.RowSpan="2"
+                    Width="185"
+                    Height="185"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    ArcThickness="10"
+                    ArcThicknessUnit="Pixel"
+                    EndAngle="{Binding Arc_Color, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PD_Gauge}}}"
+                    Fill="{Binding Arc_EndAngle, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PD_Gauge}}}"
+                    StartAngle="-150"
+                    Stretch="None"
+                    Stroke="Transparent" />
+            <Grid Grid.ColumnSpan="2"
+                  Grid.RowSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2.4*" />
+                    <RowDefinition Height="0.5*" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0"
+                            Grid.RowSpan="5"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <TextBlock x:Name="txtBlock_PD_Value"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Bottom"
+                               FontSize="24"
+                               FontFamily="Segoe Print"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               Text="{Binding str_PD_value, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PD_Gauge}}}" />
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Bottom"
+                               FontSize="19"
+                               FontFamily="Segoe Print"
+                               Foreground="Black"
+                               Text="{Binding str_Unit, FallbackValue=dBm, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PD_Gauge}}}"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+                <StackPanel Grid.Row="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Orientation="Horizontal">
+                    <TextBlock x:Name="CompleteValueName"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="18"
+                               FontFamily="Segoe Print"
+                               Foreground="Black"
+                               Text="ch "
+                               TextWrapping="Wrap" />
+                    <TextBlock x:Name="txtBlock_Channel"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="18"
+                               FontFamily="Segoe Print"
+                               TextWrapping="Wrap"
+                               Text="{Binding str_channel, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PD_Gauge}}}" />
+                </StackPanel>
+            </Grid>
+            <Button Name="btn_show_window"
+                    Grid.Column="1"
+                    Width="30"
+                    Height="30"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Command="{Binding AddItem, ElementName=UserControl_Gauge}"
+                    Grid.Row="0" />
+        </Grid>
+    </Grid>
+</UserControl>

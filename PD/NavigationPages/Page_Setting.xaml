@@ -1,0 +1,235 @@
+﻿<UserControl
+    x:Class="PD.NavigationPages.Page_Setting"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cusTxtBox="clr-namespace:WpfControlLibrary1;assembly=Customized_TxtBox"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gif="http://wpfanimatedgif.codeplex.com"
+    xmlns:local="clr-namespace:PD.NavigationPages"
+    xmlns:uc="clr-namespace:PD.UI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:PD.ViewModel"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Background="White"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Storyboard x:Key="Setting_Border">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                <EasingColorKeyFrame KeyTime="0" Value="White" />
+                <EasingColorKeyFrame KeyTime="0:0:0.2" Value="#FF4AD87E" />
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <vm:ComViewModel />
+    </UserControl.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="0*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!--  Column 1  -->
+        <Border
+            Grid.Row="0"
+            Grid.RowSpan="12"
+            Grid.Column="1"
+            BorderBrush="Black"
+            BorderThickness="0,0,1,0" />
+        <ComboBox
+            Name="ComBox_TLS_WL_Range"
+            Grid.Row="0"
+            Grid.Column="1"
+            SelectedItem="{Binding selected_band}"
+            ItemsSource="{Binding list_combox_TLS_WL_Range_items}"
+            Style="{StaticResource style_combobox_black}">
+        </ComboBox>
+        <cusTxtBox:UserControl1
+            Grid.Row="1"
+            Grid.Column="1"
+            txtbox_content="WL Scan Start"
+            txtbox_value="{Binding float_WL_Scan_Start, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="2"
+            Grid.Column="1"
+            txtbox_content="WL Scan End"
+            txtbox_value="{Binding float_WL_Scan_End, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="3"
+            Grid.Column="1"
+            txtbox_content="WL Scan Gap"
+            txtbox_value="{Binding float_WL_Scan_Gap, Mode=TwoWay}" />
+
+        <!--  Column 2  -->
+        <Border
+            Grid.Row="0"
+            Grid.RowSpan="12"
+            Grid.Column="2"
+            BorderBrush="Black"
+            BorderThickness="0,0,1,0" />
+        <cusTxtBox:UserControl1
+            Grid.Row="0"
+            Grid.Column="2"
+            txtbox_content="Rough-Scan Gap"
+            txtbox_value="{Binding int_rough_scan_gap, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="1"
+            Grid.Column="2"
+            txtbox_content="Detail-Scan Gap"
+            txtbox_value="{Binding int_detail_scan_gap, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="2"
+            Grid.Column="2"
+            txtbox_content="Rough-Scan Start"
+            txtbox_value="{Binding int_rough_scan_start, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="3"
+            Grid.Column="2"
+            txtbox_content="Rough-Scan End"
+            txtbox_value="{Binding int_rough_scan_stop, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="4"
+            Grid.Column="2"
+            txtbox_content="V3-Scan Gap"
+            txtbox_value="{Binding int_V3_scan_gap, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="5"
+            Grid.Column="2"
+            txtbox_content="V3-Scan Start"
+            txtbox_value="{Binding int_V3_scan_start, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1 Grid.Row="6"
+                                Grid.Column="2"
+                                txtbox_content="V3-Scan End"
+                                txtbox_value="{Binding int_V3_scan_end, Mode=TwoWay}" />
+
+        <cusTxtBox:UserControl1
+            Grid.Row="8"
+            Grid.Column="2"
+            txtbox_content="Read-Cmd Delay"
+            txtbox_value="{Binding Int_Read_Delay, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="9"
+            Grid.Column="2"
+            txtbox_content="Write-Cmd Delay"
+            txtbox_value="{Binding Int_Write_Delay, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="10"
+            Grid.Column="2"
+            txtbox_content="Set-WL Delay"
+            txtbox_value="{Binding Int_Set_WL_Delay, Mode=TwoWay}" />
+
+        <!--  Column 3  -->
+        <Border
+            Grid.Row="0"
+            Grid.RowSpan="12"
+            Grid.Column="3"
+            BorderBrush="Black"
+            BorderThickness="0,0,1,0" />
+        <cusTxtBox:UserControl1
+            Grid.Row="0"
+            Grid.Column="3"
+            txtbox_content="TLS BoardNum"
+            txtbox_value="{Binding tls_BoardNumber, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="1"
+            Grid.Column="3"
+            txtbox_content="TLS Address"
+            txtbox_value="{Binding tls_Addr, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="2"
+            Grid.Column="3"
+            txtbox_content="PM Slot"
+            txtbox_value="{Binding PM_slot, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1
+            Grid.Row="3"
+            Grid.Column="3"
+            txtbox_content="Switch Comport"
+            txtbox_value="{Binding Comport_Switch, Mode=TwoWay}" />
+
+        <!--  Column 4  -->
+        <uc:UC_Setting_ToggleButton Grid.Row="0"
+                                    Grid.Column="4"
+                                   
+                                    txtbox_content="CH / EN"
+                                    ToggleButton.Checked="UC_Setting_ToggleButton_Checked"/>
+
+        <uc:UC_Setting_ToggleButton Grid.Row="1"
+                                    Grid.Column="4"
+                                    Ischecked="{Binding Auto_Connect_TLS, Mode=TwoWay}"
+                                    txtbox_content="Auto Connect"/>
+        
+        <uc:UC_Setting_Button x:Name="btn_board_comport" Grid.Row="2"
+                              Grid.Column="4" ButtonBase.Click="btn_board_comport_Click"
+                              txtbox_content="Board Comport" />
+
+        <uc:UC_Setting_Button x:Name="btn_ini" Grid.Row="3" txtbox_content="Open ini"
+                              Grid.Column="4" ButtonBase.Click="btn_ini_Click"/>
+        <ComboBox
+            Name="ComBox_Station_Type"
+            Grid.Row="4"
+            Grid.Column="4"      
+            SelectedItem="{Binding station_type}"
+            ItemsSource="{Binding list_combox_Working_Table_Type_items}"
+            Style="{StaticResource style_combobox_black}">
+        </ComboBox>
+        <ComboBox
+            Name="ComBox_Control_Board_Type"
+            Grid.Row="5"
+            Grid.Column="4"
+            DropDownClosed="ComBox_Control_Board_Type_DropDownClosed"
+            DropDownOpened="ComBox_Control_Board_Type_DropDownOpened"
+            SelectedIndex="0"
+                  ItemsSource="{Binding list_combox_Control_Board_Type_items}"
+            Style="{StaticResource style_combobox_black}">
+        </ComboBox>
+
+        <uc:UC_Setting_ToggleButton Grid.Row="6"
+                                    Grid.Column="4"                                   
+                                    txtbox_content="Switch mode"
+                                    Ischecked="{Binding Is_switch_mode, Mode=TwoWay}"
+                                    />
+
+        <Image
+            Name="Img_gif"
+            Grid.Row="8"
+            Grid.RowSpan="4"
+            Grid.Column="4"
+            gif:ImageBehavior.AnimatedSource="../Resources/byby_1.gif"
+            gif:ImageBehavior.AutoStart="False"
+            MouseEnter="Img_gif_MouseEnter"
+            MouseLeave="Img_gif_MouseLeave"
+            Loaded="Img_gif_Loaded"
+            Opacity="0.05"
+            PreviewMouseLeftButtonDown="Img_gif_MouseLeftButtonDown"
+            PreviewMouseRightButtonDown="Img_gif_MouseRightButtonDown" />
+
+        <Image
+            Grid.Row="8"
+            Grid.RowSpan="4"
+            Grid.Column="4"
+            Loaded="Image_Loaded"
+            Visibility="Hidden" />
+    </Grid>
+</UserControl>

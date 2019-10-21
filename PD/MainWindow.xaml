@@ -1,0 +1,681 @@
+﻿<Window x:Class="PD.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:ViewModel="clr-namespace:PD.ViewModel"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:local="clr-namespace:PD"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:pageTransitions="clr-namespace:WpfPageTransitions;assembly=WpfPageTransitions"
+        xmlns:ui="clr-namespace:PD.UI"
+        Title="{Binding Title}"
+        Width="1257"
+        Height="680"
+        AllowsTransparency="True"
+        Closed="Window_Closed"
+        Loaded="Window_Loaded"
+        ResizeMode="NoResize"
+        WindowState="Normal"
+        WindowStyle="None"
+        mc:Ignorable="d">
+    <Window.Resources>
+        <Storyboard x:Key="Rec_MouseEnter" />
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource Rec_MouseEnter}" />
+        </EventTrigger>
+    </Window.Triggers>
+    <Window.DataContext>
+        <ViewModel:ComViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*" />
+            <ColumnDefinition Width="0.35*" />
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="0*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0*" />
+            <RowDefinition Height="0.09*" />
+            <RowDefinition />
+            <RowDefinition Height="0.08*" />
+            <RowDefinition Height="0*" />
+        </Grid.RowDefinitions>
+
+        <Border Name="border_title"
+                Grid.Row="1"
+                Grid.Column="1"
+                Grid.ColumnSpan="2"
+                Background="#FF646464"
+                MouseLeftButtonUp="border_title_MouseLeftButtonUp"
+                MouseMove="border_title_MouseMove"
+                PreviewMouseLeftButtonDown="border_title_PreviewMouseLeftButtonDown" />
+
+        <Grid Grid.Row="1"
+              Grid.Column="1"
+              Margin="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.1*" />
+                <RowDefinition />
+                <RowDefinition Height="0.1*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.05*" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.02*" />
+            </Grid.ColumnDefinitions>
+            <Viewbox Grid.Row="1"
+                     Grid.Column="1"
+                     VerticalAlignment="Center">
+                <Image MouseDown="Image_MouseDown"
+                       Source="Resources/polar-bear.png" />
+            </Viewbox>
+            <Viewbox Grid.Row="1"
+                     Grid.Column="2"
+                     VerticalAlignment="Center">
+                <Image MouseDown="Image2_MouseDown"
+                       Source="Resources/polar-bear.png" />
+            </Viewbox>
+            <Viewbox Grid.Row="1"
+                     Grid.Column="3"
+                     VerticalAlignment="Center">
+                <Image MouseDown="Image3_MouseDown"
+                       Source="Resources/polar-bear.png" />
+            </Viewbox>
+        </Grid>
+
+        <Grid Grid.Row="1"
+              Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="3*" />
+                </Grid.RowDefinitions>
+                <RadioButton x:Name="RBtn_Gauge_Page"
+                             Grid.Row="1"
+                             Grid.Column="0"
+                             Checked="RBtn_Gauge_Page_Checked"
+                             Content="Gauge"
+                             FontSize="20"
+                             Foreground="Black"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/gauge.png" />
+                <RadioButton x:Name="RBtn_Chart_Page"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                             Checked="RBtn_Chart_Page_Checked"
+                             Content="Chart"
+                             FontSize="25"
+                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/analytics.png" />
+                <RadioButton x:Name="RBtn_DataGrid_Page"
+                             Grid.Row="1"
+                             Grid.Column="2"
+                             Checked="RBtn_DataGrid_Page_Checked"
+                             Content="Reference"
+                             FontSize="25"
+                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/calendar.png" />
+                <RadioButton x:Name="RBtn_Laser_Page"
+                             Grid.Row="1"
+                             Grid.Column="3"
+                             Checked="RBtn_Laser_Page_Checked"
+                             Content="Laser"
+                             FontSize="25"
+                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/laser.png" />
+                <RadioButton Name="RBtn_Setting"
+                             Grid.Row="1"
+                             Grid.Column="4"
+                             Checked="RBtn_Setting_Checked"
+                             Content="Setting"
+                             FontSize="25"
+                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/settings.png" />
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button Name="btn_min"
+                        Grid.Column="2"
+                        MaxHeight="25"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="btn_min_Click"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/Min_white.png" />
+                <Button Name="btn_max"
+                        Grid.Column="3"
+                        MaxHeight="25"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="btn_max_Click"
+                        Loaded="btn_max_Loaded"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/normal.png" />
+                <Button Name="btn_close"
+                        Grid.Column="4"
+                        MaxHeight="25"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="btn_close_Click"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/close.png" />
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="2"
+              Grid.RowSpan="1"
+              Grid.Column="1"
+              Background="#FF6B6D78">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0"
+                      Grid.ColumnSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="1.5*" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.8*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <ToggleButton Name="ToggleBtn_ControlMode"
+                                  Grid.Column="0"
+                                  Grid.Row="1"
+                                  MaxWidth="48"
+                                  MinWidth="40"
+                                  MaxHeight="30"
+                                  Margin="10,0,18,0"
+                                  Click="ToggleBtn_ControlMode_Click"
+                                  IsChecked="{Binding PD_or_PM}"
+                                  Loaded="ToggleBtn_ControlMode_Loaded"
+                                  Style="{StaticResource SwitchTypeToggleButton}">
+                        <ToggleButton.Background>
+                            <LinearGradientBrush StartPoint="0,0"
+                                                 EndPoint="0,1">
+                                <GradientStop Offset="0"
+                                              Color="#FFF3F3F3" />
+                                <GradientStop Offset="0.5"
+                                              Color="#FFEBEBEB" />
+                                <GradientStop Offset="0.5"
+                                              Color="#FFDDDDDD" />
+                                <GradientStop Offset="1"
+                                              Color="#FF33D3C4" />
+                            </LinearGradientBrush>
+                        </ToggleButton.Background>
+                    </ToggleButton>
+                    <Viewbox  Grid.Column="1"
+                              Grid.Row="1"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center">
+                        <TextBlock FontFamily="Segoe Print"
+                                   FontSize="{Binding Int_Fontsize}">
+                        <Run Name="run_PD"
+                             Foreground="White"
+                             Text="PD" />
+                        <Run Foreground="White"
+                             Text="/" />
+                        <Run Name="run_PM"
+                             Foreground="#FF878787"
+                             Text="PM" />
+                        </TextBlock>
+                    </Viewbox>
+                </Grid>
+
+                <ComboBox x:Name="combox_comport"
+                          Grid.Row="1"
+                          Grid.ColumnSpan="2"
+                          HorizontalContentAlignment="Left"
+                          VerticalContentAlignment="Center"
+                          DropDownClosed="combox_comport_DropDownClosed"
+                          DropDownOpened="combox_comport_DropDownOpened"
+                          FontSize="{Binding Int_Fontsize}"
+                          SelectedItem="{Binding Selected_Comport}"
+                          Style="{DynamicResource style_combobox}"
+                          Tag="../Resources/network.png" />
+
+                <ComboBox x:Name="combox_product"
+                          Grid.Row="2"
+                          Grid.ColumnSpan="2"
+                          DropDownClosed="combox_product_DropDownClosed"
+                          SelectedItem="{Binding product_type}"
+                          FontSize="{Binding Int_Fontsize}"
+                          SelectedIndex="0"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          Tag="../Resources/box.png">
+                    <TextBlock Foreground="White"
+                               Text="UFA" />
+                </ComboBox>
+
+                <Button x:Name="btn_ID"
+                        Grid.Row="3"
+                        Grid.ColumnSpan="2"
+                        Click="btn_ID_Click"
+                        Content="ID"
+                        FontSize="{Binding Int_Fontsize}"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/identification.png" />
+                <ToggleButton x:Name="btn_GO"
+                              Grid.Row="12"
+                              Grid.ColumnSpan="2"
+                              Click="btn_GO_Click"
+                              Content="{Binding Str_Go_Content, FallbackValue=Go}"
+                              FontSize="{Binding Int_Fontsize}"
+                              IsChecked="{Binding IsGoOn}"
+                              Style="{DynamicResource style_FuncToggleBtn}"
+                              Tag="../Resources/stopwatch.png" />
+                <Grid Grid.Row="10"
+                      Grid.ColumnSpan="2">
+                    <!--  浮水印  -->
+                    <Rectangle Width="{Binding Height, ElementName=txtBox_comment}"
+                               Height="{Binding Height, ElementName=txtBox_comment}"
+                               Margin="{Binding Margin, ElementName=txtBox_comment}"
+                               Fill="White" />
+                    <Label Name="txt_label"
+                           VerticalAlignment="Center"
+                           Background="White"
+                           Content=" Fire up and Ready to Serve"
+                           Focusable="False"
+                           FontFamily="{Binding FontFamily, ElementName=txtBox_comment}"
+                           FontSize="{Binding Int_Fontsize}"
+                           Foreground="Gray"
+                           Opacity="1" />
+                    <TextBox x:Name="txtBox_comment"
+                             Margin="0,5,0,5"
+                             VerticalContentAlignment="Center"
+                             Background="Transparent"
+                             FontSize="{Binding Int_Fontsize}"
+                             GotFocus="txtBox_comment_GotFocus"
+                             KeyDown="txtBox_comment_KeyDown"
+                             LostFocus="txtBox_comment_LostFocus"
+                             Style="{StaticResource style_txtbox}" />
+
+                </Grid>
+                <Button x:Name="btn_comment"
+                        Grid.Row="11"
+                        Grid.ColumnSpan="2"
+                        Click="btn_comment_Click"
+                        Content="Send"
+                        FontSize="{Binding Int_Fontsize}"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/send.png" />
+                <Button x:Name="btn_D0"
+                        Grid.Row="4"
+                        Grid.ColumnSpan="2"
+                        Click="btn_D0_Click"
+                        Content="D0"
+                        FontSize="{Binding Int_Fontsize}"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/question.png" />
+                <ComboBox x:Name="ComBox_Calibration"
+                          Grid.Row="5"
+                          Grid.ColumnSpan="2"
+                          DropDownClosed="ComBox_Calibration_DropDownClosed"
+                          DropDownOpened="ComBox_Calibration_DropDownOpened"
+                          FontSize="{Binding Int_Fontsize}"
+                          ItemsSource="{Binding list_combox_Calibration_items}"
+                          SelectedIndex="0"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          Tag="../Resources/calibration-mark.png">
+                </ComboBox>
+
+                <Button Name="K_WL"
+                        Grid.Row="6"
+                        Grid.ColumnSpan="2"
+                        Click="K_WL_Click"
+                        Content="K WL"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/search.png" />
+
+                <ComboBox Name="Combox_Switch"
+                          Grid.Row="7"
+                          Grid.ColumnSpan="2"
+                          DropDownClosed="Combox_Switch_DropDownClosed"
+                          DropDownOpened="Combox_Switch_DropDownOpened"
+                          FontSize="{Binding Int_Fontsize}"
+                          ItemsSource="{Binding list_combox_switch_items}"
+                          SelectedIndex="{Binding switch_index}"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          Tag="../Resources/box.png"
+                          Visibility="Visible" />
+                <ToggleButton Name="tbtn_switch"
+                              Grid.Row="7"
+                              Grid.ColumnSpan="2"
+                              Click="tbtn_switch_Click"
+                              Content="Switch"
+                              Style="{DynamicResource style_FuncToggleBtn}"
+                              Tag="../Resources/box.png"
+                              Visibility="Hidden" />
+
+                <ComboBox Name="Combox_Switch_Laser_Band"
+                        Grid.Row="8"
+                        Grid.ColumnSpan="2"
+                          SelectedItem="{Binding selected_band}"
+                          DropDownClosed="Combox_Switch_Laser_Band_DropDownClosed"
+                          ItemsSource="{Binding list_combox_TLS_WL_Range_items}"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          FontSize="{Binding Int_Fontsize}"
+                          Tag="../Resources/change.png" />
+
+                <Grid Name="grid_Unit"
+                      Grid.Row="9"
+                      Grid.ColumnSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="1.5*" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.8*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <ToggleButton Name="TBtn_UnitMode"
+                                  Grid.Column="0"
+                                  Grid.Row="1"
+                                  MaxWidth="48"
+                                  MinWidth="40"
+                                  MaxHeight="30"
+                                  Margin="10,0,18,0"
+                                  Click="TBtn_Unit_Click"
+                                  IsChecked="{Binding dB_or_dBm}"
+                                  Style="{StaticResource SwitchTypeToggleButton}" />
+                    <Viewbox Grid.Column="1"
+                             Grid.Row="1"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center">
+                        <TextBlock FontFamily="Segoe Print"
+                                   FontSize="{Binding Int_Fontsize}"
+                                   MouseLeftButtonDown="grid_Unit_MouseLeftButtonDown">
+                        <Run Name="run_dBm"
+                             Foreground="#FFACACAC"
+                             Text="dBm" />
+                        <Run Foreground="White"
+                             Text="/" />
+                        <Run Name="run_dB"
+                             Foreground="White"
+                             Text="dB" />
+                        </TextBlock>
+                    </Viewbox>
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="3"
+              Grid.Column="1"
+              Background="{Binding Background, ElementName=border_status}">
+            <Button x:Name="btn_Stop"
+                    Click="btn_Stop_Click"
+                    Content="Stop"
+                    FontSize="{Binding Int_Fontsize}"
+                    Foreground="White"
+                    Style="{DynamicResource style_FuncBtn}"
+                    Tag="../Resources/stop.png" />
+        </Grid>
+        <Grid Grid.Row="3"
+              Grid.Column="2"
+              Background="Black">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.85*" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.17*" />
+                <ColumnDefinition Width="0.013*" />
+            </Grid.ColumnDefinitions>
+            <Border Name="border_status"
+                    Grid.Column="0"
+                    Background="#FF1D363A"
+                    BorderBrush="White"
+                    BorderThickness="0.8,0,0.8,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.05*" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Viewbox Grid.Column="1"
+                             HorizontalAlignment="Left" MaxHeight="40">
+                        <Label x:Name="lab_status"
+                               Content="{Binding Str_Status}"
+                               FontFamily="Segoe Print"
+                               Foreground="White" />
+                    </Viewbox>
+
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Background="{Binding Background, ElementName=border_status}"
+                  MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.03*" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Viewbox Grid.Column="1"
+                         HorizontalAlignment="Left"
+                         MaxHeight="40">
+                    <Label x:Name="lab_read"
+                           Content="{Binding Str_cmd_read}"
+                           FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                           Foreground="White" />
+                </Viewbox>
+                <Grid Name="grid_All_Ch_Status"
+                      Grid.Column="1"
+                      Visibility="Hidden">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               VerticalAlignment="Center"
+                               FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                               FontSize="14"
+                               Foreground="White">
+                        <Run Text="ch1: " /> <Run Text="{Binding Str_K_WL_result[0]}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="1"
+                               VerticalAlignment="Center"
+                               FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                               FontSize="14"
+                               Foreground="White">
+                        <Run Text="ch2: " /> <Run Text="{Binding Str_K_WL_result[1]}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="2"
+                               VerticalAlignment="Center"
+                               FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                               FontSize="14"
+                               Foreground="White">
+                        <Run Text="ch3: " /> <Run Text="{Binding Str_K_WL_result[2]}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="3"
+                               VerticalAlignment="Center"
+                               FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                               FontSize="14"
+                               Foreground="White">
+                        <Run Text="ch4: " /> <Run Text="{Binding Str_K_WL_result[3]}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="4"
+                               VerticalAlignment="Center"
+                               FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                               FontSize="14"
+                               Foreground="White">
+                        <Run Text="ch5: " /> <Run Text="{Binding Str_K_WL_result[4]}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="5"
+                               VerticalAlignment="Center"
+                               FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                               FontSize="14"
+                               Foreground="White">
+                        <Run Text="ch6: " /> <Run Text="{Binding Str_K_WL_result[5]}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="6"
+                               VerticalAlignment="Center"
+                               FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                               FontSize="14"
+                               Foreground="White">
+                        <Run Text="ch7: " /> <Run Text="{Binding Str_K_WL_result[6]}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="7"
+                               VerticalAlignment="Center"
+                               FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                               FontSize="14"
+                               Foreground="White">
+                        <Run Text="ch8: " /> <Run Text="{Binding Str_K_WL_result[7]}" />
+                    </TextBlock>
+                </Grid>
+            </Grid>
+
+            <Border Grid.Column="2"
+                    Background="{Binding Background, ElementName=border_status}"
+                    BorderThickness="1,0,0,0"
+                    BorderBrush="Gainsboro">
+                <Grid>
+                    <Grid Name="grid_clock"
+                          Grid.Column="2"
+                          Loaded="Grid_clock_Loaded">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="3*" />
+                            <RowDefinition Height="0.3*" />
+                            <RowDefinition Height="3*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Viewbox Grid.Row="1"
+                                 MaxHeight="20">
+                            <TextBlock Name="txt_time"
+                                       Text="{Binding dateTime[0]}"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White" />
+                        </Viewbox>
+                        <Viewbox Grid.Row="3"
+                                 HorizontalAlignment="Center"
+                                 MaxHeight="20">
+                            <TextBlock Name="txt_date"
+                                       Text="{Binding dateTime[1]}"
+                                       Foreground="White" />
+                        </Viewbox>
+                    </Grid>
+
+                    <Grid Name="grid_process_schedule">
+                        <TextBlock Foreground="White" FontFamily="{Binding FontFamily, ElementName=lab_status}" FontSize="19" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Run Text="{Binding Int_Process_Schedule, Mode=TwoWay}"/>
+                            <Run Text=" %" />
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="3"
+                    Background="{Binding Background, ElementName=border_status}">
+                <Button Grid.Column="3"
+                        BorderThickness="0.8,0,0.8,0"
+                        BorderBrush="#FFCBCBCB"
+                        Name="btn_desktop"
+                        Command="{Binding AllWindow_Minimum}"
+                        Click="btn_desktop_Click">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1"
+                                             StartPoint="0.5,0">
+                            <LinearGradientBrush.RelativeTransform>
+                                <TransformGroup>
+                                    <ScaleTransform CenterY="0.5"
+                                                    CenterX="0.5" />
+                                    <SkewTransform CenterY="0.5"
+                                                   CenterX="0.5" />
+                                    <RotateTransform CenterY="0.5"
+                                                     CenterX="0.5" />
+                                    <TranslateTransform X="-5.408"
+                                                        Y="-0.334" />
+                                </TransformGroup>
+                            </LinearGradientBrush.RelativeTransform>
+                            <GradientStop Color="WhiteSmoke"
+                                          Offset="0.013" />
+                            <GradientStop Color="#FF1D363A"
+                                          Offset="1" />
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+            </Border>
+
+        </Grid>
+
+        <Frame x:Name="Frame_Navigation"
+               Grid.Row="2"
+               Grid.Column="2"
+               NavigationUIVisibility="Hidden"
+               Visibility="Hidden" />
+
+        <pageTransitions:PageTransition Name="pageTransitionControl"
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        TransitionType="Fade" Grid.ColumnSpan="1" Grid.RowSpan="1" />
+
+        <TextBox x:Name="txtnum"
+                 Grid.Row="2"
+                 Grid.Column="2"
+                 Width="120"
+                 Height="23"
+                 Margin="18,47,0,0"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 Text="1"
+                 TextWrapping="Wrap"
+                 Visibility="Hidden" />
+
+    </Grid>
+</Window>

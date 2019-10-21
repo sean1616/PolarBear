@@ -1,0 +1,5 @@
+A. Laser GPIB control
+  In Property -> Build -> Platform target : x86
+  References : 
+      1. DiCon.Instrument.HP
+      2. NationalInstruments.NI4882

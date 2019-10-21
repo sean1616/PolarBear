@@ -1,0 +1,279 @@
+﻿<Window x:Class="PD.NavigationPages.Window_Board_Comport_Setting"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PD.NavigationPages"
+        xmlns:ui="clr-namespace:PD.UI"
+        mc:Ignorable="d" Topmost="True"
+        Loaded="Window_Loaded"
+        Title="Window_Board_Comport_Setting" Height="480" Width="320">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.4*"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="0.2*"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="0.2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <ToggleButton x:Name="btn_fillBoard" Grid.Column="0"
+                Grid.Row="0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" Click="btn_fillBoard_Click"/>
+        <TextBlock Grid.Column="1"
+                   Grid.Row="0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="{Binding Int_Fontsize}"
+                   FontFamily="Segoe Print"
+                   Text="Board ID" />
+        <TextBlock Grid.Column="3"
+                   Grid.Row="0"
+                   FontSize="{Binding Int_Fontsize}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontFamily="Segoe Print"
+                   Text="Comport" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="1"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="1" />
+        <TextBox Grid.Column="1" Name="_1_1"
+                 Grid.Row="1"
+                 Style="{StaticResource style_board_window}"
+                 LostFocus="_LostFocus"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[0][0],  FallbackValue=1}"/>
+        <TextBox Grid.Column="3" Name="_1_2"
+                 Grid.Row="1"
+                 KeyDown="TextBox_KeyDown"
+                 LostFocus="_LostFocus"
+                 Text="{Binding list_Board_Setting[0][1],  FallbackValue=1}"
+                 Style="{StaticResource style_board_window}" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="2"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="2" />
+        <TextBox Grid.Column="1"
+                 Name="_2_1"
+                 Grid.Row="2"
+                 KeyDown="TextBox_KeyDown"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 Text="{Binding list_Board_Setting[1][0] , FallbackValue=2}" />
+        <TextBox Grid.Column="3"
+                 Name="_2_2"
+                 Grid.Row="2"
+                 KeyDown="TextBox_KeyDown"
+                 LostFocus="_LostFocus"
+                 Text="{Binding list_Board_Setting[1][1] , FallbackValue=2}"
+                 Style="{StaticResource style_board_window}" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="3"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="3" />
+        <TextBox Grid.Column="1"
+                 Name="_3_1"
+                 Grid.Row="3"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[2][0] , FallbackValue=3}" />
+        <TextBox Grid.Column="3"
+                 Name="_3_2"
+                 Grid.Row="3"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[2][1] , FallbackValue=3}"/>
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="4"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="4" />
+        <TextBox Grid.Column="1"
+                 Name="_4_1"
+                 Grid.Row="4"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[3][0] , FallbackValue=4}" />
+        <TextBox Grid.Column="3"
+                 Name="_4_2"
+                 Grid.Row="4"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[3][1] , FallbackValue=4}" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="5"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="5" />
+        <TextBox Grid.Column="1"
+                 Name="_5_1"
+                 Grid.Row="5"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[4][0] , FallbackValue=5}" />
+        <TextBox Grid.Column="3"
+                 Name="_5_2"
+                 Grid.Row="5"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[4][1] , FallbackValue=5}" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="6"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="6" />
+        <TextBox Grid.Column="1"
+                 Name="_6_1"
+                 Grid.Row="6"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[5][0] , FallbackValue=6}" />
+        <TextBox Grid.Column="3"
+                 Name="_6_2"
+                 Grid.Row="6"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[5][1] , FallbackValue=6}" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="7"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="7" />
+        <TextBox Grid.Column="1"
+                 Name="_7_1"
+                 Grid.Row="7"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[6][0] , FallbackValue=7}" />
+        <TextBox Grid.Column="3"
+                 Name="_7_2"
+                 Grid.Row="7"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[6][1] , FallbackValue=7}" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="8"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="8" />
+        <TextBox Grid.Column="1"
+                 Name="_8_1"
+                 Grid.Row="8"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[7][0] , FallbackValue=8}" />
+        <TextBox Grid.Column="3"
+                 Name="_8_2"
+                 Grid.Row="8"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[7][1] , FallbackValue=8}" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="9"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="9" />
+        <TextBox Grid.Column="1"
+                 Name="_9_1"
+                 Grid.Row="9"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[8][0] , FallbackValue=9}" />
+        <TextBox Grid.Column="3"
+                 Name="_9_2"
+                 Grid.Row="9"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[8][1] , FallbackValue=9}" />
+        
+        <TextBlock Grid.Column="0"
+                   Grid.Row="10"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="10" />
+        <TextBox Grid.Column="1"
+                 Name="_10_1"
+                 Grid.Row="10"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[9][0] , FallbackValue=10}" />
+        <TextBox Grid.Column="3"
+                 Name="_10_2"
+                 Grid.Row="10"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[9][1] , FallbackValue=10}" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="11"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="11" />
+        <TextBox Grid.Column="1"
+                 Name="_11_1"
+                 Grid.Row="11"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[10][0] , FallbackValue=11}" />
+        <TextBox Grid.Column="3"
+                 Name="_11_2"
+                 Grid.Row="11"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[10][1] , FallbackValue=11}" />
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="12"
+                   Style="{StaticResource style_board_window_txtblock}"
+                   Text="12" />
+        <TextBox Grid.Column="1"
+                 Name="_12_1"
+                 Grid.Row="12"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[11][0] , FallbackValue=12}" />
+        <TextBox Grid.Column="3"
+                 Name="_12_2"
+                 Grid.Row="12"
+                 LostFocus="_LostFocus"
+                 Style="{StaticResource style_board_window}"
+                 KeyDown="TextBox_KeyDown"
+                 Text="{Binding list_Board_Setting[11][1] , FallbackValue=12}" />
+    </Grid>
+</Window>
