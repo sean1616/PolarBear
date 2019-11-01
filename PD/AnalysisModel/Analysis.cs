@@ -51,10 +51,18 @@ namespace PD.AnalysisModel
                 if (vm.product_type == "UFA" || vm.product_type == "UFA(H)")
                 {
                     int count_one_ch_step = 0;
-                    for (int dac = vm.int_V3_scan_start; dac <= vm.int_V3_scan_end; dac = dac + vm.int_V3_scan_gap)
-                    {
-                        count_one_ch_step++;
-                    }
+                    //Rough Scan
+                    count_one_ch_step = (vm.int_V3_scan_end - vm.int_V3_scan_start) / (vm.int_V3_scan_gap / 6);
+                    //for (int dac = vm.int_V3_scan_start; dac <= vm.int_V3_scan_end; dac = dac + vm.int_V3_scan_gap / 6)
+                    //{
+                    //    count_one_ch_step++;
+                    //}
+
+                    //Normal Scan
+                    count_one_ch_step = count_one_ch_step + (5);
+
+                    //Detail Scan
+                    count_one_ch_step = count_one_ch_step + (5);
 
                     all_calibration_step += count_one_ch_step * count_ch;
                 }
@@ -675,6 +683,117 @@ namespace PD.AnalysisModel
             }
         }
 
+        public void CurFit_single(List<DataPoint> List_DataPoint, List<PointF> Points, List<double> BestCoeffs, string action)
+        {
+            if (List_DataPoint.Count <= 3)
+            {
+                vm.Str_cmd_read = "點資料不足";
+                return;
+            }
+            else
+            {               
+                vm.List_curfit_resultDac.Clear();
+                vm.List_curfit_resultWL.Clear();
+                vm.Str_Status = "Curve Fitting";
+                string Best_DAC = "";
+                vm.Str_cmd_read = " ";
+
+                int all_ch_count = vm.ch_count;
+                if (vm.PD_or_PM == true && action != "K WL")  //PM mode
+                    all_ch_count = 1;
+
+                vm.List_curfit_resultDac = Analysis.ListDefault<int>(vm.ch_count);
+                
+                int mid_i = (int)Math.Round((double)List_DataPoint.Count / 2); //中心位置點資料的index
+                double mid_X = Math.Round(List_DataPoint[mid_i].X, 2);   //取出中心位置點資料的X
+
+                #region 形成新的Point List
+                Points = new List<PointF>();
+                if (action == "K WL")
+                {
+                    foreach (DataPoint dp in List_DataPoint)
+                        Points.Add(new PointF((float)(dp.X - List_DataPoint[mid_i].X), (float)dp.Y));
+                }
+                else if (action == "K V3")
+                {
+                    foreach (DataPoint dp in List_DataPoint)
+                        Points.Add(new PointF((float)(dp.X - List_DataPoint[mid_i].X), (float)dp.Y));
+                }
+                else
+                {
+                    foreach (DataPoint dp in List_DataPoint)
+                        Points.Add(new PointF((float)dp.X, (float)dp.Y));
+                }
+
+                if (Points.Count == 0)
+                    return;
+                #endregion
+
+                // Find a good fit.
+                int degree = 2;
+                BestCoeffs = CurveFunctions.FindPolynomialLeastSquaresFit(Points, degree);
+                                
+                if (degree == 2 && action == "K TF")
+                    Best_DAC = Math.Round((-1 * BestCoeffs[1] / (2 * BestCoeffs[2]))).ToString();   //K Dac
+                else
+                    Best_DAC = Math.Round((-1 * BestCoeffs[1] / (2 * BestCoeffs[2])), 2).ToString();    //K 波長
+                               
+                string txt = "";
+                foreach (double coeff in BestCoeffs)
+                {
+                    txt += ", " + Math.Round(coeff, 10).ToString();
+                }
+                string coe = txt.Substring(1);
+
+                string str_curfit_result = Best_DAC;  //If Curfit result is not a number , error occurs.
+
+                if (action == "K TF")
+                {
+                    vm.List_curfit_resultDac_single = Convert.ToInt32(Best_DAC);
+
+                    vm.Str_cmd_read = vm.Str_cmd_read + "," + str_curfit_result;
+                }
+                else if (action == "K WL")
+                {
+                    vm.List_curfit_resultWL.Add(Convert.ToDouble(Best_DAC) + mid_X);
+                    vm.List_curfit_resultWL_single = Convert.ToDouble(Best_DAC) + mid_X;
+
+                    vm.Str_cmd_read = vm.Str_cmd_read + "," + str_curfit_result;
+                }
+                else
+                {
+                    vm.Str_cmd_read = vm.Str_cmd_read + ", Error";
+                }
+
+                //if (action == "K TF")  // 繪圖- CurveFit曲線
+                //{
+                //    double max_7points_dac = List_DataPoint.LastOrDefault().X;
+                //    double min_7points_dac = List_DataPoint[0].X;
+                //    double dac_gap = (max_7points_dac - min_7points_dac) / 100;
+
+                //    List_DataPoint.Clear();
+                //    for (double x = min_7points_dac; x <= max_7points_dac; x = x + dac_gap)
+                //    {
+                //        List_DataPoint.Add(new DataPoint(x, (BestCoeffs[2] * Math.Pow(x, 2) + BestCoeffs[1] * x + BestCoeffs[0])));
+                //    }
+                //}
+                //else  //K WL
+                //{
+                //    double max_7points_WL = (List_DataPoint.LastOrDefault().X) - mid_X;
+                //    double min_7points_WL = (List_DataPoint[0].X) - mid_X;
+                //    double dac_gap = Math.Round(max_7points_WL - min_7points_WL, 2) / 100;
+
+                //    List_DataPoint.Clear();
+                //    for (double x = min_7points_WL; x <= max_7points_WL; x = x + dac_gap)
+                //    {
+                //        List_DataPoint.Add(new DataPoint(x + mid_X, (BestCoeffs[2] * Math.Pow(x, 2) + BestCoeffs[1] * x + BestCoeffs[0])));
+                //    }
+                //}
+
+                vm.Str_cmd_read = vm.Str_cmd_read.Substring(2);
+            }
+        }
+
         public async void Ask_ID()
         {
             await Port_ReOpen();
@@ -707,33 +826,7 @@ namespace PD.AnalysisModel
             catch { }
 
             return vm.IsGoOn;
-        }
-        
-        public async Task Port_Switch_ReOpen()
-        {
-            try
-            {
-                
-                if (vm.port_Switch != null)
-                    vm.port_Switch.Close();
-                
-                await AccessDelayAsync(50);
-
-                if (vm.Comport_Switch > 0)
-                {
-                    vm.port_Switch = new SerialPort("COM" + vm.Comport_Switch.ToString(), 115200, Parity.None, 8, StopBits.One);
-                    vm.port_Switch.Open();
-                    
-                    vm.port_Switch.DiscardInBuffer();       // RX
-                    vm.port_Switch.DiscardOutBuffer();      // TX
-                }               
-            }
-            catch
-            {
-                vm.Str_cmd_read = "Switch Error";
-                return;
-            }            
-        }
+        }        
 
         private async Task<bool> Cmd_Write_RecieveData(string cmd)
         {

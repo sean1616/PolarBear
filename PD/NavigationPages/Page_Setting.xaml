@@ -7,7 +7,8 @@
     xmlns:gif="http://wpfanimatedgif.codeplex.com"
     xmlns:local="clr-namespace:PD.NavigationPages"
     xmlns:uc="clr-namespace:PD.UI"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:PD.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -66,18 +67,34 @@
             ItemsSource="{Binding list_combox_TLS_WL_Range_items}"
             Style="{StaticResource style_combobox_black}">
         </ComboBox>
+        <ComboBox Name="ComBox_Station_Type"
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  SelectedItem="{Binding station_type}"
+                  ItemsSource="{Binding list_combox_Working_Table_Type_items}"
+                  Style="{StaticResource style_combobox_black}">
+        </ComboBox>
+        <ComboBox Name="ComBox_Control_Board_Type"
+                  Grid.Row="2"
+                  Grid.Column="1"
+                  DropDownClosed="ComBox_Control_Board_Type_DropDownClosed"
+                  DropDownOpened="ComBox_Control_Board_Type_DropDownOpened"
+                  SelectedIndex="0"
+                  ItemsSource="{Binding list_combox_Control_Board_Type_items}"
+                  Style="{StaticResource style_combobox_black}">
+        </ComboBox>
         <cusTxtBox:UserControl1
-            Grid.Row="1"
+            Grid.Row="3"
             Grid.Column="1"
             txtbox_content="WL Scan Start"
             txtbox_value="{Binding float_WL_Scan_Start, Mode=TwoWay}" />
         <cusTxtBox:UserControl1
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="1"
             txtbox_content="WL Scan End"
             txtbox_value="{Binding float_WL_Scan_End, Mode=TwoWay}" />
         <cusTxtBox:UserControl1
-            Grid.Row="3"
+            Grid.Row="5"
             Grid.Column="1"
             txtbox_content="WL Scan Gap"
             txtbox_value="{Binding float_WL_Scan_Gap, Mode=TwoWay}" />
@@ -185,31 +202,24 @@
                               txtbox_content="Board Comport" />
 
         <uc:UC_Setting_Button x:Name="btn_ini" Grid.Row="3" txtbox_content="Open ini"
-                              Grid.Column="4" ButtonBase.Click="btn_ini_Click"/>
-        <ComboBox
-            Name="ComBox_Station_Type"
-            Grid.Row="4"
-            Grid.Column="4"      
-            SelectedItem="{Binding station_type}"
-            ItemsSource="{Binding list_combox_Working_Table_Type_items}"
-            Style="{StaticResource style_combobox_black}">
-        </ComboBox>
-        <ComboBox
-            Name="ComBox_Control_Board_Type"
-            Grid.Row="5"
-            Grid.Column="4"
-            DropDownClosed="ComBox_Control_Board_Type_DropDownClosed"
-            DropDownOpened="ComBox_Control_Board_Type_DropDownOpened"
-            SelectedIndex="0"
-                  ItemsSource="{Binding list_combox_Control_Board_Type_items}"
-            Style="{StaticResource style_combobox_black}">
-        </ComboBox>
-
-        <uc:UC_Setting_ToggleButton Grid.Row="6"
+                              Grid.Column="4" ButtonBase.Click="btn_ini_Click"/>       
+        
+        <uc:UC_Setting_ToggleButton Grid.Row="4"
                                     Grid.Column="4"                                   
                                     txtbox_content="Switch mode"
                                     Ischecked="{Binding Is_switch_mode, Mode=TwoWay}"
                                     />
+
+        <TextBox Name="txt_path"
+                 Height="25"
+                 Margin="5"
+                 Grid.Row="5"
+                 Grid.Column="4"
+                 Text="{Binding txt_board_table_path}"
+                 HorizontalAlignment="Stretch"
+                 VerticalContentAlignment="Center"
+                 controls:TextBoxHelper.ClearTextButton="True"
+                 controls:TextBoxHelper.Watermark="Board table path" />
 
         <Image
             Name="Img_gif"

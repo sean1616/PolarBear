@@ -31,10 +31,12 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ToggleButton x:Name="btn_fillBoard" Grid.Column="0"
+        <Button x:Name="btn_fillBoard" Grid.Column="0"
                 Grid.Row="0"
+                Style="{StaticResource style_OnlyImage_Btn}"
+                Tag="../Resources/save.png"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch" Click="btn_fillBoard_Click"/>
+                VerticalAlignment="Stretch" Click="btn_saveBoard_Click"/>
         <TextBlock Grid.Column="1"
                    Grid.Row="0"
                    HorizontalAlignment="Center"

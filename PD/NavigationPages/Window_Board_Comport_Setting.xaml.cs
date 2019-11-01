@@ -35,7 +35,7 @@ namespace PD.NavigationPages
             InitializeComponent();
 
             this.vm = vm;
-            this.DataContext = this.vm;
+            this.DataContext = this.vm;            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -120,28 +120,79 @@ namespace PD.NavigationPages
                 write_COM(ch, obj.Text);
         }
 
-        private async void btn_fillBoard_Click(object sender, RoutedEventArgs e)
+        private async void btn_saveBoard_Click(object sender, RoutedEventArgs e)
         {
-            ICommunication icomm;
-            DiCon.UCB.Communication.RS232.RS232 rs232;
-            DiCon.UCB.MTF.IMTFCommand tf;
-
-            for (int idz = 0; idz < vm.list_Board_Setting.Count; idz++)
+            int i = 0;
+            foreach(List<string> board_info in vm.list_Board_Setting)
             {
-                if (vm.list_Board_Setting[idz].Count == 2)
+                if (string.IsNullOrEmpty(board_info[0]))
+                    continue;
+
+                vm.board_read.Add(new List<string>());
+
+                string board_id = board_info[0];
+                string path = string.Concat(vm.txt_board_table_path, board_id, "-boardtable.txt");
+
+                if (!File.Exists(path))
                 {
-                    if (!string.IsNullOrEmpty(vm.list_Board_Setting[idz][1]))
+                    vm.Str_cmd_read = "UFV Board table is not exist";
+                    continue;
+                }
+
+                StreamReader str = new StreamReader(path);
+
+                while (true)  //Read board v3 data
+                {
+                    string readline = str.ReadLine();
+
+                    if (string.IsNullOrEmpty(readline)) break;
+
+                    vm.board_read[i].Add(readline);
+                }
+                str.Close(); //(關閉str)
+
+                i++;
+            }
+
+
+
+            for (int c = 0; c < 12; c++)
+            {
+                if (vm.board_read[c].Count == 0)
+                {
+                    vm.Str_cmd_read = "UFV Board table is empty";
+                    continue;
+                }
+
+                int count = 0;
+                foreach (string strline in vm.board_read[c])
+                {
+                    string voltage;
+                    string[] board_read = strline.Split(',');
+                    if (board_read.Length == 1)
                     {
-                        rs232 = new DiCon.UCB.Communication.RS232.RS232(vm.list_Board_Setting[idz][1]);
-                        rs232.OpenPort();
-                        icomm = (ICommunication)rs232;
+                        voltage = board_read[0];
+                        continue;
+                    }                        
+                    else if(board_read.Length<1)
+                        break;
+                                        
+                    int dac = int.Parse(board_read[1]);
 
-                        tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
+                    //list_voltage.Add(Convert.ToDouble(voltage));
+                    //list_dac.Add(dac);
 
-                        vm.list_Board_Setting[idz][0] = tf.ReadSN();
-                        await vm.AccessDelayAsync(500);
-                        rs232.ClosePort();
-                    }
+                    //if (dac >= vm.List_V3_dac[c][maxpower_index[c]] && count > 0)
+                    //{
+                    //    int delta_x = (vm.List_V3_dac[c][maxpower_index[c]] - list_dac[count - 1]);
+                    //    int delta_X = (list_dac[count] - list_dac[count - 1]);
+                    //    double delta_Y = (list_voltage[count] - list_voltage[count - 1]);
+                    //    final_voltage = (Convert.ToDouble(delta_x) / Convert.ToDouble(delta_X)) * delta_Y + list_voltage[count - 1];
+                    //    final_voltage = Math.Round(final_voltage, 1);
+                    //    break;
+                    //}
+
+                    count++;
                 }
             }
         }

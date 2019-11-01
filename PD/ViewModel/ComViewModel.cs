@@ -151,15 +151,142 @@ namespace PD.ViewModel
                         timer3.Stop();
                     await AccessDelayAsync(Int_Read_Delay);
                     port_PD.Close();
-                    await AccessDelayAsync(50);
-                    port_PD = new SerialPort(comport, 115200, Parity.None, 8, StopBits.One);
-                    await AccessDelayAsync(50);
-                    port_PD.Open();
                     port_PD.DiscardInBuffer();       // RX
                     port_PD.DiscardOutBuffer();      // TX
+
+                    await AccessDelayAsync(50);
+
+                    port_PD = new SerialPort(comport, 115200, Parity.None, 8, StopBits.One);
+                    port_PD.Open();                    
                 }
             }
             catch { Str_cmd_read = "Port Open Error"; }
+        }
+
+        public async Task Port_ReOpen_Test(string comport)
+        {
+            if (!_pd_or_pm)  //PD type
+            {
+                if (_isGoOn)
+                {
+                    timer2.Stop();
+                    await AccessDelayAsync(Int_Read_Delay);
+                }
+            }
+
+            try
+            {
+                if (port_PD != null)
+                {
+                    if (port_PD.IsOpen)
+                    {
+                        port_PD.Close();
+                        port_PD.DiscardInBuffer();       // RX
+                        port_PD.DiscardOutBuffer();      // TX
+                    } 
+                }
+            }
+            catch { }  
+
+            try
+            {
+                port_PD = new SerialPort(comport, 115200, Parity.None, 8, StopBits.One);
+                port_PD.Open();
+            }
+            catch { Str_cmd_read = "Port Open Error"; }
+        }              
+
+        public List<SerialPort> List_Port = new List<SerialPort>(); 
+        public void Multi_Port_Setting()
+        {
+            try
+            {
+                List_Port = new List<SerialPort>();
+                if (list_Board_Setting.Count > 0)
+                {
+                    foreach(List<string> board_setting in list_Board_Setting)
+                    {
+                        if (!string.IsNullOrEmpty(board_setting[1]))
+                        {
+                            SerialPort port = new SerialPort(board_setting[1], 115200, Parity.None, 8, StopBits.One);
+                            List_Port.Add(port);
+                        }
+                        else
+                            List_Port.Add(new SerialPort());
+                    }
+
+                    foreach (SerialPort port in List_Port)
+                    {
+                        port.Open();
+                    }
+                }
+                
+            }
+            catch { Str_cmd_read = "Port Open Error"; }
+        }
+
+        public async Task Port_Switch_ReOpen()
+        {
+            try
+            {
+
+                if (port_Switch != null)
+                {
+                    if(port_Switch.IsOpen) port_Switch.Close();
+                }
+
+                await AccessDelayAsync(50);
+
+                if (comport_switch > 0)
+                {
+                    port_Switch = new SerialPort("COM" + comport_switch.ToString(), 115200, Parity.None, 8, StopBits.One);
+                    port_Switch.Open();
+
+                    port_Switch.DiscardInBuffer();       // RX
+                    port_Switch.DiscardOutBuffer();      // TX
+                }
+            }
+            catch
+            {
+                Str_cmd_read = "Switch Error";
+                return;
+            }
+        }
+
+        public async Task Port_Switch_ReOpen_Test()
+        {
+            try
+            {
+                if (port_Switch != null)
+                {
+                    if (port_Switch.IsOpen)
+                    {
+                        port_Switch.Close();
+                        await AccessDelayAsync(50);
+                        port_Switch.DiscardInBuffer();       // RX
+                        port_Switch.DiscardOutBuffer();      // TX
+                        await AccessDelayAsync(50);
+                    }
+                }
+            }
+            catch { }
+
+            try
+            {
+                if (comport_switch > 0)
+                {
+                    port_Switch = new SerialPort("COM" + comport_switch.ToString(), 115200, Parity.None, 8, StopBits.One);
+                    port_Switch.Open();
+                    await AccessDelayAsync(50);
+                    port_Switch.DiscardInBuffer();       // RX
+                    port_Switch.DiscardOutBuffer();      // TX
+                }
+            }
+            catch
+            {
+                Str_cmd_read = "Switch Port Open Error";
+                return;
+            }
         }
 
         public async Task<string> PD_GO()
@@ -385,6 +512,17 @@ namespace PD.ViewModel
             }
         }
 
+        private string _txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
+        public string txt_board_table_path
+        {
+            get { return _txt_board_table_path; }
+            set
+            {
+                _txt_board_table_path = value;
+                OnPropertyChanged("txt_board_table_path");
+            }
+        }
+
         private List<DataPoint> _Save_PD_Value = new List<DataPoint>();
         public List<DataPoint> Save_PD_Value
         {
@@ -467,7 +605,7 @@ namespace PD.ViewModel
             }
         }
 
-        private int comport_switch = 6;
+        private int comport_switch = 1;
         public int Comport_Switch
         {
             get { return comport_switch; }
@@ -773,6 +911,17 @@ namespace PD.ViewModel
             }
         }
 
+        private List<List<string>> _board_read = new List<List<string>>();
+        public List<List<string>> board_read
+        {
+            get { return _board_read; }
+            set
+            {
+                _board_read = value;
+                OnPropertyChanged("board_read");
+            }
+        }
+
         private bool _isConnected = false;
         public bool isConnected
         {
@@ -872,7 +1021,7 @@ namespace PD.ViewModel
             }
         }
 
-        private double _float_WL_Scan_Gap = 0.2;
+        private double _float_WL_Scan_Gap = 0.6;
         public double float_WL_Scan_Gap
         {
             get { return _float_WL_Scan_Gap; }
@@ -907,13 +1056,31 @@ namespace PD.ViewModel
                 if (index >= 0)
                 {
                     float_WL_Ref = new List<double>();
-                    if (_list_WL_Ref.Count == 8)
+                    if (!_pd_or_pm)  //false is pd
                     {
-                        for (int ch = 0; ch < 8; ch++)
+                        if (_list_WL_Ref.Count == 8)
                         {
-                            float_WL_Ref.Add(list_WL_Ref[ch][index]);
+                            for (int ch = 0; ch < 8; ch++)
+                            {
+                                float_WL_Ref.Add(list_WL_Ref[ch][index]);
+                            }
                         }
                     }
+                    else  //pm
+                    {
+                        if (_list_WL_Ref.Count >= 1)
+                        {
+                            if(station_type!="Vacuum Test")
+                            {
+                                for (int ch = 0; ch < 8; ch++)
+                                {
+                                    float_WL_Ref.Add(list_WL_Ref[ch][index]);
+                                    //MessageBox.Show(list_WL_Ref[ch][index].ToString());
+                                }
+                            }
+                        }
+                    }
+                    
                 }
                 OnPropertyChanged("Double_Laser_Wavelength");
             }
@@ -1147,6 +1314,17 @@ namespace PD.ViewModel
             }
         }
 
+        private int list_curfit_resultDac_single = 0;
+        public int List_curfit_resultDac_single
+        {
+            get { return list_curfit_resultDac_single; }
+            set
+            {
+                list_curfit_resultDac_single = value;
+                OnPropertyChanged("List_curfit_resultDac_single");
+            }
+        }
+
         private List<double> list_curfit_resultWL = new List<double>();
         public List<double> List_curfit_resultWL
         {
@@ -1157,6 +1335,8 @@ namespace PD.ViewModel
                 //OnPropertyChanged("List_curfit_resultWL");
             }
         }
+
+        public double List_curfit_resultWL_single { get; set; }
 
         private int _int_fontsize = 17;
         public int Int_Fontsize
@@ -1264,7 +1444,7 @@ namespace PD.ViewModel
             }
         }
 
-        private int _int_Write_Delay = 80;
+        private int _int_Write_Delay = 50;
         public int Int_Write_Delay
         {
             get { return _int_Write_Delay; }

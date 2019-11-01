@@ -91,7 +91,7 @@ namespace PD.NavigationPages
                     vm.List_switchBox_ischeck[i] = false;
             }
 
-            try { await anly.Port_Switch_ReOpen(); } catch {  }
+            try { await vm.Port_Switch_ReOpen(); } catch {  }
             
 
             if (ch > 0 && ch < 13)   //Switch 1~12
