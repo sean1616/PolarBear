@@ -119,6 +119,7 @@ namespace PD.NavigationPages
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
+            
             obj = sender as TextBox; //Get the focused textbox name
             string str_textBox_name = obj.Name;
             ch_v = str_textBox_name.Split('_');  // get the channel and which voltage (TF or VOA)         
@@ -165,7 +166,7 @@ namespace PD.NavigationPages
                 
         private async void tbtn_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (vm.station_type != "Vacuum Test") return;
+            if (vm.station_type != "Hermetic Test") return;
 
             ToggleButton obj = (ToggleButton)sender;
 
@@ -212,7 +213,7 @@ namespace PD.NavigationPages
                     await vm.AccessDelayAsync(vm.Int_Write_Delay);
 
                     vm.switch_index = switch_index;                    
-                    vm.Switch_Number = switch_index;   //Save Switch channel
+                    vm.ch = switch_index;   //Save Switch channel
 
                     vm.port_Switch.Close();
                     vm.port_Switch.DiscardInBuffer();       // RX
@@ -256,11 +257,13 @@ namespace PD.NavigationPages
                 vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
                 vm.Channel_visible = new List<Visibility>() { };
             }
+
         }
 
         private void tbtn_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (vm.station_type != "Vacuum Test") return;
+            if (vm.station_type != "Hermetic Test") return;
+            if (gaugetxt_focus) return;
             ToggleButton obj = (ToggleButton)sender;
             obj.IsChecked = !obj.IsChecked;
         }
@@ -276,7 +279,7 @@ namespace PD.NavigationPages
         {
             _isDrag = false;
 
-            if (vm.station_type == "Vacuum Test")
+            if (vm.station_type == "Hermetic Test")
             {
                 if (vm.Gauge_Page_now == 1)
                 {
@@ -508,6 +511,117 @@ namespace PD.NavigationPages
             _is_txtWL_already_click = false;
         }
 
+        private async void txt_Dac_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            TextBox obj = (TextBox)sender;
+            double textbox_value = double.Parse(obj.Text);
+            int final_dac = 0;
+
+            string selected_comport;
+            if (e.Key == Key.Enter)
+            {
+                if (vm.PD_or_PM)  //PM
+                {
+                    if (vm.station_type == "Hermetic Test")
+                        selected_comport = vm.list_Board_Setting[vm.switch_index - 1][1];
+                    else
+                        selected_comport = vm.Selected_Comport;
+                }
+                else  //PD
+                {
+                    return;
+                }
+
+                //Reset COM port
+                if (string.IsNullOrEmpty(selected_comport)) return;
+
+                await vm.Port_ReOpen(selected_comport);
+                
+                if (!vm.isDACorVolt && !string.IsNullOrEmpty(obj.Text))  //Dac mode
+                {
+                    final_dac = int.Parse(obj.Text);
+                }
+                else
+                {
+                    //Read Board Table
+                    #region Read Board Table
+                    List<double> list_voltage = new List<double>();
+                    List<int> list_dac = new List<int>();
+
+                    int count = 0;
+                    foreach (string strline in vm.board_read[vm.switch_index - 1])
+                    {
+                        string[] board_read = strline.Split(',');
+                        if (board_read.Length <= 1)
+                            continue;
+
+                        double voltage = double.Parse(board_read[0]);
+                        int board_dac = int.Parse(board_read[1]);
+
+                        list_voltage.Add(voltage);
+                        list_dac.Add(board_dac);
+
+                        if (voltage >= textbox_value && count > 0)
+                        {
+                            final_dac = board_dac;
+                            break;
+                        }
+
+                        count++;
+                    }
+                    #endregion
+                }
+
+                //Set Dac
+                try
+                {
+                    vm.Str_comment = "D1 0,0," + (final_dac).ToString();  //cmd = D1 0,0,1000
+                    vm.port_PD.Write(vm.Str_comment + "\r");
+                    await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                    vm.port_PD.Close();
+                }
+                catch { vm.Str_cmd_read = "Write Dac Error"; }
+            }
+            if (e.Key == Key.Up)
+            {
+                if (vm.PD_or_PM == true && vm.IsGoOn == true)
+                    await vm.PM_Stop();
+
+                try
+                {
+                    double wl = Convert.ToDouble(txt_WL.Text);
+                    txt_WL.Text = (wl + 0.01).ToString();
+                    vm.tls.SetWL(wl + 0.01);
+                    await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
+                    vm.pm.SetWL(Convert.ToDouble(txt_WL.Text));
+                    await vm.AccessDelayAsync(vm.Int_Set_WL_Delay / 2);
+                }
+                catch { }
+
+                if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
+            }
+            if (e.Key == Key.Down)
+            {
+                if (vm.PD_or_PM == true && vm.IsGoOn == true)
+                    await vm.PM_Stop();
+
+                try
+                {
+                    double wl = Convert.ToDouble(txt_WL.Text);
+                    txt_WL.Text = (wl - 0.01).ToString();
+                    vm.tls.SetWL(wl - 0.01);
+                    await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
+                    vm.pm.SetWL(Convert.ToDouble(txt_WL.Text));
+                    await vm.AccessDelayAsync(vm.Int_Set_WL_Delay / 2);
+                }
+                catch { }
+
+                if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
+            }
+
+            _is_txtWL_already_click = false;
+        }
+
         private async void txt_SetWL(bool _is_KeyEnter_Enter)
         {
             if (vm.PD_or_PM == true && vm.IsGoOn == true)
@@ -567,7 +681,7 @@ namespace PD.NavigationPages
         List<List<string>> temp_list_bear_say = new List<List<string>>();
         private void Btn_page2_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type == "Vacuum Test")   //to page 2
+            if (vm.station_type == "Hermetic Test")   //to page 2
             {
                 if (vm.List_bear_say == null) return;
                 if (vm.List_bear_say.Count < 9) return;
@@ -581,40 +695,31 @@ namespace PD.NavigationPages
                     vm.List_bear_say[ch - 9] = temp_list_bear_say[ch - 1];
                 }
                 vm.List_bear_say = new List<List<string>>(vm.List_bear_say);
-                txt_No5.Visibility = Visibility.Hidden;
-                txt_No6.Visibility = Visibility.Hidden;
-                txt_No7.Visibility = Visibility.Hidden;
-                txt_No8.Visibility = Visibility.Hidden;
+                //txt_No5.Visibility = Visibility.Hidden;
+                //txt_No6.Visibility = Visibility.Hidden;
+                //txt_No7.Visibility = Visibility.Hidden;
+                //txt_No8.Visibility = Visibility.Hidden;
 
                 vm.txt_No = new string[] { "Ch 9", "Ch 10", "Ch 11", "Ch 12", "", "", "", "" };
 
-                //txt_No1.Text = "Ch 9";
-                //txt_No2.Text = "Ch 10";
-                //txt_No3.Text = "Ch 11";
-                //txt_No4.Text = "Ch 12";
             }
         }
 
         private void Btn_page1_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type == "Vacuum Test")   //to page 1
+            if (vm.station_type == "Hermetic Test")   //to page 1
             {
                 if (vm.List_bear_say == null) return;
                 if (page_now == 1) return;
                 page_now = 1;
 
                 vm.List_bear_say = temp_list_bear_say;
-                txt_No5.Visibility = Visibility.Visible;
-                txt_No6.Visibility = Visibility.Visible;
-                txt_No7.Visibility = Visibility.Visible;
-                txt_No8.Visibility = Visibility.Visible;
+                //txt_No5.Visibility = Visibility.Visible;
+                //txt_No6.Visibility = Visibility.Visible;
+                //txt_No7.Visibility = Visibility.Visible;
+                //txt_No8.Visibility = Visibility.Visible;
 
                 vm.txt_No = new string[] { "Ch 1", "Ch 2", "Ch 3", "Ch 4", "Ch 5", "Ch 6", "Ch 7", "Ch 8" };
-
-                //txt_No1.Text = "Ch 1";
-                //txt_No2.Text = "Ch 2";
-                //txt_No3.Text = "Ch 3";
-                //txt_No4.Text = "Ch 4";
             }
         }
 
@@ -628,7 +733,7 @@ namespace PD.NavigationPages
         int int_saved_combox_index;
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type != "Vacuum Test") return;
+            if (vm.station_type != "Hermetic Test") return;
 
             Button obj = (Button)sender;
 
@@ -669,7 +774,7 @@ namespace PD.NavigationPages
                 vm.port_PD = new SerialPort(selected_comport, 115200, Parity.None, 8, StopBits.One);
                 //savePort = vm.port_PD;
 
-                await vm.Port_ReOpen();
+                await vm.Port_ReOpen(selected_comport);
                 
                 //Set voltage
                 try
@@ -758,7 +863,7 @@ namespace PD.NavigationPages
             }
 
             int_saved_combox_index = switch_index;
-            vm.Switch_Number = switch_index;   //Save Switch channel
+            vm.ch = switch_index;   //Save Switch channel
 
             vm.switch_index = switch_index;
             #endregion
@@ -828,6 +933,275 @@ namespace PD.NavigationPages
             }
             catch { vm.Str_cmd_read = "Write Bear Say Error"; }
             #endregion
-        }        
+        }
+
+        private void btn_bearsay_visual_Click(object sender, RoutedEventArgs e)
+        {
+            //grid_BearSay.Visibility = Visibility.Hidden;
+            grid_second_rowdefinition.Height = new GridLength(0, GridUnitType.Star);
+        }
+
+        bool gaugetxt_focus = false;
+        private void _GaugeTxT__GotFocus(object sender, RoutedEventArgs e)
+        {
+            gaugetxt_focus = true;
+        }
+
+        private void _GaugeTxT__LostFocus(object sender, RoutedEventArgs e)
+        {
+            gaugetxt_focus = false;
+        }
+
+        private async void Btn_WL_Click(object sender, RoutedEventArgs e)
+        {
+            if (vm.station_type != "Hermetic Test") return;
+
+            Button obj = (Button)sender;
+
+            int switch_index;
+            string tag = obj.Tag.ToString(), tag_index;
+            
+            if (page_now == 1)
+                tag_index = tag.Substring(0,1);
+            else
+                tag_index = tag.Substring(2);
+
+            switch_index = int.Parse(tag_index);
+
+            if (obj.Content == null) return;
+            if (string.IsNullOrEmpty(obj.Content.ToString())) return;
+            if (vm.PD_or_PM == true && vm.IsGoOn == true) await vm.PM_Stop();
+
+            double txt_value = Convert.ToDouble(obj.Content);
+
+            #region set WL
+            double wl = txt_value;
+            vm.tls.SetWL(wl);
+            vm.Double_Laser_Wavelength = wl;
+            await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
+            vm.pm.SetWL(wl);
+            #endregion
+
+            if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
+
+            #region set switch
+            try
+            {
+                if (vm.Comport_Switch > 0) await vm.Port_Switch_ReOpen();
+            }
+            catch
+            {
+                vm.Str_bear_say = "Switch Comport Error";
+                vm.Winbear = new Window_Bear(vm, false, "String");
+                vm.Winbear.Show();
+                return;
+            }
+
+            if (switch_index > 12) return;
+
+            if (switch_index > 0 && switch_index < 13)   //Switch 1~12
+            {
+                if (string.IsNullOrWhiteSpace("I1 " + switch_index.ToString())) //Check comment box is empty or not
+                    return;
+
+                if (switch_index < 9 && int_saved_combox_index >= 9)  //換頁 page1
+                {
+                    vm.Bool_Page2 = vm.Bool_Gauge_Show;
+                    vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
+                    vm.Channel_visible = new List<Visibility>() { };
+                    vm.Bool_Gauge_Show = vm.Bool_Page1;
+                }
+                else if (switch_index > 8 && int_saved_combox_index <= 8)  //換頁 page2
+                {
+                    vm.Bool_Page1 = vm.Bool_Gauge_Show;
+                    vm.Str_Channel = new List<string>() { "9", "10", "11", "12" };
+                    vm.Channel_visible = new List<Visibility>()
+                    {
+                        Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible,
+                        Visibility.Hidden, Visibility.Hidden, Visibility.Hidden, Visibility.Hidden
+                    };
+                    vm.Bool_Gauge_Show = vm.Bool_Page2;
+                }
+
+                try
+                {
+                    vm.Str_comment = "I1 " + switch_index.ToString();
+                    vm.port_Switch.Write(vm.Str_comment + "\r");
+                    await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                    vm.port_Switch.Close();
+                }
+                catch { }
+            }
+            else if (switch_index == 0)   //Switch ?
+            {
+                vm.Str_comment = "I1?";
+                vm.port_Switch.Write(vm.Str_comment + "\r");
+                await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                vm.port_Switch.Close();
+            }
+            else
+            {
+                vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
+                vm.Channel_visible = new List<Visibility>() { };
+            }
+
+            int_saved_combox_index = switch_index;
+            vm.ch = switch_index;   //Save Switch channel
+
+            vm.switch_index = switch_index;
+            #endregion
+        }
+
+        private async void Btn_IL_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void Btn_Voltage_Click(object sender, RoutedEventArgs e)
+        {
+            if (vm.station_type != "Hermetic Test") return;
+
+            Button obj = (Button)sender;
+
+            int switch_index;
+            string tag = obj.Tag.ToString(), tag_index;
+
+            if (page_now == 1)
+                tag_index = tag.Substring(0, 1);
+            else
+                tag_index = tag.Substring(2);
+
+            switch_index = int.Parse(tag_index);  //定義switch channel
+
+            if (obj.Content == null) return;
+            if (string.IsNullOrEmpty(obj.Content.ToString())) return;
+            //if (vm.PD_or_PM == true && vm.IsGoOn == true) await vm.PM_Stop();
+
+            double txt_value = Convert.ToDouble(obj.Content);
+
+            double vtg = txt_value;
+
+            string selected_comport = vm.list_Board_Setting[switch_index - 1][1];
+            //Reset COM port
+            if (string.IsNullOrEmpty(selected_comport)) return;
+
+            await vm.Port_ReOpen(selected_comport);
+
+            //Read Board Table
+            #region Read Board Table
+            List<double> list_voltage = new List<double>();
+            List<int> list_dac = new List<int>();
+            int final_dac = 0;
+
+            int count = 0;
+            foreach (string strline in vm.board_read[switch_index - 1])
+            {
+                string[] board_read = strline.Split(',');
+                if (board_read.Length <= 1)
+                    continue;
+
+                double voltage = double.Parse(board_read[0]);
+                int board_dac = int.Parse(board_read[1]);
+
+                list_voltage.Add(voltage);
+                list_dac.Add(board_dac);
+
+                if (voltage >= vtg && count > 0)
+                {
+                    final_dac = board_dac;
+                    break;
+                }
+
+                count++;
+            }
+            #endregion
+
+            //Set voltage
+            try
+            {
+                vm.Str_comment = "D1 0,0," + (final_dac).ToString();  //cmd = D1 0,0,1000
+                vm.port_PD.Write(vm.Str_comment + "\r");
+                await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                vm.port_PD.Close();
+            }
+            catch { vm.Str_cmd_read = "Write Dac Error"; }
+
+            if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
+           
+            #region set switch
+            try
+            {               
+                if (vm.Comport_Switch > 0) await vm.Port_Switch_ReOpen();
+            }
+            catch
+            {
+                vm.Str_bear_say = "Switch Comport Error";
+                vm.Winbear = new Window_Bear(vm, false, "String");
+                vm.Winbear.Show();
+                return;
+            }
+
+            if (switch_index > 12) return;
+
+            if (switch_index > 0 && switch_index < 13)   //Switch 1~12
+            {
+                if (string.IsNullOrWhiteSpace("I1 " + switch_index.ToString())) //Check comment box is empty or not
+                    return;
+
+                if (switch_index < 9 && int_saved_combox_index >= 9)  //換頁 page1
+                {
+                    vm.Bool_Page2 = vm.Bool_Gauge_Show;
+                    vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
+                    vm.Channel_visible = new List<Visibility>() { };
+                    vm.Bool_Gauge_Show = vm.Bool_Page1;
+                }
+                else if (switch_index > 8 && int_saved_combox_index <= 8)  //換頁 page2
+                {
+                    vm.Bool_Page1 = vm.Bool_Gauge_Show;
+                    vm.Str_Channel = new List<string>() { "9", "10", "11", "12" };
+                    vm.Channel_visible = new List<Visibility>()
+                    {
+                        Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible,
+                        Visibility.Hidden, Visibility.Hidden, Visibility.Hidden, Visibility.Hidden
+                    };
+                    vm.Bool_Gauge_Show = vm.Bool_Page2;
+                }
+
+                try
+                {
+                    vm.Str_comment = "I1 " + switch_index.ToString();
+                    vm.port_Switch.Write(vm.Str_comment + "\r");
+                    await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                    vm.port_Switch.Close();
+                }
+                catch { }
+            }          
+            else
+            {
+                vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
+                vm.Channel_visible = new List<Visibility>() { };
+            }
+
+            int_saved_combox_index = switch_index;
+            vm.ch = switch_index;   //Save Switch channel
+
+            vm.switch_index = switch_index;
+            #endregion
+        }
+
+        private async void ToggleBtn_LaserActive_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (vm.PD_or_PM == true && vm.IsGoOn == true)
+            {
+                await vm.PM_Stop();
+                await vm.AccessDelayAsync(150);
+            }
+                
+        }
+
+        private void ToggleBtn_LaserActive_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
+        }
     }
 }

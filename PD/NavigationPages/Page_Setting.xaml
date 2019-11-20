@@ -98,6 +98,24 @@
             Grid.Column="1"
             txtbox_content="WL Scan Gap"
             txtbox_value="{Binding float_WL_Scan_Gap, Mode=TwoWay}" />
+        <ComboBox Name="ComBox_K_WL_Type"
+                  Grid.Row="6"
+                  Grid.Column="1"
+                  DropDownClosed="ComBox_K_WL_Type_DropDownClosed"
+                  SelectedIndex="0"
+                  SelectedItem="{Binding selected_K_WL_Type}"
+                  ItemsSource="{Binding list_combox_K_WL_Type_items}"
+                  Style="{StaticResource style_combobox_black}">
+        </ComboBox>
+        <ComboBox Name="ComBox_Laser_Selection"
+                  Grid.Row="7"
+                  Grid.Column="1"
+                  DropDownClosed="ComBox_Laser_Selection_DropDownClosed"
+                  DropDownOpened="ComBox_Laser_Selection_DropDownOpened"
+                  SelectedIndex="0"
+                  ItemsSource="{Binding list_combox_Laser_Type_items}"
+                  Style="{StaticResource style_combobox_black}">
+        </ComboBox>
 
         <!--  Column 2  -->
         <Border

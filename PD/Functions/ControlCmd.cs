@@ -23,11 +23,73 @@ namespace PD.Functions
             anly = new Analysis(vm);
         }
 
+        public void Set_WL()
+        {
+            try
+            {
+                if (vm.station_type == "Hermetic Test")
+                {
+                    if (vm.selected_band == "C Band")
+                    {
+                        switch (vm.product_type)
+                        {
+                            case "UFA":
+                                Set_WL(1548.5);
+                                break;
+
+                            case "UFA(H)":
+                                Set_WL(1548.5);
+                                break;
+
+                            case "UTF":
+                                Set_WL(1527.5);
+                                break;
+
+                            case "CTF":
+                                Set_WL(1527.5);
+                                break;
+
+                            case "MTF":
+                                //cmd.Set_WL(1548.5);
+                                break;
+                        }
+
+                    }
+                    else if (vm.selected_band == "L Band")
+                    {
+                        switch (vm.product_type)
+                        {
+                            case "UFA":
+                                Set_WL(1591);
+                                break;
+
+                            case "UFA(H)":
+                                Set_WL(1591);
+                                break;
+
+                            case "UTF":
+                                Set_WL(1568);
+                                break;
+
+                            case "CTF":
+                                //cmd.Set_WL(1527.5);
+                                break;
+
+                            case "MTF":
+                                //cmd.Set_WL(1548.5);
+                                break;
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
         public async void Set_WL(double wl)
         {
             try
             {
-                vm.tls.SetWL(wl);                
+                vm.tls.SetWL(wl);
                 await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
                 vm.pm.SetWL(wl);
                 await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);

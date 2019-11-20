@@ -26,9 +26,9 @@ namespace PD.Functions
             try
             {
                 vm.tls.SetWL(WL);
-                await vm.AccessDelayAsync(50);
+                await vm.AccessDelayAsync(70);
                 vm.pm.SetWL(WL);
-                await vm.AccessDelayAsync(50);
+                await vm.AccessDelayAsync(70);
                 vm.Double_Laser_Wavelength = vm.tls.ReadWL();
                 await vm.AccessDelayAsync(100);
             }
@@ -46,42 +46,78 @@ namespace PD.Functions
 
         public void Product_Setting()
         {
+            double gap = 0.1, bonus_wl = 0.8;
+            if (vm.selected_K_WL_Type == "Human Like")
+            {
+                bonus_wl = 0.8;
+                gap = 0.4;
+            }                
+            else if (vm.selected_K_WL_Type == "All Range")
+            {
+                bonus_wl = 0;
+                gap = 0.1;
+            }                
+
             switch (vm.product_type)
             {
                 case "UFA":
                     choose_product_setting(-65500, 65500, 24, 31, 3600);
                     if (vm.selected_band == "C Band")
-                        K_WL_setting(1547, 1549.5, 0.6); //1548.51 gap:0.6
+                        K_WL_setting(1547- bonus_wl, 1549.5+ bonus_wl, gap * 2); //1548.51 gap:0.6
                     else
-                        K_WL_setting(1589.6, 1592, 0.6); //1591
+                        K_WL_setting(1589.6- bonus_wl, 1592+ bonus_wl, gap * 2); //1591
+                    break;
+
+                case "UFA-T":
+                    choose_product_setting(-65500, 65500, 0, 10, 3600);
+                    if (vm.selected_band == "C Band")
+                        K_WL_setting(1547 - bonus_wl, 1549.5 + bonus_wl, gap * 2); //1548.51 gap:0.6
+                    else
+                        K_WL_setting(1589.6 - bonus_wl, 1592 + bonus_wl, gap * 2); //1591
                     break;
 
                 case "UFA(H)":
                     choose_product_setting(-65500, 65500, 34, 40, 3600);
                     if (vm.selected_band == "C Band")
-                        K_WL_setting(1547, 1549.5, 0.6); //1548.51
+                        K_WL_setting(1547- bonus_wl, 1549.5+ bonus_wl, gap * 2); //1548.51
                     else
-                        K_WL_setting(1589.6, 1592, 0.6); //1591
+                        K_WL_setting(1589.6- bonus_wl, 1592+ bonus_wl, gap * 2); //1591
                     break;
 
                 case "UTF":
                     choose_product_setting(0, 65500);
                     if (vm.selected_band == "C Band")
-                        K_WL_setting(1526.5, 1529, 0.6);
-                    else K_WL_setting(1566.5, 1568.5, 0.6);  //<1568
+                        K_WL_setting(1526.5- bonus_wl, 1529+ bonus_wl, gap * 2);
+                    else K_WL_setting(1566.5- bonus_wl, 1568.5+ bonus_wl, gap * 2);  //<1568
+                    break;
+
+                case "UTF400":
+                    choose_product_setting(0, 65500);
+                    if (vm.selected_band == "C Band")
+                        K_WL_setting(1547 - bonus_wl, 1549.5 + bonus_wl, gap * 2); //1548.51 gap:0.6
+                    else
+                        K_WL_setting(1589.6 - bonus_wl, 1592 + bonus_wl, gap * 2); //1591
+                    break;
+
+                case "UTF500":
+                    choose_product_setting(0, 65500);
+                    if (vm.selected_band == "C Band")
+                        K_WL_setting(1547 - bonus_wl, 1549.5 + bonus_wl, gap * 2); //1548.51 gap:0.6
+                    else
+                        K_WL_setting(1589.6 - bonus_wl, 1592 + bonus_wl, gap * 2); //1591
                     break;
 
                 case "CTF":
                     choose_product_setting(0, 65500);
                     if (vm.selected_band == "C Band")
-                        K_WL_setting(1526.5, 1529, 0.6);
+                        K_WL_setting(1526.5- bonus_wl, 1529+ bonus_wl, gap * 2);
                     break;
 
                 case "MTF":
                     choose_product_setting(-65500, 65500);
                     if (vm.selected_band == "C Band")
-                        K_WL_setting(1546, 1547.4, 0.3); //gap:0.3
-                    else K_WL_setting(1587.72, 1589.72, 0.3); //1588.725
+                        K_WL_setting(1546- bonus_wl, 1547.4+ bonus_wl, gap); //gap:0.3
+                    else K_WL_setting(1587.72- bonus_wl, 1589.72+ bonus_wl, gap); //1588.725
                     break;
             }
         }

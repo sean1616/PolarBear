@@ -99,8 +99,8 @@ namespace PD.NavigationPages
             if (vm.PD_or_PM == true && vm.IsGoOn == true)
                 await vm.PM_Stop();
 
-            _isActive = _isActive == true ? false : true;
-            vm.tls.SetActive(_isActive);
+            vm.isLaserActive = vm.isLaserActive == true ? false : true;
+            vm.tls.SetActive(vm.isLaserActive);
 
             await vm.AccessDelayAsync(vm.Int_Set_WL_Delay + 100);
 

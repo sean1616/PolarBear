@@ -59,35 +59,35 @@
               Grid.Column="1"
               Margin="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.1*" />
+                <RowDefinition Height="0.5*" />
                 <RowDefinition />
-                <RowDefinition Height="0.1*" />
+                <RowDefinition Height="0.4*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.05*" />
+                <ColumnDefinition Width="0.3*" />
+                <ColumnDefinition Width="0.8*"/>
                 <ColumnDefinition />
                 <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition Width="0.02*" />
+                <ColumnDefinition Width="0.4*" />
             </Grid.ColumnDefinitions>
-            <Viewbox Grid.Row="1"
-                     Grid.Column="1"
-                     VerticalAlignment="Center">
-                <Image MouseDown="Image_MouseDown"
-                       Source="Resources/polar-bear.png" />
-            </Viewbox>
-            <Viewbox Grid.Row="1"
-                     Grid.Column="2"
-                     VerticalAlignment="Center">
-                <Image MouseDown="Image2_MouseDown"
-                       Source="Resources/polar-bear.png" />
-            </Viewbox>
-            <Viewbox Grid.Row="1"
-                     Grid.Column="3"
-                     VerticalAlignment="Center">
-                <Image MouseDown="Image3_MouseDown"
-                       Source="Resources/polar-bear.png" />
-            </Viewbox>
+            <Grid Grid.Column="1"
+                  Name="grid_UserID"
+                  Grid.Row="1"
+                  Grid.ColumnSpan="3">
+                <Viewbox>
+                    <TextBox Name="txt_ID"
+                             Background="Transparent"
+                             VerticalAlignment="Bottom"
+                             HorizontalContentAlignment="Center"
+                             VerticalContentAlignment="Bottom"
+                             Foreground="Wheat"
+                             Text="{Binding UserID}"
+                             Style="{DynamicResource style_UserID_txtbox}"
+                             Tag="../Resources/polar-bear-small.png"
+                             Width="{Binding ActualWidth, ElementName=grid_UserID, Mode=OneWay}"
+                             Height="{Binding ActualHeight, ElementName=grid_UserID, Mode=OneWay}" />
+                </Viewbox>
+            </Grid>
         </Grid>
 
         <Grid Grid.Row="1"
@@ -167,6 +167,14 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
+                <Button Name="btn_help"
+                        Grid.Column="1"
+                        MaxHeight="25"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="btn_help_Click"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/info.png" />
                 <Button Name="btn_min"
                         Grid.Column="2"
                         MaxHeight="25"
@@ -379,7 +387,7 @@
                         Style="{DynamicResource style_FuncBtn}"
                         Tag="../Resources/search.png" />
 
-                <ComboBox Name="Combox_Switch"
+                <!--<ComboBox Name="Combox_Switch"
                           Grid.Row="7"
                           Grid.ColumnSpan="2"
                           DropDownClosed="Combox_Switch_DropDownClosed"
@@ -389,7 +397,17 @@
                           SelectedIndex="{Binding switch_index}"
                           Style="{DynamicResource style_FuncCombobox}"
                           Tag="../Resources/box.png"
+                          Visibility="Visible" />-->
+                <ComboBox Name="Combox_Station"
+                          Grid.Row="7"
+                          Grid.ColumnSpan="2"
+                          FontSize="{Binding Int_Fontsize}"
+                          SelectedItem="{Binding station_type}"
+                          ItemsSource="{Binding list_combox_Working_Table_Type_items}"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          Tag="../Resources/box.png"
                           Visibility="Visible" />
+
                 <ToggleButton Name="tbtn_switch"
                               Grid.Row="7"
                               Grid.ColumnSpan="2"

@@ -39,7 +39,23 @@ namespace PD.ViewModel
         #region Commands
         private void allwindow_minimum()
         {
-            if(winbear!=null) winbear.WindowState = WindowState.Minimized;
+            List<List<string>> lls = new List<List<string>>();
+            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            List_bear_say = new List<List<string>>(lls);
+
+            Collection_bear_say.Add(lls);
+            bear_say_all++;
+            bear_say_now = bear_say_all;
+
+            lls = new List<List<string>>();
+            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            List_bear_say = new List<List<string>>(lls);
+
+            Collection_bear_say.Add(lls);
+            bear_say_all++;
+            bear_say_now = bear_say_all;
         }                
 
         public string ini_exist()
@@ -52,6 +68,67 @@ namespace PD.ViewModel
             return ini_path;
         }
         
+        public void Convert_ReadPower_to_UIGauge(double power_PM, int ch)
+        {
+            Value_PD.Clear();
+            Float_PD.Clear();
+
+            ch++;
+
+            float y = Convert.ToSingle(power_PM);
+            float z = (y * 300 / -64 - 150) * -1;
+            z = z != 1350 ? z : 150;
+
+            if (z < -150)
+                z = -150;
+
+            if (ch < 9) //Switch mode  1~8
+            {
+                if (Gauge_Page_now == 1)
+                {
+                    Value_PD = new List<float>() { -150, -150, -150, -150, -150, -150, -150, -150 };
+                    Float_PD = Analysis.ListDefault<double>(8);
+
+                    Value_PD[ch - 1] = z;
+                    Float_PD[ch - 1] = y;
+                    Value_PD = new List<float>(Value_PD);
+
+                    Str_PD = Analysis.ListDefault<string>(8);
+                    Str_PD[ch - 1] = (Math.Round(y, 4)).ToString();
+                    Str_PD = new List<string>(Str_PD);
+                }
+                else
+                    Str_PD = new List<string>();
+            }
+            else if (this.ch < 13 && this.ch >= 9)  //Switch mode  9~12
+            {
+                if (Gauge_Page_now == 2)
+                {
+                    Value_PD = new List<float>() { -150, -150, -150, -150, -150, -150, -150, -150 };
+                    Float_PD = Analysis.ListDefault<double>(8);
+
+                    Value_PD[ch - 9] = z;
+                    Float_PD[ch - 9] = y;
+                    Value_PD = new List<float>(Value_PD);
+
+                    Str_PD = Analysis.ListDefault<string>(8);
+                    Str_PD[ch - 9] = (Math.Round(y, 4)).ToString();
+                    Str_PD = new List<string>(Str_PD);
+                }
+                else
+                    Str_PD = new List<string>();
+            }
+            else  //Normal mode
+            {
+                Value_PD.Add(z);  //-150~150 degree, for gauge binding
+                Float_PD.Add(Math.Round(y,4));  //list 0~-64dBm in float type
+
+                Str_PD = new List<string>() { (Math.Round(y, 4)).ToString() };
+            }
+
+            Value_PD = new List<float>(Value_PD);
+            Float_PD = new List<double>(Float_PD);
+        }
         
         public void Show_Bear_Window(object bear_say, bool _is_txt_reshow, string type)
         {
@@ -108,62 +185,7 @@ namespace PD.ViewModel
             };
         }
 
-        public async Task Port_ReOpen()
-        {           
-            try
-            {
-                if (!IsGoOn)
-                {
-                    port_PD.Open();
-                }
-                else
-                {
-                    if (PD_or_PM == false)
-                        timer2.Stop();
-                    else
-                        timer3.Stop();
-                    await AccessDelayAsync(Int_Read_Delay);
-                    port_PD.Close();
-                    await AccessDelayAsync(50);
-                    port_PD = new SerialPort(_Selected_Comport, 115200, Parity.None, 8, StopBits.One);
-                    await AccessDelayAsync(50);
-                    port_PD.Open();
-                    port_PD.DiscardInBuffer();       // RX
-                    port_PD.DiscardOutBuffer();      // TX
-                }
-            }
-            catch { Str_cmd_read = "Port Open Error"; }
-        }
-
         public async Task Port_ReOpen(string comport)
-        {
-            try
-            {
-                if (!IsGoOn)
-                {
-                    port_PD.Open();
-                }
-                else
-                {
-                    if (PD_or_PM == false)
-                        timer2.Stop();
-                    else
-                        timer3.Stop();
-                    await AccessDelayAsync(Int_Read_Delay);
-                    port_PD.Close();
-                    port_PD.DiscardInBuffer();       // RX
-                    port_PD.DiscardOutBuffer();      // TX
-
-                    await AccessDelayAsync(50);
-
-                    port_PD = new SerialPort(comport, 115200, Parity.None, 8, StopBits.One);
-                    port_PD.Open();                    
-                }
-            }
-            catch { Str_cmd_read = "Port Open Error"; }
-        }
-
-        public async Task Port_ReOpen_Test(string comport)
         {
             if (!_pd_or_pm)  //PD type
             {
@@ -183,18 +205,19 @@ namespace PD.ViewModel
                         port_PD.Close();
                         port_PD.DiscardInBuffer();       // RX
                         port_PD.DiscardOutBuffer();      // TX
-                    } 
+                    }
                 }
             }
-            catch { }  
+            catch (Exception ex) { }
 
             try
             {
+                port_PD.Dispose();
                 port_PD = new SerialPort(comport, 115200, Parity.None, 8, StopBits.One);
                 port_PD.Open();
             }
             catch { Str_cmd_read = "Port Open Error"; }
-        }              
+        }               
 
         public List<SerialPort> List_Port = new List<SerialPort>(); 
         public void Multi_Port_Setting()
@@ -224,36 +247,8 @@ namespace PD.ViewModel
             }
             catch { Str_cmd_read = "Port Open Error"; }
         }
-
+                
         public async Task Port_Switch_ReOpen()
-        {
-            try
-            {
-
-                if (port_Switch != null)
-                {
-                    if(port_Switch.IsOpen) port_Switch.Close();
-                }
-
-                await AccessDelayAsync(50);
-
-                if (comport_switch > 0)
-                {
-                    port_Switch = new SerialPort("COM" + comport_switch.ToString(), 115200, Parity.None, 8, StopBits.One);
-                    port_Switch.Open();
-
-                    port_Switch.DiscardInBuffer();       // RX
-                    port_Switch.DiscardOutBuffer();      // TX
-                }
-            }
-            catch
-            {
-                Str_cmd_read = "Switch Error";
-                return;
-            }
-        }
-
-        public async Task Port_Switch_ReOpen_Test()
         {
             try
             {
@@ -261,11 +256,9 @@ namespace PD.ViewModel
                 {
                     if (port_Switch.IsOpen)
                     {
-                        port_Switch.Close();
-                        await AccessDelayAsync(50);
                         port_Switch.DiscardInBuffer();       // RX
                         port_Switch.DiscardOutBuffer();      // TX
-                        await AccessDelayAsync(50);
+                        port_Switch.Close();
                     }
                 }
             }
@@ -277,9 +270,6 @@ namespace PD.ViewModel
                 {
                     port_Switch = new SerialPort("COM" + comport_switch.ToString(), 115200, Parity.None, 8, StopBits.One);
                     port_Switch.Open();
-                    await AccessDelayAsync(50);
-                    port_Switch.DiscardInBuffer();       // RX
-                    port_Switch.DiscardOutBuffer();      // TX
                 }
             }
             catch
@@ -299,7 +289,7 @@ namespace PD.ViewModel
 
                     Str_comment = "P0?";
 
-                    await Port_ReOpen();
+                    await Port_ReOpen(_Selected_Comport);
 
                     timer2.Start();
                 }
@@ -331,14 +321,17 @@ namespace PD.ViewModel
 
         public void PM_GO()
         {
-            try
+            if (_pd_or_pm)  //PM mode
             {
-                timer3.Start();
+                try { timer3.Start(); }
+                catch { Str_cmd_read = "GPIB error"; }                
             }
-            catch
+            else  //PD mode
             {
-                Str_cmd_read = "GPIB error";
+                try { timer2.Start(); }
+                catch { Str_cmd_read = "PD error"; }
             }
+            
         }
 
         public async Task PM_Stop()
@@ -358,10 +351,10 @@ namespace PD.ViewModel
 
         public async void WriteDac(string ch, string TF_or_VOA, string DAC)
         {
-            if(_station_type=="Vacuum Test")
+            if(_station_type=="Hermetic Test")
                 await Port_ReOpen(list_Board_Setting[int.Parse(ch)-1][1]);
             else
-                await Port_ReOpen();
+                await Port_ReOpen(_Selected_Comport);
 
             if (PD_or_PM == false)  //PD mode
                 Str_comment = TF_or_VOA + ch.ToString() + " " + DAC;  //Write Dac
@@ -581,7 +574,7 @@ namespace PD.ViewModel
         public Analysis analysis { get; set; }
 
         private int _Switch_Number = 13;
-        public int Switch_Number
+        public int ch
         {
             get { return _Switch_Number; }
             set { _Switch_Number = value; }
@@ -649,6 +642,40 @@ namespace PD.ViewModel
             set
             {
                 winswitch = value;
+            }
+        }
+
+        private GridLength _GaugeSize_Height = new GridLength(6, GridUnitType.Star);
+        public GridLength GaugeSize_Height
+        {
+            get { return _GaugeSize_Height; }
+            set
+            {
+                _GaugeSize_Height = value;
+                OnPropertyChanged("GaugeSize_Height");
+            }
+        }
+
+        private GridLength _GaugeTxtSize_Height = new GridLength(1, GridUnitType.Star);
+        public GridLength GaugeTxtSize_Height
+        {
+            get { return _GaugeTxtSize_Height; }
+            set
+            {
+                _GaugeTxtSize_Height = value;
+                OnPropertyChanged("GaugeTxtSize_Height");
+            }
+        }
+
+        private List<GridLength> _GaugeTxtSize_Column = new List<GridLength>() { new GridLength(2.5, GridUnitType.Star) , new GridLength(5, GridUnitType.Star) ,
+            new GridLength(5, GridUnitType.Star) , new GridLength(5, GridUnitType.Star) , new GridLength(2.5, GridUnitType.Star) };
+        public List<GridLength> GaugeTxtSize_Column
+        {
+            get { return _GaugeTxtSize_Column; }
+            set
+            {
+                _GaugeTxtSize_Column = value;
+                OnPropertyChanged("GaugeTxtSize_Column");
             }
         }
 
@@ -761,16 +788,29 @@ namespace PD.ViewModel
             {
                 _station_type = value;
                 Ini_Write("Connection", "Station", value);
-                if (value == "Vacuum Test")
+                if (value == "Hermetic Test")
                 {
                     ch_count = 12;
                     Bool_Gauge = new bool[] { true, true, true, true, true, true, true, true, true, true, true, true };
                     bo_temp_gauge = new bool[] { true, true, true, true, true, true, true, true, true, true, true, true };
                     
                     Is_switch_mode = true;
+
+                    GaugeText_visible = Visibility.Hidden;
+                    GaugeTabEnable = true;
+                    GaugeSize_Height = new GridLength(6, GridUnitType.Star);
+                    GaugeTxtSize_Height = new GridLength(1, GridUnitType.Star);
+                   
                 }
                 else
+                {
                     Is_switch_mode = false;
+                    GaugeText_visible = Visibility.Visible;
+                    GaugeTabEnable = false;
+                    GaugeSize_Height = new GridLength(7, GridUnitType.Star);
+                    GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
+                }
+                    
                 OnPropertyChanged("station_type");
             }
         }
@@ -819,7 +859,7 @@ namespace PD.ViewModel
         }
 
         private List<string> _list_combox_Working_Table_Type_items =
-            new List<string>() { "Testing", "Vacuum Test", "BR" };
+            new List<string>() { "Testing", "Hermetic Test", "BR" };
         public List<string> list_combox_Working_Table_Type_items
         {
             get { return _list_combox_Working_Table_Type_items; }
@@ -837,8 +877,43 @@ namespace PD.ViewModel
             get { return _list_combox_Control_Board_Type_items; }
             set
             {
-                _list_combox_Control_Board_Type_items = value;
+                _list_combox_Control_Board_Type_items = value;                
                 OnPropertyChanged("list_combox_Control_Board_Type_items");
+            }
+        }
+
+        private List<string> _list_combox_Laser_Type_items =
+            new List<string>() { "Agilent", "GoLight" };
+        public List<string> list_combox_Laser_Type_items
+        {
+            get { return _list_combox_Laser_Type_items; }
+            set
+            {
+                _list_combox_Laser_Type_items = value;
+                OnPropertyChanged("list_combox_Laser_Type_items");
+            }
+        }
+
+        private List<string> _list_combox_K_WL_Type_items =
+            new List<string>() { "ALL Range", "Human Like" };
+        public List<string> list_combox_K_WL_Type_items
+        {
+            get { return _list_combox_K_WL_Type_items; }
+            set
+            {
+                _list_combox_K_WL_Type_items = value;
+                OnPropertyChanged("list_combox_K_WL_Type_items");
+            }
+        }
+
+        private string _selected_K_WL_Type;
+        public string selected_K_WL_Type
+        {
+            get { return _selected_K_WL_Type; }
+            set
+            {
+                _selected_K_WL_Type = value;                
+                OnPropertyChanged("selected_K_WL_Type");
             }
         }
 
@@ -930,6 +1005,44 @@ namespace PD.ViewModel
             {
                 _isConnected = value;
                 OnPropertyChanged("isConnected");
+            }
+        }
+
+        private bool _isLaserActive = false;
+        public bool isLaserActive
+        {
+            get { return _isLaserActive; }
+            set
+            {
+                _isLaserActive = value;                
+                tls.SetActive(value);
+                OnPropertyChanged("isLaserActive");
+            }
+        }
+
+        private bool _isDACorVolt = false;
+        public bool isDACorVolt
+        {
+            get { return _isDACorVolt; }
+            set
+            {
+                _isDACorVolt = value;
+                if (_isDACorVolt)
+                    DacType = "Voltage";
+                else
+                    DacType = "Dac";
+                OnPropertyChanged("isDACorVolt");
+            }
+        }
+
+        private string _DacType = "Dac";
+        public string DacType
+        {
+            get { return _DacType; }
+            set
+            {
+                _DacType = value;
+                OnPropertyChanged("DacType");
             }
         }
 
@@ -1056,7 +1169,7 @@ namespace PD.ViewModel
                 if (index >= 0)
                 {
                     float_WL_Ref = new List<double>();
-                    if (!_pd_or_pm)  //false is pd
+                    if (!_pd_or_pm)  //PD mode
                     {
                         if (_list_WL_Ref.Count == 8)
                         {
@@ -1068,14 +1181,26 @@ namespace PD.ViewModel
                     }
                     else  //pm
                     {
+                        if (index < 0)
+                        {
+                            float_WL_Ref.Add(0);
+                            return;
+                        }
+
                         if (_list_WL_Ref.Count >= 1)
                         {
-                            if(station_type!="Vacuum Test")
+                            if (station_type != "Hermetic Test")
                             {
                                 for (int ch = 0; ch < 8; ch++)
                                 {
                                     float_WL_Ref.Add(list_WL_Ref[ch][index]);
-                                    //MessageBox.Show(list_WL_Ref[ch][index].ToString());
+                                }
+                            }
+                            else
+                            {
+                                for (int ch = 0; ch < 8; ch++)
+                                {
+                                    float_WL_Ref.Add(list_WL_Ref[ch][index]);
                                 }
                             }
                         }
@@ -1083,6 +1208,39 @@ namespace PD.ViewModel
                     
                 }
                 OnPropertyChanged("Double_Laser_Wavelength");
+            }
+        }
+
+        private int _int_Dac_cmd = 0;
+        public int int_Dac_cmd
+        {
+            get { return _int_Dac_cmd; }
+            set
+            {
+                _int_Dac_cmd = value;
+                OnPropertyChanged("int_Dac_cmd");
+            }
+        }
+
+        private int _int_Dac_min = 0;
+        public int int_Dac_min
+        {
+            get { return _int_Dac_min; }
+            set
+            {
+                _int_Dac_min = value;
+                OnPropertyChanged("int_Dac_min");
+            }
+        }
+
+        private string _UserID = "User ID";
+        public string UserID
+        {
+            get { return _UserID; }
+            set
+            {
+                _UserID = value;
+                OnPropertyChanged("UserID");
             }
         }
 
@@ -1431,7 +1589,7 @@ namespace PD.ViewModel
             }
         }
 
-        private int _int_Read_Delay = 105;
+        private int _int_Read_Delay = 120;
         public int Int_Read_Delay
         {
             get { return _int_Read_Delay; }
@@ -1775,6 +1933,51 @@ namespace PD.ViewModel
             }
         }
 
+        private Visibility _GaugeText_visible = Visibility.Visible;
+        public Visibility GaugeText_visible
+        {
+            get { return _GaugeText_visible; }
+            set
+            {
+                _GaugeText_visible = value;
+                OnPropertyChanged("GaugeText_visible");
+                OnPropertyChanged("GaugeText_visible_Reverse");
+            }
+        }
+
+        public Visibility GaugeText_visible_Reverse
+        {
+            get
+            {
+                if (GaugeText_visible == Visibility.Visible)
+                    return Visibility.Hidden;
+                else
+                    return Visibility.Visible;
+            }
+        }
+
+        private List<int> _GaugeTabOrder = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 };
+        public List<int> GaugeTabOrder
+        {
+            get { return _GaugeTabOrder; }
+            set
+            {
+                _GaugeTabOrder = value;
+                OnPropertyChanged("GaugeTabOrder");
+            }
+        }
+
+        private bool _GaugeTabEnable;
+        public bool GaugeTabEnable
+        {
+            get { return _GaugeTabEnable; }
+            set
+            {
+                _GaugeTabEnable = value;
+                OnPropertyChanged("GaugeTabEnable");
+            }
+        }
+
         private List<string> _str_K_WL_result = new List<string>();
         public List<string> Str_K_WL_result
         {
@@ -1939,7 +2142,9 @@ namespace PD.ViewModel
                 OnPropertyChanged("Combox_items");
             }
         }
-                     
+
+        public int Int_Dac_min { get => _int_Dac_min; set => _int_Dac_min = value; }
+
         //public int Int_Read_Delay { get => _int_Read_Delay; set => _int_Read_Delay = value; }
     }
 }

@@ -141,7 +141,7 @@ namespace PD.NavigationPages
                 vm.Channel_visible = new List<Visibility>() { };
             }
 
-            vm.Switch_Number = ch;   //Save Switch channel
+            vm.ch = ch;   //Save Switch channel
         }        
     }
 }

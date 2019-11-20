@@ -176,6 +176,21 @@ namespace PD.NavigationPages
             MessageBox.Show("還沒寫好啦");
         }
 
+        private void ComBox_K_WL_Type_DropDownClosed(object sender, EventArgs e)
+        {
+            vm.Ini_Write("Productions", "K_WL_Type", vm.selected_K_WL_Type);
+        }
+
+        private void ComBox_Laser_Selection_DropDownClosed(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ComBox_Laser_Selection_DropDownOpened(object sender, EventArgs e)
+        {
+
+        }
+
         private void Image_Loaded(object sender, RoutedEventArgs e)
         {
             _GIF_controller = ImageBehavior.GetAnimationController(Img_gif);
