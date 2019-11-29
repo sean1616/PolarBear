@@ -142,7 +142,7 @@
                     Grid.RowSpan="2"
                     Background="White" />
 
-            <ToggleButton Name="b_1"
+            <!--<ToggleButton Name="b_1"
                           Grid.Row="0"
                           Grid.Column="0"
                           Margin="6,6,3,3"                          
@@ -170,7 +170,7 @@
                 </Grid>
             </ToggleButton>
             
-            <!--Dac-->
+            --><!--Dac--><!--
             <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="6*"/>
@@ -213,7 +213,7 @@
                              Style="{DynamicResource style_Gauge_txtbox}"
                              Text="{Binding List_D0_value[0][2]}" />
 
-                    <!--S/N TextBox-->
+                    --><!--S/N TextBox--><!--
                     <TextBox x:Name="_txt_1"
                              Grid.Row="1"
                              Grid.Column="1"
@@ -227,7 +227,7 @@
                              Style="{StaticResource style_SN_txtbox}" />                                      
                 </Grid>
 
-                <!--WL, IL, V3-->
+                --><!--WL, IL, V3--><!--
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
@@ -253,7 +253,7 @@
                             Content="{Binding List_bear_say[0][2], Mode=TwoWay}"
                             Click="Btn_Voltage_Click" />
                 </Grid>
-            </Grid>
+            </Grid>-->
 
 
             <ToggleButton Name="b_2"
@@ -1601,9 +1601,7 @@
                               HorizontalAlignment="Right"
                               MaxWidth="48"
                               MinWidth="40"
-                              MaxHeight="30"                  
-                              PreviewMouseLeftButtonDown="ToggleBtn_LaserActive_PreviewMouseLeftButtonDown"
-                              MouseLeftButtonUp="ToggleBtn_LaserActive_MouseLeftButtonUp"
+                              MaxHeight="30"                
                               IsChecked="{Binding isLaserActive, Mode=TwoWay}"
                               Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">
                     <ToggleButton.Background>

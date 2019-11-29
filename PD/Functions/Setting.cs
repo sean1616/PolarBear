@@ -26,9 +26,9 @@ namespace PD.Functions
             try
             {
                 vm.tls.SetWL(WL);
-                await vm.AccessDelayAsync(70);
+                await vm.AccessDelayAsync(75);
                 vm.pm.SetWL(WL);
-                await vm.AccessDelayAsync(70);
+                await vm.AccessDelayAsync(75);
                 vm.Double_Laser_Wavelength = vm.tls.ReadWL();
                 await vm.AccessDelayAsync(100);
             }

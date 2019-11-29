@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using PD;
+using PD.Functions;
 using PD.AnalysisModel;
 using PD.ViewModel;
 
@@ -22,7 +23,7 @@ namespace PD.NavigationPages
     public partial class Page_PD_Gauges : UserControl
     {
         ComViewModel vm;
-        Analysis anly;
+        ControlCmd cmd;
         TextBox obj;        
         string[] ch_v;
         bool _isDrag = false;
@@ -34,7 +35,7 @@ namespace PD.NavigationPages
             this.DataContext = vm;
             this.vm = vm;
 
-            anly = new Analysis(vm);
+            cmd = new ControlCmd(vm);
 
             vm.Bool_Gauge.CopyTo(vm.bo_temp_gauge, 0);
         }
@@ -118,8 +119,7 @@ namespace PD.NavigationPages
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            
+        {            
             obj = sender as TextBox; //Get the focused textbox name
             string str_textBox_name = obj.Name;
             ch_v = str_textBox_name.Split('_');  // get the channel and which voltage (TF or VOA)         
@@ -168,6 +168,8 @@ namespace PD.NavigationPages
         {
             if (vm.station_type != "Hermetic Test") return;
 
+            if (!vm.Is_switch_mode) return;
+
             ToggleButton obj = (ToggleButton)sender;
 
             int switch_index = int.Parse(obj.Name.Substring(2));
@@ -183,19 +185,7 @@ namespace PD.NavigationPages
             #region switch re-open
             try
             {
-                if (vm.port_Switch != null)
-                    vm.port_Switch.Close();
-
-                await vm.AccessDelayAsync(50);
-
-                if (vm.Comport_Switch > 0)
-                {
-                    vm.port_Switch = new SerialPort("COM" + vm.Comport_Switch.ToString(), 115200, Parity.None, 8, StopBits.One);
-                    vm.port_Switch.Open();
-
-                    vm.port_Switch.DiscardInBuffer();       // RX
-                    vm.port_Switch.DiscardOutBuffer();      // TX
-                }
+                await vm.Port_Switch_ReOpen();
             }
             catch
             {
@@ -214,10 +204,6 @@ namespace PD.NavigationPages
 
                     vm.switch_index = switch_index;                    
                     vm.ch = switch_index;   //Save Switch channel
-
-                    vm.port_Switch.Close();
-                    vm.port_Switch.DiscardInBuffer();       // RX
-                    vm.port_Switch.DiscardOutBuffer();      // TX
                 }
                 catch { }
 
@@ -516,107 +502,165 @@ namespace PD.NavigationPages
             TextBox obj = (TextBox)sender;
             double textbox_value = double.Parse(obj.Text);
             int final_dac = 0;
+            int switch_index = 1;
+            //vm.switch_index = switch_index;
 
             string selected_comport;
-            if (e.Key == Key.Enter)
+
+            try
             {
-                if (vm.PD_or_PM)  //PM
+                if (e.Key == Key.Enter)
                 {
-                    if (vm.station_type == "Hermetic Test")
-                        selected_comport = vm.list_Board_Setting[vm.switch_index - 1][1];
-                    else
-                        selected_comport = vm.Selected_Comport;
-                }
-                else  //PD
-                {
-                    return;
-                }
-
-                //Reset COM port
-                if (string.IsNullOrEmpty(selected_comport)) return;
-
-                await vm.Port_ReOpen(selected_comport);
-                
-                if (!vm.isDACorVolt && !string.IsNullOrEmpty(obj.Text))  //Dac mode
-                {
-                    final_dac = int.Parse(obj.Text);
-                }
-                else
-                {
-                    //Read Board Table
-                    #region Read Board Table
-                    List<double> list_voltage = new List<double>();
-                    List<int> list_dac = new List<int>();
-
-                    int count = 0;
-                    foreach (string strline in vm.board_read[vm.switch_index - 1])
+                    if (vm.PD_or_PM)  //PM
                     {
-                        string[] board_read = strline.Split(',');
-                        if (board_read.Length <= 1)
-                            continue;
+                        if (vm.station_type == "Hermetic Test")
+                            selected_comport = vm.list_Board_Setting[vm.switch_index - 1][1];
+                        else
+                            selected_comport = vm.Selected_Comport;
+                    }
+                    else  //PD
+                    {
+                        return;
+                    }
 
-                        double voltage = double.Parse(board_read[0]);
-                        int board_dac = int.Parse(board_read[1]);
+                    //Reset COM port
+                    if (string.IsNullOrEmpty(selected_comport)) return;
 
-                        list_voltage.Add(voltage);
-                        list_dac.Add(board_dac);
+                    await vm.Port_ReOpen(selected_comport);
 
-                        if (voltage >= textbox_value && count > 0)
+                    if (!vm.isDACorVolt && !string.IsNullOrEmpty(obj.Text))  //Dac mode
+                    {
+                        final_dac = int.Parse(obj.Text);
+                    }
+                    else  //Voltage mode
+                    {
+                        if (vm.station_type != "Hermetic Test")
                         {
-                            final_dac = board_dac;
-                            break;
+
+                        }
+                        else
+                        {
+                            #region Read Board Table
+                            List<double> list_voltage = new List<double>();
+                            List<int> list_dac = new List<int>();
+                                                        
+                            int count = 0;
+                            foreach (string strline in vm.board_read[vm.switch_index - 1])
+                            {
+                                string[] board_read = strline.Split(',');
+                                if (board_read.Length <= 1)
+                                    continue;
+
+                                double voltage = double.Parse(board_read[0]);
+                                int board_dac = int.Parse(board_read[1]);
+
+                                list_voltage.Add(voltage);
+                                list_dac.Add(board_dac);
+
+                                if (voltage >= textbox_value && count > 0)
+                                {
+                                    final_dac = board_dac;
+                                    break;
+                                }
+
+                                count++;
+                            }
+                            #endregion
+                        }
+                    }
+
+                    //Set Dac
+                    try
+                    {
+                        vm.Str_comment = "D1 0,0," + (final_dac).ToString();  //cmd = D1 0,0,1000
+                        vm.port_PD.Write(vm.Str_comment + "\r");
+                        await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                        vm.port_PD.Close();
+                    }
+                    catch { vm.Str_cmd_read = "Write Dac Error"; }
+                }
+                if (e.Key == Key.Up)
+                {
+                    if (vm.PD_or_PM == true && vm.IsGoOn == true)
+                        await vm.PM_Stop();
+                    
+                    if (vm.PD_or_PM)  //PM
+                    {
+                        if (vm.station_type == "Hermetic Test")
+                            selected_comport = vm.list_Board_Setting[vm.switch_index - 1][1];
+                        else
+                            selected_comport = vm.Selected_Comport;
+                    }
+                    else  //PD
+                    {
+                        return;
+                    }
+
+                    try
+                    {
+                        if(vm.DacType=="V3 Dac")
+                        {
+                            int dac = Convert.ToInt32(obj.Text);
+                            obj.Text = (dac + 50).ToString();
+
+                            cmd.Set_V3_Dac(selected_comport, dac + 50);
+                        }
+                        else
+                        {
+                            double volt = Convert.ToDouble(obj.Text);
+                            obj.Text = (volt + 0.1).ToString();
+
+                            cmd.Set_V3_Volt(selected_comport, volt + 0.1);
+                        }
+                        
+                    }
+                    catch { }
+
+                    if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
+                }
+                if (e.Key == Key.Down)
+                {
+                    if (vm.PD_or_PM == true && vm.IsGoOn == true)
+                        await vm.PM_Stop();
+
+                    if (vm.PD_or_PM)  //PM
+                    {
+                        if (vm.station_type == "Hermetic Test")
+                            selected_comport = vm.list_Board_Setting[vm.switch_index - 1][1];
+                        else
+                            selected_comport = vm.Selected_Comport;
+                    }
+                    else  //PD
+                    {
+                        return;
+                    }
+
+                    try
+                    {
+                        if (vm.DacType == "V3 Dac")
+                        {
+                            int dac = Convert.ToInt32(obj.Text);
+                            obj.Text = (dac + 50).ToString();
+
+                            cmd.Set_V3_Dac(selected_comport, dac - 50);
+                        }
+                        else
+                        {
+                            double volt = Convert.ToDouble(obj.Text);
+                            obj.Text = (volt + 0.1).ToString();
+
+                            cmd.Set_V3_Volt(selected_comport, volt - 0.1);
                         }
 
-                        count++;
                     }
-                    #endregion
-                }
+                    catch { }
 
-                //Set Dac
-                try
-                {
-                    vm.Str_comment = "D1 0,0," + (final_dac).ToString();  //cmd = D1 0,0,1000
-                    vm.port_PD.Write(vm.Str_comment + "\r");
-                    await vm.AccessDelayAsync(vm.Int_Write_Delay);
-                    vm.port_PD.Close();
+                    if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
                 }
-                catch { vm.Str_cmd_read = "Write Dac Error"; }
             }
-            if (e.Key == Key.Up)
+            catch
             {
-                if (vm.PD_or_PM == true && vm.IsGoOn == true)
-                    await vm.PM_Stop();
-
-                try
-                {
-                    double wl = Convert.ToDouble(txt_WL.Text);
-                    txt_WL.Text = (wl + 0.01).ToString();
-                    vm.tls.SetWL(wl + 0.01);
-                    await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
-                    vm.pm.SetWL(Convert.ToDouble(txt_WL.Text));
-                    await vm.AccessDelayAsync(vm.Int_Set_WL_Delay / 2);
-                }
-                catch { }
-
-                if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
-            }
-            if (e.Key == Key.Down)
-            {
-                if (vm.PD_or_PM == true && vm.IsGoOn == true)
-                    await vm.PM_Stop();
-
-                try
-                {
-                    double wl = Convert.ToDouble(txt_WL.Text);
-                    txt_WL.Text = (wl - 0.01).ToString();
-                    vm.tls.SetWL(wl - 0.01);
-                    await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
-                    vm.pm.SetWL(Convert.ToDouble(txt_WL.Text));
-                    await vm.AccessDelayAsync(vm.Int_Set_WL_Delay / 2);
-                }
-                catch { }
-
-                if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
+                vm.Str_cmd_read = "Write Dac error";
             }
 
             _is_txtWL_already_click = false;
@@ -1189,19 +1233,6 @@ namespace PD.NavigationPages
             #endregion
         }
 
-        private async void ToggleBtn_LaserActive_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (vm.PD_or_PM == true && vm.IsGoOn == true)
-            {
-                await vm.PM_Stop();
-                await vm.AccessDelayAsync(150);
-            }
-                
-        }
-
-        private void ToggleBtn_LaserActive_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
-        }
+       
     }
 }

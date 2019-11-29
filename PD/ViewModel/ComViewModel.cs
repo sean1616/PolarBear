@@ -148,6 +148,21 @@ namespace PD.ViewModel
         {
             await Task.Delay(delayTime);
         }
+
+        public async Task TLS_SetActive(bool status)
+        {
+            if (PD_or_PM == true && IsGoOn == true)
+            {
+                await PM_Stop();
+            }
+            await Task.Delay(150);
+            tls.SetActive(status);
+            await Task.Delay(150);
+            if (PD_or_PM == true && IsGoOn == true)
+            {
+                PM_GO();
+            }
+        }
         
         public string Ini_Read(string Section, string key)
         {
@@ -1009,15 +1024,33 @@ namespace PD.ViewModel
         }
 
         private bool _isLaserActive = false;
-        public bool isLaserActive
+        public  bool isLaserActive
         {
             get { return _isLaserActive; }
             set
             {
-                _isLaserActive = value;                
+                
+                _isLaserActive = value;
+                bool _isgoon_saved = _isGoOn;
+                if (PD_or_PM == true && IsGoOn == true)
+                {
+                    IsGoOn = false;
+                    timer3.Stop();
+                    timer3.Close();
+                }
                 tls.SetActive(value);
+                //if(PD_or_PM==true && _isgoon_saved)
+                //{
+                //    IsGoOn = true;
+                //    timer3.Start();
+                //}
                 OnPropertyChanged("isLaserActive");
             }
+        }
+
+        private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
+        {
+            //timer3.Stop();
         }
 
         private bool _isDACorVolt = false;
@@ -1028,14 +1061,14 @@ namespace PD.ViewModel
             {
                 _isDACorVolt = value;
                 if (_isDACorVolt)
-                    DacType = "Voltage";
+                    DacType = "V3 Voltage";
                 else
-                    DacType = "Dac";
+                    DacType = "V3 Dac";
                 OnPropertyChanged("isDACorVolt");
             }
         }
 
-        private string _DacType = "Dac";
+        private string _DacType = "V3 Dac";
         public string DacType
         {
             get { return _DacType; }

@@ -182,7 +182,7 @@ namespace PD.NavigationPages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v4.0.4;component/navigationpages/page_ref_chart.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v4.0.5;component/navigationpages/page_ref_chart.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NavigationPages\Page_Ref_Chart.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

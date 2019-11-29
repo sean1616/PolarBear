@@ -640,34 +640,14 @@
 
             <Border Grid.Column="3"
                     Background="{Binding Background, ElementName=border_status}">
-                <Button Grid.Column="3"
+                <ToggleButton Grid.Column="3"
                         BorderThickness="0.8,0,0.8,0"
                         BorderBrush="#FFCBCBCB"
                         Name="btn_desktop"
                         Command="{Binding AllWindow_Minimum}"
                         Click="btn_desktop_Click">
-                    <Button.Background>
-                        <LinearGradientBrush EndPoint="0.5,1"
-                                             StartPoint="0.5,0">
-                            <LinearGradientBrush.RelativeTransform>
-                                <TransformGroup>
-                                    <ScaleTransform CenterY="0.5"
-                                                    CenterX="0.5" />
-                                    <SkewTransform CenterY="0.5"
-                                                   CenterX="0.5" />
-                                    <RotateTransform CenterY="0.5"
-                                                     CenterX="0.5" />
-                                    <TranslateTransform X="-5.408"
-                                                        Y="-0.334" />
-                                </TransformGroup>
-                            </LinearGradientBrush.RelativeTransform>
-                            <GradientStop Color="WhiteSmoke"
-                                          Offset="0.013" />
-                            <GradientStop Color="#FF1D363A"
-                                          Offset="1" />
-                        </LinearGradientBrush>
-                    </Button.Background>
-                </Button>
+                    
+                </ToggleButton>
             </Border>
 
         </Grid>

@@ -100,6 +100,81 @@ namespace PD.Functions
             catch { }
         }
 
+        public async void Set_V3_Dac(string selected_comport, int dac)
+        {
+            //Reset COM port
+            if (string.IsNullOrEmpty(selected_comport)) return;
+            if (string.IsNullOrEmpty(dac.ToString())) return;
+
+            await vm.Port_ReOpen(selected_comport);            
+
+            //Set Dac
+            try
+            {
+                vm.Str_comment = "D1 0,0," + (dac).ToString();  //cmd = D1 0,0,1000
+                vm.port_PD.Write(vm.Str_comment + "\r");
+                await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                vm.port_PD.Close();
+            }
+            catch { vm.Str_cmd_read = "Write Dac Error"; }
+        }
+
+        public async void Set_V3_Volt(string selected_comport, double volt)
+        {
+            //Reset COM port
+            if (string.IsNullOrEmpty(selected_comport)) return;
+            if (string.IsNullOrEmpty(volt.ToString())) return;
+
+            int final_dac = 0;
+
+            await vm.Port_ReOpen(selected_comport);
+                       
+            if (vm.station_type != "Hermetic Test")
+            {
+                return;
+                //If station is not Hermetic Test, then we need a method to find out the name of this control board.
+            }
+            else
+            {
+                #region Read Board Table
+                List<double> list_voltage = new List<double>();
+                List<int> list_dac = new List<int>();
+
+                int count = 0;
+                foreach (string strline in vm.board_read[vm.switch_index - 1])
+                {
+                    string[] board_read = strline.Split(',');
+                    if (board_read.Length <= 1)
+                        continue;
+
+                    double voltage = double.Parse(board_read[0]);
+                    int board_dac = int.Parse(board_read[1]);
+
+                    list_voltage.Add(voltage);
+                    list_dac.Add(board_dac);
+
+                    if (voltage >= volt && count > 0)
+                    {
+                        final_dac = board_dac;
+                        break;
+                    }
+
+                    count++;
+                }
+                #endregion
+            }
+
+            //Set Dac
+            try
+            {
+                vm.Str_comment = "D1 0,0," + (final_dac).ToString();  //cmd = D1 0,0,1000
+                vm.port_PD.Write(vm.Str_comment + "\r");
+                await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                vm.port_PD.Close();
+            }
+            catch { vm.Str_cmd_read = "Write Dac Error"; }
+        }
+
         public async Task<bool> Get_PD_Value()  //PD Value save in vm.Float_PD
         {
             vm.Str_comment = "P0?";
