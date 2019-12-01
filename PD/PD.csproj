@@ -209,6 +209,9 @@
     <Compile Include="UI\Sector_BTN.xaml.cs">
       <DependentUpon>Sector_BTN.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\UC_Gauge.xaml.cs">
+      <DependentUpon>UC_Gauge.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\UC_Setting_Button.xaml.cs">
       <DependentUpon>UC_Setting_Button.xaml</DependentUpon>
     </Compile>
@@ -258,6 +261,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Sector_BTN.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UC_Gauge.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

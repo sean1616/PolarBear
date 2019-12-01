@@ -37,6 +37,8 @@ namespace PD.NavigationPages
 
             cmd = new ControlCmd(vm);
 
+            gauge1.DataContext = vm;
+
             vm.Bool_Gauge.CopyTo(vm.bo_temp_gauge, 0);
         }
 
@@ -1096,9 +1098,9 @@ namespace PD.NavigationPages
             #endregion
         }
 
-        private async void Btn_IL_Click(object sender, RoutedEventArgs e)
+        private void Btn_IL_Click(object sender, RoutedEventArgs e)
         {
-
+            MessageBox.Show("IL");
         }
 
         private async void Btn_Voltage_Click(object sender, RoutedEventArgs e)
@@ -1231,6 +1233,21 @@ namespace PD.NavigationPages
 
             vm.switch_index = switch_index;
             #endregion
+        }
+
+        private void Gauge_btn_IL_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void CustomBTN_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Test");
+        }
+
+        private void CustomBTN_KeyDown(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("KeyDown");
         }
 
        

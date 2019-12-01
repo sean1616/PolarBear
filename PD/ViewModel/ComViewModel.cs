@@ -33,6 +33,8 @@ namespace PD.ViewModel
         //ICommand
         #region ICommand
         public ICommand AllWindow_Minimum { get { return new Delegatecommand(allwindow_minimum); } }
+
+        public ICommand Cmd_Test { get { return new Delegatecommand(cmd_test); } }
         #endregion
 
         //Commands
@@ -56,7 +58,12 @@ namespace PD.ViewModel
             Collection_bear_say.Add(lls);
             bear_say_all++;
             bear_say_now = bear_say_all;
-        }                
+        }
+
+        private void cmd_test()
+        {
+            MessageBox.Show("Test");
+        }
 
         public string ini_exist()
         {

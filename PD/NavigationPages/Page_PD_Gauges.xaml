@@ -255,6 +255,13 @@
                 </Grid>
             </Grid>-->
 
+            <ui:UC_Gauge x:Name="gauge1" Grid.Row="0" Grid.Column="0" 
+                         Btn_IL_Click="Btn_IL_Click"
+                         Btn_Voltage_Click="Btn_Voltage_Click"
+                         Btn_WL_Click="Btn_WL_Click"
+                         List_bear_say_1="{Binding List_bear_say[0][0]}" 
+                         List_bear_say_2="{Binding List_bear_say[0][1]}"
+                         List_bear_say_3="{Binding List_bear_say[0][2]}"/>
 
             <ToggleButton Name="b_2"
                           Grid.Row="0"
