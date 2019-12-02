@@ -37,7 +37,8 @@ namespace PD.NavigationPages
 
             cmd = new ControlCmd(vm);
 
-            gauge1.DataContext = vm;
+            gauge1.DataContext = vm;  //將DataContext指給使用者控制項，必要!
+            gauge2.DataContext = vm;
 
             vm.Bool_Gauge.CopyTo(vm.bo_temp_gauge, 0);
         }

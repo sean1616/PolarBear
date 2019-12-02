@@ -2018,6 +2018,17 @@ namespace PD.ViewModel
             }
         }
 
+        private bool _is_Gauge_ContinueSelect = false;
+        public bool is_Gauge_ContinueSelect
+        {
+            get { return _is_Gauge_ContinueSelect; }
+            set
+            {
+                _is_Gauge_ContinueSelect = value;
+                OnPropertyChanged("is_Gauge_ContinueSelect");
+            }
+        }
+
         private List<string> _str_K_WL_result = new List<string>();
         public List<string> Str_K_WL_result
         {

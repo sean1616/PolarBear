@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              xmlns:vm="clr-namespace:PD.ViewModel"
              xmlns:gauge="clr-namespace:Circle_Gauge;assembly=Circle_Gauge"
-             d:DesignHeight="200" d:DesignWidth="220">
+             d:DesignHeight="200" d:DesignWidth="220" Loaded="UserControl_Loaded">
 
     <UserControl.DataContext>
         <vm:ComViewModel />
@@ -19,6 +19,11 @@
                       Grid.Column="0"
                       Margin="6,6,3,3"                  
                       Focusable="False"
+                      PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
+                      PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
+                      PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
+                      PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
+                      MouseEnter="tbtn_MouseEnter"
                       IsChecked="{Binding Bool_Gauge_Show[0], Mode=TwoWay}"
                       Visibility="{Binding Channel_visible[0]}"
                       Style="{StaticResource style_Gauge_Background}">
@@ -26,12 +31,11 @@
                 <Viewbox>
                     <gauge:UserControl1 Name="Gauge_1"
                                         Grid.Row="0"
-                                        Arc_Color="{Binding Complement_Color}"
-                                        Arc_EndAngle="{Binding Value_PD[0], FallbackValue=-150}"
-                                        str_PD_value="{Binding Str_PD[0]}"
-                                        str_Unit="{Binding str_Unit}"
-                                        str_channel="{Binding Str_Channel[0]}"
-                                        Visibility="{Binding Channel_visible[0]}" />
+                                        Arc_Color="{Binding Gauge_Color, Mode=TwoWay}"
+                                        Arc_EndAngle="{Binding Gauge_EndAngle, FallbackValue=-150, Mode=TwoWay}"
+                                        str_PD_value="{Binding Gauge_value, Mode=TwoWay}"
+                                        str_Unit="{Binding Gauge_Unit, Mode=TwoWay}"
+                                        str_channel="{Binding Gauge_channel, Mode=TwoWay}" />
                 </Viewbox>
             </Grid>
         </ToggleButton>
@@ -91,6 +95,7 @@
                          LostFocus="_GaugeTxT__LostFocus"
                          TabIndex="{Binding GaugeTabOrder[0]}"
                          FontSize="{Binding Int_Fontsize}"
+                         Visibility="{Binding GaugeText_visible_Reverse}"
                          Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}"
                          Style="{StaticResource style_SN_txtbox}" />
             </Grid>

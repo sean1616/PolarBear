@@ -98,14 +98,14 @@
                                Text="{Binding str_channel, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PD_Gauge}}}" />
                 </StackPanel>
             </Grid>
-            <Button Name="btn_show_window"
+            <!--<Button Name="btn_show_window"
                     Grid.Column="1"
                     Width="30"
                     Height="30"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     Command="{Binding AddItem, ElementName=UserControl_Gauge}"
-                    Grid.Row="0" />
+                    Grid.Row="0" />-->
         </Grid>
     </Grid>
 </UserControl>

@@ -259,11 +259,31 @@
                          Btn_IL_Click="Btn_IL_Click"
                          Btn_Voltage_Click="Btn_Voltage_Click"
                          Btn_WL_Click="Btn_WL_Click"
+                         Gauge_Color="{Binding Complement_Color}"
+                         Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150}"
+                         Gauge_value="{Binding Str_PD[0]}"
+                         Gauge_Unit="{Binding str_Unit}"
+                         Gauge_channel="{Binding Str_Channel[0]}"
                          List_bear_say_1="{Binding List_bear_say[0][0]}" 
                          List_bear_say_2="{Binding List_bear_say[0][1]}"
                          List_bear_say_3="{Binding List_bear_say[0][2]}"/>
 
-            <ToggleButton Name="b_2"
+            <ui:UC_Gauge x:Name="gauge2"
+                         Grid.Row="0"
+                         Grid.Column="1"
+                         Btn_IL_Click="Btn_IL_Click"
+                         Btn_Voltage_Click="Btn_Voltage_Click"
+                         Btn_WL_Click="Btn_WL_Click"
+                         Gauge_Color="{Binding Complement_Color}"
+                         Gauge_EndAngle="{Binding Value_PD[1], FallbackValue=-150}"
+                         Gauge_value="{Binding Str_PD[1]}"
+                         Gauge_Unit="{Binding str_Unit}"
+                         Gauge_channel="{Binding Str_Channel[1]}"
+                         List_bear_say_1="{Binding List_bear_say[1][0]}"
+                         List_bear_say_2="{Binding List_bear_say[1][1]}"
+                         List_bear_say_3="{Binding List_bear_say[1][2]}" />
+
+            <!--<ToggleButton Name="b_2"
                           Grid.Row="0"
                           Grid.Column="1"
                           PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
@@ -287,10 +307,10 @@
                                             Visibility="{Binding Channel_visible[1]}" />
                     </Viewbox>
                 </Grid>
-            </ToggleButton>
+            </ToggleButton>-->
 
             <!--Dac-->
-            <Grid Grid.Row="0" Grid.Column="1">
+            <!--<Grid Grid.Row="0" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="6*" />
                     <RowDefinition Height="1*" />
@@ -334,7 +354,7 @@
                              Text="{Binding List_D0_value[1][2]}" />
                 </Grid>
 
-                <!--S/N TextBox-->
+                --><!--S/N TextBox--><!--
                 <TextBox x:Name="_txt_2"
                          Grid.Row="1"
                          Grid.Column="0"
@@ -346,7 +366,7 @@
                          FontSize="{Binding Int_Fontsize}"
                          Style="{StaticResource style_SN_txtbox}"
                          Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}" />
-                <!--WL, IL, V3-->
+                --><!--WL, IL, V3--><!--
                 <Grid Grid.Row="2"
                       Grid.ColumnSpan="3"
                       >
@@ -374,7 +394,7 @@
                             Content="{Binding List_bear_say[1][2], Mode=TwoWay}"
                             Click="Btn_Voltage_Click" />
                 </Grid>
-            </Grid>
+            </Grid>-->
 
             <ToggleButton Name="b_3"
                           Grid.Row="0"

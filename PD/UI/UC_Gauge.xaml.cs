@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Controls.Primitives;
 
 using PD.ViewModel;
 
@@ -22,16 +23,222 @@ namespace PD.UI
     /// </summary>
     public partial class UC_Gauge : UserControl
     {
+        ComViewModel vm;        
+        bool gaugetxt_focus = false;
+
         public UC_Gauge()
         {
             InitializeComponent();
-
-            grid_dac_txt.DataContext = this;
-
-            //btn_1.Click += new System.Windows.RoutedEventHandler(innerButton_Click);
         }
 
-        #region 定義相依屬性       
+        private void tbtn_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            vm.is_Gauge_ContinueSelect = true;
+            ToggleButton obj = (ToggleButton)sender;
+            obj.IsChecked = !obj.IsChecked;
+        }
+
+        private void tbtn_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            vm.is_Gauge_ContinueSelect = false;
+            //if (vm.station_type == "Hermetic Test")
+
+            //{
+            //    if (vm.Gauge_Page_now == 1)
+            //    {
+            //        try
+            //        {
+            //            Array.Copy(vm.Bool_Gauge_Show, 0, vm.bo_temp_gauge, 0, 8);
+            //        }
+            //        catch { vm.Str_cmd_read = vm.Bool_Gauge_Show.Length.ToString(); }
+            //        Array.Copy(vm.Bool_Page2, 0, vm.bo_temp_gauge, 8, 4);
+            //    }
+            //    else
+            //    {
+            //        try
+            //        {
+            //            Array.Copy(vm.Bool_Page1, 0, vm.bo_temp_gauge, 0, 8);
+            //        }
+            //        catch { vm.Str_cmd_read = vm.Bool_Page1.Length.ToString(); }
+
+            //        Array.Copy(vm.Bool_Gauge_Show, 0, vm.bo_temp_gauge, 8, 4);
+            //    }
+            //}
+            //else
+            //    vm.bo_temp_gauge = vm.Bool_Gauge_Show;
+
+            //int count = 0;
+            //foreach (bool b in vm.bo_temp_gauge) if (b) count++;
+
+            //if (count < vm.ch_count && count > 0)
+            //{
+            //    vm.Bool_Gauge = vm.bo_temp_gauge;
+            //}
+            //else //全選 or 全不選 => 全跑
+            //{
+            //    vm.Bool_Gauge = new bool[vm.ch_count];
+            //    int c = 0;
+            //    foreach (bool b in vm.Bool_Gauge)
+            //    {
+            //        vm.Bool_Gauge[c] = !b;
+            //        c++;
+            //    }
+            //}
+        }
+
+        private void tbtn_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //if (vm.station_type != "Hermetic Test") return;
+
+            //if (!vm.Is_switch_mode) return;
+
+            //ToggleButton obj = (ToggleButton)sender;
+
+            //int switch_index = int.Parse(obj.Name.Substring(2));
+
+            //if (vm.Gauge_Page_now == 2)
+            //    switch_index += 8;
+            //vm.switch_selected_index = switch_index;
+            //if (switch_index > 12) return;
+            //if (switch_index == vm.switch_index) return;
+            //if (string.IsNullOrWhiteSpace("I1 " + switch_index.ToString())) //Check comment box is empty or not
+            //    return;
+
+            //#region switch re-open
+            //try
+            //{
+            //    await vm.Port_Switch_ReOpen();
+            //}
+            //catch
+            //{
+            //    vm.Str_cmd_read = "Switch Error";
+            //    return;
+            //}
+            //#endregion
+
+            //if (switch_index > 0)   //Switch 1~12
+            //{
+            //    try
+            //    {
+            //        vm.Str_comment = "I1 " + switch_index.ToString();
+            //        vm.port_Switch.Write(vm.Str_comment + "\r");
+            //        await vm.AccessDelayAsync(vm.Int_Write_Delay);
+
+            //        vm.switch_index = switch_index;
+            //        vm.ch = switch_index;   //Save Switch channel
+            //    }
+            //    catch { }
+
+            //    if (switch_index < 9 && int_saved_combox_index >= 9)  //換頁 page1
+            //    {
+            //        vm.Bool_Page2 = vm.Bool_Gauge_Show;
+            //        vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
+            //        vm.Channel_visible = new List<Visibility>() { };
+            //        vm.Bool_Gauge_Show = vm.Bool_Page1;
+            //        vm.Gauge_Page_now = 1;
+            //    }
+            //    else if (switch_index > 8 && int_saved_combox_index <= 8)  //換頁 page2
+            //    {
+            //        vm.Bool_Page1 = vm.Bool_Gauge_Show;
+            //        vm.Str_Channel = new List<string>() { "9", "10", "11", "12" };
+            //        vm.Channel_visible = new List<Visibility>()
+            //        {
+            //            Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible,
+            //            Visibility.Hidden, Visibility.Hidden, Visibility.Hidden, Visibility.Hidden
+            //        };
+            //        vm.Bool_Gauge_Show = vm.Bool_Page2;
+            //        vm.Gauge_Page_now = 2;
+            //    }
+            //}
+            //else if (switch_index == 0)   //Switch ?
+            //{
+            //    try
+            //    {
+            //        vm.Str_comment = "I1?";
+            //        vm.port_Switch.Write(vm.Str_comment + "\r");
+            //        await vm.AccessDelayAsync(vm.Int_Read_Delay);
+            //    }
+            //    catch { vm.Str_cmd_read = "Switch? Error"; }
+            //}
+            //else
+            //{
+            //    vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
+            //    vm.Channel_visible = new List<Visibility>() { };
+            //}
+
+        }
+
+        private void tbtn_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (vm.station_type != "Hermetic Test") return;
+            if (gaugetxt_focus) return;
+            ToggleButton obj = (ToggleButton)sender;
+            obj.IsChecked = !obj.IsChecked;
+        }
+
+        private void tbtn_MouseEnter(object sender, MouseEventArgs e)
+        {
+            ToggleButton obj = (ToggleButton)sender;
+            if (vm.is_Gauge_ContinueSelect)
+                obj.IsChecked = !obj.IsChecked;
+        }
+
+
+        #region 定義Gauge相依屬性       
+               
+        public static readonly DependencyProperty str_PD_value_Property =
+                    DependencyProperty.Register("Gauge_value", typeof(string), typeof(UC_Gauge),
+                    new UIPropertyMetadata(null));
+
+        public static readonly DependencyProperty str_channel_Property =
+                    DependencyProperty.Register("Gauge_channel", typeof(string), typeof(UC_Gauge),
+                    new UIPropertyMetadata(null));
+
+        public static readonly DependencyProperty Arc_EndAngle_Property =
+                    DependencyProperty.Register("Gauge_EndAngle", typeof(float), typeof(UC_Gauge),
+                    new UIPropertyMetadata(null));
+
+        public static readonly DependencyProperty Arc_Color_Property =
+                    DependencyProperty.Register("Gauge_Color", typeof(SolidColorBrush), typeof(UC_Gauge),
+                    new UIPropertyMetadata(null));
+
+        public static readonly DependencyProperty str_Unit_Property =
+                    DependencyProperty.Register("Gauge_Unit", typeof(string), typeof(UC_Gauge),
+                    new UIPropertyMetadata(null));
+              
+
+        public string Gauge_value //提供內部binding之相依屬性
+        {
+            get { return (string)GetValue(str_PD_value_Property); }
+            set { SetValue(str_PD_value_Property, value); }
+        }
+
+        public string Gauge_channel //提供內部binding之相依屬性
+        {
+            get { return (string)GetValue(str_channel_Property); }
+            set { SetValue(str_channel_Property, value); }
+        }
+
+        public float Gauge_EndAngle //提供內部binding之相依屬性
+        {
+            get { return (float)GetValue(Arc_EndAngle_Property); }
+            set { SetValue(Arc_EndAngle_Property, value); }
+        }
+
+        public SolidColorBrush Gauge_Color //提供內部binding之相依屬性
+        {
+            get { return (SolidColorBrush)GetValue(Arc_Color_Property); }
+            set { SetValue(Arc_Color_Property, value); }
+        }
+
+        public string Gauge_Unit //提供內部binding之相依屬性
+        {
+            get { return (string)GetValue(str_Unit_Property); }
+            set { SetValue(str_Unit_Property, value); }
+        }
+        #endregion
+
+        #region 定義Grid control相依屬性       
 
         public static readonly DependencyProperty List_D0_value_1_Property =
                 DependencyProperty.Register("List_D0_value_1", typeof(string), typeof(UC_Gauge),
@@ -93,6 +300,8 @@ namespace PD.UI
             set { SetValue(List_bear_say_3_Property, value); }
         }
         #endregion
+
+
 
         #region Click event
 
@@ -166,6 +375,9 @@ namespace PD.UI
             //gaugetxt_focus = false;
         }
 
-       
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.vm = (ComViewModel)this.DataContext;
+        }
     }
 }

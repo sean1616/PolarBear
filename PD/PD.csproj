@@ -200,9 +200,6 @@
     <Compile Include="NavigationPages\Window_Switch_Box.xaml.cs">
       <DependentUpon>Window_Switch_Box.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Gauge_Set.xaml.cs">
-      <DependentUpon>Gauge_Set.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\PD_Gauge.xaml.cs">
       <DependentUpon>PD_Gauge.xaml</DependentUpon>
     </Compile>
@@ -253,10 +250,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="NavigationPages\Page_PD_Gauges.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Gauge_Set.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
