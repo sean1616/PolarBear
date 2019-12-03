@@ -18,6 +18,7 @@ using OxyPlot.Series;
 using PD.Functions;
 using PD.AnalysisModel;
 using PD.NavigationPages;
+using PD.Models;
 using DiCon.Instrument.HP;
 
 namespace PD.ViewModel
@@ -1993,6 +1994,53 @@ namespace PD.ViewModel
                     return Visibility.Hidden;
                 else
                     return Visibility.Visible;
+            }
+        }
+
+        private List<Gauge> _Gauges = new List<Gauge>()
+            {
+                new Gauge("1"),
+                new Gauge("2"),
+                new Gauge("3"),
+                new Gauge("4"),
+                new Gauge("5"),
+                new Gauge("6"),
+                new Gauge("7"),
+                new Gauge("8")
+            };
+        public List<Gauge> Gauges
+        {
+            get { return _Gauges; }
+            set
+            {
+                _Gauges = value;
+                OnPropertyChanged("Gauges");
+            }
+        }
+
+        private double _GaugePage_Width=1000;
+        public double GaugePage_Width
+        {
+            get { return _GaugePage_Width; }
+            set
+            {
+                _GaugePage_Width = value;
+                OnPropertyChanged("GaugePage_Width");
+            }
+        }
+
+        private double _Gauge_Width = 250;
+        public double Gauge_Width
+        {
+            get
+            {
+                _Gauge_Width = _GaugePage_Width / 4;
+                return _Gauge_Width;
+            }
+            set
+            {
+                _Gauge_Width = value;
+                OnPropertyChanged("Gauge_Width");
             }
         }
 

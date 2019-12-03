@@ -12,7 +12,8 @@
              xmlns:uuii="clr-namespace:PD.UI;assembly=PD"
              d:DesignHeight="800"
              d:DesignWidth="1200"
-             Background="Transparent"
+             Loaded="UserControl_Loaded"
+             Background="Transparent"             
              mc:Ignorable="d">
     <!--<UserControl.Resources>
         <Storyboard x:Key="SB_Gauge_Loaded">
@@ -123,7 +124,37 @@
             <RowDefinition Name="grid_second_rowdefinition" Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="grid_main_page"
+        <ScrollViewer Grid.Row="0" x:Name="GaugeListView"
+                      Background="#FFF1F1F1">                      
+            <StackPanel>
+                <TextBlock Text="Guage Items"
+                           Margin="10"
+                           FontSize="22"
+                           FontWeight="Medium" />
+                <StackPanel Margin="20 ">
+                    <ItemsControl x:Name="ListViewGauges"
+                                  ItemsSource="{Binding Gauges}"
+                                  >
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ui:UC_Gauge x:Name="uc_gauge"
+                                             Width="250"                                             
+                                             Gauge_channel="{Binding Channel}"
+                                              />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        
+                    </ItemsControl>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Grid x:Name="grid_main_page" Visibility="Collapsed"
               Mouse.MouseWheel="_MouseWheel"
               KeyboardNavigation.TabNavigation="Cycle">
             <Grid.RowDefinitions>
@@ -141,129 +172,16 @@
                     Grid.ColumnSpan="4"
                     Grid.RowSpan="2"
                     Background="White" />
-
-            <!--<ToggleButton Name="b_1"
-                          Grid.Row="0"
-                          Grid.Column="0"
-                          Margin="6,6,3,3"                          
-                          PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
-                          PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
-                          PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"    
-                          PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
-                          MouseEnter="tbtn_MouseEnter"
-                          Command="{Binding Set_Bool_Gauge}"
-                          Focusable="False"
-                          IsChecked="{Binding Bool_Gauge_Show[0], Mode=TwoWay}"
-                          Visibility="{Binding Channel_visible[0]}"
-                          Style="{StaticResource style_Gauge_Background}">
-                <Grid>                    
-                    <Viewbox>
-                        <gauge:UserControl1 Name="Gauge_1"
-                                            Grid.Row="0"
-                                            Arc_Color="{Binding Complement_Color}"
-                                            Arc_EndAngle="{Binding Value_PD[0], FallbackValue=-150}"
-                                            str_PD_value="{Binding Str_PD[0]}"
-                                            str_Unit="{Binding str_Unit}"
-                                            str_channel="{Binding Str_Channel[0]}"
-                                            Visibility="{Binding Channel_visible[0]}" />
-                    </Viewbox>
-                </Grid>
-            </ToggleButton>
-            
-            --><!--Dac--><!--
-            <Grid Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*"/>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="{Binding GaugeTxtSize_Height}" />
-                    <RowDefinition Height="0.5*" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="1"
-                      Grid.ColumnSpan="3" Name="grid_dac_txt">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}"/>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}"/>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}"/>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="_1_1"
-                             Grid.Column="1"
-                             VerticalContentAlignment="Center"
-                             FontFamily="Segoe Print"
-                             FontSize="{Binding Int_Fontsize}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[0][0]}" />
-                    <TextBox x:Name="_1_2"
-                             Grid.Column="2"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[0][1]}" />
-                    <TextBox x:Name="_1_3"
-                             Grid.Column="3"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[0][2]}" />
-
-                    --><!--S/N TextBox--><!--
-                    <TextBox x:Name="_txt_1"
-                             Grid.Row="1"
-                             Grid.Column="1"
-                             Grid.ColumnSpan="3"
-                             Margin="2,2,2,2"
-                             GotFocus="_GaugeTxT__GotFocus"
-                             LostFocus="_GaugeTxT__LostFocus"
-                             TabIndex="{Binding GaugeTabOrder[0]}"
-                             FontSize="{Binding Int_Fontsize}"
-                             Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}"
-                             Style="{StaticResource style_SN_txtbox}" />                                      
-                </Grid>
-
-                --><!--WL, IL, V3--><!--
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <Button Tag="1_9"
-                            Grid.Column="1"
-                            Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[0][0], Mode=TwoWay}"
-                            Click="Btn_WL_Click" />
-                    <Button Tag="1_9"
-                            Grid.Column="2"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[0][1], Mode=TwoWay}"
-                            Click="Btn_IL_Click" />
-                    <Button Tag="1_9"
-                            Grid.Column="3"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[0][2], Mode=TwoWay}"
-                            Click="Btn_Voltage_Click" />
-                </Grid>
-            </Grid>-->
-
-            <ui:UC_Gauge x:Name="gauge1" Grid.Row="0" Grid.Column="0" 
+        
+            <!--<ui:UC_Gauge x:Name="gauge1" Grid.Row="0" Grid.Column="0" 
                          Btn_IL_Click="Btn_IL_Click"
                          Btn_Voltage_Click="Btn_Voltage_Click"
                          Btn_WL_Click="Btn_WL_Click"
                          Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150}"
+                         Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150, Mode=TwoWay}"
                          Gauge_value="{Binding Str_PD[0]}"
-                         Gauge_Unit="{Binding str_Unit}"
-                         Gauge_channel="{Binding Str_Channel[0]}"
+                         Gauge_Unit="{Binding str_Unit}"                         
+                         Gauge_channel="{Binding Str_Channel[0], Mode=TwoWay}"
                          List_bear_say_1="{Binding List_bear_say[0][0]}" 
                          List_bear_say_2="{Binding List_bear_say[0][1]}"
                          List_bear_say_3="{Binding List_bear_say[0][2]}"/>
@@ -283,689 +201,41 @@
                          List_bear_say_2="{Binding List_bear_say[1][1]}"
                          List_bear_say_3="{Binding List_bear_say[1][2]}" />
 
-            <!--<ToggleButton Name="b_2"
-                          Grid.Row="0"
-                          Grid.Column="1"
-                          PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
-                          PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
-                          PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
-                          PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"                          
-                          MouseEnter="tbtn_MouseEnter"
-                          Focusable="False"
-                          Margin="3,6,3,3"
-                          IsChecked="{Binding Bool_Gauge_Show[1], Mode=TwoWay}"
-                          Visibility="{Binding Channel_visible[1]}"
-                          Style="{StaticResource style_Gauge_Background}">
-                <Grid>
-                    <Viewbox>
-                        <gauge:UserControl1 Name="Gauge_2"
-                                            Arc_Color="{Binding Complement_Color}"
-                                            Arc_EndAngle="{Binding Value_PD[1], FallbackValue=-150}"
-                                            str_PD_value="{Binding Str_PD[1]}"
-                                            str_Unit="{Binding str_Unit}"
-                                            str_channel="{Binding Str_Channel[1]}"
-                                            Visibility="{Binding Channel_visible[1]}" />
-                    </Viewbox>
-                </Grid>
-            </ToggleButton>-->
+            <ui:UC_Gauge x:Name="gauge3"
+                         Grid.Row="0"
+                         Grid.Column="2"
+                         Btn_IL_Click="Btn_IL_Click"
+                         Btn_Voltage_Click="Btn_Voltage_Click"
+                         Btn_WL_Click="Btn_WL_Click"
+                         Gauge_Color="{Binding Complement_Color}"
+                         Gauge_EndAngle="{Binding Value_PD[2], FallbackValue=-150}"
+                         Gauge_value="{Binding Str_PD[2]}"
+                         Gauge_Unit="{Binding str_Unit}"
+                         Gauge_channel="{Binding Str_Channel[2]}"
+                         List_bear_say_1="{Binding List_bear_say[2][0]}"
+                         List_bear_say_2="{Binding List_bear_say[2][1]}"
+                         List_bear_say_3="{Binding List_bear_say[2][2]}" />
 
-            <!--Dac-->
-            <!--<Grid Grid.Row="0" Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="{Binding GaugeTxtSize_Height}" />
-                    <RowDefinition Height="0.5*" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="1"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="_2_1"
-                             Grid.Column="1"
-                             VerticalContentAlignment="Center"
-                             FontFamily="Segoe Print"
-                             FontSize="{Binding Int_Fontsize}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[1][0]}" />
-                    <TextBox x:Name="_2_2"
-                             Grid.Column="2"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[1][1]}" />
-                    <TextBox x:Name="_2_3"
-                             Grid.Column="3"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[1][2]}" />
-                </Grid>
+            <ui:UC_Gauge x:Name="gauge4"
+                         Grid.Row="0"
+                         Grid.Column="3"
+                         Btn_IL_Click="Btn_IL_Click"
+                         Btn_Voltage_Click="Btn_Voltage_Click"
+                         Btn_WL_Click="Btn_WL_Click"
+                         Gauge_Color="{Binding Complement_Color}"
+                         Gauge_EndAngle="{Binding Value_PD[3], FallbackValue=-150}"
+                         Gauge_value="{Binding Str_PD[3]}"
+                         Gauge_Unit="{Binding str_Unit}"
+                         Gauge_channel="{Binding Str_Channel[3]}"
+                         List_bear_say_1="{Binding List_bear_say[3][0]}"
+                         List_bear_say_2="{Binding List_bear_say[3][1]}"
+                         List_bear_say_3="{Binding List_bear_say[3][2]}" />-->
 
-                --><!--S/N TextBox--><!--
-                <TextBox x:Name="_txt_2"
-                         Grid.Row="1"
-                         Grid.Column="0"
-                         Grid.ColumnSpan="3"
-                         Margin="2,2,2,2"
-                         GotFocus="_GaugeTxT__GotFocus"
-                         LostFocus="_GaugeTxT__LostFocus"
-                         TabIndex="{Binding GaugeTabOrder[0]}"
-                         FontSize="{Binding Int_Fontsize}"
-                         Style="{StaticResource style_SN_txtbox}"
-                         Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}" />
-                --><!--WL, IL, V3--><!--
-                <Grid Grid.Row="2"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <Button Tag="2_10"
-                            Grid.Column="1"
-                            Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[1][0], Mode=TwoWay}"
-                            Click="Btn_WL_Click" />
-                    <Button Tag="2_10"
-                            Grid.Column="2"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[1][1], Mode=TwoWay}"
-                            Click="Btn_IL_Click" />
-                    <Button Tag="2_10"
-                            Grid.Column="3"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[1][2], Mode=TwoWay}"
-                            Click="Btn_Voltage_Click" />
-                </Grid>
-            </Grid>-->
+         
+          
 
-            <ToggleButton Name="b_3"
-                          Grid.Row="0"
-                          Grid.Column="2"
-                          Margin="3,6,3,3"
-                          PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
-                          PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
-                          PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
-                          PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
-                          MouseEnter="tbtn_MouseEnter"
-                          Focusable="False"
-                          Command="{Binding Set_Bool_Gauge}"
-                          IsChecked="{Binding Bool_Gauge_Show[2], Mode=TwoWay}"
-                          Visibility="{Binding Channel_visible[2]}"
-                          Style="{StaticResource style_Gauge_Background}">
-                <Grid>
-                    <Viewbox>
-                        <gauge:UserControl1 Name="Gauge_3"
-                                            Arc_Color="{Binding Complement_Color}"
-                                            Arc_EndAngle="{Binding Value_PD[2], FallbackValue=-150}"
-                                            str_PD_value="{Binding Str_PD[2]}"
-                                            str_Unit="{Binding str_Unit}"
-                                            str_channel="{Binding Str_Channel[2]}"
-                                            Visibility="{Binding Channel_visible[2]}" />
-                    </Viewbox>
-                </Grid>
-            </ToggleButton>
 
-            <!--Dac-->
-            <Grid Grid.Row="0" Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="{Binding GaugeTxtSize_Height}" />
-                    <RowDefinition Height="0.5*" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="1"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="_3_1"
-                             Grid.Column="1"
-                             VerticalContentAlignment="Center"
-                             FontFamily="Segoe Print"
-                             FontSize="{Binding Int_Fontsize}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[2][0]}" />
-                    <TextBox x:Name="_3_2"
-                             Grid.Column="2"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[2][1]}" />
-                    <TextBox x:Name="_3_3"
-                             Grid.Column="3"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[2][2]}" />
-                </Grid>
-
-                <!--S/N TextBox-->
-                <TextBox x:Name="_txt_3"
-                         Grid.Row="1"
-                         Grid.Column="0"
-                         Grid.ColumnSpan="3"
-                         Margin="2,2,2,2"
-                         GotFocus="_GaugeTxT__GotFocus"
-                         LostFocus="_GaugeTxT__LostFocus"
-                         TabIndex="{Binding GaugeTabOrder[0]}"
-                         FontSize="{Binding Int_Fontsize}"
-                         Style="{StaticResource style_SN_txtbox}"
-                         Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}" />
-                <!--WL, IL, V3-->
-                <Grid Grid.Row="2"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <Button Tag="3_11"
-                            Grid.Column="1"
-                            Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[2][0], Mode=TwoWay}"
-                            Click="Btn_WL_Click" />
-                    <Button Tag="3_11"
-                            Grid.Column="2"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[2][1], Mode=TwoWay}"
-                            Click="Btn_IL_Click" />
-                    <Button Tag="3_11"
-                            Grid.Column="3"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[2][2], Mode=TwoWay}"
-                            Click="Btn_Voltage_Click" />
-                </Grid>
-            </Grid>
-
-            <ToggleButton Name="b_4"
-                          Grid.Row="0"
-                          Grid.Column="3"
-                          Margin="3,6,6,3"
-                          PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
-                          PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
-                          PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
-                          PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
-                          MouseEnter="tbtn_MouseEnter"
-                          Focusable="False"
-                          Command="{Binding Set_Bool_Gauge}"
-                          Visibility="{Binding Channel_visible[3]}"
-                          IsChecked="{Binding Bool_Gauge_Show[3], Mode=TwoWay}"
-                          Style="{StaticResource style_Gauge_Background}">
-                <Grid>
-                    <Viewbox>
-                        <gauge:UserControl1 Name="Gauge_4"
-                                            Arc_Color="{Binding Complement_Color}"
-                                            Arc_EndAngle="{Binding Value_PD[3], FallbackValue=-150}"
-                                            str_PD_value="{Binding Str_PD[3]}"
-                                            str_Unit="{Binding str_Unit}"
-                                            str_channel="{Binding Str_Channel[3]}"
-                                            Visibility="{Binding Channel_visible[3]}" />
-                    </Viewbox>
-                </Grid>
-            </ToggleButton>
-
-            <!--Dac-->
-            <Grid Grid.Row="0" Grid.Column="3">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="{Binding GaugeTxtSize_Height}" />
-                    <RowDefinition Height="0.5*" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="1"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="_4_1"
-                             Grid.Column="1"
-                             VerticalContentAlignment="Center"
-                             FontFamily="Segoe Print"
-                             FontSize="{Binding Int_Fontsize}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[3][0]}" />
-                    <TextBox x:Name="_4_2"
-                             Grid.Column="2"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[3][1]}" />
-                    <TextBox x:Name="_4_3"
-                             Grid.Column="3"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[3][2]}" />
-                </Grid>
-
-                <!--S/N TextBox-->
-                <TextBox x:Name="_txt_4"
-                         Grid.Row="1"
-                         Grid.Column="0"
-                         Grid.ColumnSpan="3"
-                         Margin="2,2,2,2"
-                         GotFocus="_GaugeTxT__GotFocus"
-                         LostFocus="_GaugeTxT__LostFocus"
-                         TabIndex="{Binding GaugeTabOrder[0]}"
-                         FontSize="{Binding Int_Fontsize}"
-                         Style="{StaticResource style_SN_txtbox}"
-                         Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}" />
-                <!--WL, IL, V3-->
-                <Grid Grid.Row="2"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <Button Tag="4_12"
-                            Grid.Column="1"
-                            Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[3][0], Mode=TwoWay}"
-                            Click="Btn_WL_Click" />
-                    <Button Tag="4_12"
-                            Grid.Column="2"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[3][1], Mode=TwoWay}"
-                            Click="Btn_IL_Click" />
-                    <Button Tag="4_12"
-                            Grid.Column="3"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[3][2], Mode=TwoWay}"
-                            Click="Btn_Voltage_Click" />
-                </Grid>
-            </Grid>
-
-            <ToggleButton Name="b_5"
-                          Grid.Row="3"
-                          Grid.Column="0"
-                          Margin="6,3,3,6"
-                          PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
-                          PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
-                          PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
-                          PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
-                          MouseEnter="tbtn_MouseEnter"
-                          Focusable="False"
-                          Command="{Binding Set_Bool_Gauge}"
-                          IsChecked="{Binding Bool_Gauge_Show[4], Mode=TwoWay}"
-                          Visibility="{Binding Channel_visible[4]}"
-                          Style="{StaticResource style_Gauge_Background}">
-                <Grid>
-                    <Viewbox>
-                        <gauge:UserControl1 Name="Gauge_5"
-                                            Arc_Color="{Binding Complement_Color}"
-                                            Arc_EndAngle="{Binding Value_PD[4], FallbackValue=-150}"
-                                            str_PD_value="{Binding Str_PD[4]}"
-                                            str_Unit="{Binding str_Unit}"
-                                            str_channel="{Binding Str_Channel[4]}"
-                                            Visibility="{Binding Channel_visible[4]}" />
-                    </Viewbox>
-                </Grid>
-            </ToggleButton>
-
-            <!--Dac-->
-            <Grid Grid.Row="1" Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="{Binding GaugeTxtSize_Height}" />
-                    <RowDefinition Height="0.5*" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="1"
-                      Grid.ColumnSpan="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="_5_1"
-                             Grid.Column="1"
-                             VerticalContentAlignment="Center"
-                             FontFamily="Segoe Print"
-                             FontSize="{Binding Int_Fontsize}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[4][0]}" />
-                    <TextBox x:Name="_5_2"
-                             Grid.Column="2"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[4][1]}" />
-                    <TextBox x:Name="_5_3"
-                             Grid.Column="3"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[4][2]}" />
-                </Grid>
-
-                <!--S/N TextBox-->
-                <TextBox x:Name="_txt_5"
-                         Grid.Row="1"
-                         Grid.Column="0"
-                         Grid.ColumnSpan="3"
-                         Margin="2,2,2,2"
-                         GotFocus="_GaugeTxT__GotFocus"
-                         LostFocus="_GaugeTxT__LostFocus"
-                         TabIndex="{Binding GaugeTabOrder[0]}"
-                         FontSize="{Binding Int_Fontsize}"
-                         Style="{StaticResource style_SN_txtbox}"
-                         Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}" />
-                <!--WL, IL, V3-->
-                <Grid Grid.Row="2"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <Button Tag="5_13"
-                            Grid.Column="1"
-                            Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[4][0], Mode=TwoWay}"
-                            Click="Btn_WL_Click" />
-                    <Button Tag="5_13"
-                            Grid.Column="2"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[4][1], Mode=TwoWay}"
-                            Click="Btn_IL_Click" />
-                    <Button Tag="5_13"
-                            Grid.Column="3"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[4][2], Mode=TwoWay}"
-                            Click="Btn_Voltage_Click" />
-                </Grid>
-            </Grid>
-
-            <ToggleButton Name="b_6"
-                          Grid.Row="3"
-                          Grid.Column="1"
-                          Margin="3,3,3,6"
-                          PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
-                          PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
-                          PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
-                          PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
-                          MouseEnter="tbtn_MouseEnter"
-                          Focusable="False"
-                          Command="{Binding Set_Bool_Gauge}"
-                          IsChecked="{Binding Bool_Gauge_Show[5], Mode=TwoWay}"
-                          Visibility="{Binding Channel_visible[5]}"
-                          Style="{StaticResource style_Gauge_Background}">
-                <Grid>
-                    <Viewbox>
-                        <gauge:UserControl1 Name="Gauge_6"
-                                            Arc_Color="{Binding Complement_Color}"
-                                            Arc_EndAngle="{Binding Value_PD[5], FallbackValue=-150}"
-                                            str_PD_value="{Binding Str_PD[5]}"
-                                            str_Unit="{Binding str_Unit}"
-                                            str_channel="{Binding Str_Channel[5]}"
-                                            Visibility="{Binding Channel_visible[5]}" />
-                    </Viewbox>
-                </Grid>
-            </ToggleButton>
-
-            <!--Dac-->
-            <Grid Grid.Row="1" Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="{Binding GaugeTxtSize_Height}" />
-                    <RowDefinition Height="0.5*" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="1"
-                      Grid.ColumnSpan="3"
-                     >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="_6_1"
-                             Grid.Column="1"
-                             VerticalContentAlignment="Center"
-                             FontFamily="Segoe Print"
-                             FontSize="{Binding Int_Fontsize}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[5][0]}" />
-                    <TextBox x:Name="_6_2"
-                             Grid.Column="2"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[5][1]}" />
-                    <TextBox x:Name="_6_3"
-                             Grid.Column="3"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[5][2]}" />
-                </Grid>
-
-                <!--S/N TextBox-->
-                <TextBox x:Name="_txt_6"
-                         Grid.Row="1"
-                         Grid.Column="0"
-                         Grid.ColumnSpan="3"
-                         Margin="2,2,2,2"
-                         GotFocus="_GaugeTxT__GotFocus"
-                         LostFocus="_GaugeTxT__LostFocus"
-                         TabIndex="{Binding GaugeTabOrder[0]}"
-                         FontSize="{Binding Int_Fontsize}"
-                         Style="{StaticResource style_SN_txtbox}"
-                         Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}" />
-                <!--WL, IL, V3-->
-                <Grid Grid.Row="2"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <Button Tag="6_14"
-                            Grid.Column="1"
-                            Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[5][0], Mode=TwoWay}"
-                            Click="Btn_WL_Click" />
-                    <Button Tag="6_14"
-                            Grid.Column="2"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[5][1], Mode=TwoWay}"
-                            Click="Btn_IL_Click" />
-                    <Button Tag="6_14"
-                            Grid.Column="3"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[5][2], Mode=TwoWay}"
-                            Click="Btn_Voltage_Click" />
-                </Grid>
-            </Grid>
-
-            <ToggleButton Name="b_7"
-                          Grid.Row="3"
-                          Grid.Column="2"
-                          Margin="3,3,3,6"
-                          PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
-                          PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
-                          PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
-                          PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
-                          MouseEnter="tbtn_MouseEnter"
-                          Focusable="False"
-                          Command="{Binding Set_Bool_Gauge}"
-                          IsChecked="{Binding Bool_Gauge_Show[6], Mode=TwoWay}"
-                          Visibility="{Binding Channel_visible[6]}"
-                          Style="{StaticResource style_Gauge_Background}">
-                <Grid>
-                    <Viewbox>
-                        <gauge:UserControl1 Name="Gauge_7"
-                                            Arc_Color="{Binding Complement_Color}"
-                                            Arc_EndAngle="{Binding Value_PD[6], FallbackValue=-150}"
-                                            str_PD_value="{Binding Str_PD[6]}"
-                                            str_Unit="{Binding str_Unit}"
-                                            str_channel="{Binding Str_Channel[6]}"
-                                            Visibility="{Binding Channel_visible[6]}" />
-                    </Viewbox>
-                </Grid>
-            </ToggleButton>
-
-            <!--Dac-->
-            <Grid Grid.Row="1" Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="{Binding GaugeTxtSize_Height}" />
-                    <RowDefinition Height="0.5*" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="1"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="_7_1"
-                             Grid.Column="1"
-                             VerticalContentAlignment="Center"
-                             FontFamily="Segoe Print"
-                             FontSize="{Binding Int_Fontsize}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[6][0]}" />
-                    <TextBox x:Name="_7_2"
-                             Grid.Column="2"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[6][1]}" />
-                    <TextBox x:Name="_7_3"
-                             Grid.Column="3"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[6][2]}" />
-                </Grid>
-
-                <!--S/N TextBox-->
-                <TextBox x:Name="_txt_7"
-                         Grid.Row="1"
-                         Grid.Column="0"
-                         Grid.ColumnSpan="3"
-                         Margin="2,2,2,2"
-                         GotFocus="_GaugeTxT__GotFocus"
-                         LostFocus="_GaugeTxT__LostFocus"
-                         TabIndex="{Binding GaugeTabOrder[0]}"
-                         FontSize="{Binding Int_Fontsize}"
-                         Style="{StaticResource style_SN_txtbox}"
-                         Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}" />
-                <!--WL, IL, V3-->
-                <Grid Grid.Row="2"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <Button Tag="7_15"
-                            Grid.Column="1"
-                            Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[6][0], Mode=TwoWay}"
-                            Click="Btn_WL_Click" />
-                    <Button Tag="7_15"
-                            Grid.Column="2"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[6][1], Mode=TwoWay}"
-                            Click="Btn_IL_Click" />
-                    <Button Tag="7_15"
-                            Grid.Column="3"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[6][2], Mode=TwoWay}"
-                            Click="Btn_Voltage_Click" />
-                </Grid>
-            </Grid>
-
-            <ToggleButton Name="b_8"
+            <!--<ToggleButton Name="b_8"
                           Grid.Row="3"
                           Grid.Column="3"
                           Margin="3,3,6,6"
@@ -992,7 +262,7 @@
                 </Grid>
             </ToggleButton>
 
-            <!--Dac-->
+            --><!--Dac--><!--
             <Grid Grid.Row="1" Grid.Column="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="6*" />
@@ -1037,7 +307,7 @@
                              Text="{Binding List_D0_value[7][2]}" />
                 </Grid>
 
-                <!--S/N TextBox-->
+                --><!--S/N TextBox--><!--
                 <TextBox x:Name="_txt_8"
                          Grid.Row="1"
                          Grid.Column="0"
@@ -1049,7 +319,7 @@
                          FontSize="{Binding Int_Fontsize}"
                          Style="{StaticResource style_SN_txtbox}"
                          Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}" />
-                <!--WL, IL, V3-->
+                --><!--WL, IL, V3--><!--
                 <Grid Grid.Row="2"
                       Grid.ColumnSpan="3"
                       >
@@ -1077,11 +347,14 @@
                             Content="{Binding List_bear_say[7][2], Mode=TwoWay}"
                             Click="Btn_Voltage_Click" />
                 </Grid>
-            </Grid>
+            </Grid>-->
         </Grid>
 
-        <Grid Grid.Row="1" Name="grid_bear_say"
+        <Grid Grid.Row="1" Name="grid_bear_say" 
               Background="#FFF1F1F1">
+            <Grid.DataContext>
+                <vm:ComViewModel />
+            </Grid.DataContext>
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="3*" />

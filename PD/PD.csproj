@@ -161,6 +161,7 @@
     <Compile Include="Functions\ControlCmd.cs" />
     <Compile Include="Functions\Setting.cs" />
     <Compile Include="Functions\SetupIniIP.cs" />
+    <Compile Include="Models\Gauge.cs" />
     <Compile Include="NavigationPages\Page_Board_Grid.xaml.cs">
       <DependentUpon>Page_Board_Grid.xaml</DependentUpon>
     </Compile>
@@ -428,9 +429,7 @@
   <ItemGroup>
     <Resource Include="Resources\r-arrow.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\double_arrow.png" />
   </ItemGroup>

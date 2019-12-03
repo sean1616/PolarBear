@@ -14,6 +14,7 @@ using PD;
 using PD.Functions;
 using PD.AnalysisModel;
 using PD.ViewModel;
+using PD.Models;
 
 namespace PD.NavigationPages
 {
@@ -32,15 +33,44 @@ namespace PD.NavigationPages
         {
             InitializeComponent();
 
-            this.DataContext = vm;
+            //this.DataContext = vm;
+            grid_bear_say.DataContext = vm;
+            GaugeListView.DataContext = this;
             this.vm = vm;
 
             cmd = new ControlCmd(vm);
 
-            gauge1.DataContext = vm;  //將DataContext指給使用者控制項，必要!
-            gauge2.DataContext = vm;
+            //GaugeListView.DataContext = vm;
+
+            //gauge1.DataContext = vm;  //將DataContext指給使用者控制項，必要!
+            //gauge2.DataContext = vm;
+            //gauge3.DataContext = vm;
+            //gauge4.DataContext = vm;
+
+            var gauges = GetGauges();
+            if (gauges.Count > 0)
+                vm.Gauges = gauges;
+            ListViewGauges.ItemsSource = gauges;
+
+
+
 
             vm.Bool_Gauge.CopyTo(vm.bo_temp_gauge, 0);
+        }
+
+        private List<Gauge> GetGauges()
+        {
+            return new List<Gauge>()
+            {
+                new Gauge("1"),
+                new Gauge("2"),
+                new Gauge("3"),
+                new Gauge("4"),
+                new Gauge("5"),
+                new Gauge("6"),
+                new Gauge("7"),
+                new Gauge("8")
+            };
         }
 
         private async void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -1251,6 +1281,9 @@ namespace PD.NavigationPages
             MessageBox.Show("KeyDown");
         }
 
-       
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            vm.GaugePage_Width = this.Width;
+        }
     }
 }
