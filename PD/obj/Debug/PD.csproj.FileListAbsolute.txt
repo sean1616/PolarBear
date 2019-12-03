@@ -6487,7 +6487,6 @@ D:\SeanWu\Repository\PolarBear\PD\obj\Debug\NavigationPages\Page_Chart.g.cs
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\NavigationPages\Page_DataGrid.g.cs
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\NavigationPages\Page_Laser.g.cs
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\NavigationPages\Page_PD_Gauges.g.cs
-D:\SeanWu\Repository\PolarBear\PD\obj\Debug\UI\Gauge_Set.g.cs
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\UI\Sector_BTN.g.cs
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\UI\UC_Setting_Button.g.cs
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\UI\UC_Setting_ToggleButton.g.cs
@@ -6561,7 +6560,6 @@ D:\SeanWu\Repository\PolarBear\PD\obj\Debug\NavigationPages\Page_Chart.baml
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\NavigationPages\Page_DataGrid.baml
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\NavigationPages\Page_Laser.baml
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\NavigationPages\Page_PD_Gauges.baml
-D:\SeanWu\Repository\PolarBear\PD\obj\Debug\UI\Gauge_Set.baml
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\UI\Sector_BTN.baml
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\UI\UC_Setting_Button.baml
 D:\SeanWu\Repository\PolarBear\PD\obj\Debug\UI\UC_Setting_ToggleButton.baml

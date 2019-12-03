@@ -18,7 +18,7 @@
                             Grid.RowSpan="3"
                             Background="Transparent"
                             BorderThickness="2"
-                            CornerRadius="5" />
+                            CornerRadius="8" />
                         <ContentPresenter
                             x:Name="contentPresenter"
                             HorizontalAlignment="Center"

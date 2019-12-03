@@ -1053,7 +1053,7 @@ namespace PD
 
             if (vm.PD_or_PM == false)  //PD mode
             {
-                await anly.Port_ReOpen();
+                await vm.Port_ReOpen(vm.Selected_Comport);
                 List<List<string>> list_temp_D0 = vm.List_D0_value;
                 for (int dac = vm.int_V3_scan_start; dac <= vm.int_V3_scan_end; dac = dac + vm.int_V3_scan_gap)
                 {
@@ -4020,6 +4020,23 @@ namespace PD
         private void btn_help_Click(object sender, RoutedEventArgs e)
         {
             vm.Show_Bear_Window("有 問 題 請 撥 5 1 7", false, "String_Step");
+        }
+
+        private void RBtn_Script_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Txt_ID_GotFocus(object sender, RoutedEventArgs e)
+        {
+            txt_UserID_label.Visibility = Visibility.Hidden;
+        }
+
+        private void Txt_ID_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox obj = (TextBox)sender;
+            if (string.IsNullOrEmpty(obj.Text))
+                txt_UserID_label.Visibility = Visibility.Hidden;
         }
 
         private void Grid_clock_Loaded(object sender, RoutedEventArgs e)

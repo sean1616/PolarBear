@@ -185,7 +185,10 @@ namespace PD.UI
 
 
         #region 定義Gauge相依屬性       
-               
+        public static readonly DependencyProperty Bool_Gauge_Property =
+                    DependencyProperty.Register("Bool_Gauge", typeof(bool), typeof(UC_Gauge),
+                    new UIPropertyMetadata(null));
+
         public static readonly DependencyProperty str_PD_value_Property =
                     DependencyProperty.Register("Gauge_value", typeof(string), typeof(UC_Gauge),
                     new UIPropertyMetadata(null));
@@ -205,7 +208,12 @@ namespace PD.UI
         public static readonly DependencyProperty str_Unit_Property =
                     DependencyProperty.Register("Gauge_Unit", typeof(string), typeof(UC_Gauge),
                     new UIPropertyMetadata(null));
-              
+
+        public bool Bool_Gauge //提供內部binding之相依屬性
+        {
+            get { return (bool)GetValue(Bool_Gauge_Property); }
+            set { SetValue(Bool_Gauge_Property, value); }
+        }
 
         public string Gauge_value //提供內部binding之相依屬性
         {

@@ -14,22 +14,21 @@
         <vm:ComViewModel />
     </UserControl.DataContext>
 
-    <Grid>
+    <Grid Margin="5">     
         <ToggleButton Name="b_1"
                       Grid.Row="0"
                       Grid.Column="0"
-                      Margin="6,6,3,3"                  
+                      Margin="7"                  
                       Focusable="False"
                       PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
                       PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
                       PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
                       PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
                       MouseEnter="tbtn_MouseEnter"
-                      IsChecked="{Binding Bool_Gauge_Show[0], Mode=TwoWay}"
-                      Visibility="{Binding Channel_visible[0]}"
+                      IsChecked="{Binding Bool_Gauge, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
                       Style="{StaticResource style_Gauge_Background}">
             <Grid>
-                <Viewbox>                  
+                <Viewbox>
                     <Grid Margin="18">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="0.15*" />

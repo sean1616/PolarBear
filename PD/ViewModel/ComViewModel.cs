@@ -1274,7 +1274,7 @@ namespace PD.ViewModel
             }
         }
 
-        private string _UserID = "User ID";
+        private string _UserID = "   ";
         public string UserID
         {
             get { return _UserID; }
@@ -2018,7 +2018,7 @@ namespace PD.ViewModel
             }
         }
 
-        private double _GaugePage_Width=1000;
+        private double _GaugePage_Width=1200;
         public double GaugePage_Width
         {
             get { return _GaugePage_Width; }
@@ -2029,7 +2029,7 @@ namespace PD.ViewModel
             }
         }
 
-        private double _Gauge_Width = 250;
+        private double _Gauge_Width = 300;
         public double Gauge_Width
         {
             get
@@ -2044,16 +2044,43 @@ namespace PD.ViewModel
             }
         }
 
-        private List<int> _GaugeTabOrder = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 };
-        public List<int> GaugeTabOrder
-        {
-            get { return _GaugeTabOrder; }
-            set
-            {
-                _GaugeTabOrder = value;
-                OnPropertyChanged("GaugeTabOrder");
-            }
-        }
+        //private double _GaugePage_Height = 800;
+        //public double GaugePage_Height
+        //{
+        //    get { return _GaugePage_Height; }
+        //    set
+        //    {
+        //        _GaugePage_Height = value;
+        //        OnPropertyChanged("GaugePage_Height");
+        //        OnPropertyChanged("Gauge_Height");
+        //    }
+        //}
+
+        //private double _Gauge_Height = 300;
+        //public double Gauge_Height
+        //{
+        //    get
+        //    {
+        //        _Gauge_Height = _GaugePage_Height / 2;
+        //        return _Gauge_Height;
+        //    }
+        //    set
+        //    {
+        //        _Gauge_Height = value;
+        //        OnPropertyChanged("Gauge_Height");
+        //    }
+        //}
+
+        //private List<int> _GaugeTabOrder = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 };
+        //public List<int> GaugeTabOrder
+        //{
+        //    get { return _GaugeTabOrder; }
+        //    set
+        //    {
+        //        _GaugeTabOrder = value;
+        //        OnPropertyChanged("GaugeTabOrder");
+        //    }
+        //}
 
         private bool _GaugeTabEnable;
         public bool GaugeTabEnable
