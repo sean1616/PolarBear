@@ -205,10 +205,10 @@
 
         <!--  Column 4  -->
         <uc:UC_Setting_ToggleButton Grid.Row="0"
-                                    Grid.Column="4"
-                                   
-                                    txtbox_content="CH / EN"
-                                    ToggleButton.Checked="UC_Setting_ToggleButton_Checked"/>
+                                    Grid.Column="4"                                   
+                                    txtbox_content="PD / PM"
+                                    Ischecked="{Binding PD_or_PM, Mode=TwoWay}"
+                                    />
 
         <uc:UC_Setting_ToggleButton Grid.Row="1"
                                     Grid.Column="4"
@@ -238,6 +238,11 @@
                  VerticalContentAlignment="Center"
                  controls:TextBoxHelper.ClearTextButton="True"
                  controls:TextBoxHelper.Watermark="Board table path" />
+
+        <uc:UC_Setting_ToggleButton Grid.Row="6"
+                                    Grid.Column="4"
+                                    txtbox_content="CH / EN"
+                                    ToggleButton.Checked="UC_Setting_ToggleButton_Checked" />
 
         <Image
             Name="Img_gif"

@@ -86,86 +86,10 @@ namespace PD.UI
             //}
         }
 
+        public event RoutedEventHandler TBtn_PreviewMouseLeftButtonDown = delegate { };
         private void tbtn_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //if (vm.station_type != "Hermetic Test") return;
-
-            //if (!vm.Is_switch_mode) return;
-
-            //ToggleButton obj = (ToggleButton)sender;
-
-            //int switch_index = int.Parse(obj.Name.Substring(2));
-
-            //if (vm.Gauge_Page_now == 2)
-            //    switch_index += 8;
-            //vm.switch_selected_index = switch_index;
-            //if (switch_index > 12) return;
-            //if (switch_index == vm.switch_index) return;
-            //if (string.IsNullOrWhiteSpace("I1 " + switch_index.ToString())) //Check comment box is empty or not
-            //    return;
-
-            //#region switch re-open
-            //try
-            //{
-            //    await vm.Port_Switch_ReOpen();
-            //}
-            //catch
-            //{
-            //    vm.Str_cmd_read = "Switch Error";
-            //    return;
-            //}
-            //#endregion
-
-            //if (switch_index > 0)   //Switch 1~12
-            //{
-            //    try
-            //    {
-            //        vm.Str_comment = "I1 " + switch_index.ToString();
-            //        vm.port_Switch.Write(vm.Str_comment + "\r");
-            //        await vm.AccessDelayAsync(vm.Int_Write_Delay);
-
-            //        vm.switch_index = switch_index;
-            //        vm.ch = switch_index;   //Save Switch channel
-            //    }
-            //    catch { }
-
-            //    if (switch_index < 9 && int_saved_combox_index >= 9)  //換頁 page1
-            //    {
-            //        vm.Bool_Page2 = vm.Bool_Gauge_Show;
-            //        vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
-            //        vm.Channel_visible = new List<Visibility>() { };
-            //        vm.Bool_Gauge_Show = vm.Bool_Page1;
-            //        vm.Gauge_Page_now = 1;
-            //    }
-            //    else if (switch_index > 8 && int_saved_combox_index <= 8)  //換頁 page2
-            //    {
-            //        vm.Bool_Page1 = vm.Bool_Gauge_Show;
-            //        vm.Str_Channel = new List<string>() { "9", "10", "11", "12" };
-            //        vm.Channel_visible = new List<Visibility>()
-            //        {
-            //            Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible,
-            //            Visibility.Hidden, Visibility.Hidden, Visibility.Hidden, Visibility.Hidden
-            //        };
-            //        vm.Bool_Gauge_Show = vm.Bool_Page2;
-            //        vm.Gauge_Page_now = 2;
-            //    }
-            //}
-            //else if (switch_index == 0)   //Switch ?
-            //{
-            //    try
-            //    {
-            //        vm.Str_comment = "I1?";
-            //        vm.port_Switch.Write(vm.Str_comment + "\r");
-            //        await vm.AccessDelayAsync(vm.Int_Read_Delay);
-            //    }
-            //    catch { vm.Str_cmd_read = "Switch? Error"; }
-            //}
-            //else
-            //{
-            //    vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
-            //    vm.Channel_visible = new List<Visibility>() { };
-            //}
-
+            TBtn_PreviewMouseLeftButtonDown(sender, e);
         }
 
         private void tbtn_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -209,6 +133,8 @@ namespace PD.UI
                     DependencyProperty.Register("Gauge_Unit", typeof(string), typeof(UC_Gauge),
                     new UIPropertyMetadata(null));
 
+        
+
         public bool Bool_Gauge //提供內部binding之相依屬性
         {
             get { return (bool)GetValue(Bool_Gauge_Property); }
@@ -244,21 +170,23 @@ namespace PD.UI
             get { return (string)GetValue(str_Unit_Property); }
             set { SetValue(str_Unit_Property, value); }
         }
+
+       
         #endregion
 
         #region 定義Grid control相依屬性       
 
-        public static readonly DependencyProperty List_D0_value_1_Property =
-                DependencyProperty.Register("List_D0_value_1", typeof(string), typeof(UC_Gauge),
-                new UIPropertyMetadata(null));
-
-        public static readonly DependencyProperty List_D0_value_2_Property =
-                    DependencyProperty.Register("List_D0_value_2", typeof(string), typeof(UC_Gauge),
+        public static readonly DependencyProperty D0_value_1_Property =
+                    DependencyProperty.Register("D0_value_1", typeof(string), typeof(UC_Gauge),
                     new UIPropertyMetadata(null));
 
-        public static readonly DependencyProperty List_D0_value_3_Property =
-                   DependencyProperty.Register("List_D0_value_3", typeof(string), typeof(UC_Gauge),
-                   new UIPropertyMetadata(null));
+        public static readonly DependencyProperty D0_value_2_Property =
+                    DependencyProperty.Register("D0_value_2", typeof(string), typeof(UC_Gauge),
+                    new UIPropertyMetadata(null));
+
+        public static readonly DependencyProperty D0_value_3_Property =
+                    DependencyProperty.Register("D0_value_3", typeof(string), typeof(UC_Gauge),
+                    new UIPropertyMetadata(null));
 
         public static readonly DependencyProperty List_bear_say_1_Property =
                 DependencyProperty.Register("List_bear_say_1", typeof(string), typeof(UC_Gauge),
@@ -272,22 +200,22 @@ namespace PD.UI
                 DependencyProperty.Register("List_bear_say_3", typeof(string), typeof(UC_Gauge),
                 new UIPropertyMetadata(null));
 
-        public string List_D0_value_1 //提供內部binding之相依屬性
+        public string D0_value_1 //提供內部binding之相依屬性
         {
-            get { return (string)GetValue(List_D0_value_1_Property); }
-            set { SetValue(List_D0_value_1_Property, value); }
+            get { return (string)GetValue(D0_value_1_Property); }
+            set { SetValue(D0_value_1_Property, value); }
         }
 
-        public string List_D0_value_2 //提供內部binding之相依屬性
+        public string D0_value_2 //提供內部binding之相依屬性
         {
-            get { return (string)GetValue(List_D0_value_2_Property); }
-            set { SetValue(List_D0_value_2_Property, value); }
+            get { return (string)GetValue(D0_value_2_Property); }
+            set { SetValue(D0_value_2_Property, value); }
         }
 
-        public string List_D0_value_3 //提供內部binding之相依屬性
+        public string D0_value_3 //提供內部binding之相依屬性
         {
-            get { return (string)GetValue(List_D0_value_3_Property); }
-            set { SetValue(List_D0_value_3_Property, value); }
+            get { return (string)GetValue(D0_value_3_Property); }
+            set { SetValue(D0_value_3_Property, value); }
         }
 
         public string List_bear_say_1 //提供內部binding之相依屬性

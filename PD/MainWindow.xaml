@@ -158,24 +158,24 @@
                              Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
                              Style="{DynamicResource style_PageBtn}"
                              Tag="../Resources/laser.png" />
-                <RadioButton Name="RBtn_Setting"
-                             Grid.Row="1"
-                             Grid.Column="4"
-                             Checked="RBtn_Setting_Checked"
-                             Content="Setting"
-                             FontSize="25"
-                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
-                             Style="{DynamicResource style_PageBtn}"
-                             Tag="../Resources/settings.png" />
                 <RadioButton Name="RBtn_Script"
                              Grid.Row="1"
-                             Grid.Column="5"
+                             Grid.Column="4"
                              Checked="RBtn_Script_Checked"
                              Content="Script"
                              FontSize="25"
                              Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
                              Style="{DynamicResource style_PageBtn}"
                              Tag="../Resources/settings.png" />
+                <RadioButton Name="RBtn_Setting"
+                             Grid.Row="1"
+                             Grid.Column="5"
+                             Checked="RBtn_Setting_Checked"
+                             Content="Setting"
+                             FontSize="25"
+                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/settings.png" />                
             </Grid>
 
             <Grid Grid.Column="1">
@@ -251,7 +251,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0"
+                <!--<Grid Grid.Row="0"
                       Grid.ColumnSpan="2">
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -303,10 +303,10 @@
                              Text="PM" />
                         </TextBlock>
                     </Viewbox>
-                </Grid>
+                </Grid>-->
 
                 <ComboBox x:Name="combox_comport"
-                          Grid.Row="1"
+                          Grid.Row="0"
                           Grid.ColumnSpan="2"
                           HorizontalContentAlignment="Left"
                           VerticalContentAlignment="Center"
@@ -318,7 +318,7 @@
                           Tag="../Resources/network.png" />
 
                 <ComboBox x:Name="combox_product"
-                          Grid.Row="2"
+                          Grid.Row="1"
                           Grid.ColumnSpan="2"
                           DropDownClosed="combox_product_DropDownClosed"
                           SelectedItem="{Binding product_type}"
@@ -386,7 +386,7 @@
                         Grid.Row="4"
                         Grid.ColumnSpan="2"
                         Click="btn_D0_Click"
-                        Content="D0"
+                        Content="DAC?"
                         FontSize="{Binding Int_Fontsize}"
                         Style="{DynamicResource style_FuncBtn}"
                         Tag="../Resources/question.png" />
@@ -421,7 +421,7 @@
                           Style="{DynamicResource style_FuncCombobox}"
                           Tag="../Resources/box.png"
                           Visibility="Visible" />-->
-                <ComboBox Name="Combox_Station"
+                <!--<ComboBox Name="Combox_Station"
                           Grid.Row="7"
                           Grid.ColumnSpan="2"
                           FontSize="{Binding Int_Fontsize}"
@@ -429,7 +429,7 @@
                           ItemsSource="{Binding list_combox_Working_Table_Type_items}"
                           Style="{DynamicResource style_FuncCombobox}"
                           Tag="../Resources/box.png"
-                          Visibility="Visible" />
+                          Visibility="Visible" />-->
 
                 <ToggleButton Name="tbtn_switch"
                               Grid.Row="7"

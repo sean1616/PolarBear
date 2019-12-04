@@ -65,6 +65,7 @@ namespace PD
             combox_product.Items.Clear();
             combox_product.Items.Add("CTF");
             combox_product.Items.Add("UFA");
+            combox_product.Items.Add("UFA250");
             combox_product.Items.Add("UFA-T");
             combox_product.Items.Add("UFA(H)");
             combox_product.Items.Add("UTF");
@@ -82,12 +83,19 @@ namespace PD
                 vm.product_type = vm.Ini_Read("Productions", "Product");
                 vm.selected_K_WL_Type = vm.Ini_Read("Productions", "K_WL_Type");
 
+                int rs232_delay;
+                if (int.TryParse(vm.Ini_Read("Connection", "RS232_Delay_Time"), out rs232_delay))
+                    vm.Int_Read_Delay = rs232_delay;
+
+
+                    
+
                 if (vm.Ini_Read("Connection", "PD_or_PM") == "PM")
                 {
                     vm.PD_or_PM = true;
 
-                    run_PD.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
-                    run_PM.Foreground = new SolidColorBrush(Colors.White);
+                    //run_PD.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
+                    //run_PM.Foreground = new SolidColorBrush(Colors.White);
                     vm.Main_Color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0085CA"));
                     vm.Ini_Write("Connection", "PD_or_PM", "PM");
                 }
@@ -496,7 +504,7 @@ namespace PD
                         else  //Go is on
                         {
                             vm.timer2.Stop();
-                            await vm.AccessDelayAsync(105);
+                            await vm.AccessDelayAsync(120);
                             vm.port_PD.DiscardInBuffer();       // RX
                             vm.port_PD.DiscardOutBuffer();      // TX
                             vm.port_PD.Close();
@@ -2657,40 +2665,40 @@ namespace PD
                 vm.Mainfunction_visibility = Visibility.Hidden;
         }
 
-        private void ToggleBtn_ControlMode_Click(object sender, RoutedEventArgs e)
-        {
-            if (ToggleBtn_ControlMode.IsChecked == false)  //PD mode
-            {
-                run_PD.Foreground = new SolidColorBrush(Colors.White);
-                run_PM.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
-                vm.Main_Color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF33D3C4"));
-                vm.Ini_Write("Connection", "PD_or_PM", "PD");
-            }
-            else  //PM mode
-            {
-                #region PowerMeter Setting
-                //Power Meter setting
-                vm.pm = new HPPM();
-                vm.pm.Addr = vm.tls_Addr;
-                vm.pm.Slot = vm.PM_slot;
-                vm.pm.BoardNumber = vm.tls_BoardNumber;
-                if (vm.pm.Open() == false)
-                {
-                    vm.Str_cmd_read = "The GPIB Setting Error.  Check  Address.";
-                    return;
-                }
-                vm.pm.init();
-                vm.pm.setUnit(1);
-                vm.pm.AutoRange(true);
-                vm.pm.aveTime(20);
-                #endregion
+        //private void ToggleBtn_ControlMode_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (ToggleBtn_ControlMode.IsChecked == false)  //PD mode
+        //    {
+        //        run_PD.Foreground = new SolidColorBrush(Colors.White);
+        //        run_PM.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
+        //        vm.Main_Color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF33D3C4"));
+        //        vm.Ini_Write("Connection", "PD_or_PM", "PD");
+        //    }
+        //    else  //PM mode
+        //    {
+        //        #region PowerMeter Setting
+        //        //Power Meter setting
+        //        vm.pm = new HPPM();
+        //        vm.pm.Addr = vm.tls_Addr;
+        //        vm.pm.Slot = vm.PM_slot;
+        //        vm.pm.BoardNumber = vm.tls_BoardNumber;
+        //        if (vm.pm.Open() == false)
+        //        {
+        //            vm.Str_cmd_read = "The GPIB Setting Error.  Check  Address.";
+        //            return;
+        //        }
+        //        vm.pm.init();
+        //        vm.pm.setUnit(1);
+        //        vm.pm.AutoRange(true);
+        //        vm.pm.aveTime(20);
+        //        #endregion
 
-                run_PD.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
-                run_PM.Foreground = new SolidColorBrush(Colors.White);
-                vm.Main_Color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0085CA"));
-                vm.Ini_Write("Connection", "PD_or_PM", "PM");
-            }
-        }
+        //        run_PD.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
+        //        run_PM.Foreground = new SolidColorBrush(Colors.White);
+        //        vm.Main_Color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0085CA"));
+        //        vm.Ini_Write("Connection", "PD_or_PM", "PM");
+        //    }
+        //}
 
         private async void txtBox_comment_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -4029,14 +4037,14 @@ namespace PD
 
         private void Txt_ID_GotFocus(object sender, RoutedEventArgs e)
         {
-            txt_UserID_label.Visibility = Visibility.Hidden;
+            //txt_UserID_label.Visibility = Visibility.Hidden;
         }
 
         private void Txt_ID_LostFocus(object sender, RoutedEventArgs e)
         {
-            TextBox obj = (TextBox)sender;
-            if (string.IsNullOrEmpty(obj.Text))
-                txt_UserID_label.Visibility = Visibility.Hidden;
+            //TextBox obj = (TextBox)sender;
+            //if (string.IsNullOrEmpty(obj.Text))
+            //    txt_UserID_label.Visibility = Visibility.Hidden;
         }
 
         private void Grid_clock_Loaded(object sender, RoutedEventArgs e)

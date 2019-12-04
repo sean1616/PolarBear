@@ -8,21 +8,21 @@
              mc:Ignorable="d" 
              xmlns:vm="clr-namespace:PD.ViewModel"
              xmlns:gauge="clr-namespace:Circle_Gauge;assembly=Circle_Gauge"
+             PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
              d:DesignHeight="200" d:DesignWidth="220" Loaded="UserControl_Loaded">
 
     <UserControl.DataContext>
         <vm:ComViewModel />
     </UserControl.DataContext>
 
-    <Grid Margin="5">     
-        <ToggleButton Name="b_1"
-                      Grid.Row="0"
+    <Grid >     
+        <ToggleButton Grid.Row="0"
                       Grid.Column="0"
                       Margin="7"                  
                       Focusable="False"
                       PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
                       PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
-                      PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
+                      
                       PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
                       MouseEnter="tbtn_MouseEnter"
                       IsChecked="{Binding Bool_Gauge, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
@@ -61,8 +61,8 @@
                                 VerticalAlignment="Center"
                                 ArcThickness="10"
                                 ArcThicknessUnit="Pixel"
-                                EndAngle="{Binding Gauge_Color, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
-                                Fill="{Binding Gauge_EndAngle, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
+                                EndAngle="{Binding Gauge_EndAngle, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
+                                Fill="{Binding Gauge_Color, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
                                 StartAngle="-150"
                                 Stretch="None"
                                 Stroke="Transparent" />
@@ -154,7 +154,7 @@
                          GotFocus="TextBox_GotFocus"
                          PreviewKeyDown="TextBox_KeyDown"
                          Style="{DynamicResource style_Gauge_txtbox}" 
-                         Text="{Binding List_D0_value_1, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
+                         Text="{Binding D0_value_1, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
                          />
                 <TextBox x:Name="_1_2"
                          Grid.Column="2"
@@ -163,7 +163,7 @@
                          GotFocus="TextBox_GotFocus"
                          PreviewKeyDown="TextBox_KeyDown"
                          Style="{DynamicResource style_Gauge_txtbox}"
-                         Text="{Binding List_D0_value_2, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}" />
+                         Text="{Binding D0_value_2, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}" />
                 <TextBox x:Name="_1_3"
                          Grid.Column="3"
                          FontFamily="{Binding FontFamily, ElementName=_1_1}"
@@ -171,7 +171,7 @@
                          GotFocus="TextBox_GotFocus"
                          PreviewKeyDown="TextBox_KeyDown"
                          Style="{DynamicResource style_Gauge_txtbox}"
-                         Text="{Binding List_D0_value_3, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"/>
+                         Text="{Binding D0_value_3, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"/>
 
                 <!--S/N TextBox-->
                 <TextBox x:Name="_txt_1"

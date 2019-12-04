@@ -14,7 +14,6 @@ using PD;
 using PD.Functions;
 using PD.AnalysisModel;
 using PD.ViewModel;
-using PD.Models;
 using PD.UI;
 
 namespace PD.NavigationPages
@@ -35,47 +34,27 @@ namespace PD.NavigationPages
             InitializeComponent();
 
             this.DataContext = vm;
-            //grid_bear_say.DataContext = vm;
-            //GaugeListView.DataContext = this;
+            
             this.vm = vm;
 
-            cmd = new ControlCmd(vm);
+            cmd = new ControlCmd(this.vm);
+                       
+            GaugeView.DataContext = vm;  //將DataContext指給使用者控制項，必要!
+            grid_bear_say.DataContext = vm;
 
-            //GaugeListView.DataContext = vm;
-
-            gauge1.DataContext = vm;  //將DataContext指給使用者控制項，必要!
-            gauge2.DataContext = vm;
-            gauge3.DataContext = vm;
-            gauge4.DataContext = vm;
-
-            gauge01.DataContext = vm;
-
-            //var gauges = GetGauges();
-            //if (gauges.Count > 0)
-            //    vm.Gauges = gauges;
-            //ListViewGauges.ItemsSource = gauges;
-
-
-
+            bool dac_volt;
+            if (bool.TryParse(this.vm.Ini_Read("Connection", "DACorVolt"), out dac_volt))
+            {
+                vm.isDACorVolt = dac_volt;
+                if (this.vm.isDACorVolt)
+                    this.vm.DacType = "V3 Voltage";
+                else
+                    this.vm.DacType = "V3 Dac";
+            }
 
             vm.Bool_Gauge.CopyTo(vm.bo_temp_gauge, 0);
         }
-
-        private List<Gauge> GetGauges()
-        {
-            return new List<Gauge>()
-            {
-                new Gauge("1"),
-                new Gauge("2"),
-                new Gauge("3"),
-                new Gauge("4"),
-                new Gauge("5"),
-                new Gauge("6"),
-                new Gauge("7"),
-                new Gauge("8")
-            };
-        }
-
+        
         private async void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter || e.Key==Key.Up || e.Key == Key.Down)
@@ -1286,9 +1265,82 @@ namespace PD.NavigationPages
 
         private void Gauge_MouseEnter(object sender, MouseEventArgs e)
         {
+            //UC_Gauge obj = (UC_Gauge)sender;
+            //if (vm.is_Gauge_ContinueSelect)
+            //    obj.Bool_Gauge = !obj.Bool_Gauge;
+        }
+
+        private void gauge_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+           
+        }
+
+
+        private async void gauge_PreviewMouseLeftButtonDown(object sender, RoutedEventArgs e)
+        {
+            if (vm.station_type != "Hermetic Test") return;
+
+            if (!vm.Is_switch_mode) return;
+
             UC_Gauge obj = (UC_Gauge)sender;
-            if (vm.is_Gauge_ContinueSelect)
-                obj.Bool_Gauge = !obj.Bool_Gauge;
+            int switch_index;
+            if (!int.TryParse(obj.Name.Substring(5), out switch_index)) return;
+
+            //switch_index = int.Parse(obj.Name.Substring(2));
+
+            vm.switch_selected_index = switch_index;
+            if (switch_index > 12) return;
+            if (switch_index == vm.switch_index) return;
+            if (string.IsNullOrWhiteSpace("I1 " + switch_index.ToString())) //Check comment box is empty or not
+                return;
+
+            #region switch re-open
+            try
+            {
+                await vm.Port_Switch_ReOpen();
+            }
+            catch
+            {
+                vm.Str_cmd_read = "Switch Error";
+                return;
+            }
+            #endregion
+
+            if (switch_index > 0)   //Switch 1~12
+            {
+                try
+                {
+                    vm.Str_comment = "I1 " + switch_index.ToString();
+                    vm.port_Switch.Write(vm.Str_comment + "\r");
+                    await vm.AccessDelayAsync(vm.Int_Write_Delay);
+
+                    vm.switch_index = switch_index;
+                    vm.ch = switch_index;   //Save Switch channel
+                }
+                catch { vm.Str_cmd_read = "Set Switch Error"; }
+
+                //if (switch_index < 9 && int_saved_combox_index >= 9)  //換頁 page1
+                //{
+                //    vm.Bool_Page2 = vm.Bool_Gauge_Show;
+                //    vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
+                //    vm.Channel_visible = new List<Visibility>() { };
+                //    vm.Bool_Gauge_Show = vm.Bool_Page1;
+                //    vm.Gauge_Page_now = 1;
+                //}
+                //else if (switch_index > 8 && int_saved_combox_index <= 8)  //換頁 page2
+                //{
+                //    vm.Bool_Page1 = vm.Bool_Gauge_Show;
+                //    vm.Str_Channel = new List<string>() { "9", "10", "11", "12" };
+                //    vm.Channel_visible = new List<Visibility>()
+                //    {
+                //        Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible,
+                //        Visibility.Hidden, Visibility.Hidden, Visibility.Hidden, Visibility.Hidden
+                //    };
+                //    vm.Bool_Gauge_Show = vm.Bool_Page2;
+                //    vm.Gauge_Page_now = 2;
+                //}
+            }
+
         }
     }
 }

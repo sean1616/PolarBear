@@ -18,7 +18,6 @@ using OxyPlot.Series;
 using PD.Functions;
 using PD.AnalysisModel;
 using PD.NavigationPages;
-using PD.Models;
 using DiCon.Instrument.HP;
 
 namespace PD.ViewModel
@@ -42,6 +41,10 @@ namespace PD.ViewModel
         #region Commands
         private void allwindow_minimum()
         {
+            bool dac_volt;
+            if (bool.TryParse(Ini_Read("Connection", "DACorVolt"), out dac_volt))
+                isDACorVolt = dac_volt;
+
             List<List<string>> lls = new List<List<string>>();
             lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
             lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
@@ -823,7 +826,8 @@ namespace PD.ViewModel
                     GaugeTabEnable = true;
                     GaugeSize_Height = new GridLength(6, GridUnitType.Star);
                     GaugeTxtSize_Height = new GridLength(1, GridUnitType.Star);
-                   
+
+                    GaugeGrid3_visible = Visibility.Visible;
                 }
                 else
                 {
@@ -832,6 +836,8 @@ namespace PD.ViewModel
                     GaugeTabEnable = false;
                     GaugeSize_Height = new GridLength(7, GridUnitType.Star);
                     GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
+
+                    GaugeGrid3_visible = Visibility.Collapsed;
                 }
                     
                 OnPropertyChanged("station_type");
@@ -1061,7 +1067,7 @@ namespace PD.ViewModel
             //timer3.Stop();
         }
 
-        private bool _isDACorVolt = false;
+        private bool _isDACorVolt = false;  //False is Dac, True is Volt
         public bool isDACorVolt
         {
             get { return _isDACorVolt; }
@@ -1073,6 +1079,8 @@ namespace PD.ViewModel
                 else
                     DacType = "V3 Dac";
                 OnPropertyChanged("isDACorVolt");
+                //OnPropertyChanged("DacType");
+                Ini_Write("Connection", "DACorVolt", value.ToString());
             }
         }
 
@@ -1630,7 +1638,7 @@ namespace PD.ViewModel
             }
         }
 
-        private int _int_Read_Delay = 120;
+        private int _int_Read_Delay = 125;
         public int Int_Read_Delay
         {
             get { return _int_Read_Delay; }
@@ -1640,6 +1648,8 @@ namespace PD.ViewModel
                 timer2.Interval = value;
                 timer3.Interval = value;
                 OnPropertyChanged("Int_Read_Delay");
+
+                Ini_Write("Connection", "RS232_Delay_Time", value.ToString());
             }
         }
 
@@ -1739,6 +1749,17 @@ namespace PD.ViewModel
             set
             {
                 _pd_or_pm = value;
+                if (_pd_or_pm)
+                {                    
+                    Main_Color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0085CA"));
+                    Ini_Write("Connection", "PD_or_PM", "PM");
+                }
+                else
+                {
+                    Main_Color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF33D3C4"));
+                    Ini_Write("Connection", "PD_or_PM", "PD");
+                }
+                    
                 OnPropertyChanged("PD_or_PM");
             }
         }
@@ -1986,6 +2007,17 @@ namespace PD.ViewModel
             }
         }
 
+        private Visibility _GaugeGrid3_visible = Visibility.Visible;
+        public Visibility GaugeGrid3_visible
+        {
+            get { return _GaugeGrid3_visible; }
+            set
+            {
+                _GaugeGrid3_visible = value;
+                OnPropertyChanged("GaugeGrid3_visible");
+            }
+        }
+
         public Visibility GaugeText_visible_Reverse
         {
             get
@@ -1996,28 +2028,7 @@ namespace PD.ViewModel
                     return Visibility.Visible;
             }
         }
-
-        private List<Gauge> _Gauges = new List<Gauge>()
-            {
-                new Gauge("1"),
-                new Gauge("2"),
-                new Gauge("3"),
-                new Gauge("4"),
-                new Gauge("5"),
-                new Gauge("6"),
-                new Gauge("7"),
-                new Gauge("8")
-            };
-        public List<Gauge> Gauges
-        {
-            get { return _Gauges; }
-            set
-            {
-                _Gauges = value;
-                OnPropertyChanged("Gauges");
-            }
-        }
-
+               
         private double _GaugePage_Width=1200;
         public double GaugePage_Width
         {

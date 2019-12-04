@@ -121,39 +121,7 @@
             <RowDefinition Height="3.6*" />
             <RowDefinition Name="grid_second_rowdefinition" Height="*"/>
         </Grid.RowDefinitions>
-
-        <!--<ScrollViewer Grid.Row="0" x:Name="GaugeListView"
-                      Background="#FFF1F1F1">                      
-            <StackPanel>
-                <TextBlock Text="Guage Items"
-                           Margin="10"
-                           FontSize="22"
-                           FontWeight="Medium" />
-                <StackPanel Margin="20 ">
-                    <ItemsControl x:Name="ListViewGauges"
-                                  ItemsSource="{Binding Gauges}"
-                                  >
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Width="220"  Height="200" >
-                                    <Viewbox>
-                                        <ui:UC_Gauge x:Name="uc_gauge"                                                                                        
-                                             Gauge_channel="{Binding Channel, FallbackValue=1}"
-                                              />
-                                    </Viewbox>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        
-                    </ItemsControl>
-                </StackPanel>
-            </StackPanel>
-        </ScrollViewer>-->
+      
         <Grid Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*" />
@@ -170,59 +138,176 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <ui:UC_Gauge x:Name="gauge01" Grid.Row="0" Grid.Column="0"  
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                                 MouseEnter="Gauge_MouseEnter"
-                         Bool_Gauge="{Binding Bool_Gauge_Show[0], Mode=TwoWay}"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[0]}"
-                         Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[0], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[0][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[0][1]}"
-                         List_bear_say_3="{Binding List_bear_say[0][2]}"/>
-                    <ui:UC_Gauge x:Name="gauge02" Grid.Row="0" Grid.Column="1"   
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[1], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[1]}"
-                         Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[1], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[1][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[1][1]}"
-                         List_bear_say_3="{Binding List_bear_say[1][2]}" DataContext="{Binding DataContext, ElementName=GaugeView}"/>
-                    <ui:UC_Gauge x:Name="gauge03" Grid.Row="0" Grid.Column="2"  
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[0]}"
-                         Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[0], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[0][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[0][1]}"
-                         List_bear_say_3="{Binding List_bear_say[0][2]}">                        
-                    </ui:UC_Gauge>
-                    <ui:UC_Gauge x:Name="gauge04" Grid.Row="0" Grid.Column="3"  
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[1], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[1]}"
-                         Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[1], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[1][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[1][1]}"
-                         List_bear_say_3="{Binding List_bear_say[1][2]}"/>
+                    <ui:UC_Gauge x:Name="gauge01"
+                                 Grid.Row="0"
+                                 Grid.Column="0"
+                                 Btn_IL_Click="Btn_IL_Click"
+                                 Btn_Voltage_Click="Btn_Voltage_Click"
+                                 Btn_WL_Click="Btn_WL_Click"
+                                 TBtn_PreviewMouseLeftButtonDown="gauge_PreviewMouseLeftButtonDown"
+                                 DataContext="{Binding DataContext, ElementName=GaugeView}"
+                                 Bool_Gauge="{Binding Bool_Gauge[0], Mode=TwoWay}"
+                                 Gauge_Color="{Binding Complement_Color}"
+                                 Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150, Mode=TwoWay}"
+                                 Gauge_value="{Binding Str_PD[0]}"
+                                 Gauge_Unit="{Binding str_Unit}"
+                                 Gauge_channel="{Binding Str_Channel[0], Mode=TwoWay}"
+                                 D0_value_1="{Binding List_D0_value[0][0]}"
+                                 D0_value_2="{Binding List_D0_value[0][1]}"
+                                 D0_value_3="{Binding List_D0_value[0][2]}"
+                                 List_bear_say_1="{Binding List_bear_say[0][0]}"
+                                 List_bear_say_2="{Binding List_bear_say[0][1]}"
+                                 List_bear_say_3="{Binding List_bear_say[0][2]}" />
+                    <ui:UC_Gauge x:Name="gauge02"
+                                 Grid.Row="0"
+                                 Grid.Column="1"
+                                 Btn_IL_Click="Btn_IL_Click"
+                                 Btn_Voltage_Click="Btn_Voltage_Click"
+                                 Btn_WL_Click="Btn_WL_Click"
+                                 TBtn_PreviewMouseLeftButtonDown="gauge_PreviewMouseLeftButtonDown"
+                                 Bool_Gauge="{Binding Bool_Gauge[1], Mode=TwoWay}"
+                                 Gauge_Color="{Binding Complement_Color}"
+                                 Gauge_EndAngle="{Binding Value_PD[1], FallbackValue=-150, Mode=TwoWay}"
+                                 Gauge_value="{Binding Str_PD[1]}"
+                                 Gauge_Unit="{Binding str_Unit}"
+                                 Gauge_channel="{Binding Str_Channel[1], Mode=TwoWay}"
+                                 D0_value_1="{Binding List_D0_value[1][0]}"
+                                 D0_value_2="{Binding List_D0_value[1][1]}"
+                                 D0_value_3="{Binding List_D0_value[1][2]}"
+                                 List_bear_say_1="{Binding List_bear_say[1][0]}"
+                                 List_bear_say_2="{Binding List_bear_say[1][1]}"
+                                 List_bear_say_3="{Binding List_bear_say[1][2]}"
+                                 DataContext="{Binding DataContext, ElementName=GaugeView}" />
+                    <ui:UC_Gauge x:Name="gauge03"
+                                 Grid.Row="0"
+                                 Grid.Column="2"
+                                 Btn_IL_Click="Btn_IL_Click"
+                                 Btn_Voltage_Click="Btn_Voltage_Click"
+                                 Btn_WL_Click="Btn_WL_Click"
+                                 TBtn_PreviewMouseLeftButtonDown="gauge_PreviewMouseLeftButtonDown"
+                                 Bool_Gauge="{Binding Bool_Gauge[2], Mode=TwoWay}"
+                                 DataContext="{Binding DataContext, ElementName=GaugeView}"
+                                 Gauge_Color="{Binding Complement_Color}"
+                                 Gauge_EndAngle="{Binding Value_PD[2], FallbackValue=-150, Mode=TwoWay}"
+                                 Gauge_value="{Binding Str_PD[2]}"
+                                 Gauge_Unit="{Binding str_Unit}"
+                                 Gauge_channel="{Binding Str_Channel[2], Mode=TwoWay}"
+                                 D0_value_1="{Binding List_D0_value[2][0]}"
+                                 D0_value_2="{Binding List_D0_value[2][1]}"
+                                 D0_value_3="{Binding List_D0_value[2][2]}"
+                                 List_bear_say_1="{Binding List_bear_say[2][0]}"
+                                 List_bear_say_2="{Binding List_bear_say[2][1]}"
+                                 List_bear_say_3="{Binding List_bear_say[2][2]}" />
+                    <ui:UC_Gauge x:Name="gauge04"
+                                 Grid.Row="0"
+                                 Grid.Column="3"
+                                 Btn_IL_Click="Btn_IL_Click"
+                                 Btn_Voltage_Click="Btn_Voltage_Click"
+                                 Btn_WL_Click="Btn_WL_Click"
+                                 TBtn_PreviewMouseLeftButtonDown="gauge_PreviewMouseLeftButtonDown"
+                                 Bool_Gauge="{Binding Bool_Gauge[3], Mode=TwoWay}"
+                                 DataContext="{Binding DataContext, ElementName=GaugeView}"
+                                 Gauge_Color="{Binding Complement_Color}"
+                                 Gauge_EndAngle="{Binding Value_PD[3], FallbackValue=-150, Mode=TwoWay}"
+                                 Gauge_value="{Binding Str_PD[3]}"
+                                 Gauge_Unit="{Binding str_Unit}"
+                                 Gauge_channel="{Binding Str_Channel[3], Mode=TwoWay}"
+                                 D0_value_1="{Binding List_D0_value[3][0]}"
+                                 D0_value_2="{Binding List_D0_value[3][1]}"
+                                 D0_value_3="{Binding List_D0_value[3][2]}"
+                                 List_bear_say_1="{Binding List_bear_say[3][0]}"
+                                 List_bear_say_2="{Binding List_bear_say[3][1]}"
+                                 List_bear_say_3="{Binding List_bear_say[3][2]}" />
                 </Grid>
                 <Grid Height="{Binding ActualHeight, ElementName=bod1, Mode=OneWay}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ui:UC_Gauge Grid.Row="0"
+                                 Grid.Column="0"
+                                 x:Name="gauge05"
+                                 Btn_IL_Click="Btn_IL_Click"
+                                 Btn_Voltage_Click="Btn_Voltage_Click"
+                                 Btn_WL_Click="Btn_WL_Click"
+                                 TBtn_PreviewMouseLeftButtonDown="gauge_PreviewMouseLeftButtonDown"
+                                 DataContext="{Binding DataContext, ElementName=GaugeView}"
+                                 Bool_Gauge="{Binding Bool_Gauge[4], Mode=TwoWay}"
+                                 Gauge_Color="{Binding Complement_Color}"
+                                 Gauge_EndAngle="{Binding Value_PD[4], FallbackValue=-150, Mode=TwoWay}"
+                                 Gauge_value="{Binding Str_PD[4]}"
+                                 Gauge_Unit="{Binding str_Unit}"
+                                 Gauge_channel="{Binding Str_Channel[4], Mode=TwoWay}"
+                                 D0_value_1="{Binding List_D0_value[4][0]}"
+                                 D0_value_2="{Binding List_D0_value[4][1]}"
+                                 D0_value_3="{Binding List_D0_value[4][2]}"
+                                 List_bear_say_1="{Binding List_bear_say[4][0]}"
+                                 List_bear_say_2="{Binding List_bear_say[4][1]}"
+                                 List_bear_say_3="{Binding List_bear_say[4][2]}" />
+                    <ui:UC_Gauge Grid.Row="0"
+                                 Grid.Column="1"
+                                 x:Name="gauge06"
+                                 Btn_IL_Click="Btn_IL_Click"
+                                 Btn_Voltage_Click="Btn_Voltage_Click"
+                                 Btn_WL_Click="Btn_WL_Click"
+                                 TBtn_PreviewMouseLeftButtonDown="gauge_PreviewMouseLeftButtonDown"
+                                 DataContext="{Binding DataContext, ElementName=GaugeView}"
+                                 Bool_Gauge="{Binding Bool_Gauge[5], Mode=TwoWay}"
+                                 Gauge_Color="{Binding Complement_Color}"
+                                 Gauge_EndAngle="{Binding Value_PD[5], FallbackValue=-150, Mode=TwoWay}"
+                                 Gauge_value="{Binding Str_PD[5]}"
+                                 Gauge_Unit="{Binding str_Unit}"
+                                 Gauge_channel="{Binding Str_Channel[5], Mode=TwoWay}"
+                                 D0_value_1="{Binding List_D0_value[5][0]}"
+                                 D0_value_2="{Binding List_D0_value[5][1]}"
+                                 D0_value_3="{Binding List_D0_value[5][2]}"
+                                 List_bear_say_1="{Binding List_bear_say[5][0]}"
+                                 List_bear_say_2="{Binding List_bear_say[5][1]}"
+                                 List_bear_say_3="{Binding List_bear_say[5][2]}" />
+                    <ui:UC_Gauge Grid.Row="0"
+                                 Grid.Column="2"
+                                 x:Name="gauge07"
+                                 Btn_IL_Click="Btn_IL_Click"
+                                 Btn_Voltage_Click="Btn_Voltage_Click"
+                                 Btn_WL_Click="Btn_WL_Click"
+                                 TBtn_PreviewMouseLeftButtonDown="gauge_PreviewMouseLeftButtonDown"
+                                 DataContext="{Binding DataContext, ElementName=GaugeView}"
+                                 Bool_Gauge="{Binding Bool_Gauge[6], Mode=TwoWay}"
+                                 Gauge_Color="{Binding Complement_Color}"
+                                 Gauge_EndAngle="{Binding Value_PD[6], FallbackValue=-150, Mode=TwoWay}"
+                                 Gauge_value="{Binding Str_PD[6]}"
+                                 Gauge_Unit="{Binding str_Unit}"
+                                 Gauge_channel="{Binding Str_Channel[6], Mode=TwoWay}"
+                                 D0_value_1="{Binding List_D0_value[6][0]}"
+                                 D0_value_2="{Binding List_D0_value[6][1]}"
+                                 D0_value_3="{Binding List_D0_value[6][2]}"
+                                 List_bear_say_1="{Binding List_bear_say[6][0]}"
+                                 List_bear_say_2="{Binding List_bear_say[6][1]}"
+                                 List_bear_say_3="{Binding List_bear_say[6][2]}" />
+                    <ui:UC_Gauge Grid.Row="0"
+                                 Grid.Column="3"
+                                 x:Name="gauge08"
+                                 Btn_IL_Click="Btn_IL_Click"
+                                 Btn_Voltage_Click="Btn_Voltage_Click"
+                                 Btn_WL_Click="Btn_WL_Click"
+                                 TBtn_PreviewMouseLeftButtonDown="gauge_PreviewMouseLeftButtonDown"
+                                 DataContext="{Binding DataContext, ElementName=GaugeView}"
+                                 Bool_Gauge="{Binding Bool_Gauge[7], Mode=TwoWay}"
+                                 Gauge_Color="{Binding Complement_Color}"
+                                 Gauge_EndAngle="{Binding Value_PD[7], FallbackValue=-150, Mode=TwoWay}"
+                                 Gauge_value="{Binding Str_PD[7]}"
+                                 Gauge_Unit="{Binding str_Unit}"
+                                 Gauge_channel="{Binding Str_Channel[7], Mode=TwoWay}"
+                                 D0_value_1="{Binding List_D0_value[7][0]}"
+                                 D0_value_2="{Binding List_D0_value[7][1]}"
+                                 D0_value_3="{Binding List_D0_value[7][2]}"
+                                 List_bear_say_1="{Binding List_bear_say[7][0]}"
+                                 List_bear_say_2="{Binding List_bear_say[7][1]}"
+                                 List_bear_say_3="{Binding List_bear_say[7][2]}" />
+                </Grid>
+                <Grid Height="{Binding ActualHeight, ElementName=bod1, Mode=OneWay}" Visibility="{Binding GaugeGrid3_visible}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
@@ -234,346 +319,53 @@
                          Btn_Voltage_Click="Btn_Voltage_Click"
                          Btn_WL_Click="Btn_WL_Click"
                          Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[0]}"
+                         Gauge_EndAngle="{Binding Value_PD[8], FallbackValue=-150, Mode=TwoWay}"
+                         Gauge_value="{Binding Str_PD[8]}"
                          Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[0], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[0][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[0][1]}"
-                         List_bear_say_3="{Binding List_bear_say[0][2]}"/>
+                         Gauge_channel="{Binding Str_Channel[8], Mode=TwoWay}"
+                         List_bear_say_1="{Binding List_bear_say[8][0]}" 
+                         List_bear_say_2="{Binding List_bear_say[8][1]}"
+                         List_bear_say_3="{Binding List_bear_say[8][2]}"/>
                     <ui:UC_Gauge Grid.Row="0" Grid.Column="1"  
                          Btn_IL_Click="Btn_IL_Click"
                          Btn_Voltage_Click="Btn_Voltage_Click"
                          Btn_WL_Click="Btn_WL_Click"
                          Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[1], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[1]}"
+                         Gauge_EndAngle="{Binding Value_PD[9], FallbackValue=-150, Mode=TwoWay}"
+                         Gauge_value="{Binding Str_PD[9]}"
                          Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[1], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[1][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[1][1]}"
-                         List_bear_say_3="{Binding List_bear_say[1][2]}"/>
+                         Gauge_channel="{Binding Str_Channel[9], Mode=TwoWay}"
+                         List_bear_say_1="{Binding List_bear_say[9][0]}" 
+                         List_bear_say_2="{Binding List_bear_say[9][1]}"
+                         List_bear_say_3="{Binding List_bear_say[9][2]}"/>
                     <ui:UC_Gauge Grid.Row="0" Grid.Column="2"  
                          Btn_IL_Click="Btn_IL_Click"
                          Btn_Voltage_Click="Btn_Voltage_Click"
                          Btn_WL_Click="Btn_WL_Click"
                          Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[0]}"
+                         Gauge_EndAngle="{Binding Value_PD[10], FallbackValue=-150, Mode=TwoWay}"
+                         Gauge_value="{Binding Str_PD[10]}"
                          Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[0], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[0][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[0][1]}"
-                         List_bear_say_3="{Binding List_bear_say[0][2]}"/>
+                         Gauge_channel="{Binding Str_Channel[10], Mode=TwoWay}"
+                         List_bear_say_1="{Binding List_bear_say[10][0]}" 
+                         List_bear_say_2="{Binding List_bear_say[10][1]}"
+                         List_bear_say_3="{Binding List_bear_say[10][2]}"/>
                     <ui:UC_Gauge Grid.Row="0" Grid.Column="3"  
                          Btn_IL_Click="Btn_IL_Click"
                          Btn_Voltage_Click="Btn_Voltage_Click"
                          Btn_WL_Click="Btn_WL_Click"
                          Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[1], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[1]}"
+                         Gauge_EndAngle="{Binding Value_PD[11], FallbackValue=-150, Mode=TwoWay}"
+                         Gauge_value="{Binding Str_PD[11]}"
                          Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[1], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[1][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[1][1]}"
-                         List_bear_say_3="{Binding List_bear_say[1][2]}"/>
-                </Grid>
-                <Grid Height="{Binding ActualHeight, ElementName=bod1, Mode=OneWay}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <ui:UC_Gauge Grid.Row="0" Grid.Column="0"  
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[0]}"
-                         Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[0], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[0][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[0][1]}"
-                         List_bear_say_3="{Binding List_bear_say[0][2]}"/>
-                    <ui:UC_Gauge Grid.Row="0" Grid.Column="1"  
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[1], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[1]}"
-                         Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[1], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[1][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[1][1]}"
-                         List_bear_say_3="{Binding List_bear_say[1][2]}"/>
-                    <ui:UC_Gauge Grid.Row="0" Grid.Column="2"  
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[0]}"
-                         Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[0], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[0][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[0][1]}"
-                         List_bear_say_3="{Binding List_bear_say[0][2]}"/>
-                    <ui:UC_Gauge Grid.Row="0" Grid.Column="3"  
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[1], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[1]}"
-                         Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[1], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[1][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[1][1]}"
-                         List_bear_say_3="{Binding List_bear_say[1][2]}"/>
+                         Gauge_channel="{Binding Str_Channel[11], Mode=TwoWay}"
+                         List_bear_say_1="{Binding List_bear_say[11][0]}" 
+                         List_bear_say_2="{Binding List_bear_say[11][1]}"
+                         List_bear_say_3="{Binding List_bear_say[11][2]}"/>
                 </Grid>
             </StackPanel>
         </ScrollViewer>
-
-        <Grid x:Name="grid_main_page" Visibility="Collapsed"
-              Mouse.MouseWheel="_MouseWheel"
-              KeyboardNavigation.TabNavigation="Cycle">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Border Grid.Row="0"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="4"
-                    Grid.RowSpan="2"
-                    Background="Transparent" />
-        
-            <ui:UC_Gauge x:Name="gauge1" Grid.Row="0" Grid.Column="0" 
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[0], FallbackValue=-150, Mode=TwoWay}"
-                         Gauge_value="{Binding Str_PD[0]}"
-                         Gauge_Unit="{Binding str_Unit}"                         
-                         Gauge_channel="{Binding Str_Channel[0], Mode=TwoWay}"
-                         List_bear_say_1="{Binding List_bear_say[0][0]}" 
-                         List_bear_say_2="{Binding List_bear_say[0][1]}"
-                         List_bear_say_3="{Binding List_bear_say[0][2]}"/>
-
-            <ui:UC_Gauge x:Name="gauge2"
-                         Grid.Row="0"
-                         Grid.Column="1"
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[1], FallbackValue=-150}"
-                         Gauge_value="{Binding Str_PD[1]}"
-                         Gauge_Unit="{Binding str_Unit}"
-                         Gauge_channel="{Binding Str_Channel[1]}"
-                         List_bear_say_1="{Binding List_bear_say[1][0]}"
-                         List_bear_say_2="{Binding List_bear_say[1][1]}"
-                         List_bear_say_3="{Binding List_bear_say[1][2]}" />
-
-            <ui:UC_Gauge x:Name="gauge3"
-                         Grid.Row="0"
-                         Grid.Column="2"
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[2], FallbackValue=-150}"
-                         Gauge_value="{Binding Str_PD[2]}"
-                         Gauge_Unit="{Binding str_Unit}"
-                         Gauge_channel="{Binding Str_Channel[2]}"
-                         List_bear_say_1="{Binding List_bear_say[2][0]}"
-                         List_bear_say_2="{Binding List_bear_say[2][1]}"
-                         List_bear_say_3="{Binding List_bear_say[2][2]}" />
-
-            <ui:UC_Gauge x:Name="gauge4"
-                         Grid.Row="0"
-                         Grid.Column="3"
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[3], FallbackValue=-150}"
-                         Gauge_value="{Binding Str_PD[3]}"
-                         Gauge_Unit="{Binding str_Unit}"
-                         Gauge_channel="{Binding Str_Channel[3]}"
-                         List_bear_say_1="{Binding List_bear_say[3][0]}"
-                         List_bear_say_2="{Binding List_bear_say[3][1]}"
-                         List_bear_say_3="{Binding List_bear_say[3][2]}" />
-
-            <ui:UC_Gauge x:Name="gauge5"
-                         Grid.Row="1"
-                         Grid.Column="0"
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[4], FallbackValue=-150}"
-                         Gauge_value="{Binding Str_PD[4]}"
-                         Gauge_Unit="{Binding str_Unit}"
-                         Gauge_channel="{Binding Str_Channel[4]}"
-                         List_bear_say_1="{Binding List_bear_say[4][0]}"
-                         List_bear_say_2="{Binding List_bear_say[4][1]}"
-                         List_bear_say_3="{Binding List_bear_say[4][2]}" />
-
-            <ui:UC_Gauge x:Name="gauge6"
-                         Grid.Row="1"
-                         Grid.Column="1"
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[5], FallbackValue=-150}"
-                         Gauge_value="{Binding Str_PD[5]}"
-                         Gauge_Unit="{Binding str_Unit}"
-                         Gauge_channel="{Binding Str_Channel[5]}"
-                         List_bear_say_1="{Binding List_bear_say[5][0]}"
-                         List_bear_say_2="{Binding List_bear_say[5][1]}"
-                         List_bear_say_3="{Binding List_bear_say[5][2]}" />
-
-            <ui:UC_Gauge x:Name="gauge7"
-                         Grid.Row="1"
-                         Grid.Column="2"
-                         Btn_IL_Click="Btn_IL_Click"
-                         Btn_Voltage_Click="Btn_Voltage_Click"
-                         Btn_WL_Click="Btn_WL_Click"
-                         Gauge_Color="{Binding Complement_Color}"
-                         Gauge_EndAngle="{Binding Value_PD[6], FallbackValue=-150}"
-                         Gauge_value="{Binding Str_PD[6]}"
-                         Gauge_Unit="{Binding str_Unit}"
-                         Gauge_channel="{Binding Str_Channel[6]}"
-                         List_bear_say_1="{Binding List_bear_say[6][0]}"
-                         List_bear_say_2="{Binding List_bear_say[6][1]}"
-                         List_bear_say_3="{Binding List_bear_say[6][2]}" />
-
-            <!--<ToggleButton Name="b_8"
-                          Grid.Row="3"
-                          Grid.Column="3"
-                          Margin="3,3,6,6"
-                          PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
-                          PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
-                          PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
-                          PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
-                          MouseEnter="tbtn_MouseEnter"
-                          Focusable="False"
-                          Command="{Binding Set_Bool_Gauge}"
-                          IsChecked="{Binding Bool_Gauge_Show[7], Mode=TwoWay}"
-                          Visibility="{Binding Channel_visible[7]}"
-                          Style="{StaticResource style_Gauge_Background}">
-                <Grid>
-                    <Viewbox>
-                        <gauge:UserControl1 Name="Gauge_8"
-                                            Arc_Color="{Binding Complement_Color}"
-                                            Arc_EndAngle="{Binding Value_PD[7], FallbackValue=-150}"
-                                            str_PD_value="{Binding Str_PD[7]}"
-                                            str_Unit="{Binding str_Unit}"
-                                            str_channel="{Binding Str_Channel[7]}"
-                                            Visibility="{Binding Channel_visible[7]}" />
-                    </Viewbox>
-                </Grid>
-            </ToggleButton>
-
-            --><!--Dac--><!--
-            <Grid Grid.Row="1" Grid.Column="3">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="6*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="{Binding GaugeTxtSize_Height}" />
-                    <RowDefinition Height="0.5*" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="1"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="_8_1"
-                             Grid.Column="1"
-                             VerticalContentAlignment="Center"
-                             FontFamily="Segoe Print"
-                             FontSize="{Binding Int_Fontsize}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[7][0]}" />
-                    <TextBox x:Name="_8_2"
-                             Grid.Column="2"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[7][1]}" />
-                    <TextBox x:Name="_8_3"
-                             Grid.Column="3"
-                             FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                             FontSize="{Binding FontSize, ElementName=_1_1}"
-                             GotFocus="TextBox_GotFocus"
-                             PreviewKeyDown="TextBox_KeyDown"
-                             Style="{DynamicResource style_Gauge_txtbox}"
-                             Text="{Binding List_D0_value[7][2]}" />
-                </Grid>
-
-                --><!--S/N TextBox--><!--
-                <TextBox x:Name="_txt_8"
-                         Grid.Row="1"
-                         Grid.Column="0"
-                         Grid.ColumnSpan="3"
-                         Margin="2,2,2,2"
-                         GotFocus="_GaugeTxT__GotFocus"
-                         LostFocus="_GaugeTxT__LostFocus"
-                         TabIndex="{Binding GaugeTabOrder[0]}"
-                         FontSize="{Binding Int_Fontsize}"
-                         Style="{StaticResource style_SN_txtbox}"
-                         Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}" />
-                --><!--WL, IL, V3--><!--
-                <Grid Grid.Row="2"
-                      Grid.ColumnSpan="3"
-                      >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                        <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                    </Grid.ColumnDefinitions>
-                    <Button Tag="8_16"
-                            Grid.Column="1"
-                            Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[7][0], Mode=TwoWay}"
-                            Click="Btn_WL_Click" />
-                    <Button Tag="8_16"
-                            Grid.Column="2"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[7][1], Mode=TwoWay}"
-                            Click="Btn_IL_Click" />
-                    <Button Tag="8_16"
-                            Grid.Column="3"
-                            Style="{DynamicResource style_BearBtn}"
-                            Content="{Binding List_bear_say[7][2], Mode=TwoWay}"
-                            Click="Btn_Voltage_Click" />
-                </Grid>
-            </Grid>-->
-        </Grid>
-
+      
         <Grid Grid.Row="1" Name="grid_bear_say" 
               Background="#FFF1F1F1">
             <Grid.DataContext>
@@ -704,192 +496,7 @@
                     Height="30" Content="V"
                     Click="btn_bearsay_visual_Click"
                     />
-
-            <!--<Grid Name="grid_BearSay"
-                  Grid.Row="1"
-                  Grid.Column="2"
-                  Grid.ColumnSpan="2"
-                  Grid.RowSpan="2"
-                  Loaded="grid_BearSay_Loaded">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.6*"/>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="0.3*" />
-                    <RowDefinition Height="0.7*" />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition Height="0.3*" />
-                </Grid.RowDefinitions>
-                <Border Grid.Row="0"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="9"
-                        Grid.RowSpan="2"
-                        Background="Transparent" />
-                <Button Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="0"
-                        Style="{StaticResource style_OnlyImage_Btn}"
-                        Tag="../Resources/save.png"
-                        Content="WL" />
-                <Button Grid.Row="2"
-                        Grid.RowSpan="1"
-                        Grid.Column="0"
-                        Style="{StaticResource style_BearBtn3}"
-                        Content="{Binding List_bear_say_DataLabel[1], Mode=TwoWay}" />
-                <Button Grid.Row="3"
-                        Grid.RowSpan="1"
-                        Grid.Column="0"
-                        Style="{StaticResource style_BearBtn3}"
-                        Content="{Binding List_bear_say_DataLabel[2], Mode=TwoWay}" />
-                <Button x:Name="txt_No1"
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="1"
-                        Style="{StaticResource style_BearBtn3}"
-                        Content="{Binding txt_No[0]}" />
-                <Button x:Name="txt_No2"
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="2"
-                        Style="{StaticResource style_BearBtn3}"
-                        Content="{Binding txt_No[1]}" />
-                <Button x:Name="txt_No3"
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="3"
-                        Style="{StaticResource style_BearBtn3}"
-                        Content="{Binding txt_No[2]}" />
-                <Button x:Name="txt_No4"
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="4"
-                        Style="{StaticResource style_BearBtn3}"
-                        Content="{Binding txt_No[3]}" />
-                <Button x:Name="txt_No5"
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="5"
-                        Style="{StaticResource style_BearBtn3}"
-                        Content="{Binding txt_No[4]}" />
-                <Button x:Name="txt_No6"
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="6"
-                        Style="{StaticResource style_BearBtn3}"
-                        Content="{Binding txt_No[5]}" />
-                <Button x:Name="txt_No7"
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="7"
-                        Style="{StaticResource style_BearBtn3}"
-                        Content="{Binding txt_No[6]}" />
-                <Button x:Name="txt_No8"
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="8"
-                        Style="{StaticResource style_BearBtn3}"
-                        Content="{Binding txt_No[7]}" />
-
-                --><!--  Ch1  --><!--
-                <Button Tag="1_9"
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say[0][0], Mode=TwoWay}"
-                        Click="Button_Click" />
-                <Button Style="{StaticResource style_BearBtn2}"
-                        Grid.Row="3"
-                        Grid.Column="1"
-                        Content="{Binding List_bear_say[0][1], Mode=TwoWay}" />
-
-                --><!--  Ch2  --><!--
-                <Button Grid.Row="2"
-                        Grid.Column="2"
-                        Tag="2_10"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say[1][0], Mode=TwoWay}"
-                        Click="Button_Click" />
-                <Button Grid.Row="3"
-                        Grid.Column="2"
-                        Style="{StaticResource style_BearBtn2}"
-                        Content="{Binding List_bear_say[1][1], Mode=TwoWay}" />
-                --><!--  Ch3  --><!--
-                <Button Grid.Row="2"
-                        Grid.Column="3"
-                        Tag="3_11"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say[2][0], Mode=TwoWay}"
-                        Click="Button_Click" />
-                <Button Grid.Row="3"
-                        Grid.Column="3"
-                        Style="{StaticResource style_BearBtn2}"
-                        Content="{Binding List_bear_say[2][1], Mode=TwoWay}" />
-                --><!--  Ch4  --><!--
-                <Button Grid.Row="2"
-                        Grid.Column="4"
-                        Tag="4_12"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say[3][0], Mode=TwoWay}"
-                        Click="Button_Click" />
-                <Button Grid.Row="3"
-                        Grid.Column="4"
-                        Style="{StaticResource style_BearBtn2}"
-                        Content="{Binding List_bear_say[3][1], Mode=TwoWay}" />
-                --><!--  Ch5  --><!--
-                <Button Grid.Row="2"
-                        Grid.Column="5"
-                        Tag="5_13"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say[4][0], Mode=TwoWay}"
-                        Click="Button_Click" />
-                <Button Grid.Row="3"
-                        Grid.Column="5"
-                        Style="{StaticResource style_BearBtn2}"
-                        Content="{Binding List_bear_say[4][1], Mode=TwoWay}" />
-                --><!--  Ch6  --><!--
-                <Button Grid.Row="2"
-                        Grid.Column="6"
-                        Tag="6_14"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say[5][0], Mode=TwoWay}"
-                        Click="Button_Click" />
-                <Button Grid.Row="3"
-                        Grid.Column="6"
-                        Style="{StaticResource style_BearBtn2}"
-                        Content="{Binding List_bear_say[5][1], Mode=TwoWay}" />
-                --><!--  Ch7  --><!--
-                <Button Grid.Row="2"
-                        Grid.Column="7"
-                        Tag="7_15"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say[6][0], Mode=TwoWay}"
-                        Click="Button_Click" />
-                <Button Grid.Row="3"
-                        Grid.Column="7"
-                        Style="{StaticResource style_BearBtn2}"
-                        Content="{Binding List_bear_say[6][1], Mode=TwoWay}" />
-                --><!--  Ch8  --><!--
-                <Button Grid.Row="2"
-                        Grid.Column="8"
-                        Tag="8_16"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say[7][0], Mode=TwoWay}"
-                        Click="Button_Click" />
-                <Button Grid.Row="3"
-                        Grid.Column="8"
-                        Style="{StaticResource style_BearBtn2}"
-                        Content="{Binding List_bear_say[7][1], Mode=TwoWay}" />
-            </Grid>-->
-
+            
             <Grid Grid.Column="3">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -918,7 +525,8 @@
                               MinWidth="40"
                               MaxHeight="30"
                               IsChecked="{Binding isDACorVolt, Mode=TwoWay}"
-                              Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">
+                              Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}"
+                              >
                     <ToggleButton.Background>
                         <LinearGradientBrush StartPoint="0,0"
                                              EndPoint="0,1">
