@@ -28,9 +28,9 @@
             <BeginStoryboard Storyboard="{StaticResource Rec_MouseEnter}" />
         </EventTrigger>
     </Window.Triggers>
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <ViewModel:ComViewModel />
-    </Window.DataContext>
+    </Window.DataContext>-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*" />

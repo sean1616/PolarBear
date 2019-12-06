@@ -283,29 +283,37 @@ namespace PD.UI
         #endregion
 
 
-        #region Click event
+        #region Click event 註冊事件
 
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            RaiseEvent(new RoutedEventArgs(TextBox_GotFocusEvent, this));
-        }
+        //private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        //{
+        //    RaiseEvent(new RoutedEventArgs(TextBox_GotFocusEvent, this));
+        //}
 
         //註冊事件
-        public static readonly RoutedEvent TextBox_GotFocusEvent = EventManager.RegisterRoutedEvent(
-            "PreviewKeyDown", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(UC_Gauge));
-        
+        //public static readonly RoutedEvent TextBox_GotFocusEvent = EventManager.RegisterRoutedEvent(
+        //    "PreviewKeyDown", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(UC_Gauge));
+
         //註冊事件的名稱
-        public event RoutedEventHandler TxtBox_GotFocus
-        {
-            add { AddHandler(TextBox_GotFocusEvent, value); }
-            remove { RemoveHandler(TextBox_GotFocusEvent, value); }
-        }
+        //public event RoutedEventHandler TxtBox_GotFocus
+        //{
+        //    add { AddHandler(TextBox_GotFocusEvent, value); }
+        //    remove { RemoveHandler(TextBox_GotFocusEvent, value); }
+        //}
         #endregion
 
+        public event RoutedEventHandler TxtBox_GotFocus = delegate { };
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox obj = sender as TextBox;
+            obj.Tag = this.Tag;
+            TxtBox_GotFocus(sender, e);
+        }
+        
+        public event RoutedEventHandler TxtBox_KeyDown = delegate { };
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-
+            TxtBox_KeyDown(sender, e);
         }
 
         private void _GaugeTxT__GotFocus(object sender, RoutedEventArgs e)

@@ -6679,11 +6679,118 @@ C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD.Properties.Resources.res
 C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD.csproj.GenerateResource.cache
 C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD.csproj.CoreCompileInputs.cache
 C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD.csproj.CopyComplete
-C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.0.8.exe.config
-C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.0.8.exe
-C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.0.8.pdb
-C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.0.8_MarkupCompile.cache
-C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.0.8_MarkupCompile.lref
-C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.0.8.g.resources
-C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.0.8.exe
-C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.0.8.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\PD-v4.0.8.exe.config
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.0.8.exe
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.0.8.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD.csprojResolveAssemblyReference.cache
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\MainWindow.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Board_Grid.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Chart.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_DataGrid.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Laser.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_PD_Gauges.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\Sector_BTN.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\UC_Gauge.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\UC_Setting_Button.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\UC_Setting_ToggleButton.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Chart.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Grid.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Setting.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Board_Comport_Setting.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Password.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Ref.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Switch_Box.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\PD_Gauge.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\App.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\GeneratedInternalTypeHelper.g.cs
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.0.8_MarkupCompile.cache
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.0.8_MarkupCompile.lref
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\PD-v4.0.8.exe
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\PD-v4.0.8.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\DiCon.UCB.Communication.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\DiCon.UCB.Communication.RS232.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\DiCon.UCB.MTF.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\DiCon.UCB.MTF.EP.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\DiCon.UCB.MTF.I2C.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\DiCon.UCB.MTF.RS232.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\DiCon.UCB.UFA.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ExcelDataReader.DataSet.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ExcelDataReader.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\MahApps.Metro.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\Microsoft.Expression.Drawing.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\Microsoft.Xaml.Behaviors.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\OxyPlot.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\OxyPlot.Wpf.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\System.Windows.Interactivity.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\TH300.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\WpfAnimatedGif.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ControlzEx.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\NationalInstruments.Common.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\NationalInstruments.Common.Native.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\Circle_Gauge.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ExcelDataReader.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ExcelDataReader.xml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ExcelDataReader.DataSet.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ExcelDataReader.DataSet.xml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\MahApps.Metro.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\MahApps.Metro.xml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\Microsoft.Xaml.Behaviors.xml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\OxyPlot.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\OxyPlot.xml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\OxyPlot.Wpf.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\OxyPlot.Wpf.xml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\WpfAnimatedGif.xml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\WpfPageTransitions.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ControlzEx.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ControlzEx.xml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\de\Microsoft.Expression.Drawing.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\es\Microsoft.Expression.Drawing.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\fr\Microsoft.Expression.Drawing.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\it\Microsoft.Expression.Drawing.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ja\Microsoft.Expression.Drawing.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ko\Microsoft.Expression.Drawing.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ru\Microsoft.Expression.Drawing.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\zh-Hans\Microsoft.Expression.Drawing.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\zh-Hant\Microsoft.Expression.Drawing.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\de\System.Windows.Interactivity.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\en\System.Windows.Interactivity.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\es\System.Windows.Interactivity.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\fr\System.Windows.Interactivity.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\it\System.Windows.Interactivity.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ja\System.Windows.Interactivity.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ko\System.Windows.Interactivity.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\ru\System.Windows.Interactivity.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\App.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\MainWindow.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Board_Grid.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Chart.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_DataGrid.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Laser.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_PD_Gauges.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\Sector_BTN.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\UC_Gauge.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\UC_Setting_Button.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\UC_Setting_ToggleButton.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Chart.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Grid.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Setting.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Board_Comport_Setting.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Password.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Ref.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Switch_Box.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\PD_Gauge.baml
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.0.8.g.resources
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD.Properties.Resources.resources
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD.csproj.GenerateResource.Cache
+C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.0.9.exe.config
+C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.0.9.exe
+C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.0.9.pdb
+C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.0.9_MarkupCompile.cache
+C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.0.9_MarkupCompile.lref
+C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.0.9.g.resources
+C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.0.9.exe
+C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.0.9.pdb

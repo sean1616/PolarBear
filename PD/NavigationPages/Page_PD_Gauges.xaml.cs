@@ -54,10 +54,11 @@ namespace PD.NavigationPages
 
             vm.Bool_Gauge.CopyTo(vm.bo_temp_gauge, 0);
         }
-        
-        private async void TextBox_KeyDown(object sender, KeyEventArgs e)
+
+        private async void TextBox_KeyDown(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Enter || e.Key==Key.Up || e.Key == Key.Down)
+            KeyEventArgs ee = (KeyEventArgs)e;
+            if (ee.Key == Key.Enter || ee.Key==Key.Up || ee.Key == Key.Down)
             {
                 try
                 {
@@ -67,15 +68,15 @@ namespace PD.NavigationPages
                     await vm.AccessDelayAsync(vm.Int_Read_Delay);
 
                     string TF_or_VOA;
-                    string ch = ch_v[1];
+                    string ch = ch_v[0];
                     string DAC = obj.Text;
                     int input_value = int.Parse(obj.Text);
                     int channel = Convert.ToInt32(ch);
-                    int V = Convert.ToInt16(ch_v[2]) - 1;
+                    int V = Convert.ToInt16(ch_v[1]) - 1;
 
-                    if (e.Key == Key.Up)
+                    if (ee.Key == Key.Up)
                         input_value = int.Parse(obj.Text) + 100;
-                    else if(e.Key==Key.Down)
+                    else if(ee.Key==Key.Down)
                         input_value = int.Parse(obj.Text) - 100;
 
                     //判斷index型式
@@ -134,9 +135,9 @@ namespace PD.NavigationPages
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {            
+        {
             obj = sender as TextBox; //Get the focused textbox name
-            string str_textBox_name = obj.Name;
+            string str_textBox_name = obj.Tag.ToString().Substring(1) + obj.Name;
             ch_v = str_textBox_name.Split('_');  // get the channel and which voltage (TF or VOA)         
         }
 
@@ -1340,7 +1341,7 @@ namespace PD.NavigationPages
                 //    vm.Gauge_Page_now = 2;
                 //}
             }
-
         }
+
     }
 }

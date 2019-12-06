@@ -23,6 +23,11 @@ namespace PD.Functions
             anly = new Analysis(vm);
         }
 
+        public ControlCmd()
+        {
+
+        }
+
         public void Set_WL()
         {
             try
@@ -239,40 +244,20 @@ namespace PD.Functions
             #endregion
         }
 
-        public void Save_Log_Message(string Data_Type)
+        public void Save_Log_Message(string Data_Type, string content, string time)
         {
-            #region Delete and Save Bear say to txt file
-            if (vm.List_bear_say.Count == 0) return;
+            #region Save log to txt file         
 
-            switch (Data_Type)
-            {
-                case "K WL":
-                    vm.List_bear_say_DataLabel = new List<string>() { "K WL", "WL", "IL" };
-                    break;
-
-                case "K V3":
-                    vm.List_bear_say_DataLabel = new List<string>() { "K V3", "DAC", "V3" };
-                    break;
-            }
-
-            if (File.Exists(@"D:\PD\BearSay.txt")) File.Delete(@"D:\PD\BearSay.txt");
+            //if (File.Exists(@"D:\PD\Log.txt")) File.Delete(@"D:\PD\Log.txt");
 
             using (System.IO.StreamWriter file =
-                 new System.IO.StreamWriter(@"D:\PD\BearSay.txt", true))
+                 new System.IO.StreamWriter(@"D:\PD\Log.txt", true))
             {
                 string str = "";
-                for (int i = 0; i < vm.List_bear_say.Count; i++)
-                {
-                    for (int j = 0; j < vm.List_bear_say[i].Count; j++)
-                    {
-                        str = str + vm.List_bear_say[i][j];
-                        if (j == 0) str += ",";
-                    }
-                    str = str + "\r\n";
-                }
+                str = content + "  " + time + "\r\n";
                 file.WriteLine(str);
 
-                vm._write_line = new List<string>();
+                //vm._write_line = new List<string>();
             }
             #endregion
         }

@@ -27,20 +27,21 @@
                       Loaded="ToggleButton_Loaded"
                       IsChecked="{Binding Bool_Gauge, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
                       Style="{StaticResource style_Gauge_Background}">
-            <Grid>
-                <Viewbox>
-                    <Grid Margin="18">
+            <Viewbox>
+                <Grid>
+                    <!--Gauge-->
+                    <Grid Width="330">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="0.15*" />
-                            <RowDefinition />
+                            <RowDefinition Height="15" />
+                            <RowDefinition Height="200"/>
+                            <RowDefinition Height="60" />
+                            <RowDefinition Height="60" />
                         </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="0.15*" />
-                        </Grid.ColumnDefinitions>
+                      
                         <ed:Arc Width="185"
+                                Grid.Row="1"
                                 Grid.ColumnSpan="2"
-                                Grid.RowSpan="2"
+                                Grid.RowSpan="1"
                                 Height="185"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -53,8 +54,9 @@
                                 Stroke="Transparent" />
 
                         <ed:Arc x:Name="Process_Arc_1"
+                                Grid.Row="1"
                                 Grid.ColumnSpan="2"
-                                Grid.RowSpan="2"
+                                Grid.RowSpan="1"
                                 Width="185"
                                 Height="185"
                                 HorizontalAlignment="Center"
@@ -67,7 +69,8 @@
                                 Stretch="None"
                                 Stroke="Transparent" />
                         <Grid Grid.ColumnSpan="2"
-                              Grid.RowSpan="2">
+                              Grid.Row="1"
+                              Grid.RowSpan="1">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="2.4*" />
                                 <RowDefinition Height="0.5*" />
@@ -114,98 +117,100 @@
                                            TextWrapping="Wrap"
                                            Text="{Binding Gauge_channel, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}" />
                             </StackPanel>
-                        </Grid>                      
+                        </Grid>
                     </Grid>
-                </Viewbox>
-            </Grid>
+
+                    <!--Dac-->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="6*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="{Binding GaugeTxtSize_Height}" />
+                            <RowDefinition Height="0.5*" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="1"
+                              Grid.ColumnSpan="3"
+                              Name="grid_dac_txt">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
+                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
+                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
+                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
+                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="_1"
+                                     Grid.Column="1"
+                                     VerticalContentAlignment="Center"
+                                     FontFamily="Segoe Print"
+                                     FontSize="{Binding Int_Fontsize}"
+                                     GotFocus="TextBox_GotFocus"
+                                     PreviewKeyDown="TextBox_KeyDown"
+                                     Style="{DynamicResource style_Gauge_txtbox}"
+                                     Text="{Binding D0_value_1, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}" />
+                            <TextBox x:Name="_2"
+                                     Grid.Column="2"
+                                     FontFamily="{Binding FontFamily, ElementName=_1_1}"
+                                     FontSize="{Binding FontSize, ElementName=_1_1}"
+                                     GotFocus="TextBox_GotFocus"
+                                     PreviewKeyDown="TextBox_KeyDown"
+                                     Style="{DynamicResource style_Gauge_txtbox}"
+                                     Text="{Binding D0_value_2, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}" />
+                            <TextBox x:Name="_3"
+                                     Grid.Column="3"
+                                     FontFamily="{Binding FontFamily, ElementName=_1_1}"
+                                     FontSize="{Binding FontSize, ElementName=_1_1}"
+                                     GotFocus="TextBox_GotFocus"
+                                     PreviewKeyDown="TextBox_KeyDown"
+                                     Style="{DynamicResource style_Gauge_txtbox}"
+                                     Text="{Binding D0_value_3, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}" />
+
+                            <!--S/N TextBox-->
+                            <TextBox x:Name="_txt_1"
+                                     Grid.Row="1"
+                                     Grid.Column="1"
+                                     Grid.ColumnSpan="3"
+                                     Margin="2,2,2,2"
+                                     GotFocus="_GaugeTxT__GotFocus"
+                                     LostFocus="_GaugeTxT__LostFocus"
+                                     TabIndex="{Binding GaugeTabOrder[0]}"
+                                     FontSize="{Binding Int_Fontsize}"
+                                     Visibility="{Binding GaugeText_visible_Reverse}"
+                                     Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}"
+                                     Style="{StaticResource style_SN_txtbox}" />
+                        </Grid>
+
+                        <!--WL, IL, V3-->
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
+                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
+                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
+                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
+                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
+                            </Grid.ColumnDefinitions>
+                            <Button Tag="1_9"
+                                    x:Name="btn_1"
+                                    Grid.Column="1"
+                                    Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
+                                    Style="{DynamicResource style_BearBtn}"
+                                    Content="{Binding List_bear_say_1, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
+                                    Click="Btn_1_Click" />
+                            <Button Tag="1_9"
+                                    Grid.Column="2"
+                                    Style="{DynamicResource style_BearBtn}"
+                                    Content="{Binding List_bear_say_2, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
+                                    Click="Btn_2_Click" />
+                            <Button Tag="1_9"
+                                    Grid.Column="3"
+                                    Style="{DynamicResource style_BearBtn}"
+                                    Content="{Binding List_bear_say_3, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
+                                    Click="Btn_3_Click" />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Viewbox>
         </ToggleButton>
 
-        <!--Dac-->
-        <Grid Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="6*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="{Binding GaugeTxtSize_Height}" />
-                <RowDefinition Height="0.5*" />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="1"
-                  Grid.ColumnSpan="3"
-                  Name="grid_dac_txt">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                    <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                    <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                    <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                    <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="_1_1"
-                         Grid.Column="1"
-                         VerticalContentAlignment="Center"
-                         FontFamily="Segoe Print"
-                         FontSize="{Binding Int_Fontsize}"
-                         GotFocus="TextBox_GotFocus"
-                         PreviewKeyDown="TextBox_KeyDown"
-                         Style="{DynamicResource style_Gauge_txtbox}" 
-                         Text="{Binding D0_value_1, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
-                         />
-                <TextBox x:Name="_1_2"
-                         Grid.Column="2"
-                         FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                         FontSize="{Binding FontSize, ElementName=_1_1}"
-                         GotFocus="TextBox_GotFocus"
-                         PreviewKeyDown="TextBox_KeyDown"
-                         Style="{DynamicResource style_Gauge_txtbox}"
-                         Text="{Binding D0_value_2, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}" />
-                <TextBox x:Name="_1_3"
-                         Grid.Column="3"
-                         FontFamily="{Binding FontFamily, ElementName=_1_1}"
-                         FontSize="{Binding FontSize, ElementName=_1_1}"
-                         GotFocus="TextBox_GotFocus"
-                         PreviewKeyDown="TextBox_KeyDown"
-                         Style="{DynamicResource style_Gauge_txtbox}"
-                         Text="{Binding D0_value_3, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"/>
-
-                <!--S/N TextBox-->
-                <TextBox x:Name="_txt_1"
-                         Grid.Row="1"
-                         Grid.Column="1"
-                         Grid.ColumnSpan="3"
-                         Margin="2,2,2,2"
-                         GotFocus="_GaugeTxT__GotFocus"
-                         LostFocus="_GaugeTxT__LostFocus"
-                         TabIndex="{Binding GaugeTabOrder[0]}"
-                         FontSize="{Binding Int_Fontsize}"
-                         Visibility="{Binding GaugeText_visible_Reverse}"
-                         Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}"
-                         Style="{StaticResource style_SN_txtbox}" />
-            </Grid>
-
-            <!--WL, IL, V3-->
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                    <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                    <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                    <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                    <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
-                </Grid.ColumnDefinitions>
-                <Button Tag="1_9" x:Name="btn_1"
-                        Grid.Column="1"
-                        Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say_1, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
-                        Click="Btn_1_Click"/>
-                <Button Tag="1_9"
-                        Grid.Column="2"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say_2, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
-                        Click="Btn_2_Click" />
-                <Button Tag="1_9"
-                        Grid.Column="3"
-                        Style="{DynamicResource style_BearBtn}"
-                        Content="{Binding List_bear_say_3, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
-                        Click="Btn_3_Click"/>
-            </Grid>
-        </Grid>
+        
     </Grid>
 </UserControl>

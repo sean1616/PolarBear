@@ -12,12 +12,15 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using GPIB_utility;
+using DiCon.UCB;
+using DiCon.UCB.Communication;
 using OxyPlot;
 using OxyPlot.Series;
 
 using PD.Functions;
 using PD.AnalysisModel;
 using PD.NavigationPages;
+using PD.Functions;
 using DiCon.Instrument.HP;
 
 namespace PD.ViewModel
@@ -28,7 +31,14 @@ namespace PD.ViewModel
         public System.Timers.Timer timer2 = new System.Timers.Timer();
         public System.Timers.Timer timer3 = new System.Timers.Timer();
         public static SetupIniIP ini = new SetupIniIP();
+
+        ControlCmd cmd = new ControlCmd();
+
         string ini_path = @"D:\PD\Instrument.ini";
+
+        ICommunication icomm;
+        DiCon.UCB.Communication.RS232.RS232 rs232;
+        DiCon.UCB.MTF.IMTFCommand tf;
 
         //ICommand
         #region ICommand
@@ -41,6 +51,27 @@ namespace PD.ViewModel
         #region Commands
         private void allwindow_minimum()
         {
+            #region Get Board Name
+            int board_count = _list_Board_Setting.Count;
+            for (int idz = 0; idz < board_count; idz++)
+            {
+                if (!string.IsNullOrEmpty(_list_Board_Setting[idz][1]))
+                {
+                    rs232 = new DiCon.UCB.Communication.RS232.RS232(_list_Board_Setting[idz][1]);
+                    rs232.OpenPort();
+                    icomm = (ICommunication)rs232;
+
+                    tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
+
+                    //txtSN[idz].Text = tf.ReadSN();
+                    list_Board_Setting[idz][0] = tf.ReadSN();
+                    Thread.Sleep(500);
+                    rs232.ClosePort();
+                }
+            }
+            #endregion
+
+
             bool dac_volt;
             if (bool.TryParse(Ini_Read("Connection", "DACorVolt"), out dac_volt))
                 isDACorVolt = dac_volt;
@@ -210,7 +241,7 @@ namespace PD.ViewModel
                 new List<DataPoint>()
             };
         }
-
+        
         public async Task Port_ReOpen(string comport)
         {
             if (!_pd_or_pm)  //PD type
@@ -239,13 +270,21 @@ namespace PD.ViewModel
 
             try
             {
-                //port_PD.Dispose();
-                port_PD = new SerialPort(comport, 115200, Parity.None, 8, StopBits.One);
-                port_PD.Open();
+                if (!string.IsNullOrEmpty(comport))
+                {
+                    port_PD = new SerialPort(comport, 115200, Parity.None, 8, StopBits.One);
+                    port_PD.Open();
+                }
+                else
+                {
+                    Str_cmd_read = "Comport is Null";
+                    cmd.Save_Log_Message("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString());
+                }
+                
             }
-            catch { Str_cmd_read = "Port Open Error"; }
-        }               
-
+            catch { Str_cmd_read = "Port Open Error"; cmd.Save_Log_Message("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString());  }
+        }
+        
         public List<SerialPort> List_Port = new List<SerialPort>(); 
         public void Multi_Port_Setting()
         {
@@ -342,7 +381,7 @@ namespace PD.ViewModel
 
                 timer2_count = 0;
             }
-            catch { Str_cmd_read = "Port is closed"; }
+            catch { Str_cmd_read = "---"; }
             await AccessDelayAsync(1);
         }
 
@@ -893,7 +932,7 @@ namespace PD.ViewModel
         }
 
         private List<string> _list_combox_Working_Table_Type_items =
-            new List<string>() { "Testing", "Hermetic Test", "BR" };
+            new List<string>() { "Testing", "Hermetic Test", "Chamber(S)", "BR" };
         public List<string> list_combox_Working_Table_Type_items
         {
             get { return _list_combox_Working_Table_Type_items; }
@@ -2285,7 +2324,7 @@ namespace PD.ViewModel
             }
         }
 
-        public int Int_Dac_min { get => _int_Dac_min; set => _int_Dac_min = value; }
+        //public int Int_Dac_min { get => _int_Dac_min; set => _int_Dac_min = value; }
 
         //public int Int_Read_Delay { get => _int_Read_Delay; set => _int_Read_Delay = value; }
     }

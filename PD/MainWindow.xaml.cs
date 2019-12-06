@@ -65,7 +65,6 @@ namespace PD
             combox_product.Items.Clear();
             combox_product.Items.Add("CTF");
             combox_product.Items.Add("UFA");
-            combox_product.Items.Add("UFA250");
             combox_product.Items.Add("UFA-T");
             combox_product.Items.Add("UFA(H)");
             combox_product.Items.Add("UTF");
@@ -461,6 +460,7 @@ namespace PD
         {
             bool _isGoOn_On = vm.IsGoOn;
             await vm.Port_ReOpen(vm.Selected_Comport);
+            
             vm.Str_comment = "ID?";
             await Cmd_Write_RecieveData(vm.Str_comment, true, 0);
 
@@ -475,6 +475,15 @@ namespace PD
 
         private async void btn_D0_Click(object sender, RoutedEventArgs e)
         {
+            if(vm.station_type=="Hermetic Test")
+            {
+                if(vm.GaugeText_visible == Visibility.Hidden)
+                    vm.GaugeText_visible = Visibility.Visible;
+                else
+                    vm.GaugeText_visible = Visibility.Hidden;
+            }
+
+
             if (vm.PD_or_PM == false)
                 await D0_show();
             else
@@ -491,12 +500,16 @@ namespace PD
                 {
                     if (vm.IsGoOn) await vm.PD_Stop();
 
-                    await vm.Port_ReOpen(vm.Selected_Comport);
+                    
                 }
                 catch { vm.Str_cmd_read = "PD port Open Error"; return; }
                                
                 for (int i = 1; i <= 8; i++)
                 {
+                    await vm.Port_ReOpen(vm.Selected_Comport);
+
+                    //await vm.AccessDelayAsync(50);
+
                     vm.Str_comment = "D" + i.ToString() + "?";
                     try
                     {
@@ -2493,25 +2506,31 @@ namespace PD
                 {
                     vm.port_PD.Write(vm.Str_comment + "\r");
 
-                    await Task.Delay(vm.Int_Read_Delay);
+                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
 
                     int size = vm.port_PD.BytesToRead;
                     byte[] dataBuffer = new byte[size];
-                    do
+                    if (size > 0)
                     {
-                        size = vm.port_PD.BytesToRead;  //check read data length
-                        if (size > 0)
-                        {
-                            dataBuffer = new byte[size];
-                            int length = vm.port_PD.Read(dataBuffer, 0, size);
-                        }
-                        else
-                            break;
+                        dataBuffer = new byte[size];
+                        int length = vm.port_PD.Read(dataBuffer, 0, size);
                     }
-                    while (true);
+                    //else
+                        //do
+                        //{
+                        //    size = vm.port_PD.BytesToRead;  //check read data length
+                        //    if (size > 0)
+                        //    {
+                        //        dataBuffer = new byte[size];
+                        //        int length = vm.port_PD.Read(dataBuffer, 0, size);
+                        //    }
+                        //    else
+                        //        break;
+                        //}
+                        //while (true);
 
-                    //Show read back message
-                    vm = anly._read_analysis(vm.Str_comment, dataBuffer);
+                        //Show read back message
+                        vm = anly._read_analysis(vm.Str_comment, dataBuffer);
 
                     vm.port_PD.DiscardInBuffer();       // RX
                     vm.port_PD.DiscardOutBuffer();      // TX
@@ -2532,8 +2551,7 @@ namespace PD
                     if (vm.IsGoOn)
                     {
                         vm.Str_comment = "P0?";
-                        vm.port_PD.Open();
-                        vm.timer2.Start();
+                        await vm.PD_GO();
                     }
                 }
             }
@@ -2850,7 +2868,7 @@ namespace PD
                 vm.Str_cmd_read = wl.ToString();
                 await vm.AccessDelayAsync(vm.Int_Set_WL_Delay + 100);
 
-                if(await cmd.Get_PD_Value())
+                if(!await cmd.Get_PD_Value())
                 {
                     vm.Str_cmd_read = "Get PD Value Error";
                     return;
@@ -2863,6 +2881,7 @@ namespace PD
                     if (!vm.Bool_Gauge[ch]) continue;
                     if (vm.Float_PD.Count <= ch) continue;
                     DataPoint dp = new DataPoint(wl, vm.Float_PD[ch]);
+                    vm.Save_All_PD_Value[ch] = new List<DataPoint>();
                      vm.Save_All_PD_Value[ch].Add(dp);
                 }               
 
@@ -2931,14 +2950,15 @@ namespace PD
 
                     if (vm.Bool_Gauge[ch])
                     {
-                        if(await cmd.Get_PD_Value())
+                        if(!await cmd.Get_PD_Value())
                         {
                             vm.Str_cmd_read = "Get PD Value Error";
-                            //return;
+                            return;
                         }
                     }
 
-                    list_wl.Add(vm.Float_PD[ch]);  //Save every WL into list
+                    list_wl.Add(wl);  //Save every WL into list
+                    list_il.Add(vm.Float_PD[ch]);  
 
                     if (vm.Float_PD.Count <= ch) continue;
 
@@ -2959,7 +2979,8 @@ namespace PD
                 }
                 #endregion
 
-                double best_wl = Math.Round(list_wl[list_il.FindIndex(x => x.Equals(list_il.Max()))], 2);
+                int index = list_il.FindIndex(x => x.Equals(list_il.Max()));
+                double best_wl = Math.Round(list_wl[index], 2);
                 list_best_wl.Add(best_wl);
             }
             
@@ -4039,7 +4060,9 @@ namespace PD
 
         private void btn_help_Click(object sender, RoutedEventArgs e)
         {
-            vm.Show_Bear_Window("有 問 題 請 撥 5 1 7", false, "String_Step");
+            //vm.Show_Bear_Window("有 問 題 請 撥 5 1 7", false, "String_Step");
+
+            vm.List_D0_value = new List<List<string>>() { new List<string>() { 100.ToString(), 200.ToString(), 300.ToString() } };
         }
 
         private void RBtn_Script_Checked(object sender, RoutedEventArgs e)

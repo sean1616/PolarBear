@@ -129,7 +129,7 @@ namespace PD.NavigationPages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v4.0.8;component/navigationpages/page_setting.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v4.0.9;component/navigationpages/page_setting.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NavigationPages\Page_Setting.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
