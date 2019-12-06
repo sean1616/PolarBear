@@ -217,7 +217,8 @@ namespace PD.ViewModel
             {
                 if (_isGoOn)
                 {
-                    timer2.Stop();
+                    //timer2.Stop();
+                    await PD_Stop();
                     await AccessDelayAsync(Int_Read_Delay);
                 }
             }
@@ -228,9 +229,9 @@ namespace PD.ViewModel
                 {
                     if (port_PD.IsOpen)
                     {
-                        port_PD.Close();
                         port_PD.DiscardInBuffer();       // RX
                         port_PD.DiscardOutBuffer();      // TX
+                        port_PD.Close();                        
                     }
                 }
             }
@@ -238,7 +239,7 @@ namespace PD.ViewModel
 
             try
             {
-                port_PD.Dispose();
+                //port_PD.Dispose();
                 port_PD = new SerialPort(comport, 115200, Parity.None, 8, StopBits.One);
                 port_PD.Open();
             }
@@ -817,9 +818,12 @@ namespace PD.ViewModel
                 if (value == "Hermetic Test")
                 {
                     ch_count = 12;
-                    Bool_Gauge = new bool[] { true, true, true, true, true, true, true, true, true, true, true, true };
+                    //Bool_Gauge = new bool[] { true, true, true, true, true, true, true, true, true, true, true, true };
+                    Bool_Gauge = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false };
                     bo_temp_gauge = new bool[] { true, true, true, true, true, true, true, true, true, true, true, true };
-                    
+
+                   
+
                     Is_switch_mode = true;
 
                     GaugeText_visible = Visibility.Hidden;
@@ -831,6 +835,7 @@ namespace PD.ViewModel
                 }
                 else
                 {
+                    ch_count = 8;
                     Is_switch_mode = false;
                     GaugeText_visible = Visibility.Visible;
                     GaugeTabEnable = false;
@@ -1973,7 +1978,7 @@ namespace PD.ViewModel
             }
         }
 
-        private List<string> _str_channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
+        private List<string> _str_channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
         public List<string> Str_Channel
         {
             get { return _str_channel; }

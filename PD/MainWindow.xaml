@@ -331,7 +331,7 @@
                 </ComboBox>
 
                 <Button x:Name="btn_ID"
-                        Grid.Row="3"
+                        Grid.Row="2"
                         Grid.ColumnSpan="2"
                         Click="btn_ID_Click"
                         Content="ID"
@@ -383,7 +383,7 @@
                         Style="{DynamicResource style_FuncBtn}"
                         Tag="../Resources/send.png" />
                 <Button x:Name="btn_D0"
-                        Grid.Row="4"
+                        Grid.Row="3"
                         Grid.ColumnSpan="2"
                         Click="btn_D0_Click"
                         Content="DAC?"
@@ -391,7 +391,7 @@
                         Style="{DynamicResource style_FuncBtn}"
                         Tag="../Resources/question.png" />
                 <ComboBox x:Name="ComBox_Calibration"
-                          Grid.Row="5"
+                          Grid.Row="4"
                           Grid.ColumnSpan="2"
                           DropDownClosed="ComBox_Calibration_DropDownClosed"
                           DropDownOpened="ComBox_Calibration_DropDownOpened"
@@ -402,8 +402,24 @@
                           Tag="../Resources/calibration-mark.png">
                 </ComboBox>
 
-                <Button Name="K_WL"
+                <Button Name="btn_K_VOA"
+                        Grid.Row="5"
+                        Grid.ColumnSpan="2"
+                        Click="K_VOA_Click"
+                        Content="K VOA"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/search.png" />
+
+                <Button Name="btn_K_TF"
                         Grid.Row="6"
+                        Grid.ColumnSpan="2"
+                        Click="K_TF_Click"
+                        Content="K TF"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/search.png" />
+
+                <Button Name="K_WL"
+                        Grid.Row="7"
                         Grid.ColumnSpan="2"
                         Click="K_WL_Click"
                         Content="K WL"

@@ -21,10 +21,10 @@
                       Margin="7"                  
                       Focusable="False"
                       PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
-                      PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
-                      
+                      PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"                      
                       PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
                       MouseEnter="tbtn_MouseEnter"
+                      Loaded="ToggleButton_Loaded"
                       IsChecked="{Binding Bool_Gauge, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
                       Style="{StaticResource style_Gauge_Background}">
             <Grid>
@@ -114,15 +114,7 @@
                                            TextWrapping="Wrap"
                                            Text="{Binding Gauge_channel, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}" />
                             </StackPanel>
-                        </Grid>
-                        <!--<Button Name="btn_show_window"
-                    Grid.Column="1"
-                    Width="30"
-                    Height="30"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Command="{Binding AddItem, ElementName=UserControl_Gauge}"
-                    Grid.Row="0" />-->
+                        </Grid>                      
                     </Grid>
                 </Viewbox>
             </Grid>

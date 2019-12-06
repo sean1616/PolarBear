@@ -67,21 +67,13 @@ namespace PD.Functions
                     else
                         K_WL_setting(1589.6- bonus_wl, 1592+ bonus_wl, gap * 2); //1591
                     break;
-
-                case "UFA250":
-                    choose_product_setting(-65500, 65500, 24, 31, 3600);
-                    if (vm.selected_band == "C Band")
-                        K_WL_setting(1547 - bonus_wl, 1549.5 + bonus_wl, gap * 3 / 2); //1548.51 gap:0.6
-                    else
-                        K_WL_setting(1589.6 - bonus_wl, 1592 + bonus_wl, gap * 3 / 2); //1591
-                    break;
-
+                                   
                 case "UFA-T":
                     choose_product_setting(-65500, 65500, 0, 10, 3600);
                     if (vm.selected_band == "C Band")
-                        K_WL_setting(1547 - bonus_wl, 1549.5 + bonus_wl, gap * 2); //1548.51 gap:0.6
+                        K_WL_setting(1547 - bonus_wl, 1549.5 + bonus_wl, gap * 3/2); //1548.51 gap:0.6
                     else
-                        K_WL_setting(1589.6 - bonus_wl, 1592 + bonus_wl, gap * 2); //1591
+                        K_WL_setting(1589.6 - bonus_wl, 1592 + bonus_wl, gap * 3/2); //1591
                     break;
 
                 case "UFA(H)":

@@ -662,7 +662,7 @@ namespace PD.NavigationPages
                         else
                         {
                             double volt = Convert.ToDouble(obj.Text);
-                            obj.Text = (volt + 0.1).ToString();
+                            obj.Text = (volt - 0.1).ToString();
 
                             cmd.Set_V3_Volt(selected_comport, volt - 0.1);
                         }

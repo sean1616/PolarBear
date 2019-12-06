@@ -487,38 +487,30 @@ namespace PD
 
             if (!vm.PD_or_PM)  //PD mode
             {
+                try
+                {
+                    if (vm.IsGoOn) await vm.PD_Stop();
+
+                    await vm.Port_ReOpen(vm.Selected_Comport);
+                }
+                catch { vm.Str_cmd_read = "PD port Open Error"; return; }
+                               
                 for (int i = 1; i <= 8; i++)
                 {
                     vm.Str_comment = "D" + i.ToString() + "?";
                     try
                     {
-                        if (!vm.IsGoOn)  //Go is off
-                        {
-                            try
-                            {
-                                vm.port_PD.Open();
-                            }
-                            catch { }
-                            await _cmd_write_recieveData_ForD0(vm.Str_comment);
-                        }
-                        else  //Go is on
-                        {
-                            vm.timer2.Stop();
-                            await vm.AccessDelayAsync(120);
-                            vm.port_PD.DiscardInBuffer();       // RX
-                            vm.port_PD.DiscardOutBuffer();      // TX
-                            vm.port_PD.Close();
-
-                            vm.port_PD.Open();
-                            await _cmd_write_recieveData_ForD0(vm.Str_comment);
-                        }
+                        await _cmd_write_recieveData_ForD0(vm.Str_comment);
                     }
-                    catch
-                    {
-                        i = 9;
-                        vm.Str_cmd_read = "Port is closed";
-                    }
+                    catch { vm.Str_cmd_read = "Port is closed"; return; }
                 }
+
+                try
+                {
+                    if (vm.IsGoOn) await vm.PD_GO();
+                    else vm.port_PD.Close();
+                }
+                catch { }
             }
 
             else  //PM mode
@@ -2792,9 +2784,7 @@ namespace PD
             if (vm.IsGoOn)
             {
                 if (vm.PD_or_PM)
-                    vm.timer3.Stop();
-                else
-                    vm.timer2.Stop();
+                    await vm.PM_Stop();                    
             }
             
             #region initial setting
@@ -2844,7 +2834,11 @@ namespace PD
         private async void K_WL_PD()
         {
             List<List<double>> _saved_power = new List<List<double>>();
-            await anly.Port_ReOpen();
+            //if (vm.IsGoOn) await vm.PD_Stop();
+
+            await vm.Port_ReOpen(vm.Selected_Comport);
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
 
             #region Rough scan
             for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
@@ -2886,6 +2880,8 @@ namespace PD
             #endregion
 
             List<double> list_wl = new List<double>();
+            List<double> list_il = new List<double>();
+            List<double> list_best_wl = new List<double>();
             List<List<string>> _save_all_WL_and_IL = new List<List<string>>();
 
              vm.Save_All_PD_Value.Clear();
@@ -2901,9 +2897,11 @@ namespace PD
             {
                 if (!vm.Bool_Gauge[ch])
                 {
-                    list_wl.Add(0);
+                    list_best_wl.Add(0);
                     continue;
                 }
+                list_il.Clear();
+                list_wl.Clear();
 
                 //取出某一channel的所有讀到的power值，並存在_saved_ch_power變數
                 List<double> _saved_ch_power = new List<double>();
@@ -2913,13 +2911,12 @@ namespace PD
                     _saved_ch_power.Add(_saved_power[i][ch]);
                 }
 
-                //找到最大power時的WL值
+                //找到Rough Scan時最大power時的WL值
                 int wl_index = _saved_ch_power.FindIndex(x => x.Equals(_saved_ch_power.Max()));
                 double Best_WL = vm.float_WL_Scan_Start + vm.float_WL_Scan_Gap * wl_index;
-                list_wl.Add(Best_WL);  //所有channel的最佳loss相對應的波長
-
+                
                 #region Create new scan range (Detail scan)       
-                for (double wl = Best_WL - vm.float_WL_Scan_Gap * 1; wl <= Best_WL + vm.float_WL_Scan_Gap * 1; wl = wl + vm.float_WL_Scan_Gap / 4)
+                for (double wl = Best_WL - vm.float_WL_Scan_Gap * 1; wl <= Best_WL + vm.float_WL_Scan_Gap * 1; wl = wl + 0.01)
                 {
                     if (vm.isStop == true)
                         return;
@@ -2937,9 +2934,11 @@ namespace PD
                         if(await cmd.Get_PD_Value())
                         {
                             vm.Str_cmd_read = "Get PD Value Error";
-                            return;
+                            //return;
                         }
                     }
+
+                    list_wl.Add(vm.Float_PD[ch]);  //Save every WL into list
 
                     if (vm.Float_PD.Count <= ch) continue;
 
@@ -2959,15 +2958,18 @@ namespace PD
                     #endregion
                 }
                 #endregion
+
+                double best_wl = Math.Round(list_wl[list_il.FindIndex(x => x.Equals(list_il.Max()))], 2);
+                list_best_wl.Add(best_wl);
             }
             
             await cmd.Save_Chart();
 
-            if (!vm.isStop)
-            {
-                await K_Curfit( vm.Save_All_PD_Value, Points, BestCoeffs, "K WL");
-                await cmd.Save_Chart();
-            }
+            //if (!vm.isStop)
+            //{
+            //    await K_Curfit( vm.Save_All_PD_Value, Points, BestCoeffs, "K WL");
+            //    await cmd.Save_Chart();
+            //}
 
             //Collect data for Bear say
             _save_all_WL_and_IL.Clear();
@@ -2979,17 +2981,28 @@ namespace PD
                     continue;
                 }
 
-                vm.tls.SetWL(vm.List_curfit_resultWL[ch]);
+                vm.tls.SetWL(list_best_wl[ch]);
                 await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
                 await cmd.Get_PD_Value();
-                _save_all_WL_and_IL.Add(new List<string>() { vm.List_curfit_resultWL[ch].ToString(), Math.Round(vm.Float_PD[ch], 3).ToString() });
-            }
+                _save_all_WL_and_IL.Add(new List<string>() { list_best_wl[ch].ToString(), Math.Round(vm.Float_PD[ch], 3).ToString() });
+            }                       
+            
+            var elapsedMs = watch.ElapsedMilliseconds;
 
-            vm.List_bear_say = _save_all_WL_and_IL;
+            vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
+            await vm.AccessDelayAsync(50);
 
-            vm.Show_Bear_Window(_save_all_WL_and_IL, false, "");
+            vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String");
+            vm.Collection_bear_say.Add(_save_all_WL_and_IL);   //Save data in history record
+            vm.bear_say_all++;
+            vm.bear_say_now = vm.bear_say_all;
+
+            cmd.Save_Calibration_Data("K WL");  //Save calibration data to txt file
 
             vm.Str_Status = "K Wavelength Stop";
+
+            if (vm.IsGoOn == true)
+                vm.PM_GO();
         }
 
         //private async void K_WL_PM()
@@ -3461,22 +3474,21 @@ namespace PD
 
                                         _save_all_WL_and_IL.Add(new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString(), list_finalVoltage[ch] });
 
-                                        if (vm.Gauge_Page_now == 2)
-                                        {
-                                            _save_all_WL_and_IL[ch - 8] = new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString(), list_finalVoltage[ch] };
-                                        }
+                                        //if (vm.Gauge_Page_now == 2)
+                                        //{
+                                        //    _save_all_WL_and_IL[ch - 8] = new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString(), list_finalVoltage[ch] };
+                                        //}
                                     }
                                         
                                     else  //if no k v3 before
                                     {
                                         _save_all_WL_and_IL.Add(new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString() });
 
-                                        if (vm.Gauge_Page_now == 2)
-                                        {
-                                            _save_all_WL_and_IL[ch - 8] = new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString() };
-                                        }
-                                    }
-                                        
+                                        //if (vm.Gauge_Page_now == 2)
+                                        //{
+                                        //    _save_all_WL_and_IL[ch - 8] = new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString() };
+                                        //}
+                                    }                                        
 
                                     if (vm.station_type != "Hermetic Test")
                                         setting.Set_Laser_WL(best_wl);
@@ -3501,17 +3513,17 @@ namespace PD
 
             vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
             await vm.AccessDelayAsync(50);
-            
-            vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs/1000,1).ToString() + " s)", false, "String");
+
+            vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String");
             vm.Collection_bear_say.Add(_save_all_WL_and_IL);   //Save data in history record
             vm.bear_say_all++;
             vm.bear_say_now = vm.bear_say_all;
 
-            cmd.Save_Calibration_Data("K WL");
+            cmd.Save_Calibration_Data("K WL");  //Save calibration data to txt file
 
             vm.Str_Status = "K Wavelength Stop";
 
-            vm.analysis = anly;
+            //vm.analysis = anly;
 
             if (vm.IsGoOn == true)
                 vm.PM_GO();
@@ -4045,6 +4057,19 @@ namespace PD
             //TextBox obj = (TextBox)sender;
             //if (string.IsNullOrEmpty(obj.Text))
             //    txt_UserID_label.Visibility = Visibility.Hidden;
+        }
+
+        private async void K_VOA_Click(object sender, RoutedEventArgs e)
+        {
+            vm.isStop = false;
+            await K_V3(true);
+        }
+
+        private async void K_TF_Click(object sender, RoutedEventArgs e)
+        {
+            bool _isGoOn_On = vm.IsGoOn;
+            vm.isStop = false;
+            await K_TF(_isGoOn_On);
         }
 
         private void Grid_clock_Loaded(object sender, RoutedEventArgs e)

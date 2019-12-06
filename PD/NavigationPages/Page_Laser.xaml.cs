@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using DiCon.Instrument.HP;
+using TH300;
 using PD.ViewModel;
 using System.Threading.Tasks;
 using OxyPlot;
@@ -180,11 +181,7 @@ namespace PD.NavigationPages
 
         private void btn_Laser_Status_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-            }
-            catch { btn_Laser_Status.Background = Brushes.Red; }
+            
         }
 
         private void btn_WL_Scan_Click(object sender, RoutedEventArgs e)

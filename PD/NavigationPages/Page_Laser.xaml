@@ -367,7 +367,7 @@
                         Name="btn_Laser_Status"
                         Grid.Column="0"
                         Click="btn_Laser_Status_Click"
-                        Content="Status"
+                        Content="Chamber"
                         Style="{DynamicResource style_FuncBtn_Black}" />
                     <TextBlock
                         Grid.Column="2"
@@ -407,54 +407,7 @@
                         Text="dBm" />
                 </Grid>
             </Grid>
-            <Grid Grid.Row="7">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="0.3*" />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    Grid.Column="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                    Text="Read WL Min : " />
-                <TextBlock
-                    Grid.Column="3"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                    Text="{Binding Double_Laser_Wavelength}" />
-                <TextBlock
-                    Grid.Column="4"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                    Text="nm" />
-                <TextBlock
-                    Grid.Column="5"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                    Text="Read WL Max : " />
-                <TextBlock
-                    Grid.Column="6"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                    Text="{Binding Double_Laser_Power}" />
-                <TextBlock
-                    Grid.Column="7"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                    Text="nm" />
-            </Grid>
+            
         </Grid>
         <Grid
             Name="grid_PDL_Function"

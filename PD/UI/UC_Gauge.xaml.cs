@@ -31,15 +31,20 @@ namespace PD.UI
             InitializeComponent();
         }
 
+        public event RoutedEventHandler TBtn_PreviewMouseRightButtonDown = delegate { };
         private void tbtn_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             vm.is_Gauge_ContinueSelect = true;
             ToggleButton obj = (ToggleButton)sender;
+            //obj.IsCheked = obj.IsChecked;
             obj.IsChecked = !obj.IsChecked;
+            TBtn_PreviewMouseRightButtonDown(sender, e);            
         }
 
+        public event RoutedEventHandler TBtn_PreviewMouseRightButtonUp = delegate { };
         private void tbtn_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
+            TBtn_PreviewMouseRightButtonUp(sender, e);
             vm.is_Gauge_ContinueSelect = false;
             //if (vm.station_type == "Hermetic Test")
 
@@ -92,12 +97,14 @@ namespace PD.UI
             TBtn_PreviewMouseLeftButtonDown(sender, e);
         }
 
+        public event RoutedEventHandler TBtn_PreviewMouseLeftButtonUp = delegate { };
         private void tbtn_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (vm.station_type != "Hermetic Test") return;
-            if (gaugetxt_focus) return;
-            ToggleButton obj = (ToggleButton)sender;
-            obj.IsChecked = !obj.IsChecked;
+            TBtn_PreviewMouseLeftButtonUp(sender, e);
+            //if (vm.station_type != "Hermetic Test") return;
+            //if (gaugetxt_focus) return;
+            //ToggleButton obj = (ToggleButton)sender;
+            //obj.IsChecked = !obj.IsChecked;
         }
 
         private void tbtn_MouseEnter(object sender, MouseEventArgs e)
@@ -314,6 +321,13 @@ namespace PD.UI
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             this.vm = (ComViewModel)this.DataContext;
+
+        }
+
+        private void ToggleButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            ToggleButton obj = (ToggleButton)sender;
+            obj.IsChecked = obj.IsChecked;
         }
     }
 }
