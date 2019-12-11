@@ -42,14 +42,14 @@ namespace PD.ViewModel
 
         //ICommand
         #region ICommand
-        public ICommand AllWindow_Minimum { get { return new Delegatecommand(allwindow_minimum); } }
+        public ICommand BearTestCommand { get { return new Delegatecommand(BearTest); } }
 
         public ICommand Cmd_Test { get { return new Delegatecommand(cmd_test); } }
         #endregion
 
         //Commands
         #region Commands
-        private void allwindow_minimum()
+        private void BearTest()
         {
             #region Get Board Name
             int board_count = _list_Board_Setting.Count;
@@ -64,9 +64,13 @@ namespace PD.ViewModel
                     tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
 
                     //txtSN[idz].Text = tf.ReadSN();
-                    list_Board_Setting[idz][0] = tf.ReadSN();
-                    Thread.Sleep(500);
-                    rs232.ClosePort();
+                    try
+                    {
+                        list_Board_Setting[idz][0] = tf.ReadSN();
+                        Thread.Sleep(500);
+                        rs232.ClosePort();
+                    }
+                    catch { }
                 }
             }
             #endregion
@@ -93,6 +97,8 @@ namespace PD.ViewModel
             Collection_bear_say.Add(lls);
             bear_say_all++;
             bear_say_now = bear_say_all;
+
+            
         }
 
         private void cmd_test()
@@ -734,7 +740,7 @@ namespace PD.ViewModel
         }
 
         private List<GridLength> _GaugeTxtSize_Column = new List<GridLength>() { new GridLength(2.5, GridUnitType.Star) , new GridLength(5, GridUnitType.Star) ,
-            new GridLength(5, GridUnitType.Star) , new GridLength(5, GridUnitType.Star) , new GridLength(2.5, GridUnitType.Star) };
+            new GridLength(5, GridUnitType.Star) , new GridLength(3, GridUnitType.Star) , new GridLength(2.5, GridUnitType.Star) };
         public List<GridLength> GaugeTxtSize_Column
         {
             get { return _GaugeTxtSize_Column; }
@@ -1536,7 +1542,7 @@ namespace PD.ViewModel
             set { _bool_Page2 = value; }
         }
 
-        private bool[] _bool_gauge = new bool[] { true, true, true, true, true, true, true, true};
+        private bool[] _bool_gauge = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false };
         public bool[] Bool_Gauge
         {
             get { return _bool_gauge; }

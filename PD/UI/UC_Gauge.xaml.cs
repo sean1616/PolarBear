@@ -94,7 +94,9 @@ namespace PD.UI
         public event RoutedEventHandler TBtn_PreviewMouseLeftButtonDown = delegate { };
         private void tbtn_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            TBtn_PreviewMouseLeftButtonDown(sender, e);
+            ToggleButton obj = (ToggleButton)sender;
+            obj.Tag = Tag;            
+            TBtn_PreviewMouseLeftButtonDown(sender, e);            
         }
 
         public event RoutedEventHandler TBtn_PreviewMouseLeftButtonUp = delegate { };
@@ -266,7 +268,10 @@ namespace PD.UI
         public event RoutedEventHandler Btn_WL_Click = delegate { };
         private void Btn_1_Click(object sender, RoutedEventArgs e)
         {
+            Button obj = (Button)sender;
+            obj.Tag = this.Tag;
             Btn_WL_Click(sender, e);
+            UC_Gauge_Tbn.IsChecked = !UC_Gauge_Tbn.IsChecked;
         }
 
         public event RoutedEventHandler Btn_IL_Click = delegate { };
@@ -336,6 +341,24 @@ namespace PD.UI
         {
             ToggleButton obj = (ToggleButton)sender;
             obj.IsChecked = obj.IsChecked;
+        }
+
+        
+
+        private void btn_1_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //Button obj = (Button)sender;
+            UC_Gauge_Tbn.IsChecked = !UC_Gauge_Tbn.IsChecked;
+        }
+
+        public event RoutedEventHandler Btn_update = delegate { };
+        private void btn_update_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem obj = (MenuItem)sender;
+            obj.Tag = Tag;
+            Btn_update(sender, e);
+            //int index = int.Parse(Tag.ToString().Substring(1));
+            //vm.List_D0_value[index][0] = vm.Double_Laser_Wavelength.ToString();
         }
     }
 }

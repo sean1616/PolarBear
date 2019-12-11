@@ -7,8 +7,7 @@
              xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
              mc:Ignorable="d" 
              xmlns:vm="clr-namespace:PD.ViewModel"
-             xmlns:gauge="clr-namespace:Circle_Gauge;assembly=Circle_Gauge"
-             PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
+             xmlns:gauge="clr-namespace:Circle_Gauge;assembly=Circle_Gauge"             
              d:DesignHeight="200" d:DesignWidth="220" Loaded="UserControl_Loaded">
 
     <UserControl.DataContext>
@@ -18,10 +17,12 @@
     <Grid >     
         <ToggleButton Grid.Row="0"
                       Grid.Column="0"
+                      x:Name="UC_Gauge_Tbn"
                       Margin="7"                  
                       Focusable="False"
                       PreviewMouseRightButtonDown="tbtn_PreviewMouseRightButtonDown"
-                      PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"                      
+                      PreviewMouseRightButtonUp="tbtn_PreviewMouseRightButtonUp"
+                      PreviewMouseLeftButtonDown="tbtn_PreviewMouseLeftButtonDown"
                       PreviewMouseLeftButtonUp="tbtn_PreviewMouseLeftButtonUp"
                       MouseEnter="tbtn_MouseEnter"
                       Loaded="ToggleButton_Loaded"
@@ -132,11 +133,11 @@
                               Grid.ColumnSpan="3"
                               Name="grid_dac_txt">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[0]}" />
-                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[1]}" />
-                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[2]}" />
-                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[3]}" />
-                                <ColumnDefinition Width="{Binding GaugeTxtSize_Column[4]}" />
+                                <ColumnDefinition Width="2.5*" />
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="2.5*" />
                             </Grid.ColumnDefinitions>
                             <TextBox x:Name="_1"
                                      Grid.Column="1"
@@ -194,15 +195,30 @@
                                     Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
                                     Style="{DynamicResource style_BearBtn}"
                                     Content="{Binding List_bear_say_1, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
-                                    Click="Btn_1_Click" />
+                                    PreviewMouseRightButtonDown="btn_1_PreviewMouseRightButtonDown"
+                                    Click="Btn_1_Click">
+                                <Button.ContextMenu>
+                                    <ContextMenu Name="cm"                                                
+                                                 StaysOpen="true">
+                                        <MenuItem Name="btn_update" Header="Update" Click="btn_update_Click"/>
+                                        <!--<MenuItem Header="Save" />-->
+                                        <!--<MenuItem Header="Recent Files">
+                                            <MenuItem Header="ReadMe.txt" />
+                                            <MenuItem Header="Schedule.xls" />
+                                        </MenuItem>-->
+                                    </ContextMenu>
+                                </Button.ContextMenu>
+                            </Button>
                             <Button Tag="1_9"
                                     Grid.Column="2"
                                     Style="{DynamicResource style_BearBtn}"
+                                    Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
                                     Content="{Binding List_bear_say_2, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
                                     Click="Btn_2_Click" />
                             <Button Tag="1_9"
                                     Grid.Column="3"
                                     Style="{DynamicResource style_BearBtn}"
+                                    Height="{Binding ActualHeight, ElementName=_txt_1, Mode=OneWay}"
                                     Content="{Binding List_bear_say_3, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
                                     Click="Btn_3_Click" />
                         </Grid>

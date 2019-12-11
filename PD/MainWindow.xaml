@@ -75,29 +75,20 @@
                   Grid.Row="1"
                   Grid.ColumnSpan="3">
                 <Viewbox>
-                    <Grid>
-                        <!--<Label Name="txt_UserID_label"
-                              VerticalAlignment="Bottom"
-                               VerticalContentAlignment="Bottom"
-                               HorizontalContentAlignment="Center"
-                           Background="Transparent"
-                           Content=" User ID"
-                           Focusable="False"
-                           Foreground="Wheat"
-                           Opacity="1" />-->
-                          <TextBox Name="txt_ID"
-                             Background="Transparent"
-                             VerticalAlignment="Bottom"
-                             HorizontalContentAlignment="Center"
-                             VerticalContentAlignment="Bottom"
-                             Foreground="Wheat"
-                                   GotFocus="Txt_ID_GotFocus"
-                                   LostFocus="Txt_ID_LostFocus"
-                             Text="{Binding UserID}"
-                             Style="{DynamicResource style_UserID_txtbox}"
-                             Tag="../Resources/polar-bear-small.png"
-                             Width="{Binding ActualWidth, ElementName=grid_UserID, Mode=OneWay}"
-                             Height="{Binding ActualHeight, ElementName=grid_UserID, Mode=OneWay}" />
+                    <Grid>                       
+                        <TextBox Name="txt_ID"
+                                 Background="Transparent"
+                                 VerticalAlignment="Bottom"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Bottom"
+                                 Foreground="Wheat"
+                                 GotFocus="Txt_ID_GotFocus"
+                                 LostFocus="Txt_ID_LostFocus"
+                                 Text="{Binding UserID}"
+                                 Style="{DynamicResource style_UserID_txtbox}"
+                                 Tag="../Resources/polar-bear-small.png"
+                                 Width="{Binding ActualWidth, ElementName=grid_UserID, Mode=OneWay}"
+                                 Height="{Binding ActualHeight, ElementName=grid_UserID, Mode=OneWay}" />
                     </Grid>
                 </Viewbox>
             </Grid>
@@ -130,7 +121,7 @@
                              FontSize="20"
                              Foreground="Black"
                              Style="{DynamicResource style_PageBtn}"
-                             Tag="../Resources/gauge.png" />
+                             Tag="../Resources/Gauge.png" />
                 <RadioButton x:Name="RBtn_Chart_Page"
                              Grid.Row="1"
                              Grid.Column="1"
@@ -139,7 +130,7 @@
                              FontSize="25"
                              Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
                              Style="{DynamicResource style_PageBtn}"
-                             Tag="../Resources/analytics.png" />
+                             Tag="../Resources/Anly.png" />
                 <RadioButton x:Name="RBtn_DataGrid_Page"
                              Grid.Row="1"
                              Grid.Column="2"
@@ -148,7 +139,7 @@
                              FontSize="25"
                              Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
                              Style="{DynamicResource style_PageBtn}"
-                             Tag="../Resources/calendar.png" />
+                             Tag="../Resources/Calendar.png" />
                 <RadioButton x:Name="RBtn_Laser_Page"
                              Grid.Row="1"
                              Grid.Column="3"
@@ -157,7 +148,7 @@
                              FontSize="25"
                              Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
                              Style="{DynamicResource style_PageBtn}"
-                             Tag="../Resources/laser.png" />
+                             Tag="../Resources/Laser.png" />
                 <RadioButton Name="RBtn_Script"
                              Grid.Row="1"
                              Grid.Column="4"
@@ -166,7 +157,7 @@
                              FontSize="25"
                              Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
                              Style="{DynamicResource style_PageBtn}"
-                             Tag="../Resources/settings.png" />
+                             Tag="../Resources/Script.png" />
                 <RadioButton Name="RBtn_Setting"
                              Grid.Row="1"
                              Grid.Column="5"
@@ -175,7 +166,7 @@
                              FontSize="25"
                              Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
                              Style="{DynamicResource style_PageBtn}"
-                             Tag="../Resources/settings.png" />                
+                             Tag="../Resources/Setting.png" />                
             </Grid>
 
             <Grid Grid.Column="1">
@@ -197,7 +188,7 @@
                         VerticalAlignment="Top"
                         Click="btn_help_Click"
                         Style="{DynamicResource style_WindowFuncBtn}"
-                        Tag="../Resources/info.png" />
+                        Tag="../Resources/Q.png" />
                 <Button Name="btn_min"
                         Grid.Column="2"
                         MaxHeight="25"
@@ -315,7 +306,7 @@
                           FontSize="{Binding Int_Fontsize}"
                           SelectedItem="{Binding Selected_Comport}"
                           Style="{DynamicResource style_combobox}"
-                          Tag="../Resources/network.png" />
+                          Tag="../Resources/Network.png" />
 
                 <ComboBox x:Name="combox_product"
                           Grid.Row="1"
@@ -325,7 +316,7 @@
                           FontSize="{Binding Int_Fontsize}"
                           SelectedIndex="0"
                           Style="{DynamicResource style_FuncCombobox}"
-                          Tag="../Resources/box.png">
+                          Tag="../Resources/Box.png">
                     <TextBlock Foreground="White"
                                Text="UFA" />
                 </ComboBox>
@@ -337,7 +328,7 @@
                         Content="ID"
                         FontSize="{Binding Int_Fontsize}"
                         Style="{DynamicResource style_FuncBtn}"
-                        Tag="../Resources/identification.png" />
+                        Tag="../Resources/Identification.png" />
                 <ToggleButton x:Name="btn_GO"
                               Grid.Row="12"
                               Grid.ColumnSpan="2"
@@ -346,42 +337,61 @@
                               FontSize="{Binding Int_Fontsize}"
                               IsChecked="{Binding IsGoOn}"
                               Style="{DynamicResource style_FuncToggleBtn}"
-                              Tag="../Resources/stopwatch.png" />
-                <Grid Grid.Row="10"
+                              Tag="../Resources/Stopwatch.png" />
+                <Grid Grid.Row="11"
                       Grid.ColumnSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="5.5*" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.8*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Row="1" x:Name="Btn_Send"
+                            Style="{DynamicResource style_SendBtn}"
+                            Tag="../Resources/Send.png" />
                     <!--  浮水印  -->
-                    <Rectangle Width="{Binding Height, ElementName=txtBox_comment}"
-                               Height="{Binding Height, ElementName=txtBox_comment}"
-                               Margin="{Binding Margin, ElementName=txtBox_comment}"
+                    <Rectangle Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2"
+                               Height="{Binding ActualHeight, ElementName=Btn_Send, Mode=OneWay}"
                                Fill="White" />
-                    <Label Name="txt_label"
-                           VerticalAlignment="Center"
-                           Background="White"
-                           Content=" Fire up and Ready to Serve"
-                           Focusable="False"
-                           FontFamily="{Binding FontFamily, ElementName=txtBox_comment}"
-                           FontSize="{Binding Int_Fontsize}"
-                           Foreground="Gray"
-                           Opacity="1" />
-                    <TextBox x:Name="txtBox_comment"
-                             Margin="0,5,0,5"
+                    <Viewbox Grid.Row="1"
+                             Grid.Column="1" HorizontalAlignment="Left">
+                        <Label Name="txt_label"          
+                               HorizontalContentAlignment="Left"
+                               VerticalAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Content="Command"
+                               Focusable="False"
+                               FontFamily="{Binding FontFamily, ElementName=txtBox_comment}"
+                               FontSize="{Binding Int_Fontsize}"
+                               Foreground="Gray"
+                               Opacity="1"
+                               Height="{Binding ActualHeight, ElementName=Btn_Send, Mode=OneWay}" />
+                    </Viewbox>
+                    <TextBox x:Name="txtBox_comment"                             
                              VerticalContentAlignment="Center"
                              Background="Transparent"
+                             Grid.Row="1"
+                             Grid.Column="1"
                              FontSize="{Binding Int_Fontsize}"
                              GotFocus="txtBox_comment_GotFocus"
                              KeyDown="txtBox_comment_KeyDown"
                              LostFocus="txtBox_comment_LostFocus"
-                             Style="{StaticResource style_txtbox}" />
-
+                             Style="{StaticResource style_txtbox}"
+                             Height="{Binding ActualHeight, ElementName=Btn_Send, Mode=OneWay}" />
                 </Grid>
-                <Button x:Name="btn_comment"
+                <!--<Button x:Name="btn_comment"
                         Grid.Row="11"
                         Grid.ColumnSpan="2"
                         Click="btn_comment_Click"
                         Content="Send"
                         FontSize="{Binding Int_Fontsize}"
                         Style="{DynamicResource style_FuncBtn}"
-                        Tag="../Resources/send.png" />
+                        Tag="../Resources/Send.png" />-->
                 <Button x:Name="btn_D0"
                         Grid.Row="3"
                         Grid.ColumnSpan="2"
@@ -389,7 +399,7 @@
                         Content="DAC?"
                         FontSize="{Binding Int_Fontsize}"
                         Style="{DynamicResource style_FuncBtn}"
-                        Tag="../Resources/question.png" />
+                        Tag="../Resources/Question.png" />
                 <ComboBox x:Name="ComBox_Calibration"
                           Grid.Row="4"
                           Grid.ColumnSpan="2"
@@ -399,7 +409,7 @@
                           ItemsSource="{Binding list_combox_Calibration_items}"
                           SelectedIndex="0"
                           Style="{DynamicResource style_FuncCombobox}"
-                          Tag="../Resources/calibration-mark.png">
+                          Tag="../Resources/Calibration.png">
                 </ComboBox>
 
                 <Button Name="btn_K_VOA"
@@ -408,7 +418,7 @@
                         Click="K_VOA_Click"
                         Content="K VOA"
                         Style="{DynamicResource style_FuncBtn}"
-                        Tag="../Resources/search.png" />
+                        Tag="../Resources/Search.png" />
 
                 <Button Name="btn_K_TF"
                         Grid.Row="6"
@@ -416,7 +426,7 @@
                         Click="K_TF_Click"
                         Content="K TF"
                         Style="{DynamicResource style_FuncBtn}"
-                        Tag="../Resources/search.png" />
+                        Tag="../Resources/Search.png" />
 
                 <Button Name="K_WL"
                         Grid.Row="7"
@@ -424,7 +434,15 @@
                         Click="K_WL_Click"
                         Content="K WL"
                         Style="{DynamicResource style_FuncBtn}"
-                        Tag="../Resources/search.png" />
+                        Tag="../Resources/Search.png" />
+
+                <Button Name="Btn_Save"
+                        Grid.Row="8"
+                        Grid.ColumnSpan="2"
+                        Click="K_WL_Click"
+                        Content="Save"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/Search.png" />
 
                 <!--<ComboBox Name="Combox_Switch"
                           Grid.Row="7"
@@ -464,10 +482,10 @@
                           ItemsSource="{Binding list_combox_TLS_WL_Range_items}"
                           Style="{DynamicResource style_FuncCombobox}"
                           FontSize="{Binding Int_Fontsize}"
-                          Tag="../Resources/change.png" />
+                          Tag="../Resources/Change.png" />
 
                 <Grid Name="grid_Unit"
-                      Grid.Row="9"
+                      Grid.Row="10"
                       Grid.ColumnSpan="2">
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -517,7 +535,7 @@
                     FontSize="{Binding Int_Fontsize}"
                     Foreground="White"
                     Style="{DynamicResource style_FuncBtn}"
-                    Tag="../Resources/stop.png" />
+                    Tag="../Resources/Stop.png" />
         </Grid>
         <Grid Grid.Row="3"
               Grid.Column="2"

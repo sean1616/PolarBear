@@ -486,6 +486,7 @@ namespace PD.NavigationPages
                     await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
                     vm.pm.SetWL(Convert.ToDouble(txt_WL.Text));
                     await vm.AccessDelayAsync(vm.Int_Set_WL_Delay/2);
+                    vm.Double_Laser_Wavelength = wl + 0.01;
                 }
                 catch { }
 
@@ -504,6 +505,7 @@ namespace PD.NavigationPages
                     await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
                     vm.pm.SetWL(Convert.ToDouble(txt_WL.Text));
                     await vm.AccessDelayAsync(vm.Int_Set_WL_Delay/2);
+                    vm.Double_Laser_Wavelength = wl - 0.01;
                 }
                 catch { }
 
@@ -1019,12 +1021,9 @@ namespace PD.NavigationPages
             Button obj = (Button)sender;
 
             int switch_index;
-            string tag = obj.Tag.ToString(), tag_index;
-            
-            if (page_now == 1)
-                tag_index = tag.Substring(0,1);
-            else
-                tag_index = tag.Substring(2);
+            string tag_index;
+
+            tag_index = obj.Tag.ToString().Substring(1);
 
             switch_index = int.Parse(tag_index);
 
@@ -1045,65 +1044,46 @@ namespace PD.NavigationPages
             if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
 
             #region set switch
-            try
-            {
-                if (vm.Comport_Switch > 0) await vm.Port_Switch_ReOpen();
-            }
-            catch
-            {
-                vm.Str_bear_say = "Switch Comport Error";
-                vm.Winbear = new Window_Bear(vm, false, "String");
-                vm.Winbear.Show();
-                return;
-            }
+            //try
+            //{
+            //    if (vm.Comport_Switch > 0) await vm.Port_Switch_ReOpen();
+            //}
+            //catch
+            //{
+            //    vm.Str_bear_say = "Switch Comport Error";
+            //    vm.Winbear = new Window_Bear(vm, false, "String");
+            //    vm.Winbear.Show();
+            //    return;
+            //}
 
-            if (switch_index > 12) return;
+            //if (switch_index > 12) return;
 
-            if (switch_index > 0 && switch_index < 13)   //Switch 1~12
-            {
-                if (string.IsNullOrWhiteSpace("I1 " + switch_index.ToString())) //Check comment box is empty or not
-                    return;
+            //if (switch_index > 0 && switch_index < 13)   //Switch 1~12
+            //{
+            //    if (string.IsNullOrWhiteSpace("I1 " + switch_index.ToString())) //Check comment box is empty or not
+            //        return;            
 
-                if (switch_index < 9 && int_saved_combox_index >= 9)  //換頁 page1
-                {
-                    vm.Bool_Page2 = vm.Bool_Gauge_Show;
-                    vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
-                    vm.Channel_visible = new List<Visibility>() { };
-                    vm.Bool_Gauge_Show = vm.Bool_Page1;
-                }
-                else if (switch_index > 8 && int_saved_combox_index <= 8)  //換頁 page2
-                {
-                    vm.Bool_Page1 = vm.Bool_Gauge_Show;
-                    vm.Str_Channel = new List<string>() { "9", "10", "11", "12" };
-                    vm.Channel_visible = new List<Visibility>()
-                    {
-                        Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible,
-                        Visibility.Hidden, Visibility.Hidden, Visibility.Hidden, Visibility.Hidden
-                    };
-                    vm.Bool_Gauge_Show = vm.Bool_Page2;
-                }
-
-                try
-                {
-                    vm.Str_comment = "I1 " + switch_index.ToString();
-                    vm.port_Switch.Write(vm.Str_comment + "\r");
-                    await vm.AccessDelayAsync(vm.Int_Write_Delay);
-                    vm.port_Switch.Close();
-                }
-                catch { }
-            }
-            else if (switch_index == 0)   //Switch ?
-            {
-                vm.Str_comment = "I1?";
-                vm.port_Switch.Write(vm.Str_comment + "\r");
-                await vm.AccessDelayAsync(vm.Int_Read_Delay);
-                vm.port_Switch.Close();
-            }
-            else
-            {
-                vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
-                vm.Channel_visible = new List<Visibility>() { };
-            }
+            //    try
+            //    {
+            //        vm.Str_comment = "I1 " + switch_index.ToString();
+            //        vm.port_Switch.Write(vm.Str_comment + "\r");
+            //        await vm.AccessDelayAsync(vm.Int_Write_Delay);
+            //        vm.port_Switch.Close();
+            //    }
+            //    catch { }
+            //}
+            //else if (switch_index == 0)   //Switch ?
+            //{
+            //    vm.Str_comment = "I1?";
+            //    vm.port_Switch.Write(vm.Str_comment + "\r");
+            //    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+            //    vm.port_Switch.Close();
+            //}
+            //else
+            //{
+            //    vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
+            //    vm.Channel_visible = new List<Visibility>() { };
+            //}
 
             int_saved_combox_index = switch_index;
             vm.ch = switch_index;   //Save Switch channel
@@ -1114,7 +1094,7 @@ namespace PD.NavigationPages
 
         private void Btn_IL_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("IL");
+            //MessageBox.Show("IL");
         }
 
         private async void Btn_Voltage_Click(object sender, RoutedEventArgs e)
@@ -1283,11 +1263,14 @@ namespace PD.NavigationPages
 
             if (!vm.Is_switch_mode) return;
 
-            UC_Gauge obj = (UC_Gauge)sender;
-            int switch_index;
-            if (!int.TryParse(obj.Name.Substring(5), out switch_index)) return;
+            //UC_Gauge obj = (UC_Gauge)sender;
+            //obj.UC_Gauge_Tbn.IsChecked = !obj.UC_Gauge_Tbn.IsChecked;
 
-            //switch_index = int.Parse(obj.Name.Substring(2));
+            ToggleButton obj = (ToggleButton)sender;
+            obj.IsChecked = !obj.IsChecked;
+
+            int switch_index;
+            if (!int.TryParse(obj.Tag.ToString().Substring(1), out switch_index)) return;
 
             vm.switch_selected_index = switch_index;
             if (switch_index > 12) return;
@@ -1307,6 +1290,7 @@ namespace PD.NavigationPages
             }
             #endregion
 
+            #region Switch write Cmd
             if (switch_index > 0)   //Switch 1~12
             {
                 try
@@ -1319,29 +1303,27 @@ namespace PD.NavigationPages
                     vm.ch = switch_index;   //Save Switch channel
                 }
                 catch { vm.Str_cmd_read = "Set Switch Error"; }
-
-                //if (switch_index < 9 && int_saved_combox_index >= 9)  //換頁 page1
-                //{
-                //    vm.Bool_Page2 = vm.Bool_Gauge_Show;
-                //    vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
-                //    vm.Channel_visible = new List<Visibility>() { };
-                //    vm.Bool_Gauge_Show = vm.Bool_Page1;
-                //    vm.Gauge_Page_now = 1;
-                //}
-                //else if (switch_index > 8 && int_saved_combox_index <= 8)  //換頁 page2
-                //{
-                //    vm.Bool_Page1 = vm.Bool_Gauge_Show;
-                //    vm.Str_Channel = new List<string>() { "9", "10", "11", "12" };
-                //    vm.Channel_visible = new List<Visibility>()
-                //    {
-                //        Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible,
-                //        Visibility.Hidden, Visibility.Hidden, Visibility.Hidden, Visibility.Hidden
-                //    };
-                //    vm.Bool_Gauge_Show = vm.Bool_Page2;
-                //    vm.Gauge_Page_now = 2;
-                //}
             }
+            #endregion
         }
 
+        private void Btn_update_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem obj = (MenuItem)sender;
+
+            int index = int.Parse(obj.Tag.ToString().Substring(1));
+            try
+            {
+                if (vm.List_bear_say.Count >= (index - 1))
+                {
+                    vm.List_bear_say[index - 1][0] = vm.Double_Laser_Wavelength.ToString();
+                    vm.List_bear_say = new List<List<string>>(vm.List_bear_say);
+                }
+            }
+            catch
+            {
+                vm.Str_cmd_read = "Update WL Fail";
+            }
+        }
     }
 }

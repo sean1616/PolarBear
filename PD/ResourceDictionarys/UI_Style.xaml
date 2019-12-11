@@ -317,31 +317,28 @@
                                 <RowDefinition />
                             </Grid.RowDefinitions>
 
-                            <Ellipse
-                                x:Name="BackgroundEllipse1"
-                                Grid.RowSpan="2"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="3"
-                                Width="{Binding ElementName=MainRow, Path=ActualHeight}"
-                                Height="{Binding ElementName=MainRow, Path=ActualHeight}"
-                                HorizontalAlignment="Left"
-                                Fill="{StaticResource ToggleButtonTrueBackground}" />
-                            <Ellipse
-                                x:Name="BackgroundEllipse2"
-                                Grid.Row="0"
-                                Grid.RowSpan="2"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="3"
-                                Width="{Binding ElementName=MainRow, Path=ActualHeight}"
-                                Height="{Binding ElementName=MainRow, Path=ActualHeight}"
-                                HorizontalAlignment="Right"
-                                Fill="{StaticResource ToggleButtonFalseBackground}" />
-                            <Border
-                                x:Name="BackgroundBorder"
-                                Grid.Row="0"
-                                Grid.RowSpan="2"
-                                Grid.Column="1"
-                                Background="{StaticResource ToggleButtonTrueBackground}" />
+                            <Ellipse x:Name="BackgroundEllipse1"
+                                     Grid.RowSpan="2"
+                                     Grid.Column="0"
+                                     Grid.ColumnSpan="3"
+                                     Width="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     HorizontalAlignment="Left"
+                                     Fill="{StaticResource ToggleButtonTrueBackground}" />
+                            <Ellipse x:Name="BackgroundEllipse2"
+                                     Grid.Row="0"
+                                     Grid.RowSpan="2"
+                                     Grid.Column="0"
+                                     Grid.ColumnSpan="3"
+                                     Width="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     HorizontalAlignment="Right"
+                                     Fill="{StaticResource ToggleButtonFalseBackground}" />
+                            <Border x:Name="BackgroundBorder"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="1"
+                                    Background="{StaticResource ToggleButtonTrueBackground}" />
                         </Grid>
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
@@ -412,7 +409,7 @@
                         <Viewbox
                             Grid.Row="1"
                             Grid.Column="0"
-                            Margin="3">
+                            Margin="4">
                             <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Viewbox>
                         <Viewbox
@@ -821,6 +818,44 @@
         </Setter>
     </Style>
 
+    <Style x:Key="style_SendBtn"
+           TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels"
+                Value="True" />
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="3.5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.RowSpan="3"
+                                Background="White"
+                                />
+                        <Viewbox Grid.Row="1">
+                            <Image HorizontalAlignment="Center"
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF8D8D8D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="style_BearToggleBtn"
            TargetType="{x:Type ToggleButton}">
         <Setter Property="SnapsToDevicePixels"
@@ -1132,7 +1167,10 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Border x:Name="border"
-                                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" BorderBrush="Transparent" BorderThickness="2" CornerRadius="4"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                BorderBrush="Transparent" BorderThickness="2" CornerRadius="4"
                                 Grid.RowSpan="3"
                                 Background="Transparent" />
                         <Viewbox Grid.Row="1"
@@ -1144,7 +1182,7 @@
                                               SnapsToDevicePixels="True" />
                         </Viewbox>
                     </Grid>
-                    <ControlTemplate.Triggers>
+                    <ControlTemplate.Triggers>                      
                         <Trigger Property="IsMouseOver"
                                  Value="True">
                             <Setter TargetName="border"
@@ -1788,8 +1826,6 @@
                     <Border
                         x:Name="border"
                         Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
                         SnapsToDevicePixels="True">
                         <Grid>
                             <ScrollViewer
@@ -1942,7 +1978,7 @@
                                           HorizontalScrollBarVisibility="Hidden"
                                           VerticalScrollBarVisibility="Hidden" />
                         </Viewbox>
-                        <Button Command="{Binding AllWindow_Minimum}"
+                        <Button Command="{Binding BearTestCommand}"
                                 Grid.Column="0"
                                 Grid.Row="0"
                                 Grid.RowSpan="3"

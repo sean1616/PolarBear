@@ -94,30 +94,30 @@ namespace PD.Functions
                 case "UTF400":
                     choose_product_setting(0, 65500);
                     if (vm.selected_band == "C Band")
-                        K_WL_setting(1547 - bonus_wl, 1549.5 + bonus_wl, gap * 2); //1548.51 gap:0.6
+                        K_WL_setting(1547 - bonus_wl, 1551 + bonus_wl, gap * 2); //1548.51 gap:0.6
                     else
-                        K_WL_setting(1589.6 - bonus_wl, 1592 + bonus_wl, gap * 2); //1591
+                        K_WL_setting(1589.6 - bonus_wl, 1592.5 + bonus_wl, gap * 2); //1591
                     break;
 
                 case "UTF500":
                     choose_product_setting(0, 65500);
                     if (vm.selected_band == "C Band")
-                        K_WL_setting(1547 - bonus_wl, 1549.5 + bonus_wl, gap * 2); //1548.51 gap:0.6
+                        K_WL_setting(1547 - bonus_wl, 1551 + bonus_wl, gap * 2); //1548.51 gap:0.6
                     else
-                        K_WL_setting(1589.6 - bonus_wl, 1592 + bonus_wl, gap * 2); //1591
+                        K_WL_setting(1589.6 - bonus_wl, 1592.5 + bonus_wl, gap * 2); //1591
                     break;
 
                 case "CTF":
                     choose_product_setting(0, 65500);
                     if (vm.selected_band == "C Band")
-                        K_WL_setting(1526.5- bonus_wl, 1529+ bonus_wl, gap * 2);
+                        K_WL_setting(1526.5 - bonus_wl, 1529 + bonus_wl, gap * 2);
                     break;
 
                 case "MTF":
                     choose_product_setting(-65500, 65500);
                     if (vm.selected_band == "C Band")
-                        K_WL_setting(1546- bonus_wl, 1547.4+ bonus_wl, gap); //gap:0.3
-                    else K_WL_setting(1587.72- bonus_wl, 1589.72+ bonus_wl, gap); //1588.725
+                        K_WL_setting(1546 - bonus_wl, 1547.4 + bonus_wl, gap); //gap:0.3
+                    else K_WL_setting(1587.72 - bonus_wl, 1589.72 + bonus_wl, gap); //1588.725
                     break;
             }
         }

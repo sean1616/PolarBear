@@ -205,7 +205,10 @@ namespace PD
             //if (myPorts.Length > 0) combox_comport.SelectedIndex = 0;  //預設com
 
             if (combox_comport.SelectedItem != null)
-                str_selected_com = combox_comport.SelectedItem.ToString();
+            {
+                vm.Selected_Comport = vm.Ini_Read("Connection", "Comport");
+                str_selected_com = vm.Selected_Comport;
+            }                 
             else
                 vm.Str_cmd_read = "Selected Port is null";
 
@@ -226,7 +229,7 @@ namespace PD
             #endregion
             
             #region Production Setting
-            if (combox_product.SelectedItem != null)
+            if (vm.product_type != null)
             {
                 if (vm.selected_band == "C Band")
                 {
@@ -3276,7 +3279,9 @@ namespace PD
                     try { vm.port_Switch.Write(vm.Str_comment + "\r"); }
                     catch { vm.Str_cmd_read = "Set Switch Error"; return; }
                     //vm.port_Switch.Close();
-                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                    vm.switch_selected_index = ch + 1;
+                    vm.ch = ch;
+                   await vm.AccessDelayAsync(vm.Int_Read_Delay);
                 }
                 #endregion
 
@@ -3349,8 +3354,6 @@ namespace PD
                                         WL_Scan_Gap = Math.Round(WL_Scan_Gap * 1.2, 2);
                                 }
                             }
-
-
                         }
                         vm.Str_cmd_read = string.Concat("Ch ", (ch + 1).ToString(), ":", wl.ToString());
                     }
@@ -3360,6 +3363,8 @@ namespace PD
                 if (!_is_best_IL_exist)
                 {
                     vm.Str_cmd_read = "No best IL";
+                    _save_all_WL_and_IL.Add(new List<string>() { "NG", " ", " " });
+                    vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
                     continue;
                 }
 
@@ -3436,10 +3441,10 @@ namespace PD
                 if (!_is_best_IL_exist)
                 {
                     vm.Str_cmd_read = "No best IL";
+                    _save_all_WL_and_IL.Add(new List<string>() { "NG", " ", " " });
+                    vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
                     continue;
                 }
-
-                //int round2_last_index = list_ch_power.Count - 1;
 
                 WL_Scan_Gap = 0.01;
                 wl_start = wl_next_start;
@@ -3494,6 +3499,7 @@ namespace PD
                                         //setting.Product_Setting();
 
                                         _save_all_WL_and_IL.Add(new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString(), list_finalVoltage[ch] });
+                                        vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
 
                                         //if (vm.Gauge_Page_now == 2)
                                         //{
@@ -3504,6 +3510,7 @@ namespace PD
                                     else  //if no k v3 before
                                     {
                                         _save_all_WL_and_IL.Add(new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString() });
+                                        vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
 
                                         //if (vm.Gauge_Page_now == 2)
                                         //{
@@ -3543,8 +3550,6 @@ namespace PD
             cmd.Save_Calibration_Data("K WL");  //Save calibration data to txt file
 
             vm.Str_Status = "K Wavelength Stop";
-
-            //vm.analysis = anly;
 
             if (vm.IsGoOn == true)
                 vm.PM_GO();
