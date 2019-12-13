@@ -177,6 +177,7 @@
                                      FontSize="{Binding Int_Fontsize}"
                                      Visibility="{Binding GaugeText_visible_Reverse}"
                                      Width="{Binding ActualWidth, ElementName=Gauge_1, Mode=OneWay}"
+                                     Text="{Binding SN_number, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
                                      Style="{StaticResource style_SN_txtbox}" />
                         </Grid>
 

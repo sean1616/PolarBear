@@ -2740,7 +2740,7 @@ namespace PD
             else
                 obj.BorderBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0085CA"));
 
-            txt_label.Opacity = 0;
+            //txt_label.Opacity = 0;
         }
 
         private void txtBox_comment_LostFocus(object sender, RoutedEventArgs e)
@@ -2749,7 +2749,9 @@ namespace PD
             obj.BorderBrush = new SolidColorBrush(Colors.Gray);
 
             if (string.IsNullOrEmpty(obj.Text))
-                txt_label.Opacity = 1;
+                vm.waterPrint1 = "Command";
+            else
+                vm.waterPrint1 = "";
         }               
         
         private async void btn_Stop_Click(object sender, RoutedEventArgs e)
@@ -3280,8 +3282,9 @@ namespace PD
                     catch { vm.Str_cmd_read = "Set Switch Error"; return; }
                     //vm.port_Switch.Close();
                     vm.switch_selected_index = ch + 1;
-                    vm.ch = ch;
-                   await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                    vm.switch_index = ch;
+                    vm.ch = ch;   //Save Switch channel
+                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
                 }
                 #endregion
 
@@ -3489,8 +3492,8 @@ namespace PD
                                 {
                                     double best_power = list_ch_power.Max();
                                     double best_wl = list_ch_wl[list_ch_power.FindIndex(x => x.Equals(best_power))];
-                                                                        
-                                    if (list_finalVoltage.Count != vm.ch_count-1 && list_finalVoltage.Count > 0)  //if k V3 before
+
+                                    if (list_finalVoltage.Count != vm.ch_count - 1 && list_finalVoltage.Count > 0)   //if k V3 before
                                     {
                                         //double Volt_first_time = double.Parse(list_finalVoltage[ch]);
                                         ////Re-K V3
@@ -4077,14 +4080,15 @@ namespace PD
 
         private void Txt_ID_GotFocus(object sender, RoutedEventArgs e)
         {
+            label_ID.Opacity = 0;
             //txt_UserID_label.Visibility = Visibility.Hidden;
         }
 
         private void Txt_ID_LostFocus(object sender, RoutedEventArgs e)
         {
-            //TextBox obj = (TextBox)sender;
-            //if (string.IsNullOrEmpty(obj.Text))
-            //    txt_UserID_label.Visibility = Visibility.Hidden;
+            TextBox obj = (TextBox)sender;
+            if (string.IsNullOrWhiteSpace(obj.Text))
+                label_ID.Opacity = 1;
         }
 
         private async void K_VOA_Click(object sender, RoutedEventArgs e)
@@ -4098,6 +4102,37 @@ namespace PD
             bool _isGoOn_On = vm.IsGoOn;
             vm.isStop = false;
             await K_TF(_isGoOn_On);
+        }
+
+        private void Btn_Save_Click(object sender, RoutedEventArgs e)
+        {
+            bool _isChSelected = false;
+            List<string> list_SN = new List<string>();
+            for (int i = 0; i < vm.ch_count; i++)
+            {
+                if (vm.Bool_Gauge[i])
+                {
+                    int errorCode = cmd.Save_K_WL_Data("K WL", vm.UserID, vm.list_SN[i], i);
+                    if (errorCode != 0)
+                    {
+                        switch (errorCode)
+                        {
+                            case 1:
+                                vm.Show_Bear_Window("Data is empty", false, "String");
+                                return;
+                            case 2:
+                                vm.Show_Bear_Window("UserID is empty", false, "String");
+                                return;
+                        }                   
+                    }
+                    _isChSelected = true;
+                }                   
+            }
+
+            if (_isChSelected)
+                vm.Show_Bear_Window("Saved", false, "String");
+            else
+                vm.Show_Bear_Window("Choose a channel to save data", false, "String");
         }
 
         private void Grid_clock_Loaded(object sender, RoutedEventArgs e)

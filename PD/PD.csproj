@@ -347,9 +347,6 @@
     <Resource Include="Resources\placeholder %281%29.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\save.png" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
@@ -457,6 +454,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Script.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Save.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -51,6 +51,8 @@ namespace PD.ViewModel
         #region Commands
         private void BearTest()
         {
+            list_SN = new List<string>() { "29A0JA300200", "29A0JA300201", "29A0JA300202" };
+
             #region Get Board Name
             int board_count = _list_Board_Setting.Count;
             for (int idz = 0; idz < board_count; idz++)
@@ -918,6 +920,17 @@ namespace PD.ViewModel
             }
         }
 
+        private string _waterPrint1 = "Command";
+        public string waterPrint1
+        {
+            get { return _waterPrint1; }
+            set
+            {
+                _waterPrint1 = value;
+                OnPropertyChanged("waterPrint1");
+            }
+        }
+
         private int _ch_count = 8;
         public int ch_count
         {
@@ -1115,6 +1128,17 @@ namespace PD.ViewModel
         private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
         {
             //timer3.Stop();
+        }
+
+        private List<string> _list_SN = new List<string>();
+        public List<string> list_SN
+        {
+            get { return _list_SN; }
+            set
+            {
+                _list_SN = value;
+                OnPropertyChanged("list_SN");
+            }
         }
 
         private bool _isDACorVolt = false;  //False is Dac, True is Volt
@@ -1332,7 +1356,7 @@ namespace PD.ViewModel
             }
         }
 
-        private string _UserID = "   ";
+        private string _UserID = "";
         public string UserID
         {
             get { return _UserID; }

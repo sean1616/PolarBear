@@ -28,9 +28,9 @@
             <BeginStoryboard Storyboard="{StaticResource Rec_MouseEnter}" />
         </EventTrigger>
     </Window.Triggers>
-    <!--<Window.DataContext>
+    <Window.DataContext>
         <ViewModel:ComViewModel />
-    </Window.DataContext>-->
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*" />
@@ -65,7 +65,7 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.3*" />
-                <ColumnDefinition Width="0.8*"/>
+                <ColumnDefinition Width="0.8*" />
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition Width="0.4*" />
@@ -75,7 +75,23 @@
                   Grid.Row="1"
                   Grid.ColumnSpan="3">
                 <Viewbox>
-                    <Grid>                       
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="3*" />
+                            <RowDefinition Height="5" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Name="label_ID"
+                                   Grid.Row="1"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="Wheat"
+                                   FontFamily="Segoe Print"
+                                   Text="User ID" />
+                    </Grid>
+                </Viewbox>
+                <Viewbox>
+                    <Grid>
                         <TextBox Name="txt_ID"
                                  Background="Transparent"
                                  VerticalAlignment="Bottom"
@@ -166,7 +182,7 @@
                              FontSize="25"
                              Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
                              Style="{DynamicResource style_PageBtn}"
-                             Tag="../Resources/Setting.png" />                
+                             Tag="../Resources/Setting.png" />
             </Grid>
 
             <Grid Grid.Column="1">
@@ -346,43 +362,32 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1.8*"/>
-                        <ColumnDefinition Width="4*"/>
-                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1.8*" />
+                        <ColumnDefinition x:Name="grid_cmd"
+                                          Width="4*" />
+                        <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Row="1" x:Name="Btn_Send"
-                            Style="{DynamicResource style_SendBtn}"
-                            Tag="../Resources/Send.png" />
                     <!--  浮水印  -->
-                    <Rectangle Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2"
+                    <Rectangle Grid.Column="0"
+                               Grid.Row="1"
+                               Grid.ColumnSpan="3"
                                Height="{Binding ActualHeight, ElementName=Btn_Send, Mode=OneWay}"
                                Fill="White" />
-                    <Viewbox Grid.Row="1"
-                             Grid.Column="1" HorizontalAlignment="Left">
-                        <Label Name="txt_label"          
-                               HorizontalContentAlignment="Left"
-                               VerticalAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Content="Command"
-                               Focusable="False"
-                               FontFamily="{Binding FontFamily, ElementName=txtBox_comment}"
-                               FontSize="{Binding Int_Fontsize}"
-                               Foreground="Gray"
-                               Opacity="1"
-                               Height="{Binding ActualHeight, ElementName=Btn_Send, Mode=OneWay}" />
-                    </Viewbox>
-                    <TextBox x:Name="txtBox_comment"                             
-                             VerticalContentAlignment="Center"
+                    <TextBox x:Name="txtBox_comment"
                              Background="Transparent"
                              Grid.Row="1"
                              Grid.Column="1"
-                             FontSize="{Binding Int_Fontsize}"
+                             FontSize="15"
                              GotFocus="txtBox_comment_GotFocus"
                              KeyDown="txtBox_comment_KeyDown"
                              LostFocus="txtBox_comment_LostFocus"
+                             VerticalAlignment="Center"
                              Style="{StaticResource style_txtbox}"
-                             Height="{Binding ActualHeight, ElementName=Btn_Send, Mode=OneWay}" />
+                              />
+                    <Button Grid.Row="1"
+                            x:Name="Btn_Send"
+                            Style="{DynamicResource style_SendBtn}"
+                            Tag="../Resources/Send.png" />
                 </Grid>
                 <!--<Button x:Name="btn_comment"
                         Grid.Row="11"
@@ -437,12 +442,12 @@
                         Tag="../Resources/Search.png" />
 
                 <Button Name="Btn_Save"
-                        Grid.Row="8"
+                        Grid.Row="9"
                         Grid.ColumnSpan="2"
-                        Click="K_WL_Click"
+                        Click="Btn_Save_Click"
                         Content="Save"
                         Style="{DynamicResource style_FuncBtn}"
-                        Tag="../Resources/Search.png" />
+                        Tag="../Resources/Save.png" />
 
                 <!--<ComboBox Name="Combox_Switch"
                           Grid.Row="7"
@@ -475,13 +480,14 @@
                               Visibility="Hidden" />
 
                 <ComboBox Name="Combox_Switch_Laser_Band"
-                        Grid.Row="8"
-                        Grid.ColumnSpan="2"
+                          Grid.Row="8"
+                          Grid.ColumnSpan="2"
                           SelectedItem="{Binding selected_band}"
                           DropDownClosed="Combox_Switch_Laser_Band_DropDownClosed"
                           ItemsSource="{Binding list_combox_TLS_WL_Range_items}"
                           Style="{DynamicResource style_FuncCombobox}"
                           FontSize="{Binding Int_Fontsize}"
+                          SelectedIndex="0"
                           Tag="../Resources/Change.png" />
 
                 <Grid Name="grid_Unit"
@@ -557,7 +563,8 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Viewbox Grid.Column="1"
-                             HorizontalAlignment="Left" MaxHeight="40">
+                             HorizontalAlignment="Left"
+                             MaxHeight="40">
                         <Label x:Name="lab_status"
                                Content="{Binding Str_Status}"
                                FontFamily="Segoe Print"
@@ -687,8 +694,12 @@
                     </Grid>
 
                     <Grid Name="grid_process_schedule">
-                        <TextBlock Foreground="White" FontFamily="{Binding FontFamily, ElementName=lab_status}" FontSize="19" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Run Text="{Binding Int_Process_Schedule, Mode=TwoWay}"/>
+                        <TextBlock Foreground="White"
+                                   FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                                   FontSize="19"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                        <Run Text="{Binding Int_Process_Schedule, Mode=TwoWay}" />
                             <Run Text=" %" />
                         </TextBlock>
                     </Grid>
@@ -698,12 +709,12 @@
             <Border Grid.Column="3"
                     Background="{Binding Background, ElementName=border_status}">
                 <ToggleButton Grid.Column="3"
-                        BorderThickness="0.8,0,0.8,0"
-                        BorderBrush="#FFCBCBCB"
-                        Name="btn_desktop"
-                        Command="{Binding AllWindow_Minimum}"
-                        Click="btn_desktop_Click">
-                    
+                              BorderThickness="0.8,0,0.8,0"
+                              BorderBrush="#FFCBCBCB"
+                              Name="btn_desktop"
+                              Command="{Binding AllWindow_Minimum}"
+                              Click="btn_desktop_Click">
+
                 </ToggleButton>
             </Border>
 
@@ -718,7 +729,9 @@
         <pageTransitions:PageTransition Name="pageTransitionControl"
                                         Grid.Row="2"
                                         Grid.Column="2"
-                                        TransitionType="Fade" Grid.ColumnSpan="1" Grid.RowSpan="1" />
+                                        TransitionType="Fade"
+                                        Grid.ColumnSpan="1"
+                                        Grid.RowSpan="1" />
 
         <TextBox x:Name="txtnum"
                  Grid.Row="2"

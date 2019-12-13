@@ -820,8 +820,6 @@
 
     <Style x:Key="style_SendBtn"
            TargetType="{x:Type Button}">
-        <Setter Property="SnapsToDevicePixels"
-                Value="True" />
         <Setter Property="Tag"
                 Value="" />
         <Setter Property="Template">
@@ -1823,32 +1821,35 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
-                    <Border
-                        x:Name="border"
-                        Background="{TemplateBinding Background}"
-                        SnapsToDevicePixels="True">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}">
                         <Grid>
-                            <ScrollViewer
-                                x:Name="PART_ContentHost"
-                                Focusable="false"
-                                HorizontalScrollBarVisibility="Hidden"
-                                VerticalScrollBarVisibility="Hidden" />
-                            <!--<Label Name="txt_label" Content="command ..." VerticalAlignment="Center" Margin="5,0,0,0" FontFamily="{TemplateBinding FontFamily}" Foreground="Gray" Opacity="1"/>-->
+                            <TextBlock x:Name="txtblock"
+                                       Text="{Binding waterPrint1}"
+                                       Background="{x:Null}"
+                                       Foreground="#FF898686" />
+                            <ScrollViewer Grid.Row="1"
+                                          x:Name="PART_ContentHost"
+                                          Focusable="false"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden" />
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <!--<Trigger Property="IsEnabled" Value="false">
                             <Setter TargetName="border" Property="Opacity" Value="0.6" />
-                        </Trigger>
-                        <!--<Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="BorderBrush" TargetName="border" Value="#FFBABABA"/>
                         </Trigger>-->
-                        <!--<Trigger Property="IsFocused" Value="true">
-                            <Setter Property="BorderBrush" TargetName="border" Value="Orange"/>
+                        <!--<Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Opacity" TargetName="txtblock" Value="0"/>
                         </Trigger>-->
                         <Trigger Property="IsFocused" Value="true">
-                            <Setter TargetName="border" Property="BorderThickness" Value="3" />
+                            <Setter Property="Opacity"
+                                    TargetName="txtblock"
+                                    Value="0" />
                         </Trigger>
+                        <!--<Trigger Property="IsFocused" Value="true">
+                            <Setter TargetName="border" Property="BorderThickness" Value="3" />
+                        </Trigger>-->
                         <!--<Trigger Property="IsFocused"
                                  Value="true">
                             <Setter TargetName="txt_label"
@@ -1941,6 +1942,8 @@
 
     <Style x:Key="style_UserID_txtbox"
            TargetType="TextBox">
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
         <Setter Property="Background"
                 Value="Transparent" />
         <Setter Property="Template">
@@ -1949,7 +1952,7 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
-                            <RowDefinition Height="3*" />
+                            <RowDefinition Height="5*" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -1974,7 +1977,7 @@
                             <ScrollViewer x:Name="PART_ContentHost"
                                           VerticalAlignment="Center"
                                           VerticalContentAlignment="Center"
-                                          Focusable="false"
+                                          Focusable="false"                                          
                                           HorizontalScrollBarVisibility="Hidden"
                                           VerticalScrollBarVisibility="Hidden" />
                         </Viewbox>
@@ -2004,7 +2007,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    
     <Style x:Key="style_button_onlyImage"
            TargetType="{x:Type Button}">
         <Setter Property="Template">

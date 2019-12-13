@@ -180,10 +180,13 @@ namespace PD.UI
             set { SetValue(str_Unit_Property, value); }
         }
 
-       
+
         #endregion
 
         #region 定義Grid control相依屬性       
+        public static readonly DependencyProperty SN_number_Property =
+                    DependencyProperty.Register("SN_number", typeof(string), typeof(UC_Gauge),
+                    new UIPropertyMetadata(null));
 
         public static readonly DependencyProperty D0_value_1_Property =
                     DependencyProperty.Register("D0_value_1", typeof(string), typeof(UC_Gauge),
@@ -208,6 +211,12 @@ namespace PD.UI
         public static readonly DependencyProperty List_bear_say_3_Property =
                 DependencyProperty.Register("List_bear_say_3", typeof(string), typeof(UC_Gauge),
                 new UIPropertyMetadata(null));
+
+        public string SN_number //提供內部binding之相依屬性
+        {
+            get { return (string)GetValue(SN_number_Property); }
+            set { SetValue(SN_number_Property, value); }
+        }
 
         public string D0_value_1 //提供內部binding之相依屬性
         {

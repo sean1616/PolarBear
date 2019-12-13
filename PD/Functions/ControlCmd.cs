@@ -244,6 +244,61 @@ namespace PD.Functions
             #endregion
         }
 
+        public int Save_K_WL_Data(string Data_Type, string userID, string SNnumber, int ch)
+        {
+            #region Save Bear say to txt file
+            if (vm.List_bear_say.Count == 0) return 1;  //ErrorCode:1 => BearSay is empty
+
+            switch (Data_Type)
+            {
+                case "K WL":
+                    vm.List_bear_say_DataLabel = new List<string>() { "K WL", "WL", "IL" };
+                    break;
+            }
+            DateTime dt = DateTime.Now;
+            string a = dt.ToString("yyyy-MM-dd HH:mm:ss");
+            string filePath = string.Concat(@"D:\PD\", SNnumber, ".txt");
+
+            if (File.Exists(filePath))
+            {
+                //File.Delete(filePath);
+
+                List<string> quotelist = File.ReadAllLines(filePath).ToList();
+
+                if (quotelist.Count > 1)
+                    quotelist.RemoveAt(1);
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(userID)) return 2;  //ErrorCode:2 => UserID is empty
+
+                using (System.IO.StreamWriter file =
+                 new System.IO.StreamWriter(filePath, true))
+                {                    
+                    file.WriteLine(userID + "\r\n");  //第一列：使用者ID
+
+                    string str = "";
+
+                    str += vm.List_bear_say[ch][0];  //第二列-波長
+                    str += ",";
+                    str += a;  //第二列-時間
+
+                    //for (int j = 0; j < 3; j++)
+                    //{
+                    //    str += ",";
+                    //    str += vm.List_bear_say[ch][j];
+                    //}
+                    //str += "\r\n";
+                    file.WriteLine(str);
+
+                    vm._write_line = new List<string>();
+                }
+            }
+
+            return 0;
+            #endregion
+        }
+
         public void Save_Log_Message(string Data_Type, string content, string time)
         {
             #region Save log to txt file         
