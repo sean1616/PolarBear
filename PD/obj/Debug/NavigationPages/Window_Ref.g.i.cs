@@ -94,7 +94,7 @@ namespace PD.NavigationPages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v4.1.4;component/navigationpages/window_ref.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v4.1.9;component/navigationpages/window_ref.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NavigationPages\Window_Ref.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

@@ -1132,6 +1132,75 @@
         </Setter>
     </Style>
 
+    <Style x:Key="style_BearBtn0"
+           TargetType="{x:Type Button}">
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="FontSize"
+                Value="{Binding Int_Fontsize}" />
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="Focusable"
+                Value="False" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="MaxHeight"
+                Value="50" />
+        <Setter Property="Foreground"
+                Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="9*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="6*" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                BorderBrush="#FFB0B0B0"
+                                BorderThickness="2"
+                                CornerRadius="4"
+                                Grid.RowSpan="3"
+                                Background="Transparent" />
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Focusable="False"
+                                              SnapsToDevicePixels="True" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="BorderBrush"
+                                    Value="#FF47DADA" />
+                        </Trigger>
+                        <Trigger Property="Button.IsPressed"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FFDADADA" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="style_BearBtn"
            TargetType="{x:Type Button}">
         <Setter Property="FontFamily"

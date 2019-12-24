@@ -1316,7 +1316,7 @@ namespace PD.NavigationPages
             {
                 if (vm.List_bear_say.Count >= (index - 1))
                 {
-                    vm.List_bear_say[index - 1][0] = vm.Double_Laser_Wavelength.ToString();
+                    vm.List_bear_say[index - 1][0] = txt_WL.Text;
                     vm.List_bear_say = new List<List<string>>(vm.List_bear_say);
                 }
             }

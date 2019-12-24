@@ -451,7 +451,7 @@ namespace PD
 
             bool _isGoOn_On = vm.IsGoOn;
 
-            await anly.Port_ReOpen();
+            await vm.Port_ReOpen(vm.Selected_Comport);
             vm.Str_comment = txtBox_comment.Text;
             await Cmd_Write_RecieveData(vm.Str_comment, true, 0);
 
@@ -692,7 +692,10 @@ namespace PD
                     process_steps = anly.Calculate_All_Process_Steps(process_level);
 
                     if (vm.PD_or_PM == false)
-                        K_WL_PD();
+                    {
+                        if (vm.selected_K_WL_Type == "ALL Range") K_WL_PD_AllRange();
+                        else if (vm.selected_K_WL_Type == "Human Like") K_WL_PD_HumanLike(new List<string>());
+                    }                       
                     else
                     {
                         if (vm.station_type == "Hermetic Test") K_WL_PM_12CH(new List<string>());
@@ -1183,7 +1186,7 @@ namespace PD
                 {
                     if (vm.isStop)
                     {
-                        vm.Show_Bear_Window("Stop", false, "String");
+                        vm.Show_Bear_Window("Stop", false, "String", false);
                         return new List<string>();
                     }                                       
                         
@@ -1548,7 +1551,7 @@ namespace PD
                 {
                     vm.List_bear_say = new List<List<string>>(lls);
                     await vm.AccessDelayAsync(50);
-                    vm.Show_Bear_Window("K V3 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String");
+                    vm.Show_Bear_Window("K V3 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String", false);
                     vm.Collection_bear_say.Add(lls);
                     vm.bear_say_all++;
                     vm.bear_say_now = vm.bear_say_all;
@@ -1707,7 +1710,7 @@ namespace PD
                 {
                     if (vm.isStop)
                     {
-                        vm.Show_Bear_Window("Stop", false, "String");
+                        vm.Show_Bear_Window("Stop", false, "String", false);
                         return;
                     }
 
@@ -1866,7 +1869,7 @@ namespace PD
                 {
                     vm.List_bear_say = new List<List<string>>(lls);
                     await vm.AccessDelayAsync(50);
-                    vm.Show_Bear_Window("K V3 完成" + "  (" + elapsedMs.ToString() + " ms)", false, "String");
+                    vm.Show_Bear_Window("K V3 完成" + "  (" + elapsedMs.ToString() + " ms)", false, "String", false);
                     vm.Collection_bear_say.Add(lls);
                     vm.bear_say_all++;
                     vm.bear_say_now = vm.bear_say_all;
@@ -2354,7 +2357,7 @@ namespace PD
 
         private async Task K_Curfit(List<List<DataPoint>> Save_All_PD_Value, List<PointF> Points, List<double> BestCoeffs, string action)
         {
-            await anly.CurFit( vm.Save_All_PD_Value, Points, BestCoeffs, action);  //Calculation best dac
+            await anly.CurFit_All( vm.Save_All_PD_Value, Points, BestCoeffs, action);  //Calculation best dac
             
             if(action=="K TF")
             {
@@ -2422,7 +2425,7 @@ namespace PD
                         //Show Bear Window
                         vm.List_bear_say = new List<List<string>>();
                         vm.List_bear_say.Add(new List<string>() { List_dac[0].ToString(), Math.Round(power, 3).ToString() });
-                        vm.Show_Bear_Window(List_dac, false, "");
+                        vm.Show_Bear_Window(List_dac, false, "", false);
                     }
 
                     await D0_show_PM();
@@ -2807,7 +2810,7 @@ namespace PD
             if (vm.IsGoOn)
             {
                 if (vm.PD_or_PM)
-                    await vm.PM_Stop();                    
+                    await vm.PM_Stop();                   
             }
             
             #region initial setting
@@ -2827,7 +2830,10 @@ namespace PD
             if (!vm.isStop)
             {
                 if (vm.PD_or_PM == false)
-                    K_WL_PD();
+                {
+                    if (vm.selected_K_WL_Type == "ALL Range") K_WL_PD_AllRange();
+                    else if (vm.selected_K_WL_Type == "Human Like") K_WL_PD_HumanLike(list_finalVoltage);
+                }                    
                 else
                 {
                     if (vm.station_type == "Hermetic Test")
@@ -2848,16 +2854,324 @@ namespace PD
                 }
             }
             else
-                vm.Show_Bear_Window("Stop", false, "String");
+                vm.Show_Bear_Window("Stop", false, "String", false);
 
             obj.IsEnabled = true;  //取消防呆
             btn_GO.IsEnabled = true;
         }
 
-        private async void K_WL_PD()
+        private async void K_WL_PD_HumanLike(List<string> list_finalVoltage)
+        {
+            await vm.Port_ReOpen(vm.Selected_Comport);
+
+            vm.Save_All_PD_Value = Analysis.ListDefine<DataPoint>(vm.Save_All_PD_Value, vm.ch_count, new List<DataPoint>());
+
+            List<List<string>> _save_all_WL_and_IL = new List<List<string>>();
+            List<string> KV3_finalVoltage = new List<string>();
+            
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            vm.Str_Status = "K Wavelength (Rough)";
+
+            //更新圖表
+            #region Set Chart data points   
+            try
+            {
+                vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
+            }
+            catch { }
+            #endregion
+
+            for (int ch = 0; ch < vm.ch_count; ch++)
+            {
+                if (vm.isStop == true) return;
+
+                if (!vm.Bool_Gauge[ch])
+                {
+                    _save_all_WL_and_IL.Add(new List<string>());
+                    continue;
+                }                               
+
+                List<double> list_ch_power = new List<double>();
+                List<double> list_ch_wl = new List<double>();
+
+                double WL_Scan_Gap = vm.float_WL_Scan_Gap;  //預設0.6nm
+                double wl_next_start = vm.float_WL_Scan_Start, wl_next_end = vm.float_WL_Scan_End;
+
+                bool _is_best_IL_exist = true;
+
+                vm.Str_Status = "K WL (Round 1)";
+
+                //Scan Round 1
+                for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + WL_Scan_Gap)
+                {
+                    try
+                    {
+                        if (vm.isStop == true) return;
+
+                        setting.Set_Laser_WL(Math.Round(wl, 2));  //切換TLS WL        
+
+                        await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
+
+                        //double power = vm.pm.ReadPower();                        
+                        double power = double.Parse(await cmd.Get_PD_Value_1ch(ch));
+
+                        vm.Convert_ReadPower_to_UIGauge(power, ch);
+
+                        list_ch_power.Add(power);
+                        list_ch_wl.Add(wl);
+
+                        #region Set Chart data points   
+                        try
+                        {
+                            DataPoint dp = new DataPoint(wl, power);
+                            vm.Save_All_PD_Value[ch].Add(dp);
+
+                            await vm.AccessDelayAsync(40);
+
+                            vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                            vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
+                        }
+                        catch { }
+                        #endregion                       
+
+                        int index = list_ch_power.Count - 1;
+                        if (index > 0)
+                        {
+                            if (list_ch_power[index] < list_ch_power[index - 1])
+                            {
+                                if (power > -28)
+                                {
+                                    wl_next_start = Math.Round(wl - WL_Scan_Gap / 2, 2);
+                                    wl_next_end = Math.Round(wl_next_start - (WL_Scan_Gap * 3 / 2), 2);
+                                    break;
+                                }
+                                else
+                                {
+                                    _is_best_IL_exist = false; //已無最佳Loss位置
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                if (WL_Scan_Gap >= 0.3)
+                                {
+                                    if (power > -12)   //依IL決定找光間距
+                                        WL_Scan_Gap = Math.Round(WL_Scan_Gap / 1.2, 2);
+                                    else if (power > -7)
+                                        WL_Scan_Gap = Math.Round(WL_Scan_Gap / 1.6, 2);
+                                    else if (power < -20)
+                                        WL_Scan_Gap = Math.Round(WL_Scan_Gap * 1.2, 2);
+                                }
+                            }
+                        }
+                        vm.Str_cmd_read = string.Concat("Ch ", (ch + 1).ToString(), ":", wl.ToString());
+                    }
+                    catch { vm.Str_cmd_read = "K WL Round 1 Error"; }
+                }
+
+                if (!_is_best_IL_exist)
+                {
+                    vm.Str_cmd_read = "No best IL";
+                    _save_all_WL_and_IL.Add(new List<string>() { "NG", " ", " " });
+                    vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
+                    continue;
+                }
+
+                WL_Scan_Gap = Math.Round(WL_Scan_Gap / 3, 2);
+
+                double wl_start, wl_end;
+                wl_start = wl_next_start;
+                wl_end = wl_next_end;
+
+                vm.Str_Status = "K WL (Round 2)";
+
+                //Scan Round 2
+                for (double wl = wl_start; wl >= wl_end; wl = wl - WL_Scan_Gap)
+                {
+                    try
+                    {
+                        if (vm.isStop == true) return;
+
+                        setting.Set_Laser_WL(Math.Round(wl, 2));  //切換TLS WL         
+
+                        double power = double.Parse(await cmd.Get_PD_Value_1ch(ch));
+                        //cmd.Get_PD_Value_1ch(ch);
+                        //double power = double.Parse(vm.msg);
+
+                        vm.Convert_ReadPower_to_UIGauge(power, ch);
+                        list_ch_power.Add(power);
+                        list_ch_wl.Add(wl);
+
+                        #region Set Chart data points   
+                        try
+                        {
+                            DataPoint dp = new DataPoint(wl, power);
+                            vm.Save_All_PD_Value[ch].Add(dp);
+
+                            await vm.AccessDelayAsync(40);
+
+                            vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                            vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
+                        }
+                        catch { }
+                        #endregion         
+
+                        int index = list_ch_power.Count - 1;
+                        if (index > 0)
+                        {
+                            if (list_ch_power[index] < list_ch_power[index - 1])
+                            {
+                                if (power > -20)
+                                {
+                                    wl_next_start = Math.Round(wl + WL_Scan_Gap / 4, 2);
+                                    wl_next_end = Math.Round(wl_next_start + (WL_Scan_Gap * 3 / 2), 2);
+                                    break;
+                                }
+                                else
+                                {
+                                    _is_best_IL_exist = false; //已無最佳Loss位置
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                if (WL_Scan_Gap >= 0.06)
+                                {
+                                    if (power > -7)   //依IL決定找光間距
+                                        WL_Scan_Gap = Math.Round(WL_Scan_Gap / 2, 2);
+                                }
+                            }
+                        }
+                        vm.Str_cmd_read = string.Concat("Ch ", (ch + 1).ToString(), ":", wl.ToString());
+                    }
+                    catch
+                    {
+                        vm.Str_cmd_read = "K WL Round 2 Error";
+                    }
+                }
+
+                if (!_is_best_IL_exist)
+                {
+                    vm.Str_cmd_read = "No best IL";
+                    _save_all_WL_and_IL.Add(new List<string>() { "NG", " ", " " });
+                    vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
+                    continue;
+                }
+
+                WL_Scan_Gap = 0.01;
+                wl_start = wl_next_start;
+                wl_end = wl_next_end + 0.03;
+
+                vm.Str_Status = "K WL (Round 3)";
+
+                //Scan Round 3
+                for (double wl = wl_start; wl <= wl_end; wl = wl + WL_Scan_Gap)
+                {
+                    try
+                    {
+                        if (vm.isStop == true) return;
+
+                        setting.Set_Laser_WL(Math.Round(wl, 2));  //切換TLS WL         
+
+                        double power = double.Parse(await cmd.Get_PD_Value_1ch(ch));
+                        //cmd.Get_PD_Value_1ch(ch);
+                        //double power = double.Parse(vm.msg);
+
+                        vm.Convert_ReadPower_to_UIGauge(power, ch);
+                        list_ch_power.Add(power);
+                        list_ch_wl.Add(wl);
+
+                        #region Set Chart data points   
+                        try
+                        {
+                            DataPoint dp = new DataPoint(wl, power);
+                            vm.Save_All_PD_Value[ch].Add(dp);
+
+                            await vm.AccessDelayAsync(40);
+
+                            vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                            vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
+                        }
+                        catch { }
+                        #endregion         
+
+                        int index = list_ch_power.Count - 1;
+                        if (index > 0)
+                        {
+                            if (list_ch_power[index] < list_ch_power[index - 1])
+                            {
+                                if (power > -48)
+                                {
+                                    double best_power = list_ch_power.Max();
+                                    double best_wl = list_ch_wl[list_ch_power.FindIndex(x => x.Equals(best_power))];
+
+                                    if (list_finalVoltage.Count != vm.ch_count - 1 && list_finalVoltage.Count > 0)   //if k V3 before
+                                    {
+                                        //double Volt_first_time = double.Parse(list_finalVoltage[ch]);
+                                        ////Re-K V3
+                                        //setting.choose_product_setting(-65500, 65500, Convert.ToInt16(Volt_first_time - 1), Convert.ToInt16(Volt_first_time + 1), 3600);
+                                        //list_finalVoltage = await K_V3(false);
+                                        //setting.Product_Setting();
+
+                                        _save_all_WL_and_IL.Add(new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString(), list_finalVoltage[ch] });
+                                        vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
+
+                                        //if (vm.Gauge_Page_now == 2)
+                                        //{
+                                        //    _save_all_WL_and_IL[ch - 8] = new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString(), list_finalVoltage[ch] };
+                                        //}
+                                    }
+
+                                    else  //if no k v3 before
+                                    {
+                                        _save_all_WL_and_IL.Add(new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString() });
+                                        vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
+
+                                        //if (vm.Gauge_Page_now == 2)
+                                        //{
+                                        //    _save_all_WL_and_IL[ch - 8] = new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString() };
+                                        //}
+                                    }
+
+                                    if (vm.station_type != "Hermetic Test")
+                                        setting.Set_Laser_WL(best_wl);
+
+                                    break;
+                                }
+                                else
+                                {
+                                    //已無最佳Loss位置
+                                }
+                            }
+                        }
+                        vm.Str_cmd_read = string.Concat("Ch ", (ch + 1).ToString(), ":", wl.ToString());
+                    }
+                    catch { vm.Str_cmd_read = "K WL Round 3 Error"; }
+                }
+            }
+
+            await cmd.Save_Chart();
+
+            var elapsedMs = watch.ElapsedMilliseconds;
+
+            vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
+            await vm.AccessDelayAsync(50);
+
+            vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String", false);
+            vm.Collection_bear_say.Add(_save_all_WL_and_IL);   //Save data in history record
+            vm.bear_say_all++;
+            vm.bear_say_now = vm.bear_say_all;
+
+            cmd.Save_Calibration_Data("K WL");  //Save calibration data to txt file
+
+            vm.Str_Status = "K Wavelength Stop";            
+        }
+
+        private async void K_WL_PD_AllRange()
         {
             List<List<double>> _saved_power = new List<List<double>>();
-            //if (vm.IsGoOn) await vm.PD_Stop();
 
             await vm.Port_ReOpen(vm.Selected_Comport);
 
@@ -2873,12 +3187,12 @@ namespace PD
                 vm.Str_cmd_read = wl.ToString();
                 await vm.AccessDelayAsync(vm.Int_Set_WL_Delay + 100);
 
-                if(!await cmd.Get_PD_Value())
+                if (!await cmd.Get_PD_Value())
                 {
                     vm.Str_cmd_read = "Get PD Value Error";
                     return;
                 }
-                
+
                 _saved_power.Add(vm.Float_PD);
 
                 for (int ch = 0; ch < 8; ch++)
@@ -2887,14 +3201,14 @@ namespace PD
                     if (vm.Float_PD.Count <= ch) continue;
                     DataPoint dp = new DataPoint(wl, vm.Float_PD[ch]);
                     vm.Save_All_PD_Value[ch] = new List<DataPoint>();
-                     vm.Save_All_PD_Value[ch].Add(dp);
-                }               
+                    vm.Save_All_PD_Value[ch].Add(dp);
+                }
 
                 //更新圖表
                 #region Set Chart data points   
                 try
                 {
-                    vm.Chart_All_DataPoints = new List<List<DataPoint>>( vm.Save_All_PD_Value);
+                    vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                     vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
                 }
                 catch { }
@@ -2908,8 +3222,8 @@ namespace PD
             List<double> list_best_wl = new List<double>();
             List<List<string>> _save_all_WL_and_IL = new List<List<string>>();
 
-             vm.Save_All_PD_Value.Clear();
-             vm.Save_All_PD_Value = new List<List<DataPoint>>()
+            vm.Save_All_PD_Value.Clear();
+            vm.Save_All_PD_Value = new List<List<DataPoint>>()
                 {
                     new List<DataPoint>(),new List<DataPoint>(),new List<DataPoint>(),new List<DataPoint>(),
                     new List<DataPoint>(),new List<DataPoint>(),new List<DataPoint>(),new List<DataPoint>()
@@ -2938,13 +3252,13 @@ namespace PD
                 //找到Rough Scan時最大power時的WL值
                 int wl_index = _saved_ch_power.FindIndex(x => x.Equals(_saved_ch_power.Max()));
                 double Best_WL = vm.float_WL_Scan_Start + vm.float_WL_Scan_Gap * wl_index;
-                
+
                 #region Create new scan range (Detail scan)       
                 for (double wl = Best_WL - vm.float_WL_Scan_Gap * 1; wl <= Best_WL + vm.float_WL_Scan_Gap * 1; wl = wl + 0.01)
                 {
                     if (vm.isStop == true)
                         return;
-                    
+
                     setting.Set_Laser_WL(Math.Round(wl, 2));  //逐步切換TLS WL
                     vm.Str_cmd_read = "Ch " + (ch + 1).ToString() + ":" + wl.ToString();
                     await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
@@ -2955,7 +3269,7 @@ namespace PD
 
                     if (vm.Bool_Gauge[ch])
                     {
-                        if(!await cmd.Get_PD_Value())
+                        if (!await cmd.Get_PD_Value())
                         {
                             vm.Str_cmd_read = "Get PD Value Error";
                             return;
@@ -2963,12 +3277,12 @@ namespace PD
                     }
 
                     list_wl.Add(wl);  //Save every WL into list
-                    list_il.Add(vm.Float_PD[ch]);  
+                    list_il.Add(vm.Float_PD[ch]);
 
                     if (vm.Float_PD.Count <= ch) continue;
 
                     DataPoint dp = new DataPoint(wl, vm.Float_PD[ch]);
-                     vm.Save_All_PD_Value[ch].Add(dp);
+                    vm.Save_All_PD_Value[ch].Add(dp);
 
                     _saved_power.Add(vm.Float_PD);
 
@@ -2976,7 +3290,7 @@ namespace PD
                     #region Set Chart data points   
                     try
                     {
-                        vm.Chart_All_DataPoints = new List<List<DataPoint>>( vm.Save_All_PD_Value);
+                        vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                         vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
                     }
                     catch { }
@@ -2988,14 +3302,8 @@ namespace PD
                 double best_wl = Math.Round(list_wl[index], 2);
                 list_best_wl.Add(best_wl);
             }
-            
-            await cmd.Save_Chart();
 
-            //if (!vm.isStop)
-            //{
-            //    await K_Curfit( vm.Save_All_PD_Value, Points, BestCoeffs, "K WL");
-            //    await cmd.Save_Chart();
-            //}
+            await cmd.Save_Chart();
 
             //Collect data for Bear say
             _save_all_WL_and_IL.Clear();
@@ -3011,14 +3319,14 @@ namespace PD
                 await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
                 await cmd.Get_PD_Value();
                 _save_all_WL_and_IL.Add(new List<string>() { list_best_wl[ch].ToString(), Math.Round(vm.Float_PD[ch], 3).ToString() });
-            }                       
-            
+            }
+
             var elapsedMs = watch.ElapsedMilliseconds;
 
             vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
             await vm.AccessDelayAsync(50);
 
-            vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String");
+            vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String", false);
             vm.Collection_bear_say.Add(_save_all_WL_and_IL);   //Save data in history record
             vm.bear_say_all++;
             vm.bear_say_now = vm.bear_say_all;
@@ -3026,217 +3334,8 @@ namespace PD
             cmd.Save_Calibration_Data("K WL");  //Save calibration data to txt file
 
             vm.Str_Status = "K Wavelength Stop";
-
-            if (vm.IsGoOn == true)
-                vm.PM_GO();
         }
-
-        //private async void K_WL_PM()
-        //{
-        //    List<List<double>> _saved_power = new List<List<double>>();
-
-        //    if (vm.IsGoOn == true)
-        //        await vm.PM_Stop();
-
-        //    vm.Str_Status = "K Wavelength (Rough)";
-        //    for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
-        //    {
-        //        if (vm.isStop == true)
-        //            return;
-
-        //        setting.Set_Laser_WL(Math.Round(wl, 2));  //逐步切換TLS WL                    
-        //        await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
-
-        //        vm.Float_PD = new List<double>() { -99, -99, -99, -99, -99, -99, -99, -99 };
-
-        //        await vm.Port_Switch_ReOpen();
-        //        for (int ch = 0; ch < 8; ch++)
-        //        {
-        //            if (vm.isStop == true)
-        //                return;
-
-        //            if (!vm.Bool_Gauge[ch])
-        //                continue;
-
-        //            #region Set Switch
-        //            try
-        //            {
-        //                vm.Str_comment = "I1 " + (ch + 1).ToString();
-        //                vm.port_Switch.Write(vm.Str_comment + "\r");
-        //                await vm.AccessDelayAsync(vm.Int_Read_Delay);
-        //            }
-        //            catch { vm.Str_cmd_read = "Set Switch Error"; return; }
-        //            #endregion
-
-        //            vm.Str_cmd_read = "Ch " + (ch + 1).ToString() + ":" + wl.ToString();
-
-        //            await cmd.Get_PM_Value(ch);
-
-        //            DataPoint dp = new DataPoint(wl, vm.Float_PD[ch]);
-        //             vm.Save_All_PD_Value[ch].Add(dp);
-        //        }
-
-        //        _saved_power.Add(vm.Float_PD);
-
-        //        //更新圖表
-        //        #region Set Chart data points   
-        //        try
-        //        {
-        //            vm.Chart_All_DataPoints = new List<List<DataPoint>>( vm.Save_All_PD_Value);
-        //            vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
-        //        }
-        //        catch { }
-        //        #endregion
-        //    }
-        //    await cmd.Save_Chart();
-        //    await K_Curfit( vm.Save_All_PD_Value, Points, BestCoeffs, "K WL"); //第一次Curfitting
-
-        //    List<double> list_wl = new List<double>();
-        //    List<List<string>> _save_all_WL_and_IL = new List<List<string>>();
-
-        //     vm.Save_All_PD_Value.Clear();
-        //     vm.Save_All_PD_Value = new List<List<DataPoint>>()
-        //        {
-        //            new List<DataPoint>(),new List<DataPoint>(),new List<DataPoint>(),new List<DataPoint>(),
-        //            new List<DataPoint>(),new List<DataPoint>(),new List<DataPoint>(),new List<DataPoint>()
-        //        };
-        //    vm.Str_Status = "K Wavelength (Detail)";
-
-        //    for (int ch = 0; ch < 8; ch++)
-        //    {
-        //        if (!vm.Bool_Gauge[ch])
-        //        {
-        //            list_wl.Add(0);
-        //            _save_all_WL_and_IL.Add(new List<string>());
-        //            continue;
-        //        }
-
-        //        //取出某一channel的所有讀到的power值，並存在_saved_ch_power變數
-        //        List<double> _saved_ch_power = new List<double>();
-        //        for (int i = 0; i < _saved_power.Count; i++)
-        //        {
-        //            _saved_ch_power.Add(_saved_power[i][ch]);
-        //        }
-
-        //        //找到最大power時的WL值
-        //        int wl_index = _saved_ch_power.FindIndex(x => x.Equals(_saved_ch_power.Max()));
-        //        double Best_WL = vm.float_WL_Scan_Start + vm.float_WL_Scan_Gap * wl_index;
-        //        list_wl.Add(Best_WL);  //所有channel的最佳loss相對應的波長
-                
-        //        #region Set Switch
-        //        await vm.Port_Switch_ReOpen();
-        //        try
-        //        {
-        //            vm.Str_comment = "I1 " + (ch + 1).ToString();
-        //            vm.port_Switch.Write(vm.Str_comment + "\r");
-        //            await vm.AccessDelayAsync(vm.Int_Read_Delay);
-        //        }
-        //        catch { vm.Str_cmd_read = "Set Switch Error"; return; }
-        //        #endregion
-
-        //        #region Create new scan range (Detail scan)       
-        //        for (double wl = Best_WL - vm.float_WL_Scan_Gap * 2; wl <= Best_WL + vm.float_WL_Scan_Gap * 2; wl = wl + vm.float_WL_Scan_Gap / 4)
-        //        {
-        //            if (vm.isStop == true)
-        //                return;
-
-        //            setting.Set_Laser_WL(Math.Round(wl, 2));  //逐步切換TLS WL
-        //            vm.Str_cmd_read = "Ch " + (ch + 1).ToString() + ":" + wl.ToString();
-        //            await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
-
-        //            vm.Float_PD = new List<double>(8) { -99, -99, -99, -99, -99, -99, -99, -99 };
-
-        //            if (!vm.Bool_Gauge[ch])
-        //                continue;
-
-        //            if (vm.Bool_Gauge[ch]) await cmd.Get_PM_Value(ch);
-
-        //            DataPoint dp = new DataPoint(wl, vm.Float_PD[ch]);
-        //             vm.Save_All_PD_Value[ch].Add(dp);
-
-        //            _saved_power.Add(vm.Float_PD);
-
-        //            //更新圖表
-        //            #region Set Chart data points   
-        //            try
-        //            {
-        //                vm.Chart_All_DataPoints = new List<List<DataPoint>>( vm.Save_All_PD_Value);
-        //                vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
-        //            }
-        //            catch { }
-        //            #endregion
-        //        }
-        //        #endregion        
-        //    }
-
-        //    await cmd.Save_Chart();
-
-        //    if (!vm.isStop) await K_Curfit(vm.Save_All_PD_Value, Points, BestCoeffs, "K WL");  //第二次Curfitting
-
-        //    _save_all_WL_and_IL = new List<List<string>>();
-        //    vm.Float_PD = new List<double>() { -99, -99, -99, -99, -99, -99, -99, -99 };
-        //    for (int ch = 0; ch < 8; ch++)
-        //    {
-        //        if (!vm.Bool_Gauge[ch])
-        //        {
-        //            _save_all_WL_and_IL.Add(new List<string>());
-        //            continue;
-        //        }
-
-        //        #region Set Switch
-        //        if (vm.ch != 0)
-        //        {
-        //            await vm.Port_Switch_ReOpen();
-        //            try
-        //            {
-        //                vm.Str_comment = "I1 " + (ch + 1).ToString();
-        //                vm.port_Switch.Write(vm.Str_comment + "\r");
-        //                await vm.AccessDelayAsync(vm.Int_Read_Delay);
-        //            }
-        //            catch { vm.Str_cmd_read = "Set Switch Error"; return; }
-        //        }
-        //        #endregion
-
-        //        #region Do curfit
-        //        //vm.tls.SetWL(vm.List_curfit_resultWL[ch]);
-        //        //await vm.AccessDelayAsync(vm.Int_Set_WL_Delay + 150);
-        //        //await cmd.Get_PM_Value(ch);
-        //        //_save_all_WL_and_IL.Add(new List<string>() { vm.List_curfit_resultWL[ch].ToString(), Math.Round(vm.Float_PD[ch], 3).ToString() });
-        //        #endregion
-
-        //        #region Final Scan (9 points)  
-        //        List<double> _saved_ch_wl = new List<double>();
-        //        List<double> _saved_ch_power = new List<double>();
-        //        for (double wl = vm.List_curfit_resultWL[ch] - 0.01 * 4; wl <= vm.List_curfit_resultWL[ch] + 0.01 * 4; wl = wl + 0.01)
-        //        {
-        //            if (vm.isStop == true) return;
-
-        //            setting.Set_Laser_WL(Math.Round(wl, 2));  //逐步切換TLS WL
-        //            vm.Str_cmd_read = "Ch " + (ch + 1).ToString() + ":" + wl.ToString();
-        //            await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
-
-        //            if (!vm.Bool_Gauge[ch]) continue;       
-                    
-        //            await cmd.Get_PM_Value(ch);
-
-        //            _saved_ch_wl.Add(wl);
-        //            _saved_ch_power.Add(vm.Float_PD[ch]);                   
-        //        }
-
-        //        double best_power = _saved_ch_power.Max();
-        //        double best_wl = _saved_ch_wl[_saved_ch_power.FindIndex(x => x.Equals(best_power))];
-        //        _save_all_WL_and_IL.Add(new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString() });
-
-        //        #endregion        
-        //    }
-
-        //    vm.List_bear_say = _save_all_WL_and_IL;
-
-        //    vm.Show_Bear_Window(_save_all_WL_and_IL, false, "");
-            
-        //    vm.Str_Status = "K Wavelength Stop";
-        //}
-
+        
         private async void K_WL_PM_12CH(List<string> list_finalVoltage)
         {
             vm.Save_All_PD_Value = Analysis.ListDefine<DataPoint>(vm.Save_All_PD_Value, vm.ch_count, new List<DataPoint>());
@@ -3545,7 +3644,7 @@ namespace PD
             vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
             await vm.AccessDelayAsync(50);
 
-            vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String");
+            vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String", false);
             vm.Collection_bear_say.Add(_save_all_WL_and_IL);   //Save data in history record
             vm.bear_say_all++;
             vm.bear_say_now = vm.bear_say_all;
@@ -3758,7 +3857,7 @@ namespace PD
             vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);
             await vm.AccessDelayAsync(50);
 
-            vm.Show_Bear_Window("K WL 完成" + "  (" + elapsedMs.ToString() + " ms)", false, "String");
+            vm.Show_Bear_Window("K WL 完成" + "  (" + elapsedMs.ToString() + " ms)", false, "String", false);
             vm.Collection_bear_say.Add(_save_all_WL_and_IL);
             vm.bear_say_all++;
             vm.bear_say_now = vm.bear_say_all;
@@ -4068,9 +4167,7 @@ namespace PD
 
         private void btn_help_Click(object sender, RoutedEventArgs e)
         {
-            //vm.Show_Bear_Window("有 問 題 請 撥 5 1 7", false, "String_Step");
-
-            vm.List_D0_value = new List<List<string>>() { new List<string>() { 100.ToString(), 200.ToString(), 300.ToString() } };
+            vm.Show_Bear_Window("有 問 題 請 撥 5 1 7", false, "String_Step", false);
         }
 
         private void RBtn_Script_Checked(object sender, RoutedEventArgs e)
@@ -4106,35 +4203,9 @@ namespace PD
 
         private void Btn_Save_Click(object sender, RoutedEventArgs e)
         {
-            bool _isChSelected = false;
-            List<string> list_SN = new List<string>();
-            for (int i = 0; i < vm.ch_count; i++)
-            {
-                if (vm.Bool_Gauge[i])
-                {
-                    int errorCode = cmd.Save_K_WL_Data("K WL", vm.UserID, vm.list_SN[i], i);
-                    if (errorCode != 0)
-                    {
-                        switch (errorCode)
-                        {
-                            case 1:
-                                vm.Show_Bear_Window("Data is empty", false, "String");
-                                return;
-                            case 2:
-                                vm.Show_Bear_Window("UserID is empty", false, "String");
-                                return;
-                        }                   
-                    }
-                    _isChSelected = true;
-                }                   
-            }
-
-            if (_isChSelected)
-                vm.Show_Bear_Window("Saved", false, "String");
-            else
-                vm.Show_Bear_Window("Choose a channel to save data", false, "String");
+            vm.Show_Bear_Window("Before or After ?", false, "String", true);           
         }
-
+        
         private void Grid_clock_Loaded(object sender, RoutedEventArgs e)
         {
             vm.dateTime = new List<string>();

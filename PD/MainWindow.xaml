@@ -388,6 +388,12 @@
                             x:Name="Btn_Send"
                             Style="{DynamicResource style_SendBtn}"
                             Tag="../Resources/Send.png" />
+                    <Button Grid.Row="1"
+                            Grid.Column="2"
+                            x:Name="Btn_cmd_list"
+                            Opacity="0.5"
+                            Style="{DynamicResource style_SendBtn}"
+                            Tag="../Resources/triangle_down.png" />
                 </Grid>
                 <!--<Button x:Name="btn_comment"
                         Grid.Row="11"
@@ -405,6 +411,7 @@
                         FontSize="{Binding Int_Fontsize}"
                         Style="{DynamicResource style_FuncBtn}"
                         Tag="../Resources/Question.png" />
+                
                 <ComboBox x:Name="ComBox_Calibration"
                           Grid.Row="4"
                           Grid.ColumnSpan="2"
@@ -448,6 +455,17 @@
                         Content="Save"
                         Style="{DynamicResource style_FuncBtn}"
                         Tag="../Resources/Save.png" />
+
+                <!--<ComboBox x:Name="ComBox_SaveData"
+                          Grid.Row="9"
+                          Grid.ColumnSpan="2"
+                          DropDownClosed="ComBox_SaveData_DropDownClosed"
+                          FontSize="{Binding Int_Fontsize}"
+                          ItemsSource="{Binding list_combox_SaveData_items}"
+                          SelectedIndex="0"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          Tag="../Resources/Save.png">
+                </ComboBox>-->
 
                 <!--<ComboBox Name="Combox_Switch"
                           Grid.Row="7"

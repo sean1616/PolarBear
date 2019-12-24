@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
 using PD.ViewModel;
+using PD.Functions;
 using PD.AnalysisModel;
 
 namespace PD.NavigationPages
@@ -20,6 +21,7 @@ namespace PD.NavigationPages
     public partial class Window_Bear : Window
     {
         ComViewModel vm;
+        ControlCmd cmd;
         Point p;        
         private bool mRestoreForDragMove;
         bool is_txt_reshow;
@@ -34,6 +36,8 @@ namespace PD.NavigationPages
             this.type = type;
             
             is_txt_reshow = _is_txt_reshow;
+
+            cmd = new ControlCmd(vm);
 
             //InitializeBackgroundWorker();  //Define progress bar
         }
@@ -108,43 +112,43 @@ namespace PD.NavigationPages
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             
-            //this.Left = vm.mainWin_point.X + (vm.mainWin_size[0] / 2) - (this.ActualWidth / 2);
-            //this.Top = vm.mainWin_point.Y + (vm.mainWin_size[1] / 2) - (this.ActualHeight / 2);
         }
 
         private async void Image_Loaded(object sender, RoutedEventArgs e)
         {
             if (type == "String")
             {
+                txt_bear_say_something.Text = vm.Str_bear_say;
+
                 vm.window_bear_width = 500;
                 vm.window_bear_heigh = 250;
                 window_grid_row_1.Height = new GridLength(1.5, GridUnitType.Star);
-
-                this.Left = vm.mainWin_point.X + (vm.mainWin_size[0] / 2) - (this.ActualWidth / 2);
-                this.Top = vm.mainWin_point.Y + (vm.mainWin_size[1] / 2) - (this.ActualHeight / 2);
+                               
+                //this.Left = vm.mainWin_point.X + (vm.mainWin_size[0] / 2) - (this.ActualWidth / 2);
+                //this.Top = vm.mainWin_point.Y + (vm.mainWin_size[1] / 2) - (this.ActualHeight / 2);
 
                 txt_bear_say_something.Visibility = Visibility.Visible;
                 grid_test_result.Visibility = Visibility.Collapsed;
                 await vm.AccessDelayAsync(100);
-                txt_bear_say_something.Text = vm.Str_bear_say;
+                
             }
             else if (type == "String_Step")
             {
+                txt_bear_say_something.Text = "";
                 window_grid_row_1.Height = new GridLength(1.5, GridUnitType.Star);
                 vm.window_bear_width = 500;
                 vm.window_bear_heigh = 250;
-                this.Left = vm.mainWin_point.X + (vm.mainWin_size[0] / 2) - (this.ActualWidth / 2);
-                this.Top = vm.mainWin_point.Y + (vm.mainWin_size[1] / 2) - (this.ActualHeight / 2);
-
-                txt_bear_say_something.Visibility = Visibility.Visible;
-                grid_test_result.Visibility = Visibility.Collapsed;
+                //this.Left = vm.mainWin_point.X + (vm.mainWin_size[0] / 2) - (this.ActualWidth / 2);
+                //this.Top = vm.mainWin_point.Y + (vm.mainWin_size[1] / 2) - (this.ActualHeight / 2);
+                                
                 await vm.AccessDelayAsync(400);
                 string[] str_show_array = vm.Str_bear_say.Split(' ');
 
-                do
-                {
-                    txt_bear_say_something.Text = "";
+                txt_bear_say_something.Visibility = Visibility.Visible;
+                grid_test_result.Visibility = Visibility.Collapsed;
 
+                do
+                {                   
                     foreach (string s in str_show_array)
                     {
                         if (vm.isStop == true)
@@ -161,66 +165,13 @@ namespace PD.NavigationPages
                 window_grid_row_1.Height = new GridLength(1, GridUnitType.Star);
                 vm.window_bear_width = 800;
                 vm.window_bear_heigh = 380;
-                this.Left = vm.mainWin_point.X + (vm.mainWin_size[0] / 2) - (this.ActualWidth / 2);
-                this.Top = vm.mainWin_point.Y + (vm.mainWin_size[1] / 2) - (this.ActualHeight / 2);
+                //this.Left = vm.mainWin_point.X + (vm.mainWin_size[0] / 2) - (this.ActualWidth / 2);
+                //this.Top = vm.mainWin_point.Y + (vm.mainWin_size[1] / 2) - (this.ActualHeight / 2);
                 grid_test_result.Visibility = Visibility.Visible;
                 txt_bear_say_something.Visibility = Visibility.Collapsed;
 
                 vm.List_bear_say = new List<List<string>>(vm.List_bear_say);
 
-                //#region Load History Bear Say                
-                //if (vm.is_BearSay_History_Loaded != true && File.Exists(@"D:\PD\BearSay.txt"))
-                //{
-                //    List<List<string>> collection = new List<List<string>>();
-
-                //    string[] lines = System.IO.File.ReadAllLines(@"D:\PD\BearSay.txt");
-                //    for (int i = 0; i < lines.Length; i++)
-                //    {
-                //        collection.Add(new List<string>());
-
-                //        string[] line = lines[i].Split(',');
-
-                //        if (line.Length == 2)
-                //        {
-                //            collection[i].Add(line[0]);
-                //            collection[i].Add(line[1]);
-                //        }
-                //    }
-
-                //    vm.Collection_bear_say = new List<List<List<string>>>();
-                //    vm.Collection_bear_say.Add(collection);  //只讀最後一項
-                //    vm.List_bear_say = collection;
-
-                //    vm.bear_say_all = vm.Collection_bear_say.Count;
-                //    vm.bear_say_now = vm.bear_say_all;
-
-                //    vm.is_BearSay_History_Loaded = true;
-                //}
-                //#endregion
-
-                //if (vm.List_bear_say.Count == 0) return;
-                              
-                //#region Delete and Save Bear say to txt file
-                //if (File.Exists(@"D:\PD\BearSay.txt")) File.Delete(@"D:\PD\BearSay.txt");
-
-                //using (System.IO.StreamWriter file =
-                //     new System.IO.StreamWriter(@"D:\PD\BearSay.txt", true))
-                //{
-                //    string str = "";
-                //    for (int i = 0; i < vm.List_bear_say.Count; i++)
-                //    {
-                //        for (int j = 0; j < vm.List_bear_say[i].Count; j++)
-                //        {
-                //            str = str + vm.List_bear_say[i][j];
-                //            if (j == 0) str += ",";
-                //        }
-                //        str = str + "\r\n";
-                //    }
-                //    file.WriteLine(str);
-
-                //    vm._write_line = new List<string>();
-                //}
-                //#endregion
             }            
         }
 
@@ -564,42 +515,75 @@ namespace PD.NavigationPages
             }
         }
 
-        private void btn_delete_history_Click(object sender, RoutedEventArgs e)
+        private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(@"D:\PD\BearSay.txt"))
-                File.Delete(@"D:\PD\BearSay.txt");
-        }
+            Button obj = (Button)sender;
+            int beforeORafter = int.Parse(obj.Tag.ToString());
 
-        private void btn_load_history_Click(object sender, RoutedEventArgs e)
-        {
-            if (!File.Exists(@"D:\PD\BearSay.txt"))
+            string product_type = "";
+            switch (vm.product_type)
             {
-                vm.Show_Bear_Window("無歷史記錄", false, "String");
-                return;
+                case "UFA":
+                    product_type = "UFA";
+                    break;
+                case "UFA-T":
+                    product_type = "UFA";
+                    break;
+                case "UFA(H)":
+                    product_type = "UFA";
+                    break;
+                case "CTF":
+                    product_type = "CTF";
+                    break;
+                case "UTF":
+                    product_type = "UTF";
+                    break;
+                case "UTF400":
+                    product_type = "UTF";
+                    break;
+                case "UTF500":
+                    product_type = "UTF";
+                    break;
+                case "MTF":
+                    product_type = "MTF";
+                    break;
+                default:
+                    product_type = "UFA";
+                    break;
             }
 
-            List<List<string>> collection = new List<List<string>>();
-
-            string[] lines = System.IO.File.ReadAllLines(@"D:\PD\BearSay.txt");
-            for (int i = 0; i < lines.Length; i++)
+            bool _isChSelected = false;
+            List<string> list_SN = new List<string>();
+            for (int i = 0; i < vm.ch_count; i++)
             {
-                collection.Add(new List<string>());
-
-                string[] line = lines[i].Split(',');
-
-                if (line.Length == 2)
+                if (vm.Bool_Gauge[i])
                 {
-                    collection[i].Add(line[0]);
-                    collection[i].Add(line[1]);
-                }          
+                    int errorCode = cmd.Save_K_WL_Data("K WL", vm.UserID, vm.list_SN[i], i, product_type, beforeORafter);
+                    if (errorCode != 0)
+                    {
+                        switch (errorCode)
+                        {
+                            case 1:
+                                vm.Show_Bear_Window("資料空白", false, "String", false);
+                                return;
+                            case 2:
+                                vm.Show_Bear_Window("使用者ID空白", false, "String", false);
+                                return;
+                            case 3:
+                                vm.Show_Bear_Window("產品序號空白", false, "String", false);
+                                return;
+                        }
+                    }
+                    _isChSelected = true;
+                }
             }
-                        
-            vm.Collection_bear_say = new List<List<List<string>>>();
-            vm.Collection_bear_say.Add(collection);  //只讀最後一項
-            vm.List_bear_say = collection;
 
-            vm.bear_say_all = vm.Collection_bear_say.Count;
-            vm.bear_say_now = vm.bear_say_all;
+            if (_isChSelected)
+                vm.Show_Bear_Window("Saved", false, "String", false);
+            else
+                vm.Show_Bear_Window("Choose a channel to save data", false, "String", false);
         }
+
+       
     }
 }

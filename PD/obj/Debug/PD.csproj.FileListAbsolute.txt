@@ -6679,9 +6679,6 @@ C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD.Properties.Resources.res
 C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD.csproj.GenerateResource.cache
 C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD.csproj.CoreCompileInputs.cache
 C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD.csproj.CopyComplete
-\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\PD-v4.0.8.exe.config
-\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.0.8.exe
-\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.0.8.pdb
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD.csprojResolveAssemblyReference.cache
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\MainWindow.g.cs
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Page_Board_Grid.g.cs
@@ -6704,10 +6701,6 @@ C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD.csproj.CopyComplete
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\PD_Gauge.g.cs
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\App.g.cs
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\GeneratedInternalTypeHelper.g.cs
-\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.0.8_MarkupCompile.cache
-\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.0.8_MarkupCompile.lref
-\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\PD-v4.0.8.exe
-\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\PD-v4.0.8.pdb
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\DiCon.UCB.Communication.dll
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\DiCon.UCB.Communication.RS232.dll
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\DiCon.UCB.MTF.dll
@@ -6783,14 +6776,21 @@ C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD.csproj.CopyComplete
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Ref.baml
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\NavigationPages\Window_Switch_Box.baml
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\UI\PD_Gauge.baml
-\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.0.8.g.resources
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD.Properties.Resources.resources
 \\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD.csproj.GenerateResource.Cache
-C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.1.4.exe.config
-C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.1.4.exe
-C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.1.4.pdb
-C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.1.4_MarkupCompile.cache
-C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.1.4_MarkupCompile.lref
-C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.1.4.g.resources
-C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.1.4.exe
-C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.1.4.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\PD-v4.1.5.exe.config
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.1.5.exe
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.1.5.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\PD-v4.1.5.exe
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\bin\Debug\PD-v4.1.5.pdb
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.1.5_MarkupCompile.cache
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.1.5_MarkupCompile.lref
+\\192.168.2.3\tff\Sean Wu\PolarBear\PD\obj\Debug\PD-v4.1.5.g.resources
+C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.1.9.exe.config
+C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.1.9.exe
+C:\Users\sean_wu\source\repos\PolarBear\PD\bin\Debug\PD-v4.1.9.pdb
+C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.1.9_MarkupCompile.cache
+C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.1.9_MarkupCompile.lref
+C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.1.9.g.resources
+C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.1.9.exe
+C:\Users\sean_wu\source\repos\PolarBear\PD\obj\Debug\PD-v4.1.9.pdb

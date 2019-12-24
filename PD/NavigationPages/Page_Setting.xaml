@@ -233,13 +233,24 @@
                  Margin="5"
                  Grid.Row="5"
                  Grid.Column="4"
-                 Text="{Binding txt_board_table_path}"
+                 Text="{Binding txt_board_table_path, Mode=TwoWay}"
                  HorizontalAlignment="Stretch"
                  VerticalContentAlignment="Center"
                  controls:TextBoxHelper.ClearTextButton="True"
                  controls:TextBoxHelper.Watermark="Board table path" />
 
-        <uc:UC_Setting_ToggleButton Grid.Row="6"
+        <TextBox Name="txt_save_wl_data_path"
+                 Height="25"
+                 Margin="5"
+                 Grid.Row="6"
+                 Grid.Column="4"
+                 Text="{Binding txt_save_wl_data_path, Mode=TwoWay}"
+                 HorizontalAlignment="Stretch"
+                 VerticalContentAlignment="Center"
+                 controls:TextBoxHelper.ClearTextButton="True"
+                 controls:TextBoxHelper.Watermark="Board table path" />
+
+        <uc:UC_Setting_ToggleButton Grid.Row="7"
                                     Grid.Column="4"
                                     txtbox_content="CH / EN"
                                     ToggleButton.Checked="UC_Setting_ToggleButton_Checked" />

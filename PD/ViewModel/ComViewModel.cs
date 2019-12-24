@@ -51,38 +51,48 @@ namespace PD.ViewModel
         #region Commands
         private void BearTest()
         {
-            list_SN = new List<string>() { "29A0JA300200", "29A0JA300201", "29A0JA300202" };
+            DataPoint ddpp = new DataPoint(1548.4, -3);
+            List<DataPoint> dataPoint = new List<DataPoint>() { ddpp, ddpp, ddpp, ddpp, ddpp, ddpp, ddpp };
+
+            list_SN = new List<string>() { "29A0JA300200", "29A0JA300201", "29A0JA300202", "29A0JA300203", "29A0JA300204", "29A0JA300205", "29A0JA300206", "29A0JA300207" };
+
+            //test();
 
             #region Get Board Name
-            int board_count = _list_Board_Setting.Count;
-            for (int idz = 0; idz < board_count; idz++)
-            {
-                if (!string.IsNullOrEmpty(_list_Board_Setting[idz][1]))
-                {
-                    rs232 = new DiCon.UCB.Communication.RS232.RS232(_list_Board_Setting[idz][1]);
-                    rs232.OpenPort();
-                    icomm = (ICommunication)rs232;
+            //int board_count = _list_Board_Setting.Count;
+            //for (int idz = 0; idz < board_count; idz++)
+            //{
+            //    if (!string.IsNullOrEmpty(_list_Board_Setting[idz][1]))
+            //    {
+            //        rs232 = new DiCon.UCB.Communication.RS232.RS232(_list_Board_Setting[idz][1]);
+            //        rs232.OpenPort();
+            //        icomm = (ICommunication)rs232;
 
-                    tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
+            //        tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
 
-                    //txtSN[idz].Text = tf.ReadSN();
-                    try
-                    {
-                        list_Board_Setting[idz][0] = tf.ReadSN();
-                        Thread.Sleep(500);
-                        rs232.ClosePort();
-                    }
-                    catch { }
-                }
-            }
+            //        //txtSN[idz].Text = tf.ReadSN();
+            //        try
+            //        {
+            //            list_Board_Setting[idz][0] = tf.ReadSN();
+            //            Thread.Sleep(500);
+            //            rs232.ClosePort();
+            //        }
+            //        catch { }
+            //    }
+            //}
             #endregion
-
 
             bool dac_volt;
             if (bool.TryParse(Ini_Read("Connection", "DACorVolt"), out dac_volt))
                 isDACorVolt = dac_volt;
 
             List<List<string>> lls = new List<List<string>>();
+            lls.Add(new List<string>() { "1530.33", "-1.561" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
             lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
             lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
             List_bear_say = new List<List<string>>(lls);
@@ -94,6 +104,12 @@ namespace PD.ViewModel
             lls = new List<List<string>>();
             lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
             lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
             List_bear_say = new List<List<string>>(lls);
 
             Collection_bear_say.Add(lls);
@@ -101,6 +117,16 @@ namespace PD.ViewModel
             bear_say_now = bear_say_all;
 
             
+        }
+
+        private Task<string> testing = Task<string>.Factory.StartNew(() =>
+        {
+            return "AAA";
+        });
+
+        private void test()
+        {
+            MessageBox.Show(testing.Result);
         }
 
         private void cmd_test()
@@ -192,7 +218,35 @@ namespace PD.ViewModel
                 Str_bear_say = (string)bear_say;
 
             Winbear.Show();
-        }               
+        }
+
+        public void Show_Bear_Window(object bear_say, bool _is_txt_reshow, string type, bool BearBtn_show)
+        {
+            if (Winbear != null)
+                if (Winbear.IsLoaded)
+                    Winbear.Close();
+            
+            if (BearBtn_show)
+            {
+                BearBtn_visibility = Visibility.Visible;
+                BearSay_RowSpan = 1;
+            }
+            else
+            {
+                BearBtn_visibility = Visibility.Collapsed;
+                BearSay_RowSpan = 3;
+            }
+
+            Winbear = new Window_Bear(this, _is_txt_reshow, type);
+
+            Winbear.Top = 0;
+            Winbear.Left = 0;
+
+            if (bear_say.GetType().Name == "String")
+                Str_bear_say = (string)bear_say;
+
+            Winbear.Show();
+        }
 
         public async Task AccessDelayAsync(int delayTime)
         {
@@ -590,6 +644,17 @@ namespace PD.ViewModel
             }
         }
 
+        private string _txt_save_wl_data_path = @"\\192.168.2.5\wdm_data\UFA HT\";
+        public string txt_save_wl_data_path
+        {
+            get { return _txt_save_wl_data_path; }
+            set
+            {
+                _txt_save_wl_data_path = value;
+                OnPropertyChanged("txt_save_wl_data_path");
+            }
+        }
+
         private List<DataPoint> _Save_PD_Value = new List<DataPoint>();
         public List<DataPoint> Save_PD_Value
         {
@@ -716,6 +781,17 @@ namespace PD.ViewModel
             set
             {
                 winswitch = value;
+            }
+        }
+
+        private GridLength _BearBtnSize_Height = new GridLength(1, GridUnitType.Star);
+        public GridLength BearBtnSize_Height
+        {
+            get { return _BearBtnSize_Height; }
+            set
+            {
+                _BearBtnSize_Height = value;
+                OnPropertyChanged("BearBtnSize_Height");
             }
         }
 
@@ -931,6 +1007,40 @@ namespace PD.ViewModel
             }
         }
 
+        private int _ErrorCode = 0;
+        public int ErrorCode
+        {
+            get { return _ErrorCode; }
+            set
+            {
+                _ErrorCode = value;
+
+                string error_msg = "";
+                switch (value)
+                {
+                    case 1:
+                        error_msg = "Comport連線異常";
+                        break;
+                    case 21:
+                        error_msg = "Curfitting資料點數小於1";
+                        break;
+                    case 22:
+                        error_msg = "Curfitting結果異常";
+                        break;
+                }
+
+                using (System.IO.StreamWriter file =
+                new System.IO.StreamWriter(@"D:\PD\Log.txt", true))
+                {
+                    string str = "";
+                    DateTime dt = DateTime.Now;
+                    string d = dt.ToString("yyyy/MM/dd HH:mm:ss");
+                    str = string.Concat(error_msg, "  ,  ", d);
+                    file.WriteLine(str);
+                }
+            }
+        }
+
         private int _ch_count = 8;
         public int ch_count
         {
@@ -1019,7 +1129,7 @@ namespace PD.ViewModel
                 _list_combox_Calibration_items = value;
                 OnPropertyChanged("list_combox_Calibration_items");
             }
-        }
+        }            
 
         private int _switch_index = 0;
         public int switch_index
@@ -1078,6 +1188,17 @@ namespace PD.ViewModel
             }
         }
 
+        private Visibility _BearBtn_visibility = Visibility.Visible;
+        public Visibility BearBtn_visibility
+        {
+            get { return _BearBtn_visibility; }
+            set
+            {
+                _BearBtn_visibility = value;
+                OnPropertyChanged("BearBtn_visibility");
+            }
+        }
+
         private List<List<string>> _board_read = new List<List<string>>();
         public List<List<string>> board_read
         {
@@ -1130,7 +1251,7 @@ namespace PD.ViewModel
             //timer3.Stop();
         }
 
-        private List<string> _list_SN = new List<string>();
+        private List<string> _list_SN = new List<string>() { "", "" , "" , "" , "" , "" , "" , "" , "" , "" , "" , "" };
         public List<string> list_SN
         {
             get { return _list_SN; }
@@ -1334,6 +1455,17 @@ namespace PD.ViewModel
             }
         }
 
+        private int _BearSay_RowSpan = 3;
+        public int BearSay_RowSpan
+        {
+            get { return _BearSay_RowSpan; }
+            set
+            {
+                _BearSay_RowSpan = value;
+                OnPropertyChanged("BearSay_RowSpan");
+            }
+        }
+
         private int _int_Dac_cmd = 0;
         public int int_Dac_cmd
         {
@@ -1534,7 +1666,7 @@ namespace PD.ViewModel
             set { _switch_selected = value; }
         }
         
-        private bool[] _bo_temp_gauge = new bool[8];
+        private bool[] _bo_temp_gauge = new bool[12];
         public bool[] bo_temp_gauge
         {
             get { return _bo_temp_gauge; }
@@ -1904,7 +2036,7 @@ namespace PD.ViewModel
             }
         }
 
-        private double _window_bear_heigh = 380;  //[width, height]
+        private double _window_bear_heigh = 250;  //[width, height]
         public double window_bear_heigh
         {
             get { return _window_bear_heigh; }
@@ -2208,6 +2340,17 @@ namespace PD.ViewModel
             {
                 _str_comment = value;
                 OnPropertyChanged("Str_comment");
+            }
+        }
+
+        private string _msg = "";
+        public string msg
+        {
+            get { return _msg; }
+            set
+            {
+                _msg = value;
+                OnPropertyChanged("msg");
             }
         }
 

@@ -332,6 +332,8 @@ namespace PD.UI
 
         private void _GaugeTxT__GotFocus(object sender, RoutedEventArgs e)
         {
+            TextBox obj = (TextBox)sender;
+            obj.SelectAll();
             //gaugetxt_focus = true;
         }
 

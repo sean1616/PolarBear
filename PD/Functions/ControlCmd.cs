@@ -200,6 +200,32 @@ namespace PD.Functions
             return true;
         }
 
+        public async Task<string> Get_PD_Value_1ch(int ch)
+        {
+            string msg = "";
+            try
+            {
+                if (vm.port_PD.IsOpen)
+                {
+                    vm.Str_comment = string.Concat("P", ch + 1, "?");
+                    vm.port_PD.Write(vm.Str_comment + "\r");
+
+                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+
+                    int size = vm.port_PD.BytesToRead;
+                    byte[] dataBuffer = new byte[size];
+                    int length = vm.port_PD.Read(dataBuffer, 0, size);
+
+                    //Show read back message
+                    msg = anly.GetMessage(dataBuffer);
+                    vm.msg = msg;
+                }
+            }
+            catch { }
+
+            return msg;
+        }
+
         public async Task Get_PM_Value(int ch) //PM Value save in vm.Float_PD
         {
             vm.Float_PD[ch] = vm.pm.ReadPower();
@@ -244,10 +270,12 @@ namespace PD.Functions
             #endregion
         }
 
-        public int Save_K_WL_Data(string Data_Type, string userID, string SNnumber, int ch)
+        public int Save_K_WL_Data(string Data_Type, string userID, string SNnumber, int ch, string production_type, int beforeORafter)
         {
             #region Save Bear say to txt file
+            if (vm.List_bear_say == null) return 1;
             if (vm.List_bear_say.Count == 0) return 1;  //ErrorCode:1 => BearSay is empty
+            if (string.IsNullOrWhiteSpace(SNnumber)) return 3; //ErrorCode:3 => SN number is empty
 
             switch (Data_Type)
             {
@@ -256,17 +284,45 @@ namespace PD.Functions
                     break;
             }
             DateTime dt = DateTime.Now;
-            string a = dt.ToString("yyyy-MM-dd HH:mm:ss");
-            string filePath = string.Concat(@"D:\PD\", SNnumber, ".txt");
+            string a = dt.ToString("yyyy/MM/dd HH:mm:ss");
+            //string filePath = string.Concat(@"D:\PD\", SNnumber, ".txt");
+            string filePath = string.Concat(vm.txt_save_wl_data_path, SNnumber, ".txt");
 
             if (File.Exists(filePath))
             {
-                //File.Delete(filePath);
-
                 List<string> quotelist = File.ReadAllLines(filePath).ToList();
 
-                if (quotelist.Count > 1)
-                    quotelist.RemoveAt(1);
+                if (quotelist.Count > 2)  //已有兩筆數據
+                {
+                    quotelist[beforeORafter] = "";  //Delete Data, 1 is before, 2 is after             
+                    //quotelist.RemoveAt(beforeORafter);    //Delete Data, 1 is before, 2 is after                
+                }
+                else if (quotelist.Count == 2) //只有一筆數據
+                {
+                    quotelist.Add("");
+                }
+                else return 1;
+
+                File.Delete(filePath);
+
+                string str = "";
+                try
+                {
+                    str += vm.List_bear_say[ch][0];  //第二列-波長
+                    str += ",";
+                    str += a;  //第二列-時間
+
+                    quotelist[beforeORafter] = str;
+                }
+                catch { vm.Str_cmd_read = "Save data error"; }
+
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath, true))
+                {
+                    for (int i = 0; i < quotelist.Count; i++)
+                    {
+                        file.WriteLine(quotelist[i]);
+                    }                   
+                }
             }
             else
             {
@@ -274,24 +330,18 @@ namespace PD.Functions
 
                 using (System.IO.StreamWriter file =
                  new System.IO.StreamWriter(filePath, true))
-                {                    
-                    file.WriteLine(userID + "\r\n");  //第一列：使用者ID
+                {
+                    string firstline = $"{production_type},{userID},{SNnumber}";
+                    file.WriteLine(firstline);  //第一列：使用者ID
 
                     string str = "";
 
                     str += vm.List_bear_say[ch][0];  //第二列-波長
                     str += ",";
                     str += a;  //第二列-時間
-
-                    //for (int j = 0; j < 3; j++)
-                    //{
-                    //    str += ",";
-                    //    str += vm.List_bear_say[ch][j];
-                    //}
-                    //str += "\r\n";
                     file.WriteLine(str);
 
-                    vm._write_line = new List<string>();
+                    //vm._write_line = new List<string>();
                 }
             }
 

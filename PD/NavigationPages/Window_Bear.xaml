@@ -192,21 +192,14 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="txt_bear_say_something"
-                       Grid.Row="0"
-                       Grid.Column="1"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontFamily="Calibri"
-                       FontSize="20"
-                       Text="" />
+           
         </Grid>
 
         <Grid x:Name="grid_test_result"
               Grid.Row="1"
               Grid.RowSpan="1"
               Grid.Column="2"
-              Visibility="Visible">
+              Visibility="Hidden">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.3*" />
                 <ColumnDefinition />
@@ -366,39 +359,57 @@
               Grid.Row="1"
               Grid.RowSpan="1"
               Grid.Column="2"
-              Visibility="Collapsed">
+              Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.3*" />
                 <ColumnDefinition />
+                <ColumnDefinition Width="0.3*"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.5*" />
+                <RowDefinition Height="0.8*" />
+                <RowDefinition />
+                <RowDefinition Height="0.1*" />
+                <RowDefinition />
+                <RowDefinition Height="0.6*" />
                 <RowDefinition />
                 <RowDefinition Height="0.2*" />
                 <RowDefinition />
-                <RowDefinition Height="0.2*" />
+                <RowDefinition Height="0.1*" />
                 <RowDefinition />
-                <RowDefinition Height="0.2*" />
-                <RowDefinition />
-            </Grid.RowDefinitions>           
+            </Grid.RowDefinitions>
+            <Viewbox  Grid.Row="3"
+                      Grid.Column="1"
+                      Grid.RowSpan="{Binding BearSay_RowSpan}"
+                      Grid.ColumnSpan="3"
+                      MaxHeight="40">
+                <TextBlock x:Name="txt_bear_say_something"                                
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontFamily="Segoe Print"
+                           FontSize="20"
+                           Text="Bear Say" />
+            </Viewbox>
 
             <!--  Button 1  -->
-            <Button Name="btn_load_history"
-                Grid.Row="1"
+            <Button Name="btn_SaveBefore"
+                Grid.Row="5"
                     Grid.Column="1"
-                    Tag="1_9"
-                    Style="{DynamicResource style_BearBtn}"
-                    Content="Load History" Click="btn_load_history_Click"/>
+                    Tag="1"
+                    Click="btn_Save_Click"
+                    Visibility="{Binding BearBtn_visibility}"
+                    Style="{DynamicResource style_BearBtn0}"
+                    Content="Before" />
 
             <!--  Button 2  -->
-            <Button Name="btn_delete_history"
-                Grid.Row="1"
-                    Grid.Column="2"
-                    Tag="2_10"
-                    Style="{DynamicResource style_BearBtn}"
-                    Content="Delete History" 
-                    Click="btn_delete_history_Click"/>           
+            <Button Name="btn_SaveAfter"
+                Grid.Row="5"
+                    Grid.Column="3"
+                    Tag="2"
+                    Click="btn_Save_Click"
+                    Visibility="{Binding BearBtn_visibility}"
+                    Style="{DynamicResource style_BearBtn0}"
+                    Content="After" />           
         </Grid>
 
         <ProgressBar x:Name="PBar"

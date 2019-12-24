@@ -19,6 +19,7 @@ namespace PD.AnalysisModel
         
         //List<float> list_read_value_single = new List<float>();
         string str_read_value;
+        
         ComViewModel vm;
         CurveFitting CurveFunctions = new CurveFitting();        
 
@@ -536,7 +537,7 @@ namespace PD.AnalysisModel
             return vm;
         }
 
-        private void GetMessage(byte[] dataBuffer)
+        public string GetMessage(byte[] dataBuffer)
         {
             str_read_value = "";
             list_read_value = new List<string>();
@@ -547,9 +548,79 @@ namespace PD.AnalysisModel
             dataBuffer = dataBuffer.Where(val => val != 62).ToArray(); //remove "62"   >   
             string txt = Encoding.ASCII.GetString(dataBuffer);
             list_read_value.Add(Encoding.ASCII.GetString(dataBuffer));
+            return txt;
         }
 
-        public async Task<bool> CurFit(List<List<DataPoint>> Save_All_PD_Value ,List<PointF> Points, List<double> BestCoeffs, string action)
+        public DataPoint CurFit(List<DataPoint> list_datapoint)
+        {
+            List<System.Drawing.PointF> point = new List<PointF>();
+            DataPoint curfitResult = new DataPoint();
+            List<double> BestCoeffs = new List<double>();
+            if (list_datapoint.Count < 1)
+            {
+                vm.ErrorCode = 21;
+            }
+            else
+            {
+                #region initialize
+                vm.List_curfit_resultDac.Clear();
+                vm.List_curfit_resultWL.Clear();
+                vm.Str_Status = "Curve Fitting";
+                string Best_DAC = "";
+                vm.Str_cmd_read = " ";
+                int all_ch_count = vm.ch_count;
+                #endregion
+                
+                for (int i = 0; i < all_ch_count; i++)
+                {
+
+                    int mid_i = (int)Math.Round((double)list_datapoint.Count / 2);
+                    double mid_X = Math.Round(list_datapoint[mid_i].X, 2);
+
+                    foreach (DataPoint dp in list_datapoint)
+                        point.Add(new PointF((float)(dp.X - list_datapoint[mid_i].X), (float)dp.Y));
+                                     
+                    // Find a good fit.
+                    int degree = 2;
+                    BestCoeffs = CurveFunctions.FindPolynomialLeastSquaresFit(point, degree);
+
+                    if (degree == 2)
+                        Best_DAC = Math.Round((-1 * BestCoeffs[1] / (2 * BestCoeffs[2]))).ToString();
+
+                    string txt = "";
+                    foreach (double coeff in BestCoeffs)
+                    {
+                        txt += ", " + Math.Round(coeff, 10).ToString();
+                    }
+                    string coe = txt.Substring(1);
+
+                    string str_curfit_result = Best_DAC;  //If Curfit result is not a number , error occurs.
+
+                    vm.List_curfit_resultDac[i] = Convert.ToInt32(Best_DAC);
+
+                    vm.Str_cmd_read = vm.Str_cmd_read + "," + str_curfit_result;
+
+                    // 繪圖- CurveFit曲線
+                    double max_7points_dac = list_datapoint.LastOrDefault().X;
+                    double min_7points_dac = list_datapoint[0].X;
+                    double dac_gap = (max_7points_dac - min_7points_dac) / 100;
+
+                    list_datapoint.Clear();
+                    for (double x = min_7points_dac; x <= max_7points_dac; x = x + dac_gap)
+                    {
+                        list_datapoint.Add(new DataPoint(x, (BestCoeffs[2] * Math.Pow(x, 2) + BestCoeffs[1] * x + BestCoeffs[0])));
+                    }
+                }
+
+                vm.Str_cmd_read = vm.Str_cmd_read.Substring(2);
+
+                
+            }
+
+            return curfitResult;
+        }
+
+        public async Task<bool> CurFit_All(List<List<DataPoint>> Save_All_PD_Value ,List<PointF> Points, List<double> BestCoeffs, string action)
         {
             if (Save_All_PD_Value.Count < 1)
             {
