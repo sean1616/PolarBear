@@ -25,8 +25,8 @@ namespace PD.NavigationPages
     {
         ComViewModel vm;
         ControlCmd cmd;
-        TextBox obj;        
-        string[] ch_v;
+        TextBox obj;
+        string[] ch_v = new string[2];
         bool _isDrag = false;
 
         public Page_PD_Gauges(ComViewModel vm)
@@ -62,16 +62,19 @@ namespace PD.NavigationPages
             {
                 try
                 {
+                    bool _isGoOn = vm.IsGoOn;
+
                     if (vm.PD_or_PM == true && vm.IsGoOn == true)
                         await vm.PM_Stop();
+                    else if (vm.PD_or_PM == false && vm.IsGoOn == true)
+                        await vm.PD_Stop();
 
                     await vm.AccessDelayAsync(vm.Int_Read_Delay);
 
                     string TF_or_VOA;
-                    string ch = ch_v[0];
                     string DAC = obj.Text;
                     int input_value = int.Parse(obj.Text);
-                    int channel = Convert.ToInt32(ch);
+                    int channel = int.Parse(ch_v[0]);
                     int V = Convert.ToInt16(ch_v[1]) - 1;
 
                     if (ee.Key == Key.Up)
@@ -83,12 +86,12 @@ namespace PD.NavigationPages
                     if (vm.PD_or_PM == false)  //PD mode
                     {
                         //判斷要下的電壓為TF軸還是VOA軸
-                        if (ch_v[2] == "3")
+                        if (ch_v[1] == "3")
                             TF_or_VOA = "VOA";
                         else
                             TF_or_VOA = "D";
 
-                        if (ch_v[2] == "2")    //V2
+                        if (ch_v[1] == "2")    //V2
                             DAC = "-" + input_value.ToString();
                     }
                     else                       //PM mode
@@ -97,9 +100,9 @@ namespace PD.NavigationPages
                         {
                             TF_or_VOA = "D";
 
-                            if (ch_v[2] == "1")     //V1                                    
+                            if (ch_v[1] == "1")     //V1                                    
                                 DAC = input_value.ToString() + ",0," + vm.List_D0_value[channel - 1][2].ToString();
-                            else if (ch_v[2] == "2")            //V2
+                            else if (ch_v[1] == "2")            //V2
                                 DAC = "0," + input_value.ToString() + "," + vm.List_D0_value[channel - 1][2].ToString();
                             else                    //V3
                                 DAC = vm.List_D0_value[channel - 1][0].ToString() + ","
@@ -109,9 +112,9 @@ namespace PD.NavigationPages
                         {
                             TF_or_VOA = "D";
 
-                            if (ch_v[2] == "1")     //V1
+                            if (ch_v[1] == "1")     //V1
                                 DAC = input_value.ToString() + ",0";
-                            else if (ch_v[2] == "2")            //V2
+                            else if (ch_v[1] == "2")            //V2
                                 DAC = "0," + input_value.ToString();
                             else                    //V3
                                 DAC = vm.List_D0_value[channel - 1][0].ToString() + ","
@@ -119,7 +122,7 @@ namespace PD.NavigationPages
                         }
                     }
                                   
-                    vm.WriteDac(ch, TF_or_VOA, DAC);
+                    vm.WriteDac(ch_v[0], TF_or_VOA, DAC);
 
                     await vm.AccessDelayAsync(vm.Int_Write_Delay);
                     vm.port_PD.Close();
@@ -127,8 +130,10 @@ namespace PD.NavigationPages
                     vm.List_D0_value[channel - 1][V] = input_value.ToString();
                     vm.List_D0_value = new List<List<string>>(vm.List_D0_value);
 
-                    if (vm.PD_or_PM == true && vm.IsGoOn == true)
+                    if (vm.PD_or_PM == true && _isGoOn == true)
                         vm.PM_GO();
+                    else if (vm.PD_or_PM == false && _isGoOn == true)
+                        await vm.PD_GO();
                 }
                 catch { vm.Str_cmd_read = "Write DAC error."; }
             }            
@@ -136,9 +141,9 @@ namespace PD.NavigationPages
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            obj = sender as TextBox; //Get the focused textbox name
-            string str_textBox_name = obj.Tag.ToString().Substring(1) + obj.Name;
-            ch_v = str_textBox_name.Split('_');  // get the channel and which voltage (TF or VOA)         
+            obj = sender as TextBox; //Get the focused textbox name            
+            ch_v[0] = obj.Tag.ToString().Substring(1);  // get the channel and which voltage (TF or VOA)         
+            ch_v[1] = obj.Name.ToString().Substring(1);  // get the channel and which voltage (TF or VOA)         
         }
 
         private async void _MouseWheel(object sender, MouseWheelEventArgs e)
@@ -518,7 +523,10 @@ namespace PD.NavigationPages
         private async void txt_Dac_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             TextBox obj = (TextBox)sender;
-            double textbox_value = double.Parse(obj.Text);
+            double textbox_value;
+
+            if (!double.TryParse(obj.Text, out textbox_value)) return;
+
             int final_dac = 0;
             int switch_index = 1;
             //vm.switch_index = switch_index;
@@ -552,6 +560,10 @@ namespace PD.NavigationPages
                     }
                     else  //Voltage mode
                     {
+                        List<double> list_voltage = new List<double>();
+                        List<int> list_dac = new List<int>();
+                        int count = 0;
+
                         if (vm.station_type != "Hermetic Test")
                         {
 
@@ -559,10 +571,7 @@ namespace PD.NavigationPages
                         else
                         {
                             #region Read Board Table
-                            List<double> list_voltage = new List<double>();
-                            List<int> list_dac = new List<int>();
-                                                        
-                            int count = 0;
+                                                       
                             foreach (string strline in vm.board_read[vm.switch_index - 1])
                             {
                                 string[] board_read = strline.Split(',');
@@ -585,6 +594,8 @@ namespace PD.NavigationPages
                             }
                             #endregion
                         }
+
+
                     }
 
                     //Set Dac

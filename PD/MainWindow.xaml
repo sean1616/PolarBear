@@ -165,11 +165,11 @@
                              Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
                              Style="{DynamicResource style_PageBtn}"
                              Tag="../Resources/Laser.png" />
-                <RadioButton Name="RBtn_Script"
+                <RadioButton Name="RBtn_Log"
                              Grid.Row="1"
                              Grid.Column="4"
-                             Checked="RBtn_Script_Checked"
-                             Content="Script"
+                             Checked="RBtn_Log_Checked"
+                             Content="Log"
                              FontSize="25"
                              Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
                              Style="{DynamicResource style_PageBtn}"
@@ -319,6 +319,7 @@
                           VerticalContentAlignment="Center"
                           DropDownClosed="combox_comport_DropDownClosed"
                           DropDownOpened="combox_comport_DropDownOpened"
+                          IsEditable="False"
                           FontSize="{Binding Int_Fontsize}"
                           SelectedItem="{Binding Selected_Comport}"
                           Style="{DynamicResource style_combobox}"
@@ -354,6 +355,12 @@
                               IsChecked="{Binding IsGoOn}"
                               Style="{DynamicResource style_FuncToggleBtn}"
                               Tag="../Resources/Stopwatch.png" />
+
+                <!--<ComboBox Grid.Row="11"
+                          Grid.ColumnSpan="2"
+                          Tag="../Resources/Send.png"
+                          Style="{DynamicResource style_combobox}" />-->
+
                 <Grid Grid.Row="11"
                       Grid.ColumnSpan="2">
                     <Grid.RowDefinitions>
@@ -367,7 +374,7 @@
                                           Width="4*" />
                         <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-                    <!--  浮水印  -->
+                      <!--浮水印-->  
                     <Rectangle Grid.Column="0"
                                Grid.Row="1"
                                Grid.ColumnSpan="3"
@@ -381,28 +388,33 @@
                              GotFocus="txtBox_comment_GotFocus"
                              KeyDown="txtBox_comment_KeyDown"
                              LostFocus="txtBox_comment_LostFocus"
+                             Text="{Binding btn_cmd_txt, Mode=TwoWay}"
+                             TextChanged="txtBox_comment_TextChanged"
                              VerticalAlignment="Center"
                              Style="{StaticResource style_txtbox}"
                               />
                     <Button Grid.Row="1"
                             x:Name="Btn_Send"
+                            Click="Btn_Send_Click"
                             Style="{DynamicResource style_SendBtn}"
-                            Tag="../Resources/Send.png" />
+                            Tag="../Resources/Send.png" />                    
                     <Button Grid.Row="1"
                             Grid.Column="2"
                             x:Name="Btn_cmd_list"
                             Opacity="0.5"
+                            Click="Btn_cmd_list_Click"
                             Style="{DynamicResource style_SendBtn}"
-                            Tag="../Resources/triangle_down.png" />
+                            Tag="../Resources/triangle_down.png">
+                        <Button.ContextMenu>
+                            <ContextMenu FontFamily="Segoe Print">
+                                <MenuItem Header="D1?"
+                                          Click="MenuItem_Click" />
+                                <MenuItem Header="D1 0,0,0" Click="MenuItem_Click"/>    
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
                 </Grid>
-                <!--<Button x:Name="btn_comment"
-                        Grid.Row="11"
-                        Grid.ColumnSpan="2"
-                        Click="btn_comment_Click"
-                        Content="Send"
-                        FontSize="{Binding Int_Fontsize}"
-                        Style="{DynamicResource style_FuncBtn}"
-                        Tag="../Resources/Send.png" />-->
+               
                 <Button x:Name="btn_D0"
                         Grid.Row="3"
                         Grid.ColumnSpan="2"

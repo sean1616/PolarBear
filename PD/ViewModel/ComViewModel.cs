@@ -43,7 +43,7 @@ namespace PD.ViewModel
         //ICommand
         #region ICommand
         public ICommand BearTestCommand { get { return new Delegatecommand(BearTest); } }
-
+                
         public ICommand Cmd_Test { get { return new Delegatecommand(cmd_test); } }
         #endregion
 
@@ -51,74 +51,67 @@ namespace PD.ViewModel
         #region Commands
         private void BearTest()
         {
-            DataPoint ddpp = new DataPoint(1548.4, -3);
-            List<DataPoint> dataPoint = new List<DataPoint>() { ddpp, ddpp, ddpp, ddpp, ddpp, ddpp, ddpp };
+            //DataPoint ddpp = new DataPoint(1548.4, -3);
+            //List<DataPoint> dataPoint = new List<DataPoint>() { ddpp, ddpp, ddpp, ddpp, ddpp, ddpp, ddpp };
 
-            list_SN = new List<string>() { "29A0JA300200", "29A0JA300201", "29A0JA300202", "29A0JA300203", "29A0JA300204", "29A0JA300205", "29A0JA300206", "29A0JA300207" };
+            //list_SN = new List<string>() { "29A0JA300200", "29A0JA300201", "29A0JA300202", "29A0JA300203", "29A0JA300204", "29A0JA300205", "29A0JA300206", "29A0JA300207" };
 
             //test();
 
             #region Get Board Name
-            //int board_count = _list_Board_Setting.Count;
-            //for (int idz = 0; idz < board_count; idz++)
-            //{
-            //    if (!string.IsNullOrEmpty(_list_Board_Setting[idz][1]))
-            //    {
-            //        rs232 = new DiCon.UCB.Communication.RS232.RS232(_list_Board_Setting[idz][1]);
-            //        rs232.OpenPort();
-            //        icomm = (ICommunication)rs232;
+            rs232 = new DiCon.UCB.Communication.RS232.RS232(Selected_Comport);
+            rs232.OpenPort();
+            icomm = (ICommunication)rs232;
 
-            //        tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
+            tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
 
-            //        //txtSN[idz].Text = tf.ReadSN();
-            //        try
-            //        {
-            //            list_Board_Setting[idz][0] = tf.ReadSN();
-            //            Thread.Sleep(500);
-            //            rs232.ClosePort();
-            //        }
-            //        catch { }
-            //    }
-            //}
+            string str_ID = string.Empty;
+            try
+            {
+                str_ID = tf.ReadSN();
+                Str_cmd_read = str_ID;               
+                rs232.ClosePort();
+            }
+            catch { }
             #endregion
 
-            bool dac_volt;
-            if (bool.TryParse(Ini_Read("Connection", "DACorVolt"), out dac_volt))
-                isDACorVolt = dac_volt;
+            //bool dac_volt;
+            //if (bool.TryParse(Ini_Read("Connection", "DACorVolt"), out dac_volt))
+            //    isDACorVolt = dac_volt;
 
-            List<List<string>> lls = new List<List<string>>();
-            lls.Add(new List<string>() { "1530.33", "-1.561" });
-            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
-            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
-            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
-            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            List_bear_say = new List<List<string>>(lls);
+            //List<List<string>> lls = new List<List<string>>();
+            //lls.Add(new List<string>() { "1530.33", "-1.561" });
+            //lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            //lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            //lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            //lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            //lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            //lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            //lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            //List_bear_say = new List<List<string>>(lls);
 
-            Collection_bear_say.Add(lls);
-            bear_say_all++;
-            bear_say_now = bear_say_all;
+            //Collection_bear_say.Add(lls);
+            //bear_say_all++;
+            //bear_say_now = bear_say_all;
 
-            lls = new List<List<string>>();
-            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
-            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
-            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
-            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
-            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
-            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
-            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
-            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
-            List_bear_say = new List<List<string>>(lls);
+            //lls = new List<List<string>>();
+            //lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            //lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            //lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            //lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            //lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            //lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            //lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            //lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            //List_bear_say = new List<List<string>>(lls);
 
-            Collection_bear_say.Add(lls);
-            bear_say_all++;
-            bear_say_now = bear_say_all;
+            //Collection_bear_say.Add(lls);
+            //bear_say_all++;
+            //bear_say_now = bear_say_all;
 
-            
+
         }
-
+              
         private Task<string> testing = Task<string>.Factory.StartNew(() =>
         {
             return "AAA";
@@ -328,7 +321,7 @@ namespace PD.ViewModel
                     }
                 }
             }
-            catch (Exception ex) { }
+            catch { }
 
             try
             {
@@ -341,8 +334,7 @@ namespace PD.ViewModel
                 {
                     Str_cmd_read = "Comport is Null";
                     cmd.Save_Log_Message("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString());
-                }
-                
+                }                
             }
             catch { Str_cmd_read = "Port Open Error"; cmd.Save_Log_Message("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString());  }
         }
@@ -944,9 +936,7 @@ namespace PD.ViewModel
                     //Bool_Gauge = new bool[] { true, true, true, true, true, true, true, true, true, true, true, true };
                     Bool_Gauge = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false };
                     bo_temp_gauge = new bool[] { true, true, true, true, true, true, true, true, true, true, true, true };
-
-                   
-
+                                       
                     Is_switch_mode = true;
 
                     GaugeText_visible = Visibility.Hidden;
@@ -955,6 +945,18 @@ namespace PD.ViewModel
                     GaugeTxtSize_Height = new GridLength(1, GridUnitType.Star);
 
                     GaugeGrid3_visible = Visibility.Visible;
+                }
+                else if (value == "Testing")
+                {
+                    PD_or_PM = true;
+                    ch_count = 8;
+                    Is_switch_mode = false;
+                    GaugeText_visible = Visibility.Visible;
+                    GaugeTabEnable = false;
+                    GaugeSize_Height = new GridLength(7, GridUnitType.Star);
+                    GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
+
+                    GaugeGrid3_visible = Visibility.Collapsed;
                 }
                 else
                 {
@@ -1914,6 +1916,17 @@ namespace PD.ViewModel
             }
         }
 
+        private string _str_boardID = "";
+        public string str_boardID
+        {
+            get { return _str_boardID; }
+            set
+            {
+                _str_boardID = value;
+                OnPropertyChanged("str_boardID");
+            }
+        }
+
         private string _str_Unit = "dB";
         public string str_Unit
         {
@@ -2351,6 +2364,17 @@ namespace PD.ViewModel
             {
                 _msg = value;
                 OnPropertyChanged("msg");
+            }
+        }
+
+        private string _btn_cmd_txt = "";
+        public string btn_cmd_txt
+        {
+            get { return _btn_cmd_txt; }
+            set
+            {
+                _btn_cmd_txt = value;
+                OnPropertyChanged("btn_cmd_txt");
             }
         }
 

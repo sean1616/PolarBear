@@ -472,7 +472,9 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0*" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="0.05*" />
@@ -589,7 +591,7 @@
                     Click="btn_bearsay_visual_Click"
                     />
             
-            <Grid Grid.Column="3">
+            <Grid Grid.Column="4">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition Height="5*" />
@@ -635,7 +637,7 @@
                 </ToggleButton>
             </Grid>
             <Grid Grid.Row="2"
-                  Grid.Column="3"
+                  Grid.Column="4"
                   Margin="5">
                 <Slider Name="slider_DAC"
                         VerticalAlignment="Center"
@@ -777,7 +779,7 @@
                 </Slider>
             </Grid>
             <Grid Grid.Row="1"
-                  Grid.Column="3"
+                  Grid.Column="4"
                   Margin="3">
                 <Viewbox MaxHeight="80">
                     <TextBox Name="txt_DAC"
@@ -800,7 +802,7 @@
             </Grid>
 
             <Grid Grid.Row="0"
-                  Grid.Column="4">
+                  Grid.Column="6">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition Height="5*"/>
@@ -844,7 +846,7 @@
                 </ToggleButton>
             </Grid>            
             <Grid Grid.Row="2"
-                  Grid.Column="4"
+                  Grid.Column="6"
                   Margin="5">
                 <Slider Name="slider_WL"
                         VerticalAlignment="Center"
@@ -986,7 +988,7 @@
                 </Slider>
             </Grid>
             <Grid Grid.Row="1"
-                  Grid.Column="4"
+                  Grid.Column="6"
                   Margin="3">
                 <Viewbox x:Name="viewbox8"
                          MaxHeight="80">
@@ -1009,9 +1011,40 @@
                            Text=" nm" />
             </Grid>
 
+            <Grid Grid.Row="0"
+                  Grid.Column="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="5*" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.1*" />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Power"
+                           Grid.Column="1"
+                           Grid.ColumnSpan="2"
+                           Grid.Row="1"
+                           FontSize="20"
+                           FontFamily="{Binding FontFamily, ElementName=txt_WL}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left" />
+                <ToggleButton Name="ToggleBtn_LaserConnect"
+                              Grid.Column="2"
+                              Grid.Row="1"
+                              HorizontalAlignment="Right"
+                              MaxWidth="48"
+                              MinWidth="40"
+                              MaxHeight="30"
+                              IsChecked="{Binding isConnected, Mode=TwoWay}"
+                              Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">                  
+                </ToggleButton>
+            </Grid>
             <Grid Grid.Row="2"
-                  Grid.Column="3"
-                  Visibility="Collapsed"
+                  Grid.Column="5"
+                  Visibility="Visible"
                   Margin="5">
                 <Slider Name="slider_Power"
                         VerticalAlignment="Center"
@@ -1152,8 +1185,8 @@
                 </Slider>
             </Grid>
             <Grid Grid.Row="1"
-                  Grid.Column="3"
-                  Visibility="Collapsed"
+                  Grid.Column="5"
+                  Visibility="Visible"
                   Margin="3">
                 <Viewbox Height="{Binding ActualHeight, ElementName=viewbox8, Mode=OneWay}">
                     <TextBox x:Name="txt_power"
@@ -1169,358 +1202,9 @@
                            VerticalAlignment="Bottom"
                            FontSize="20"
                            FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                           Text=" Dac" />
+                           Text=" dBm" />
             </Grid>
-        </Grid>
-
-        <!--<Grid Grid.Row="1"
-              Background="#FFF1F1F1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="0.3*" />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition Height="0.2*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.3*" />
-                <ColumnDefinition Width="4.4*" />
-                <ColumnDefinition Width="0.95*" />
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Row="1"
-                  Grid.Column="1">
-                <Slider Name="slider_WL"
-                        VerticalAlignment="Center"
-                        IsSnapToTickEnabled="True"
-                        Maximum="{Binding float_TLS_WL_Range[1]}"
-                        Minimum="{Binding float_TLS_WL_Range[0]}"
-                        Mouse.PreviewMouseDown="slider_PreviewMouseDown"
-                        PreviewMouseLeftButtonUp="slider_WL_MouseLeftButtonUp"
-                        Style="{DynamicResource Horizontal_Slider}"
-                        TickFrequency="0.01"
-                        TickPlacement="BottomRight"
-                        Value="{Binding Double_Laser_Wavelength, Mode=TwoWay}">
-                    <Slider.Resources>
-                        <Style x:Key="Horizontal_Slider"
-                               TargetType="{x:Type Slider}">
-                            <Setter Property="Focusable"
-                                    Value="False" />
-                            <Setter Property="SnapsToDevicePixels"
-                                    Value="true" />
-                            <Setter Property="OverridesDefaultStyle"
-                                    Value="true" />
-                            <Style.Triggers>
-                                <Trigger Property="Orientation"
-                                         Value="Horizontal">
-                                    <Setter Property="MinHeight"
-                                            Value="5" />
-                                    <Setter Property="MinWidth"
-                                            Value="104" />
-                                    <Setter Property="Template"
-                                            Value="{DynamicResource Slider}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                        <ControlTemplate x:Key="Slider"
-                                         TargetType="{x:Type Slider}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto"
-                                                   MinHeight="{TemplateBinding MinHeight}" />
-                                </Grid.RowDefinitions>
-                                <Track x:Name="PART_Track"
-                                       Grid.Row="2">
-                                    <Track.DecreaseRepeatButton>
-                                        <RepeatButton Style="{DynamicResource SliderRepeatButton1}" />
-                                    </Track.DecreaseRepeatButton>
-                                    <Track.Thumb>
-                                        <Thumb Style="{DynamicResource SliderThumb}" />
-                                    </Track.Thumb>
-                                    <Track.IncreaseRepeatButton>
-                                        <RepeatButton Style="{DynamicResource SliderRepeatButton}" />
-                                    </Track.IncreaseRepeatButton>
-                                </Track>
-                            </Grid>
-                        </ControlTemplate>
-                        -->
-        <!--  SliderThumb  -->
-        <!--
-                        <Style x:Key="SliderThumb"
-                               TargetType="{x:Type Thumb}">
-                            <Setter Property="SnapsToDevicePixels"
-                                    Value="true" />
-                            <Setter Property="OverridesDefaultStyle"
-                                    Value="true" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Thumb}">
-                                        <Ellipse Width="20"
-                                                 Height="20"
-                                                 Fill="Transparent"
-                                                 Stroke="{Binding Main_Color, FallbackValue=#FF33D3C4}"
-                                                 StrokeThickness="2" />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        -->
-        <!--  Future Bar  -->
-        <!--
-                        <Style x:Key="SliderRepeatButton"
-                               TargetType="{x:Type RepeatButton}">
-                            <Setter Property="SnapsToDevicePixels"
-                                    Value="true" />
-                            <Setter Property="OverridesDefaultStyle"
-                                    Value="true" />
-                            <Setter Property="IsTabStop"
-                                    Value="false" />
-                            <Setter Property="Focusable"
-                                    Value="false" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition />
-                                                <RowDefinition />
-                                                <RowDefinition />
-                                            </Grid.RowDefinitions>
-                                            <Border Grid.Row="0"
-                                                    Grid.RowSpan="3"
-                                                    Background="Transparent" />
-                                            <Border Grid.Row="1"
-                                                    Height="3"
-                                                    Background="DarkGray" />
-                                        </Grid>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        <Style x:Key="SliderRepeatButton1"
-                               TargetType="{x:Type RepeatButton}">
-                            <Setter Property="SnapsToDevicePixels"
-                                    Value="true" />
-                            <Setter Property="OverridesDefaultStyle"
-                                    Value="true" />
-                            <Setter Property="IsTabStop"
-                                    Value="false" />
-                            <Setter Property="Focusable"
-                                    Value="false" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition />
-                                                <RowDefinition />
-                                                <RowDefinition />
-                                            </Grid.RowDefinitions>
-                                            <Border Grid.Row="0"
-                                                    Grid.RowSpan="3"
-                                                    Background="Transparent" />
-                                            <Border Grid.Row="1"
-                                                    Height="3"
-                                                    Background="{Binding Main_Color, FallbackValue=#FF33D3C4}"
-                                                    SnapsToDevicePixels="True" />
-                                        </Grid>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Slider.Resources>
-                </Slider>
-            </Grid>
-            <Grid Grid.Row="1"
-                  Grid.Column="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.4*" />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="0.1*" />
-                </Grid.ColumnDefinitions>
-                <TextBox Name="txt_WL"
-                         Grid.Column="1"
-                         Margin="4,0,4,0"
-                         VerticalAlignment="Center"
-                         HorizontalContentAlignment="Center"
-                         FontFamily="Segoe Print"
-                         Keyboard.PreviewKeyDown="txt_WL_KeyDown"
-                         Text="{Binding Value, ElementName=slider_WL, Mode=TwoWay}" />
-                <TextBlock Grid.Column="2"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                           Text=" nm" />
-            </Grid>
-            
-            <Grid Grid.Row="2"
-                  Grid.Column="1">
-                <Slider Name="slider_Power"
-                        VerticalAlignment="Center"
-                        IsSnapToTickEnabled="True"
-                        Maximum="65500"
-                        Minimum="-65500"
-                        Mouse.PreviewMouseDown="slider_PreviewMouseDown"
-                        PreviewMouseLeftButtonUp="slider_Power_PreviewMouseLeftButtonUp"
-                        Style="{DynamicResource Horizontal_Slider}"
-                        TickFrequency="0.01"
-                        Value="{Binding Double_Laser_Power}">
-                    <Slider.Resources>
-                        <Style x:Key="Horizontal_Slider"
-                               TargetType="{x:Type Slider}">
-                            <Setter Property="Focusable"
-                                    Value="False" />
-                            <Setter Property="SnapsToDevicePixels"
-                                    Value="true" />
-                            <Setter Property="OverridesDefaultStyle"
-                                    Value="true" />
-                            <Style.Triggers>
-                                <Trigger Property="Orientation"
-                                         Value="Horizontal">
-                                    <Setter Property="MinHeight"
-                                            Value="5" />
-                                    <Setter Property="MinWidth"
-                                            Value="104" />
-                                    <Setter Property="Template"
-                                            Value="{DynamicResource Slider}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                        <ControlTemplate x:Key="Slider"
-                                         TargetType="{x:Type Slider}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto"
-                                                   MinHeight="{TemplateBinding MinHeight}" />
-                                </Grid.RowDefinitions>
-                                <Track x:Name="PART_Track"
-                                       Grid.Row="2">
-                                    <Track.DecreaseRepeatButton>
-                                        <RepeatButton Style="{DynamicResource SliderRepeatButton1}" />
-                                    </Track.DecreaseRepeatButton>
-                                    <Track.Thumb>
-                                        <Thumb Style="{DynamicResource SliderThumb}" />
-                                    </Track.Thumb>
-                                    <Track.IncreaseRepeatButton>
-                                        <RepeatButton Style="{DynamicResource SliderRepeatButton}" />
-                                    </Track.IncreaseRepeatButton>
-                                </Track>
-                            </Grid>
-                        </ControlTemplate>
-                        -->
-        <!--  SliderThumb  -->
-        <!--
-                        <Style x:Key="SliderThumb"
-                               TargetType="{x:Type Thumb}">
-                            <Setter Property="SnapsToDevicePixels"
-                                    Value="true" />
-                            <Setter Property="OverridesDefaultStyle"
-                                    Value="true" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Thumb}">
-                                        <Ellipse Width="20"
-                                                 Height="20"
-                                                 Fill="Transparent"
-                                                 Stroke="{Binding Main_Color, FallbackValue=#FF33D3C4}"
-                                                 StrokeThickness="2" />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        -->
-        <!--  Future Bar  -->
-        <!--
-                        <Style x:Key="SliderRepeatButton"
-                               TargetType="{x:Type RepeatButton}">
-                            <Setter Property="SnapsToDevicePixels"
-                                    Value="true" />
-                            <Setter Property="OverridesDefaultStyle"
-                                    Value="true" />
-                            <Setter Property="IsTabStop"
-                                    Value="false" />
-                            <Setter Property="Focusable"
-                                    Value="false" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition />
-                                                <RowDefinition />
-                                                <RowDefinition />
-                                            </Grid.RowDefinitions>
-                                            <Border Grid.Row="0"
-                                                    Grid.RowSpan="3"
-                                                    Background="Transparent" />
-                                            <Border Grid.Row="1"
-                                                    Height="3"
-                                                    Background="DarkGray" />
-                                        </Grid>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        <Style x:Key="SliderRepeatButton1"
-                               TargetType="{x:Type RepeatButton}">
-                            <Setter Property="SnapsToDevicePixels"
-                                    Value="true" />
-                            <Setter Property="OverridesDefaultStyle"
-                                    Value="true" />
-                            <Setter Property="IsTabStop"
-                                    Value="false" />
-                            <Setter Property="Focusable"
-                                    Value="false" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition />
-                                                <RowDefinition />
-                                                <RowDefinition />
-                                            </Grid.RowDefinitions>
-                                            <Border Grid.Row="0"
-                                                    Grid.RowSpan="3"
-                                                    Background="Transparent" />
-                                            <Border Grid.Row="1"
-                                                    Height="3"
-                                                    Background="{Binding Main_Color, FallbackValue=#FF33D3C4}"
-                                                    SnapsToDevicePixels="True" />
-                                        </Grid>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Slider.Resources>
-                </Slider>
-            </Grid>
-            <Grid Grid.Row="2"
-                  Grid.Column="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.4*" />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="0.1*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock x:Name="txt_power"
-                           Grid.Column="1"
-                           Margin="4,0,4,0"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                           Text="{Binding Value, ElementName=slider_Power}" />
-                <TextBlock Grid.Column="2"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                           Text=" Dac" />
-            </Grid>
-        </Grid>-->
-
+        </Grid>      
     </Grid>
 
 

@@ -173,6 +173,9 @@
     <Compile Include="NavigationPages\Page_Laser.xaml.cs">
       <DependentUpon>Page_Laser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NavigationPages\Page_Log.xaml.cs">
+      <DependentUpon>Page_Log.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NavigationPages\Page_PD_Gauges.xaml.cs">
       <DependentUpon>Page_PD_Gauges.xaml</DependentUpon>
     </Compile>
@@ -246,6 +249,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="NavigationPages\Page_Laser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_Log.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

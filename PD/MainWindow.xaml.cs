@@ -22,6 +22,7 @@ using PD.AnalysisModel;
 using PD.NavigationPages;
 using PD.Functions;
 using OxyPlot;
+using DiCon.UCB.Communication;
 using DiCon.Instrument.HP;
 using ExcelDataReader;
 
@@ -39,7 +40,7 @@ namespace PD
         
         string[] myPorts;
         string str_selected_com = "COM1";
-        
+
         int read_delay ; //Must >105 ms
         double power_PM;
         int v12_maxpower_index_PM;
@@ -48,6 +49,7 @@ namespace PD
         Page_Chart _Page_Chart;
         Page_DataGrid _Page_DataGrid;
         Page_Laser _Page_Laser;
+        Page_Log _Page_Log;
         Page_Setting _Page_Setting;
         int int_saved_combox_index;
 
@@ -86,15 +88,10 @@ namespace PD
                 if (int.TryParse(vm.Ini_Read("Connection", "RS232_Delay_Time"), out rs232_delay))
                     vm.Int_Read_Delay = rs232_delay;
 
-
-                    
-
                 if (vm.Ini_Read("Connection", "PD_or_PM") == "PM")
                 {
                     vm.PD_or_PM = true;
 
-                    //run_PD.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
-                    //run_PM.Foreground = new SolidColorBrush(Colors.White);
                     vm.Main_Color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0085CA"));
                     vm.Ini_Write("Connection", "PD_or_PM", "PM");
                 }
@@ -133,49 +130,97 @@ namespace PD
             vm.txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
             //vm.txt_board_table_path = @"D:\PD\UFV board\"";
 
-            vm.list_Board_Setting.Clear();
-            for (int i = 0; i < 12; i++)
-            {
-                string Board_ID = "Board_ID_" + (i + 1).ToString();
-                string Board_COM = "Board_COM_" + (i + 1).ToString();
-                vm.list_Board_Setting.Add(new List<string>() { vm.Ini_Read("Board_ID", Board_ID), vm.Ini_Read("Board_Comport", Board_COM) });
+            if (vm.station_type == "Hermetic Test")
+            {                
+                vm.list_Board_Setting.Clear();
+                for (int i = 0; i < 12; i++)
+                {
+                    string Board_ID = "Board_ID_" + (i + 1).ToString();
+                    string Board_COM = "Board_COM_" + (i + 1).ToString();
+                    vm.list_Board_Setting.Add(new List<string>() { vm.Ini_Read("Board_ID", Board_ID), vm.Ini_Read("Board_Comport", Board_COM) });
+                }
+                vm.list_Board_Setting = new List<List<string>>(vm.list_Board_Setting);
+                
+                int k = 0;
+                foreach (List<string> board_info in vm.list_Board_Setting)
+                {
+                    vm.board_read.Add(new List<string>());
+
+                    if (string.IsNullOrEmpty(board_info[0]))
+                    {
+                        k++; continue;
+                    }
+
+                    string board_id = board_info[0];
+                    string path = string.Concat(vm.txt_board_table_path, board_id, "-boardtable.txt");
+
+                    if (!File.Exists(path))
+                    {
+                        vm.Str_cmd_read = "UFV Board table is not exist";
+                        continue;
+                    }
+
+                    StreamReader str = new StreamReader(path);
+
+                    while (true)  //Read board v3 data
+                    {
+                        string readline = str.ReadLine();
+
+                        if (string.IsNullOrEmpty(readline)) break;
+
+                        vm.board_read[k].Add(readline);
+                    }
+                    str.Close(); //(關閉str)
+
+                    k++;
+                }
             }
-            vm.list_Board_Setting = new List<List<string>>(vm.list_Board_Setting);
+            //else if (vm.station_type == "Testing")
+            //{
+            //    vm.list_Board_Setting.Clear();
 
+            //    vm.board_read.Clear();
+            //    vm.board_read.Add(new List<string>());
 
-            int k = 0;
-            foreach (List<string> board_info in vm.list_Board_Setting)
-            {
-                vm.board_read.Add(new List<string>());
+            //    #region Get Board Name
+            //    rs232 = new DiCon.UCB.Communication.RS232.RS232(vm.Selected_Comport);
+            //    rs232.OpenPort();
+            //    icomm = (ICommunication)rs232;
 
-                if (string.IsNullOrEmpty(board_info[0]))
-                {
-                    k++; continue;
-                }
-                               
-                string board_id = board_info[0];
-                string path = string.Concat(vm.txt_board_table_path, board_id, "-boardtable.txt");
+            //    tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
 
-                if (!File.Exists(path))
-                {
-                    vm.Str_cmd_read = "UFV Board table is not exist";
-                    continue;
-                }
+            //    string str_ID = string.Empty;
+            //    try
+            //    {
+            //        str_ID = tf.ReadSN();
+            //        vm.str_boardID = str_ID;
+            //        Thread.Sleep(120);
+            //        rs232.ClosePort();
+            //    }
+            //    catch { }
+            //    #endregion
 
-                StreamReader str = new StreamReader(path);
+            //    if (string.IsNullOrEmpty(vm.str_boardID)) return;
 
-                while (true)  //Read board v3 data
-                {
-                    string readline = str.ReadLine();
+            //    string path = string.Concat(vm.txt_board_table_path, vm.str_boardID, "-boardtable.txt");
 
-                    if (string.IsNullOrEmpty(readline)) break;
+            //    if (!File.Exists(path))
+            //    {
+            //        vm.Str_cmd_read = "UFV Board table is not exist"; return;
+            //    }
+                    
+            //    StreamReader str = new StreamReader(path);
 
-                    vm.board_read[k].Add(readline);
-                }
-                str.Close(); //(關閉str)
+            //    while (true)  //Read board v3 data
+            //    {
+            //        string readline = str.ReadLine();
 
-                k++;
-            }
+            //        if (string.IsNullOrEmpty(readline)) break;
+
+            //        vm.board_read[0].Add(readline);
+            //    }
+            //    str.Close(); //(關閉str)
+            //}
             #endregion
 
             if (vm.station_type == "Hermetic Test")
@@ -207,13 +252,12 @@ namespace PD
             if (combox_comport.SelectedItem != null)
             {
                 vm.Selected_Comport = vm.Ini_Read("Connection", "Comport");
-                str_selected_com = vm.Selected_Comport;
             }                 
             else
                 vm.Str_cmd_read = "Selected Port is null";
 
             //初始化port
-            vm.port_PD = new SerialPort(str_selected_com, 115200, Parity.None, 8, StopBits.One);
+            vm.port_PD = new SerialPort(vm.Selected_Comport, 115200, Parity.None, 8, StopBits.One);
 
             vm.Save_PD_Value = new List<DataPoint>();
              vm.Save_All_PD_Value = Analysis.ListDefault<List<DataPoint>>(8);
@@ -223,6 +267,7 @@ namespace PD
             _Page_Chart = new Page_Chart(vm);
             _Page_DataGrid = new Page_DataGrid(vm);
             _Page_Laser = new Page_Laser(vm);
+            _Page_Log = new Page_Log(vm);
             _Page_Setting = new Page_Setting(vm);
             RBtn_Gauge_Page.IsChecked = true;
             //Frame_Navigation.Navigate(_Page_PD_Gauges);
@@ -461,7 +506,30 @@ namespace PD
 
         private async void btn_ID_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(vm.Selected_Comport)) return;
+
             bool _isGoOn_On = vm.IsGoOn;
+            if (vm.IsGoOn && !vm.PD_or_PM) await vm.PD_Stop();
+
+            #region Get Board Name
+            rs232 = new DiCon.UCB.Communication.RS232.RS232(vm.Selected_Comport);
+            rs232.OpenPort();
+            icomm = (ICommunication)rs232;
+
+            tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
+
+            string str_ID = string.Empty;
+            try
+            {
+                str_ID = tf.ReadSN();
+                vm.Str_Status = str_ID;
+
+                await vm.AccessDelayAsync(125);                                                
+                rs232.ClosePort();
+            }
+            catch { }
+            #endregion
+
             await vm.Port_ReOpen(vm.Selected_Comport);
             
             vm.Str_comment = "ID?";
@@ -2436,8 +2504,9 @@ namespace PD
         private async Task D0_show_PM()
         {
             vm.list_D_All = new List<List<string>>();
+            vm.List_D0_value = new List<List<string>>();
 
-            if(vm.station_type=="Hermetic Test")
+            if (vm.station_type == "Hermetic Test") 
             {
                 for (int ch = 0; ch < 8; ch++)
                 {
@@ -2478,6 +2547,27 @@ namespace PD
                     catch { vm.Str_cmd_read = "Port is closed"; }
                 }
             }
+            else if (vm.station_type == "Testing")
+            {
+                vm.Str_cmd_read = await WriteCmd_GetMessage("D1?");
+
+                string[] dac = vm.Str_cmd_read.Split(',');
+
+                vm.List_D0_value.Clear();
+                //if (vm.List_D0_value.Count == 0) vm.List_D0_value.Add(new List<string>());
+
+                if (dac.Length == 3)
+                {
+                    vm.List_D0_value.Add(new List<string>() { dac[0], dac[1], dac[2] });
+                    vm.List_D0_value = new List<List<string>>(vm.List_D0_value);
+                }
+                else if (dac.Length == 2)
+                {
+                    vm.List_D0_value.Add(new List<string>() { dac[0], dac[1] });
+                    vm.List_D0_value = new List<List<string>>(vm.List_D0_value);
+                }
+                
+            }
             else
             {
                 for (int ch = 0; ch < 1; ch++)
@@ -2502,7 +2592,33 @@ namespace PD
                     catch { vm.Str_cmd_read = "Port is closed"; }
                 }
             }
-        }        
+        }       
+        
+        public async Task<string> WriteCmd_GetMessage(string cmd)
+        {
+            string msg = "";
+;            try
+            {
+                await vm.Port_ReOpen(vm.Selected_Comport);
+
+                if (vm.port_PD.IsOpen)
+                {
+                    vm.port_PD.Write(cmd + "\r");
+
+                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+
+                    int size = vm.port_PD.BytesToRead;
+                    byte[] dataBuffer = new byte[size];
+                    int length = vm.port_PD.Read(dataBuffer, 0, size);
+
+                    //Read Feedback message
+                    msg = anly.GetMessage(dataBuffer);
+                }
+            }
+            catch { return ""; }
+                        
+            return msg;
+        }
        
         async Task _cmd_write_recieveData_ForD0(string cmd)  //for D0?
         {
@@ -2606,25 +2722,52 @@ namespace PD
             catch { }
 
             return vm.IsGoOn;
-        }            
+        }
 
-        private void combox_comport_DropDownOpened(object sender, EventArgs e)
+        ICommunication icomm;
+        DiCon.UCB.Communication.RS232.RS232 rs232;
+        DiCon.UCB.MTF.IMTFCommand tf;
+
+        private async void combox_comport_DropDownOpened(object sender, EventArgs e)
         {
             combox_comport.Items.Clear();
             myPorts = SerialPort.GetPortNames(); 
+            
+            foreach (string s in myPorts)
+            {
+                #region Get Board Name
+                //rs232 = new DiCon.UCB.Communication.RS232.RS232(s);
+                //rs232.OpenPort();
+                //icomm = (ICommunication)rs232;
 
-            foreach (string s in myPorts) combox_comport.Items.Add(s);  //寫入所有取得的com
+                //tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
+
+                //string str_ID = string.Empty;
+                //try
+                //{
+                //    str_ID = tf.ReadSN();
+                //    await vm.AccessDelayAsync(125);
+                //    rs232.ClosePort();
+                //}
+                //catch { }
+                #endregion
+
+                //string comport_and_ID = string.Concat(s, " ", str_ID);
+
+                string comport_and_ID = s;
+
+                combox_comport.Items.Add(comport_and_ID);  //寫入所有取得的com
+            }
         }
 
         private void combox_comport_DropDownClosed(object sender, EventArgs e)
         {
             if (combox_comport.SelectedItem != null)
-            {
-                 str_selected_com = combox_comport.SelectedItem.ToString();
-                vm.port_PD = new SerialPort(str_selected_com, 115200, Parity.None, 8, StopBits.One);
+            {                 
+                 vm.port_PD = new SerialPort(vm.Selected_Comport, 115200, Parity.None, 8, StopBits.One);
             }
             
-            vm.Ini_Write("Connection", "Comport", str_selected_com);  //創建ini file並寫入基本設定
+            vm.Ini_Write("Connection", "Comport", vm.Selected_Comport);  //創建ini file並寫入基本設定
         }
 
         private void RBtn_Gauge_Page_Checked(object sender, RoutedEventArgs e)
@@ -2658,6 +2801,13 @@ namespace PD
             Frame_Navigation.Visibility = Visibility.Hidden;
             pageTransitionControl.ShowPage(_Page_Laser);
             //Frame_Navigation.Navigate(_Page_Laser);
+        }
+
+        private void RBtn_Log_Checked(object sender, RoutedEventArgs e)
+        {
+            pageTransitionControl.Visibility = Visibility.Visible;
+            Frame_Navigation.Visibility = Visibility.Hidden;
+            pageTransitionControl.ShowPage(_Page_Log);
         }
 
         private void RBtn_Setting_Checked(object sender, RoutedEventArgs e)
@@ -2724,12 +2874,50 @@ namespace PD
                     return;
 
                 bool _isGoOn_On = vm.IsGoOn;
+                if (vm.IsGoOn && !vm.PD_or_PM) await vm.PD_Stop();
 
-                await anly.Port_ReOpen();
+                await vm.Port_ReOpen(vm.Selected_Comport);
+
                 vm.Str_comment = txtBox_comment.Text;
-                await Cmd_Write_RecieveData(vm.Str_comment, true, 0);
+                try
+                {
+                    if (vm.port_PD.IsOpen)
+                    {
+                        vm.port_PD.Write(vm.Str_comment + "\r");
 
-                if (_isGoOn_On)
+                        await vm.AccessDelayAsync(vm.Int_Read_Delay);
+
+                        int size = vm.port_PD.BytesToRead;
+                        byte[] dataBuffer = new byte[size];
+                        int length = vm.port_PD.Read(dataBuffer, 0, size);
+
+                        //Show read back message
+                        vm.Str_cmd_read = anly.GetMessage(dataBuffer);
+
+                        if (!string.IsNullOrWhiteSpace(vm.Str_comment))
+                        {
+                            MenuItem item = new MenuItem();
+                            item.Header = vm.Str_comment;
+
+                            bool _isItemExist = false;
+                            foreach (MenuItem i in Btn_cmd_list.ContextMenu.Items)
+                            {
+                                if (i.Header == item.Header) _isItemExist = true;
+                            }
+
+                            if (!_isItemExist)
+                            {
+                                item.Click += MenuItem_Click;
+                                Btn_cmd_list.ContextMenu.Items.Add(item);
+                            }
+                        }
+                    }
+                }
+                catch { }
+
+                await vm.AccessDelayAsync(125);
+
+                if (_isGoOn_On && !vm.PD_or_PM)
                     await vm.PD_GO();
             }
         }
@@ -3874,7 +4062,8 @@ namespace PD
 
         private void btn_close_Click(object sender, RoutedEventArgs e)
         {
-            vm.port_PD.Close();
+            if (vm.port_PD != null)
+                vm.port_PD.Close();
             System.Environment.Exit(System.Environment.ExitCode);
         }
 
@@ -4094,72 +4283,7 @@ namespace PD
             vm.mainWin_size = new double[] { ActualWidth, ActualHeight };            
             vm.mainWin_point = new System.Windows.Point(Left, Top);
         }
-
-        //bool[] Bool_Page1 = new bool[8], Bool_Page2 = new bool[4];
-        //private async void Combox_Switch_DropDownClosed(object sender, EventArgs e)
-        //{
-        //    ComboBox obj = (ComboBox)sender;
-            
-        //    if (obj.SelectedIndex == int_saved_combox_index)
-        //        return;
-
-        //    vm.switch_selected_index = obj.SelectedIndex;
-
-        //    await vm.Port_Switch_ReOpen();
-
-        //    if (obj.SelectedIndex > 0 && obj.SelectedIndex < 13)   //Switch 1~12
-        //    {
-        //        if (string.IsNullOrWhiteSpace("I1 " + obj.SelectedIndex.ToString())) //Check comment box is empty or not
-        //            return;
-
-        //        if (obj.SelectedIndex < 9 && int_saved_combox_index >= 9)  //換頁 page1
-        //        {
-        //            vm.Bool_Page2 = vm.Bool_Gauge_Show;
-        //            vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
-        //            vm.Channel_visible = new List<Visibility>() { };
-        //            vm.Bool_Gauge_Show = vm.Bool_Page1;
-        //            vm.Gauge_Page_now = 1;
-        //        }
-        //        else if (obj.SelectedIndex > 8 && int_saved_combox_index <= 8)  //換頁 page2
-        //        {
-        //            vm.Bool_Page1 = vm.Bool_Gauge_Show;
-        //            vm.Str_Channel = new List<string>() { "9", "10", "11", "12" };
-        //            vm.Channel_visible = new List<Visibility>()
-        //            {
-        //                Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible,
-        //                Visibility.Hidden, Visibility.Hidden, Visibility.Hidden, Visibility.Hidden
-        //            };
-        //            vm.Bool_Gauge_Show = vm.Bool_Page2;
-        //            vm.Gauge_Page_now = 2;
-        //        }
-
-        //        try
-        //        {
-        //            vm.Str_comment = "I1 " + obj.SelectedIndex.ToString();
-        //            vm.port_Switch.Write(vm.Str_comment + "\r");
-        //            await vm.AccessDelayAsync(vm.Int_Write_Delay);
-        //        }
-        //        catch { vm.Str_cmd_read = "Switch Error"; return; }
-        //    }
-        //    else if (obj.SelectedIndex == 0)   //Switch ?
-        //    {                
-        //        try
-        //        {
-        //            vm.Str_comment = "I1?";
-        //            vm.port_Switch.Write(vm.Str_comment + "\r");
-        //            await vm.AccessDelayAsync(vm.Int_Read_Delay);
-        //        }
-        //        catch { vm.Str_cmd_read = "Switch Error"; return; }
-        //    }
-        //    else
-        //    {
-        //        vm.Str_Channel = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", };
-        //        vm.Channel_visible = new List<Visibility>() { };
-        //    }                
-
-        //    vm.Switch_Number = obj.SelectedIndex;   //Save Switch channel
-        //}
-
+        
         private void btn_desktop_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
@@ -4169,12 +4293,7 @@ namespace PD
         {
             vm.Show_Bear_Window("有 問 題 請 撥 5 1 7", false, "String_Step", false);
         }
-
-        private void RBtn_Script_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
+                
         private void Txt_ID_GotFocus(object sender, RoutedEventArgs e)
         {
             label_ID.Opacity = 0;
@@ -4205,7 +4324,86 @@ namespace PD
         {
             vm.Show_Bear_Window("Before or After ?", false, "String", true);           
         }
-        
+
+        private async void Btn_Send_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtBox_comment.Text)) //Check comment box is empty or not
+                return;
+
+            bool _isGoOn_On = vm.IsGoOn;
+            if (vm.IsGoOn && !vm.PD_or_PM) await vm.PD_Stop();
+            
+            await vm.Port_ReOpen(vm.Selected_Comport);
+
+            vm.Str_comment = txtBox_comment.Text;
+            try
+            {
+                if (vm.port_PD.IsOpen)
+                {
+                    vm.port_PD.Write(vm.Str_comment + "\r");
+
+                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+
+                    int size = vm.port_PD.BytesToRead;
+                    byte[] dataBuffer = new byte[size];
+                    int length = vm.port_PD.Read(dataBuffer, 0, size);
+
+                    //Show read back message
+                    vm.Str_cmd_read = anly.GetMessage(dataBuffer);
+
+                    if (!string.IsNullOrWhiteSpace(vm.Str_comment))
+                    {                     
+                        MenuItem item = new MenuItem();
+                        item.Header = vm.Str_comment;
+
+                        bool _isItemExist = false;
+                        foreach (MenuItem i in Btn_cmd_list.ContextMenu.Items)
+                        {
+                            if (i.Header == item.Header) _isItemExist = true;
+                        }
+
+                        if (!_isItemExist)
+                        {
+                            item.Click += MenuItem_Click;
+                            Btn_cmd_list.ContextMenu.Items.Add(item);
+                        }                  
+                    }                        
+                }
+            }
+            catch { }
+
+            await vm.AccessDelayAsync(125);
+                        
+            if (_isGoOn_On && !vm.PD_or_PM)
+                await vm.PD_GO();
+        }
+
+        private void Btn_cmd_list_Click(object sender, RoutedEventArgs e)
+        {
+            Button obj = (Button)sender;
+
+            if (obj.ContextMenu.IsOpen ==false) obj.ContextMenu.IsOpen = true;
+            else obj.ContextMenu.IsOpen = false;
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem obj = (MenuItem)sender;
+            vm.btn_cmd_txt = obj.Header.ToString();
+        }
+
+        private void txtBox_comment_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox obj = (TextBox)sender;
+
+            obj.Focus();
+
+            if (vm.PD_or_PM == false)
+                obj.BorderBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF10E2C4"));
+            else
+                obj.BorderBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0085CA"));
+        }       
+
         private void Grid_clock_Loaded(object sender, RoutedEventArgs e)
         {
             vm.dateTime = new List<string>();

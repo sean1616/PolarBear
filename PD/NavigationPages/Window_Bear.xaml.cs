@@ -567,7 +567,7 @@ namespace PD.NavigationPages
                                 vm.Show_Bear_Window("資料空白", false, "String", false);
                                 return;
                             case 2:
-                                vm.Show_Bear_Window("使用者ID空白", false, "String", false);
+                                vm.Show_Bear_Window("工號空白", false, "String", false);
                                 return;
                             case 3:
                                 vm.Show_Bear_Window("產品序號空白", false, "String", false);

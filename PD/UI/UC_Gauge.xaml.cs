@@ -321,7 +321,7 @@ namespace PD.UI
         {
             TextBox obj = sender as TextBox;
             obj.Tag = this.Tag;
-            TxtBox_GotFocus(sender, e);
+            TxtBox_GotFocus(sender, e);            
         }
         
         public event RoutedEventHandler TxtBox_KeyDown = delegate { };
@@ -334,6 +334,7 @@ namespace PD.UI
         {
             TextBox obj = (TextBox)sender;
             obj.SelectAll();
+            UC_Gauge_Tbn.IsChecked = !UC_Gauge_Tbn.IsChecked;
             //gaugetxt_focus = true;
         }
 
