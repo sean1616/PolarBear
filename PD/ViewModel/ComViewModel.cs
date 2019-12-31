@@ -18,9 +18,9 @@ using OxyPlot;
 using OxyPlot.Series;
 
 using PD.Functions;
+using PD.Models;
 using PD.AnalysisModel;
 using PD.NavigationPages;
-using PD.Functions;
 using DiCon.Instrument.HP;
 
 namespace PD.ViewModel
@@ -34,11 +34,28 @@ namespace PD.ViewModel
 
         ControlCmd cmd = new ControlCmd();
 
+        public ObservableCollection<LogMember> LogMembers = new ObservableCollection<LogMember>();
+
         string ini_path = @"D:\PD\Instrument.ini";
 
         ICommunication icomm;
         DiCon.UCB.Communication.RS232.RS232 rs232;
         DiCon.UCB.MTF.IMTFCommand tf;
+
+        #region Chamber Setting --- TH300 Chamber
+        TH300.TH300 _th300 = new TH300.TH300();
+        bool _th300Stop = false;
+        bool _reachTargetTemp = false;
+        bool _stopChamber = false;
+        int _userSetTemp = 0;
+        int _timeSecs = 0;
+        double _initTemp = 0;
+        double _preTemp = 0;
+        DateTime _startTime;
+        DateTime _endTime;
+        TimeSpan _ts;
+        private System.Windows.Forms.Timer TimerRead;
+        #endregion
 
         //ICommand
         #region ICommand
@@ -59,55 +76,55 @@ namespace PD.ViewModel
             //test();
 
             #region Get Board Name
-            rs232 = new DiCon.UCB.Communication.RS232.RS232(Selected_Comport);
-            rs232.OpenPort();
-            icomm = (ICommunication)rs232;
+            //rs232 = new DiCon.UCB.Communication.RS232.RS232(Selected_Comport);
+            //rs232.OpenPort();
+            //icomm = (ICommunication)rs232;
 
-            tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
+            //tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
 
-            string str_ID = string.Empty;
-            try
-            {
-                str_ID = tf.ReadSN();
-                Str_cmd_read = str_ID;               
-                rs232.ClosePort();
-            }
-            catch { }
+            //string str_ID = string.Empty;
+            //try
+            //{
+            //    str_ID = tf.ReadSN();
+            //    Str_cmd_read = str_ID;               
+            //    rs232.ClosePort();
+            //}
+            //catch { }
             #endregion
 
             //bool dac_volt;
             //if (bool.TryParse(Ini_Read("Connection", "DACorVolt"), out dac_volt))
             //    isDACorVolt = dac_volt;
 
-            //List<List<string>> lls = new List<List<string>>();
-            //lls.Add(new List<string>() { "1530.33", "-1.561" });
-            //lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            //lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
-            //lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            //lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
-            //lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            //lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
-            //lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            //List_bear_say = new List<List<string>>(lls);
+            List<List<string>> lls = new List<List<string>>();
+            lls.Add(new List<string>() { "1530.33", "-1.561" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            List_bear_say = new List<List<string>>(lls);
 
-            //Collection_bear_say.Add(lls);
-            //bear_say_all++;
-            //bear_say_now = bear_say_all;
+            Collection_bear_say.Add(lls);
+            bear_say_all++;
+            bear_say_now = bear_say_all;
 
-            //lls = new List<List<string>>();
-            //lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
-            //lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
-            //lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
-            //lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
-            //lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
-            //lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
-            //lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
-            //lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
-            //List_bear_say = new List<List<string>>(lls);
+            lls = new List<List<string>>();
+            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            List_bear_say = new List<List<string>>(lls);
 
-            //Collection_bear_say.Add(lls);
-            //bear_say_all++;
-            //bear_say_now = bear_say_all;
+            Collection_bear_say.Add(lls);
+            bear_say_all++;
+            bear_say_now = bear_say_all;
 
 
         }
@@ -120,6 +137,119 @@ namespace PD.ViewModel
         private void test()
         {
             MessageBox.Show(testing.Result);
+        }
+
+        
+
+        private void S_Chamber_function(int set_temp)
+        {
+            // TH300 (using RS232) - added by Warren 20170202 
+            if (true)  // Added by Warren 20170202
+            {
+                // Set Timer
+                TimerRead.Interval = 1000;
+
+                string comPort = string.Concat("COM", _Comport_chamber);
+                int baudRate = 38400;
+                int deviceNo = 1;
+                bool isConn = false;
+                try
+                {
+                    isConn = _th300.connect(comPort, baudRate, deviceNo);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Something wrong while building TH300 connection. Error Msg: " + e.ToString());
+                    return;
+                }
+
+                if (!isConn)
+                {
+                    MessageBox.Show("Connection Failed! Please check TH300 COM Port.");
+                    return;
+                }
+            }
+
+            TimerRead.Stop();
+            System.Threading.Thread.Sleep(200);
+
+            _reachTargetTemp = false;
+            _userSetTemp = Convert.ToInt32(set_temp);
+
+            try
+            {
+                // Make sure readCurTemp works
+                //do
+                //{
+                //    _initTemp = Math.Round(_th300.readCurTemp(), 2);
+
+                //    Application.DoEvents();
+                //    if (comm.flagStop || Math.Abs(_initTemp) < 100)
+                //        break;
+
+                //    Thread.Sleep(1000);
+                //} while (true);
+
+                //if (comm.flagStop)
+                //    return;
+
+                // Set Mode
+                _th300.setRunMode(Convert.ToByte(1));  // set to "SetValue" mode
+
+                // Set parameters
+                Decimal temp = Convert.ToDecimal(set_temp);
+                Decimal tempSlope = Convert.ToDecimal(0);
+                Decimal hour = Convert.ToDecimal(24);
+                Decimal minute = Convert.ToDecimal(0);
+                _th300.setTemp(temp);
+                _th300.setTempSlope(tempSlope);
+                _th300.setRunTimeHour(hour);
+                _th300.setRunTimeMinute(minute);
+
+                _th300.run();  // Start to run
+            }
+            catch (Exception ex)
+            {
+                LogMembers.Add(new LogMember()
+                {
+                    Status = "Set Chamber",
+                    Message = "Something wrong when reading init temp",
+                    Date = DateTime.Now.Date.ToShortDateString(),
+                    Time = DateTime.Now.ToShortTimeString()
+                });
+                //listERR.Items.Add("(Start to Cal) Something wrong when reading init temp. Error Msg: " + ex.ToString());
+            }
+
+            _timeSecs = 0;
+            TimerRead.Enabled = true;
+
+            // Wait until PV = SV (SV: heater temp)
+            //do
+            //{
+            //    if (comm.flagStop || _reachTargetTemp)
+            //        break;
+            //    Application.DoEvents();
+            //} while (true);
+
+            //if (comm.flagStop == true)
+            //    return;
+
+            TimerRead.Stop();
+            System.Threading.Thread.Sleep(200);
+
+            // Delay Time that users define for Chamber to be stable
+            //TimeDelay(Convert.ToInt32(sWait[i]) * 60000);
+
+            ////// Let Timer continue to run but change the interval from 1 sec to 1 minute - added by Warren 20170208
+            ////TimerRead.Interval = 60000;  // 1 minute
+            ////_timeSecs = 0;
+            ////TimerRead.Enabled = true;
+
+            ////for (int idx = 0; idx < strShowResult.Length; idx++)
+            ////{
+            ////    if (chkPM[idx].Checked)
+            ////        strShowResult[idx] = strShowResult[idx] + "Temp: " + sTemp[i] + "," + Environment.NewLine;
+            ////}
         }
 
         private void cmd_test()
@@ -738,6 +868,18 @@ namespace PD.ViewModel
                 comport_switch = value;
                 Ini_Write("Connection", "Switch_Comport", value.ToString());  //創建ini file並寫入基本設定
                 OnPropertyChanged("Comport_Switch");
+            }
+        }
+
+        private int _Comport_chamber = 2;
+        public int Comport_chamber
+        {
+            get { return _Comport_chamber; }
+            set
+            {
+                _Comport_chamber = value;
+                Ini_Write("Connection", "Comport_chamber", value.ToString());  //創建ini file並寫入基本設定
+                OnPropertyChanged("Comport_chamber");
             }
         }
 

@@ -46,6 +46,17 @@ namespace PD.NavigationPages
                         vm.Str_cmd_read = "GPIB Setting Error. Check Address.";
                         return;
                     }
+                    else
+                    {
+                        double d = vm.tls.ReadWL();
+                        if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
+                        {
+                            vm.Str_cmd_read = "Laser Connection Error.";
+                            vm.LogMembers.Add(new Models.LogMember() { Status = "Connection", Message = "Laser Connection Error.", Date = DateTime.Now.ToShortDateString(), Time = DateTime.Now.ToLongTimeString() });
+                            return;
+                        }
+                            
+                    }
                     vm.tls.init();
 
                     vm.Double_Laser_Wavelength = vm.tls.ReadWL();
@@ -58,6 +69,7 @@ namespace PD.NavigationPages
                 catch
                 {
                     vm.Str_cmd_read = "TLS GPIB Setting Error.";
+
                     btn_Laser_Status.Background = Brushes.Red;
                 }
                 #endregion
@@ -114,13 +126,23 @@ namespace PD.NavigationPages
             vm.tls = new HPTLS();
             vm.tls.BoardNumber = vm.tls_BoardNumber;
             vm.tls.Addr = vm.tls_Addr;
-
+            
             try
             {
                 if (vm.tls.Open() == false)
                 {
                     vm.Str_cmd_read = "GPIB Setting Error. Check Address.";
                     return;
+                }
+                else
+                {
+                    double d = vm.tls.ReadWL();
+                    if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
+                    {
+                        vm.Str_cmd_read = "Laser Connection Error.";
+                        return;
+                    }
+
                 }
                 vm.tls.init();
 

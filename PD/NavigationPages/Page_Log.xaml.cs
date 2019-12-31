@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 
 using PD.ViewModel;
+using PD.Models;
 
 namespace PD.NavigationPages
 {
@@ -15,7 +16,7 @@ namespace PD.NavigationPages
     {
         ComViewModel vm;
 
-        ObservableCollection<Member> memberData = new ObservableCollection<Member>();
+        //ObservableCollection<Member> memberData = new ObservableCollection<Member>();
 
         public Page_Log(ComViewModel vm)
         {
@@ -23,22 +24,36 @@ namespace PD.NavigationPages
 
             this.vm = vm;
 
-            dataGrid.DataContext = memberData;
+            //dataGrid.DataContext = memberData;
+            dataGrid.DataContext = vm.LogMembers;
 
-            AddMsgItem("K WL", "IL too high", DateTime.Now.Date.ToShortDateString(), DateTime.Now.ToShortTimeString());
+            AddMsgItem(vm.LogMembers, "K WL", "IL too high", DateTime.Now.Date.ToShortDateString(), DateTime.Now.ToShortTimeString());
+
+            //AddMsgItem("K WL", "IL too high", DateTime.Now.Date.ToShortDateString(), DateTime.Now.ToShortTimeString());
         }
 
-        public class Member
-        {
-            public string Status { get; set; }
-            public string Message { get; set; }
-            public string Date { get; set; }
-            public string Time { get; set; }
-        }
+        //public class Member
+        //{
+        //    public string Status { get; set; }
+        //    public string Message { get; set; }
+        //    public string Date { get; set; }
+        //    public string Time { get; set; }
+        //}
 
-        private void AddMsgItem(string status, string msg, string date, string time)
+        //private void AddMsgItem(string status, string msg, string date, string time)
+        //{
+        //    memberData.Add(new Member()
+        //    {
+        //        Status = status,
+        //        Message = msg,
+        //        Date = date,
+        //        Time = time,
+        //    });
+        //}
+
+        private void AddMsgItem(ObservableCollection<LogMember> members, string status, string msg, string date, string time)
         {
-            memberData.Add(new Member()
+            members.Add(new LogMember()
             {
                 Status = status,
                 Message = msg,
@@ -46,7 +61,5 @@ namespace PD.NavigationPages
                 Time = time,
             });
         }
-
-       
     }
 }

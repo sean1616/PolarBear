@@ -336,6 +336,11 @@ namespace PD.Functions
 
                     string str = "";
 
+                    if (beforeORafter == 2)
+                    {
+                        file.WriteLine(str);
+                    }
+
                     str += vm.List_bear_say[ch][0];  //第二列-波長
                     str += ",";
                     str += a;  //第二列-時間

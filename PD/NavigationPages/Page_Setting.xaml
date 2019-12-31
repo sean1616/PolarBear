@@ -202,6 +202,11 @@
             Grid.Column="3"
             txtbox_content="Switch Comport"
             txtbox_value="{Binding Comport_Switch, Mode=TwoWay}" />
+        <cusTxtBox:UserControl1 Grid.Row="4"
+                                Grid.Column="3"
+                                txtbox_content="Chamber Comport"
+                                txtbox_value="{Binding Comport_chamber, Mode=TwoWay}" />
+
 
         <!--  Column 4  -->
         <uc:UC_Setting_ToggleButton Grid.Row="0"
