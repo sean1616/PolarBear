@@ -1,0 +1,79 @@
+﻿<Window
+    x:Class="PD.NavigationPages.Window_Ref"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PD.NavigationPages"
+    xmlns:l="clr-namespace:PD.NavigationPages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    xmlns:vm="clr-namespace:PD.ViewModel"
+    Title="Window_Ref"
+    Width="1000"
+    Height="550"
+    Topmost="True"
+    mc:Ignorable="d">
+       
+    <!--<Window.DataContext>
+        <local:Collection_Ref />
+    </Window.DataContext>-->
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <oxy:Plot
+            Name="Plot_Ref"
+            Title="Ref"
+            Grid.Column="0"
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            Grid.RowSpan="3"
+            FontFamily="Segoe Print"
+            Loaded="Window_Loaded">
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis
+                    Name="axis_left"
+                    MajorGridlineStyle="Solid"
+                    MinorGridlineStyle="Dot"
+                    Position="Left" />
+                <oxy:LinearAxis
+                    Name="axis_bottom"
+                    MajorGridlineStyle="Solid"
+                    MinorGridlineStyle="Dot"
+                    Position="Bottom" />
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries
+                    x:Name="oxyPlot_LineSeries"
+                    Width="0.3" StrokeThickness="0.8"
+                                Title="Ref"
+                                ItemsSource="{Binding Ref_Data, Mode=OneWay}"
+                    Color="Blue" />
+            </oxy:Plot.Series>
+        </oxy:Plot>
+        
+        <Button
+            Name="btn_previous"
+            Width="55"
+            Grid.Column="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Click="Btn_previous_Click"
+            Content="Pre" />
+        <Button Name="btn_next"
+                Width="55"
+                Grid.Column="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Click="Btn_next_Click"
+                Content="Next" />
+    </Grid>
+</Window>

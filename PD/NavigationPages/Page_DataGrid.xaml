@@ -1,0 +1,238 @@
+﻿<UserControl x:Class="PD.NavigationPages.Page_DataGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PD.NavigationPages"
+             xmlns:vm="clr-namespace:PD.ViewModel"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pageTransitions="clr-namespace:WpfPageTransitions;assembly=WpfPageTransitions"
+             d:DesignHeight="450"
+             d:DesignWidth="1000"
+             Loaded="Page_Loaded"
+             mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:ComViewModel />
+    </UserControl.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6*" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Name="edge" Height="0.3*"/>
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="0.3*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.02*"/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.02*" />
+            </Grid.ColumnDefinitions>
+
+            <!--<Frame Name="Frame_Navigation" Grid.Column="0" />-->
+            <pageTransitions:PageTransition Name="pageTransitionControl"
+                                            Grid.Column="1"
+                                            Grid.Row="1"
+                                            TransitionType="None" />
+        </Grid>
+       
+        <Grid Grid.Column="1"
+              Background="#FF494949">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>           
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!--<Button Grid.Column="0"
+                        Name="btn_opendialog"
+                        Margin="5,0,0,0"
+                        Background="Transparent"
+                        Height="{Binding ActualHeight, ElementName=txt_path, Mode=OneWay}"
+                        Width="{Binding ActualHeight, ElementName=btn_opendialog, Mode=OneWay}"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/icons8-folder-150.png"
+                        Click="btn_opendialog_Click" />-->
+                <TextBox Name="txt_path"
+                         Height="25"
+                         Margin="5"
+                         FontFamily="Segoe Print"
+                         Text="{Binding txt_ref_path}"
+                         VerticalContentAlignment="Center"
+                         controls:TextBoxHelper.ClearTextButton="True"
+                         controls:TextBoxHelper.Watermark="Ref file path"
+                         Grid.ColumnSpan="2" />
+                <ComboBox x:Name="combox_path"
+                          Style="{DynamicResource style_refPath_combobox}"
+                          Visibility="Collapsed" DropDownClosed="combox_path_DropDownClosed"
+                          Grid.ColumnSpan="2" />
+                <Button Name="btn_path_dropdown"
+                        Grid.Column="3"
+                        Tag="../../Resources/triangle_down.png"
+                        Click="btn_path_dropdown_Click"
+                        Style="{DynamicResource style_PictureBtn}">
+                    <Image Source="../Resources/triangle_down.png" />
+                </Button>
+            </Grid>
+
+            <Button Grid.Row="1"
+                    Name="Btn_Get_Ref"
+                    Margin="5"
+                    Click="Btn_Get_Ref_Click"
+                    Content="Get Ref"
+                    Style="{StaticResource style_FuncBtn_CenterAlign}" />
+
+            <Button Name="btn_show"
+                    Margin="5"
+                    Click="Btn_show_Click"
+                    Content="Grid Mode"
+                    Style="{StaticResource style_FuncBtn_CenterAlign}"
+                    Grid.Row="2" />
+
+            <Button Name="btn_show_ref_chart"
+                    Margin="5"
+                    Click="Btn_show_ref_chart_Click"
+                    Content="Chart Mode"
+                    Style="{StaticResource style_FuncBtn_CenterAlign}"
+                    Grid.Row="3" />
+
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Margin="5"
+                           Text="Criteria"
+                           Style="{StaticResource Chart_txtBlock}" />
+                <TextBox Grid.Column="1"
+                         Name="txt_criteria"
+                         Height="30"
+                         Margin="5"
+                         FontFamily="Segoe Print"
+                         HorizontalAlignment="Stretch"
+                         VerticalContentAlignment="Center"
+                         HorizontalContentAlignment="Center"
+                         controls:TextBoxHelper.Watermark="dB/nm"
+                         Text="0.1" />
+            </Grid>
+
+            
+
+            <Button Grid.Row="5"
+                    Name="Btn_select_all"
+                    Margin="5"
+                    Click="Btn_select_all_Click"
+                    Content="Select All"
+                    Style="{StaticResource style_FuncBtn_CenterAlign}" />
+
+            <Button Grid.Row="6"
+                    Name="Btn_clear"
+                    Margin="5"
+                    Click="Btn_clear_Click"
+                    Content="Clear All"
+                    Style="{StaticResource style_FuncBtn_CenterAlign}" />
+
+            <Button Grid.Row="7"
+                    Name="Btn_delete"
+                    Margin="5"
+                    Click="Btn_delete_Click"
+                    Content="Delete"
+                    Style="{StaticResource style_FuncBtn_CenterAlign}" />
+
+            <Button Style="{StaticResource style_FuncBtn_CenterAlign}"
+                    Content="Board V"
+                    Margin="5"
+                    Grid.Row="8"
+                    Name="btn_board_v"
+                    Click="btn_board_v_Click" />
+
+            <Grid Grid.Row="9">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="txt_chSelected"
+                         Text="1"
+                         Visibility="Hidden"
+                         FontFamily="Segoe Print"
+                         HorizontalContentAlignment="Center"
+                         VerticalContentAlignment="Center"
+                         Margin="5"
+                         Height="25" />
+                <Viewbox>
+                    <ComboBox FontFamily="Segoe Print"
+                              Name="combox_chSelect"
+                              DropDownClosed="combox_chSelect_DropDownClosed"
+                              SelectedIndex="0"
+                              HorizontalContentAlignment="Center"
+                              VerticalContentAlignment="Center">
+                        <TextBlock Text="1" />
+                        <TextBlock Text="2" />
+                        <TextBlock Text="3" />
+                        <TextBlock Text="4" />
+                        <TextBlock Text="5" />
+                        <TextBlock Text="6" />
+                        <TextBlock Text="7" />
+                        <TextBlock Text="8" />
+                    </ComboBox>
+                </Viewbox>
+                <Button Style="{StaticResource style_FuncBtn_CenterAlign}"
+                        Content="V1"
+                        Margin="5"
+                        Tag="1"
+                        Grid.Column="1"
+                        Name="btn_board_v1"
+                        Click="btn_board_v123_Click" />
+                <Button Style="{StaticResource style_FuncBtn_CenterAlign}"
+                        Content="V2"
+                        Margin="5"
+                        Tag="2"
+                        Grid.Column="2"
+                        Name="btn_board_v2"
+                        Click="btn_board_v123_Click" />
+                <Button Style="{StaticResource style_FuncBtn_CenterAlign}"
+                        Content="V3"
+                        Margin="5"
+                        Tag="3"
+                        Grid.Column="3"
+                        Name="btn_board_v3"
+                        Click="btn_board_v123_Click" />
+            </Grid>
+
+            <Button Style="{StaticResource style_FuncBtn_CenterAlign}"
+                    Content="Save"
+                    Margin="5"
+                    Grid.Row="10"
+                    Name="btn_save_v"
+                    Click="btn_save_v_Click" />
+
+            <Button Style="{StaticResource style_FuncBtn_CenterAlign}"
+                    Content="Open Board Ref"
+                    Margin="5"
+                    Grid.Row="11"
+                    Name="btn_openBoardRef"
+                    Click="btn_openBoardRef_Click" />
+        </Grid>
+    </Grid>
+</UserControl>

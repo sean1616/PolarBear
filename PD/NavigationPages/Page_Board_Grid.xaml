@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="PD.NavigationPages.Page_Board_Grid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:PD.ViewModel"             
+             Name="page_board_grid"
+             xmlns:local="clr-namespace:PD.NavigationPages"
+             xmlns:converter="clr-namespace:PD.NavigationPages"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.DataContext>
+        <vm:ComViewModel/>
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <local:ValueConverter x:Key="valueconverter" />
+    </UserControl.Resources>
+    
+    <Grid>
+        <DataGrid x:Name="dataBoardGrid"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="False"
+                  ItemsSource="{Binding }"                  
+                  FontFamily="Segoe Print"
+                  SelectedCellsChanged="dataGrid_SelectedCellsChanged"
+                  SelectionUnit="FullRow">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="40*"
+                                    Binding="{Binding Board_ID}"
+                                    Header="Board ID" />
+                <DataGridTextColumn Width="35*"
+                                    Binding="{Binding V_123}"
+                                    Header="V_123" />
+                <DataGridTextColumn Width="40*"
+                                    Binding="{Binding DAC}"
+                                    Header="DAC" />
+                <DataGridTextColumn Width="50*"
+                                    Binding="{Binding Vb}"
+                                    Header="Vb" />
+                <DataGridTextColumn Width="50*"
+                                    Binding="{Binding Va}"
+                                    Header="Va" />
+                <DataGridTextColumn Width="50*"
+                                    Binding="{Binding delta_V}"
+                                    Header="Delta V">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground"
+                                    Value="{Binding delta_V, Converter={StaticResource valueconverter}}" />                            
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="50*"
+                                    Binding="{Binding Ratio}"
+                                    Header="Ratio" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

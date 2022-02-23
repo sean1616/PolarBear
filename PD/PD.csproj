@@ -1,0 +1,605 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3F1E0450-202F-4E7B-ACDA-4856A829360E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>PD</RootNamespace>
+    <AssemblyName>PD-v5.5.7</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>polar_bear_qdw_icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Circle_Gauge, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Circle_Gauge.dll</HintPath>
+    </Reference>
+    <Reference Include="Customized_TxtBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Customized_TxtBox.dll</HintPath>
+    </Reference>
+    <Reference Include="DiCon.Instrument.HP">
+      <HintPath>..\..\..\DiCon.Instrument.HP.dll</HintPath>
+    </Reference>
+    <Reference Include="DiCon.UCB.Communication">
+      <HintPath>\\192.168.2.3\shared\SeanWu\Software\UFAO_optimized_20190313_NoFunction\bin\Debug\DiCon.UCB.Communication.dll</HintPath>
+    </Reference>
+    <Reference Include="DiCon.UCB.Communication.RS232">
+      <HintPath>\\192.168.2.3\shared\SeanWu\Software\UFAO_optimized_20190313_NoFunction\bin\Debug\DiCon.UCB.Communication.RS232.dll</HintPath>
+    </Reference>
+    <Reference Include="DiCon.UCB.MTF">
+      <HintPath>\\192.168.2.3\shared\SeanWu\Software\UFAO_optimized_20190313_NoFunction\bin\Debug\DiCon.UCB.MTF.dll</HintPath>
+    </Reference>
+    <Reference Include="DiCon.UCB.MTF.EP">
+      <HintPath>\\192.168.2.3\shared\SeanWu\Software\UFAO_optimized_20190313_NoFunction\bin\Debug\DiCon.UCB.MTF.EP.dll</HintPath>
+    </Reference>
+    <Reference Include="DiCon.UCB.MTF.I2C">
+      <HintPath>\\192.168.2.3\shared\SeanWu\Software\UFAO_optimized_20190313_NoFunction\bin\Debug\DiCon.UCB.MTF.I2C.dll</HintPath>
+    </Reference>
+    <Reference Include="DiCon.UCB.MTF.RS232">
+      <HintPath>\\192.168.2.3\shared\SeanWu\Software\UFAO_optimized_20190313_NoFunction\bin\Debug\DiCon.UCB.MTF.RS232.dll</HintPath>
+    </Reference>
+    <Reference Include="DiCon.UCB.UFA">
+      <HintPath>\\192.168.2.3\shared\SeanWu\Software\UFAO_optimized_20190313_NoFunction\bin\Debug\DiCon.UCB.UFA.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.2.4.3\lib\net46\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Drawing">
+      <HintPath>..\..\..\..\..\Downloads\Microsoft.Expression.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>bin\Debug\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.NI4882, Version=8.5.35.130, Culture=neutral, PublicKeyToken=18cbae0f9955702a, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\NationalInstruments.NI4882.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Wpf.1.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>C:\Users\sean_wu\Downloads\ImageTraveler\ImageTraveler\ImageTraveler\bin\Debug\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="TH300">
+      <HintPath>\\192.168.2.3\shared\SeanWu\Software\UFAO_optimized_20190313_NoFunction\bin\Debug\TH300.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WpfAnimatedGif, Version=1.4.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WpfAnimatedGif.1.4.18\lib\net\WpfAnimatedGif.dll</HintPath>
+    </Reference>
+    <Reference Include="WpfPageTransitions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\WpfPageTransitions.dll</HintPath>
+    </Reference>
+    <Reference Include="Wpf_Control_Library">
+      <HintPath>..\..\Wpf_Control_Library\Wpf_Control_Library\bin\Debug\Wpf_Control_Library.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="AnalysisModel\Analysis.cs" />
+    <Compile Include="AnalysisModel\Calibration.cs" />
+    <Compile Include="AnalysisModel\CurveFitting.cs" />
+    <Compile Include="Functions\ControlCmd.cs" />
+    <Compile Include="Functions\CSVFunctions.cs" />
+    <Compile Include="Functions\Setting.cs" />
+    <Compile Include="Functions\SetupIniIP.cs" />
+    <Compile Include="Functions\ValueConverter.cs" />
+    <Compile Include="Models\BoardTable_Members.cs" />
+    <Compile Include="Models\ChartModel.cs" />
+    <Compile Include="Models\Chart_UI_Model.cs" />
+    <Compile Include="Models\CmdMsgModel.cs" />
+    <Compile Include="Models\CommandList.cs" />
+    <Compile Include="Models\DeltaILMember.cs" />
+    <Compile Include="Models\GaugeModel.cs" />
+    <Compile Include="Models\GetPowerSettingModel.cs" />
+    <Compile Include="Models\KModel.cs" />
+    <Compile Include="Models\MsgModel.cs" />
+    <Compile Include="Models\ChannelModel.cs" />
+    <Compile Include="Models\ScriptModel.cs" />
+    <Compile Include="Models\StringModel.cs" />
+    <Compile Include="Models\ComMember.cs" />
+    <Compile Include="Models\LogMember.cs" />
+    <Compile Include="Models\SN_Member.cs" />
+    <Compile Include="Models\UI_DependencyProperty.cs" />
+    <Compile Include="Models\VariableModel.cs" />
+    <Compile Include="NavigationPages\Page_Board_Grid.xaml.cs">
+      <DependentUpon>Page_Board_Grid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_Chart.xaml.cs">
+      <DependentUpon>Page_Chart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_StringList.xaml.cs">
+      <DependentUpon>Page_StringList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_Command.xaml.cs">
+      <DependentUpon>Page_Command.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_DataGrid.xaml.cs">
+      <DependentUpon>Page_DataGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_Laser.xaml.cs">
+      <DependentUpon>Page_Laser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_Log.xaml.cs">
+      <DependentUpon>Page_Log.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_Log_Command.xaml.cs">
+      <DependentUpon>Page_Log_Command.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_PD_Gauges.xaml.cs">
+      <DependentUpon>Page_PD_Gauges.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_Ref_Chart.xaml.cs">
+      <DependentUpon>Page_Ref_Chart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_Ref_Grid.xaml.cs">
+      <DependentUpon>Page_Ref_Grid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_Setting.xaml.cs">
+      <DependentUpon>Page_Setting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_Variable.xaml.cs">
+      <DependentUpon>Page_Variable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_VariableList.xaml.cs">
+      <DependentUpon>Page_VariableList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Window_Bear.xaml.cs">
+      <DependentUpon>Window_Bear.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Window_Bear_Grid.xaml.cs">
+      <DependentUpon>Window_Bear_Grid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Window_Bear_Timer.xaml.cs">
+      <DependentUpon>Window_Bear_Timer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Window_Chart_Popup.xaml.cs">
+      <DependentUpon>Window_Chart_Popup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Window_MessageBox.xaml.cs">
+      <DependentUpon>Window_MessageBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Window_Password.xaml.cs">
+      <DependentUpon>Window_Password.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Window_PowerSupply_Setting.xaml.cs">
+      <DependentUpon>Window_PowerSupply_Setting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Window_Ref.xaml.cs">
+      <DependentUpon>Window_Ref.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Window_Switch_Box.xaml.cs">
+      <DependentUpon>Window_Switch_Box.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\WIndow_TLS_Setting.xaml.cs">
+      <DependentUpon>WIndow_TLS_Setting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Sector_BTN.xaml.cs">
+      <DependentUpon>Sector_BTN.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UC_Gauge.xaml.cs">
+      <DependentUpon>UC_Gauge.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UC_Setting_Button.xaml.cs">
+      <DependentUpon>UC_Setting_Button.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UC_Setting_ToggleButton.xaml.cs">
+      <DependentUpon>UC_Setting_ToggleButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UC_TimerBlock.xaml.cs">
+      <DependentUpon>UC_TimerBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\GPIB_utility.cs" />
+    <Compile Include="ViewModel\ComCommand.cs" />
+    <Compile Include="ViewModel\Delegatecommand.cs" />
+    <Compile Include="ViewModel\NotifyBase.cs" />
+    <Compile Include="ViewModel\NotifyPropertyChangedBase.cs" />
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ViewModel\ComViewModel.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="NavigationPages\Page_Board_Grid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_Chart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_StringList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NavigationPages\Page_Command.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_DataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_Laser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_Log.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_Log_Command.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_PD_Gauges.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_Variable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_VariableList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Window_Bear_Grid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Window_Bear_Timer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Window_Chart_Popup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Window_MessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Window_PowerSupply_Setting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\WIndow_TLS_Setting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Sector_BTN.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UC_Gauge.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UC_Setting_Button.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UC_Setting_ToggleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UC_TimerBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Resource Include="ResourceDictionarys\UI_Style.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Page Include="NavigationPages\Page_Ref_Chart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_Ref_Grid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_Setting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Window_Bear.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Window_Password.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Window_Ref.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Window_Switch_Box.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\imperial_guardian_lion_L0n_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\placeholder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\placeholder %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="polar_bear_qdw_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\polar-bear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\minimize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\byby_1.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\right-arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\left-arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\r-arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icons8-folder-150.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\double_arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Min_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Min_black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Close_black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\setting_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\polar-bear-small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Calibration.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Change.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Question.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Identification.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Box.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Network.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Send.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Stopwatch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Q.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Gauge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Anly.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Calendar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Laser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Setting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Script.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\triangle_down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Iceland.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\minus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\clean.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\clean_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\minus_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\plus_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\refresh_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\copy_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\paste_gray.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

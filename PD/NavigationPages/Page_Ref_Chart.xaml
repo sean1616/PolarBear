@@ -1,0 +1,1024 @@
+﻿<UserControl x:Class="PD.NavigationPages.Page_Ref_Chart"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PD.NavigationPages"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+             d:DesignHeight="650"
+             d:DesignWidth="1200"
+             Loaded="Page_Loaded"
+             xmlns:vm="clr-namespace:PD.ViewModel"
+             mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:ComViewModel />
+    </UserControl.DataContext>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Border x:Name="bod1" />
+        </Grid>
+
+        <ScrollViewer Grid.Row="0"
+                      x:Name="GaugeView">
+            <StackPanel>
+                <Grid x:Name="grid_1" Height="{Binding ActualHeight, ElementName=bod1, Mode=OneWay}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref1, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[0].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref1"
+                                           Text="Ref1"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+
+                        <oxy:Plot Name="Plot_Ref1"
+                                  Grid.Column="0"
+                                  Grid.ColumnSpan="2"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                   
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[0], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="1"
+                          Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref1, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[1].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref2"
+                                           Text="Ref2"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+
+                        <oxy:Plot Name="Plot_Ref2"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[1], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="2"
+                          Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref1, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[2].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref3"
+                                           Text="Ref3"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+
+                        <oxy:Plot Name="Plot_Ref3"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[2], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="3"
+                          Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref1, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[3].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref4"
+                                           Text="Ref4"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+                        <oxy:Plot Name="Plot_Ref4"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[3], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+                </Grid>
+
+                <Grid x:Name="grid_2"
+                      Height="{Binding ActualHeight, ElementName=bod1, Mode=OneWay}"
+                      Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0"
+                          Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref1, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[4].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref5"
+                                           Text="Ref5"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+                        <oxy:Plot Name="Plot_Ref5"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[4], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="1"
+                          Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref1, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[5].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref6"
+                                           Text="Ref6"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+                        <oxy:Plot Name="Plot_Ref6"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[5], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="2"
+                          Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref1, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[6].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref7"
+                                           Text="Ref7"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+
+                        <oxy:Plot Name="Plot_Ref7"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[6], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="3"
+                          Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref1, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[7].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref8"
+                                           Text="Ref8"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+
+                        <oxy:Plot Name="Plot_Ref8"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[7], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+                </Grid>
+
+                <Grid x:Name="grid_3"
+                      Height="{Binding ActualHeight, ElementName=bod1, Mode=OneWay}"
+                      Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref9, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[8].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref9"
+                                           Text="Ref9"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+                        <oxy:Plot Name="Plot_Ref9"
+                                  Grid.Column="0"
+                                  Grid.ColumnSpan="2"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[8], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref10, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[9].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref10"
+                                           Text="Ref10"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+                        <oxy:Plot Name="Plot_Ref10"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[9], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref1, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[10].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref11"
+                                           Text="Ref3"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+                        <oxy:Plot Name="Plot_Ref11"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[10], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref12, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[11].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref12"
+                                           Text="Ref12"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+                        <oxy:Plot Name="Plot_Ref12"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[11], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+                </Grid>
+
+                <Grid x:Name="grid_4"
+                      Height="{Binding ActualHeight, ElementName=bod1, Mode=OneWay}"
+                      Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref13, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[12].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref13"
+                                           Text="Ref13"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+
+                        <oxy:Plot Name="Plot_Ref13"
+                                  Grid.Column="0"
+                                  Grid.ColumnSpan="2"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[12], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref14, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[13].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref14"
+                                           Text="Ref14"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+                        <oxy:Plot Name="Plot_Ref14"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[13], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref15, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[14].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref15"
+                                           Text="Ref15"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+                        <oxy:Plot Name="Plot_Ref15"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[14], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+
+                    <Grid Grid.Column="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Viewbox Height="{Binding ActualHeight, ElementName=txt_ref16, Mode=OneWay}">
+                                <Ellipse Height="15"
+                                         Width="15"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         RenderTransformOrigin="0.708,0.25">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5"
+                                                                    CenterX="0.5" />
+                                                    <SkewTransform CenterY="0.5"
+                                                                   CenterX="0.5" />
+                                                    <RotateTransform CenterY="0.5"
+                                                                     CenterX="0.5" />
+                                                    <TranslateTransform X="0.161"
+                                                                        Y="-0.147" />
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="{Binding ref_Color[15].Color}"
+                                                          Offset="1" />
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Viewbox>
+                            <Viewbox Margin="5">
+                                <TextBlock Name="txt_ref16"
+                                           Text="Ref16"
+                                           Foreground="Black"
+                                           FontFamily="Segoe Print"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" />
+                            </Viewbox>
+                        </StackPanel>
+                        <oxy:Plot Name="Plot_Ref16"
+                                  Grid.Row="1"
+                                  FontFamily="Segoe Print"
+                                  IsMouseWheelEnabled="False"
+                                  MouseLeftButtonDown="Plot_Chart_1_MouseLeftButtonDown">
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries Width="0.3"
+                                                StrokeThickness="0.6"
+                                                ItemsSource="{Binding Chart_All_DataPoints_ref[15], Mode=OneWay}"
+                                                Color="Blue" />
+                            </oxy:Plot.Series>
+                        </oxy:Plot>
+                    </Grid>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+    
+   
+
+    
+       
+</UserControl>

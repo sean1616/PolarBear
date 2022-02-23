@@ -1,0 +1,168 @@
+﻿<Window x:Class="PD.NavigationPages.Window_MessageBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:PD.ViewModel"
+        xmlns:local="clr-namespace:PD.NavigationPages"
+        xmlns:sector_btn="clr-namespace:PD.UI"
+        Width="{Binding window_bear_width, Mode=TwoWay}"
+        Height="{Binding window_bear_heigh, Mode=TwoWay}"
+        MaxHeight="490"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        Title="Window_MessageBox">
+    
+    <Window.DataContext>
+        <vm:ComViewModel />
+    </Window.DataContext>
+
+    <Window.Resources>
+        <Style x:Key="ProgressBarStyle"
+               TargetType="{x:Type ProgressBar}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ProgressBar}">
+                        <Border BorderBrush="#BBC6C4">
+                            <Grid x:Name="PART_Track">
+                                <Rectangle x:Name="PART_Indicator"
+                                           HorizontalAlignment="Left">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0.5,0"
+                                                             EndPoint="0.5,1">
+                                            <GradientStop Offset="1"
+                                                          Color="#FF1D5666" />
+                                            <GradientStop Color="#FF09B6FF" />
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Name="window_grid"
+          Background="Transparent"
+          MouseDown="Image_MouseDown"
+          MouseMove="Grid_MouseMove"
+          MouseUp="Grid_MouseUp">
+        <Grid.RowDefinitions>
+            <RowDefinition Name="window_grid_row_1"
+                           Height="1.5*" />
+            <RowDefinition Height="9*" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.4*" />
+            <ColumnDefinition Width="2.2*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="0.5*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0"
+              Grid.Column="0"
+              Grid.ColumnSpan="4">
+            <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">               
+                <Button x:Name="btn_min"
+                        Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/Min_black.png"
+                        Margin="3"
+                        Background="Transparent"
+                        Click="btn_min_Click" />
+                <Button x:Name="btn_close"
+                        Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                        Background="Transparent"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/Close_black.png"
+                        Margin="3"
+                        Click="btn_close_Click" />
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="0"
+                CornerRadius="200"
+                Background="Transparent"
+                Height="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                Grid.RowSpan="3"
+                Grid.Column="1">
+            <Grid  Background="Transparent">
+                <Image x:Name="image"
+                       Grid.Row="0"
+                       Grid.RowSpan="3"
+                       Grid.Column="1"
+                       Visibility="Visible"
+                       Source="../Resources/polar-bear.png" />
+            </Grid>
+        </Border>
+
+        <Grid x:Name="grid_txtblock"
+              Grid.Row="0"
+              Grid.RowSpan="3"
+              Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="5*" />
+            </Grid.ColumnDefinitions>
+
+        </Grid>
+
+      
+
+        <Grid x:Name="grid_setting_btn"
+              Grid.Row="1"
+              Grid.RowSpan="1"
+              Grid.Column="2"
+              Visibility="Visible">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.3*" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.3*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="0.3*" />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Viewbox  Grid.Row="1"
+                      Grid.Column="1"
+                      Grid.ColumnSpan="3"
+                      MaxHeight="40">
+                <TextBlock x:Name="txt_bear_say_something"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontFamily="Segoe Print"
+                           FontSize="20"
+                           Text="Bear Say" />
+            </Viewbox>
+
+            <!--  Button 1  -->
+            <Button Name="btn_Yes"
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Tag="1"
+                    Visibility="{Binding BearBtn_visibility}"
+                    Style="{DynamicResource style_BearBtn0}"
+                    Click="btn_Yes_Click"
+                    Content="Yes" />
+
+            <!--  Button 2  -->
+            <Button Name="btn_No"
+                    Grid.Row="3"
+                    Grid.Column="3"
+                    Tag="2"
+                    Visibility="{Binding BearBtn_visibility}"
+                    Style="{DynamicResource style_BearBtn0}"
+                    Click="btn_No_Click"
+                    Content="No" />
+        </Grid>
+
+       
+    </Grid>
+</Window>

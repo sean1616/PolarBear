@@ -1,0 +1,67 @@
+﻿<Window x:Class="PD.NavigationPages.Window_Chart_Popup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+        xmlns:local="clr-namespace:PD.NavigationPages"
+        mc:Ignorable="d" Topmost="True"
+        Title="Window_Chart_Popup" Height="650" Width="900">
+    <Grid>
+        <oxy:Plot x:Name="Plot_Chart"
+                  Title="Power"
+                  Grid.Column="1"
+                  Margin="5,5,25,5"
+                  FontFamily="Segoe Print"
+                  >
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis Title="{Binding Chart_x_title, FallbackValue=1}"
+                                Position="Bottom" />
+                <oxy:LinearAxis Title="{Binding Chart_y_title, FallbackValue=2}"
+                                Position="Left" />
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries Name="No1"
+                                Title="ch1"
+                                ItemsSource="{Binding Chart_DataPoints, Mode=OneWay}"
+                                Visibility="{Binding LineSeries_Visible[0]}"
+                                Color="Green" />
+                <oxy:LineSeries Name="No2"
+                                Title="ch2"
+                                ItemsSource="{Binding Chart_All_DataPoints[1], Mode=OneWay}"
+                                Visibility="{Binding LineSeries_Visible[1]}"
+                                Color="Red" />
+                <oxy:LineSeries Name="No3"
+                                Title="ch3"
+                                ItemsSource="{Binding Chart_All_DataPoints[2], Mode=OneWay}"
+                                Visibility="{Binding LineSeries_Visible[2]}"
+                                Color="Blue" />
+                <oxy:LineSeries Name="No4"
+                                Title="ch4"
+                                ItemsSource="{Binding Chart_All_DataPoints[3], Mode=OneWay}"
+                                Visibility="{Binding LineSeries_Visible[3]}"
+                                Color="Orange" />
+                <oxy:LineSeries Name="No5"
+                                Title="ch5"
+                                ItemsSource="{Binding Chart_All_DataPoints[4], Mode=OneWay}"
+                                Visibility="{Binding LineSeries_Visible[4]}"
+                                Color="GreenYellow" />
+                <oxy:LineSeries Name="No6"
+                                Title="ch6"
+                                ItemsSource="{Binding Chart_All_DataPoints[5], Mode=OneWay}"
+                                Visibility="{Binding LineSeries_Visible[5]}"
+                                Color="Purple" />
+                <oxy:LineSeries Name="No7"
+                                Title="ch7"
+                                ItemsSource="{Binding Chart_All_DataPoints[6], Mode=OneWay}"
+                                Visibility="{Binding LineSeries_Visible[6]}"
+                                Color="Gray" />
+                <oxy:LineSeries Name="No8"
+                                Title="ch8"
+                                ItemsSource="{Binding Chart_All_DataPoints[7], Mode=OneWay}"
+                                Visibility="{Binding LineSeries_Visible[7]}"
+                                Color="Chocolate" />               
+            </oxy:Plot.Series>
+        </oxy:Plot>
+    </Grid>
+</Window>

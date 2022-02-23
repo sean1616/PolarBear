@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="PD.UI.UC_Setting_ToggleButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PD.UI"
+             MouseEnter="userControl_MouseEnter"
+             MouseLeave="userControl_MouseLeave"
+             mc:Ignorable="d"
+             d:DesignHeight="100"
+             d:DesignWidth="500">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.08*" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="0.45*" />
+            <ColumnDefinition Width="0.04*" />
+        </Grid.ColumnDefinitions>
+        <Border Name="border_background"
+                Focusable="False"
+                Grid.Column="0"
+                Background="Transparent"
+                Grid.ColumnSpan="4" />
+        <TextBlock Name="txtblock"
+                   Grid.Column="1"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   FontFamily="Segoe Print"
+                   FontSize="14"
+                   Text="{Binding txtbox_content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Setting_ToggleButton}}}">
+                <Run Name="run_Auto_Connect_TLS" />
+        </TextBlock>
+        <ToggleButton Name="TBtn_Auto_Connect_TLS"
+                      Grid.Column="2"
+                      MaxWidth="55"
+                      MaxHeight="30"
+                      Margin="10,9,18,9"
+                      Focusable="False"
+                      IsChecked="{Binding Ischecked, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Setting_ToggleButton}}}"
+                      Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,714 @@
+﻿<Window x:Class="PD.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ViewModel="clr-namespace:PD.ViewModel"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:local="clr-namespace:PD"
+        xmlns:Property="clr-namespace:PD.Models"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:pageTransitions="clr-namespace:WpfPageTransitions;assembly=WpfPageTransitions"
+        xmlns:ui="clr-namespace:PD.UI"
+        Title="{Binding Title}"
+        Width="1257"
+        Height="680"
+        AllowsTransparency="True"
+        Closed="Window_Closed"
+        Loaded="Window_Loaded"
+        ResizeMode="NoResize"
+        WindowState="Normal"
+        WindowStyle="None"
+        mc:Ignorable="d">
+    <Window.Resources>
+        <Storyboard x:Key="Rec_MouseEnter" />
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource Rec_MouseEnter}" />
+        </EventTrigger>
+    </Window.Triggers>
+    <Window.DataContext>
+        <ViewModel:ComViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*" />
+            <ColumnDefinition Width="0.35*" />
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="0*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0*" />
+            <RowDefinition Height="0.09*" />
+            <RowDefinition />
+            <RowDefinition Height="0.08*" />
+            <RowDefinition Height="0*" />
+        </Grid.RowDefinitions>
+
+        <Border Name="border_title"
+                Grid.Row="1"
+                Grid.Column="1"
+                Grid.ColumnSpan="2"
+                Background="#FF646464"
+                MouseLeftButtonUp="border_title_MouseLeftButtonUp"
+                MouseMove="border_title_MouseMove"
+                PreviewMouseLeftButtonDown="border_title_PreviewMouseLeftButtonDown" />
+
+        <Grid Grid.Row="1"
+              Grid.Column="1"
+              Margin="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*" />
+                <RowDefinition />
+                <RowDefinition Height="0.4*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.3*" />
+                <ColumnDefinition Width="0.8*" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.4*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1"
+                  Name="grid_UserID"
+                  Grid.Row="1"
+                  Grid.ColumnSpan="3">
+                <Viewbox>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="3*" />
+                            <RowDefinition Height="5" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Name="label_ID"
+                                   Grid.Row="1"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="Wheat"
+                                   FontFamily="Segoe Print"
+                                   Text="User ID" />
+                    </Grid>
+                </Viewbox>
+                <Viewbox>
+                    <Grid>
+                        <TextBox Name="txt_ID"
+                                 Background="Transparent"
+                                 VerticalAlignment="Bottom"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Bottom"
+                                 PreviewKeyDown="txt_ID_PreviewKeyDown"
+                                 Foreground="Wheat"
+                                 GotFocus="Txt_ID_GotFocus"
+                                 LostFocus="Txt_ID_LostFocus"
+                                 Text="{Binding UserID, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{DynamicResource style_UserID_txtbox}"
+                                 Tag="../Resources/polar-bear-small.png"
+                                 Width="{Binding ActualWidth, ElementName=grid_UserID, Mode=OneWay}"
+                                 Height="{Binding ActualHeight, ElementName=grid_UserID, Mode=OneWay}" />
+                    </Grid>
+                </Viewbox>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1"
+              Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6.8*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="3*" />
+                </Grid.RowDefinitions>
+                <RadioButton x:Name="RBtn_Gauge_Page"
+                             Grid.Row="1"
+                             Grid.Column="0"
+                             Checked="RBtn_Gauge_Page_Checked"
+                             Content="Gauge"
+                             FontSize="20"
+                             Foreground="Black"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/Gauge.png" />
+                <RadioButton x:Name="RBtn_Chart_Page"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                             Checked="RBtn_Chart_Page_Checked"
+                             Content="Chart"
+                             FontSize="25"
+                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/Anly.png" />
+                <RadioButton x:Name="RBtn_DataGrid_Page"
+                             Grid.Row="1"
+                             Grid.Column="2"
+                             Checked="RBtn_DataGrid_Page_Checked"
+                             Content="Reference"
+                             FontSize="25"
+                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/Calendar.png" />
+                <RadioButton x:Name="RBtn_Laser_Page"
+                             Grid.Row="1"
+                             Grid.Column="3"
+                             Checked="RBtn_Laser_Page_Checked"
+                             Content="Laser"
+                             FontSize="25"
+                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/Laser.png" />
+                <RadioButton Name="RBtn_Log"
+                             Grid.Row="1"
+                             Grid.Column="4"
+                             Checked="RBtn_Log_Checked"
+                             Content="Log / Cmd"
+                             FontSize="25"
+                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/Script.png" />
+                <RadioButton Name="RBtn_Setting"
+                             Grid.Row="1"
+                             Grid.Column="5"
+                             Checked="RBtn_Setting_Checked"
+                             Content="Setting"
+                             FontSize="25"
+                             Foreground="{Binding Foreground, ElementName=RBtn_Gauge_Page}"
+                             Style="{DynamicResource style_PageBtn}"
+                             Tag="../Resources/Setting.png" />
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="0.2*"/>
+                </Grid.ColumnDefinitions>
+                <Viewbox Grid.Row="1"
+                         Grid.Column="1"
+                         Grid.ColumnSpan="3" HorizontalAlignment="Right">
+                    <TextBlock Text="5.5.5" x:Name="txt_version"
+                               FontFamily="Segoe Print"/>
+                </Viewbox>
+
+                <Button Name="btn_port_setting"
+                        Grid.Column="0"
+                        MaxHeight="25"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="btn_port_setting_Click"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/setting_small.png" />
+                <Button Name="btn_help"
+                        Grid.Column="1"
+                        MaxHeight="25"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="btn_help_Click"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/Q.png" />
+                <Button Name="btn_min"
+                        Grid.Column="2"
+                        MaxHeight="25"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="btn_min_Click"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/Min_white.png" />
+                <Button Name="btn_max"
+                        Grid.Column="3"
+                        MaxHeight="25"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="btn_max_Click"
+                        Loaded="btn_max_Loaded"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/normal.png" />
+                <Button Name="btn_close"
+                        Grid.Column="4"
+                        MaxHeight="25"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Click="btn_close_Click"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/close.png" />
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="2"
+              Grid.RowSpan="1"
+              Grid.Column="1"
+              Background="#FF6B6D78">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!--<Grid Grid.Row="0"
+                      Grid.ColumnSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="1.5*" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.8*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <ToggleButton Name="ToggleBtn_ControlMode"
+                                  Grid.Column="0"
+                                  Grid.Row="1"
+                                  MaxWidth="48"
+                                  MinWidth="40"
+                                  MaxHeight="30"
+                                  Margin="10,0,18,0"
+                                  Click="ToggleBtn_ControlMode_Click"
+                                  IsChecked="{Binding PD_or_PM}"
+                                  Loaded="ToggleBtn_ControlMode_Loaded"
+                                  Style="{StaticResource SwitchTypeToggleButton}">
+                        <ToggleButton.Background>
+                            <LinearGradientBrush StartPoint="0,0"
+                                                 EndPoint="0,1">
+                                <GradientStop Offset="0"
+                                              Color="#FFF3F3F3" />
+                                <GradientStop Offset="0.5"
+                                              Color="#FFEBEBEB" />
+                                <GradientStop Offset="0.5"
+                                              Color="#FFDDDDDD" />
+                                <GradientStop Offset="1"
+                                              Color="#FF33D3C4" />
+                            </LinearGradientBrush>
+                        </ToggleButton.Background>
+                    </ToggleButton>
+                    <Viewbox  Grid.Column="1"
+                              Grid.Row="1"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center">
+                        <TextBlock FontFamily="Segoe Print"
+                                   FontSize="{Binding Int_Fontsize}">
+                        <Run Name="run_PD"
+                             Foreground="White"
+                             Text="PD" />
+                        <Run Foreground="White"
+                             Text="/" />
+                        <Run Name="run_PM"
+                             Foreground="#FF878787"
+                             Text="PM" />
+                        </TextBlock>
+                    </Viewbox>
+                </Grid>-->
+
+                <ComboBox x:Name="combox_comport"
+                          Grid.Row="0"
+                          Grid.ColumnSpan="2"
+                          HorizontalContentAlignment="Left"
+                          VerticalContentAlignment="Center"
+                          DropDownClosed="combox_comport_DropDownClosed"
+                          DropDownOpened="combox_comport_DropDownOpened"                          
+                          IsEditable="False"
+                          FontSize="{Binding Int_Fontsize}"
+                          SelectedItem="{Binding Selected_Comport, Mode=TwoWay}"
+                          ItemsSource="{Binding list_combox_comports}"
+                          Style="{DynamicResource style_combobox}"
+                          Tag="../Resources/Network.png" />
+
+                <ComboBox x:Name="combox_product"
+                          Grid.Row="1"
+                          Grid.ColumnSpan="2"
+                          DropDownClosed="combox_product_DropDownClosed"
+                          SelectedItem="{Binding product_type}"
+                          ItemsSource="{Binding list_combox_Product_items}"
+                          FontSize="{Binding Int_Fontsize}"
+                          SelectedIndex="0"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          Tag="../Resources/Box.png">                    
+                </ComboBox>
+
+                <Button x:Name="btn_ID"
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        Content="ID"
+                        Click="btn_ID_Click"
+                        Property:UI_DependencyProperty.Image="Resources/Identification.png"
+                        FontSize="{Binding Int_Fontsize}"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/Identification.png">
+                </Button>
+
+                <ToggleButton x:Name="btn_GO"
+                              Grid.Row="12"
+                              Grid.ColumnSpan="2"
+                              Click="btn_GO_Click"
+                              Content="{Binding Str_Go_Content, FallbackValue=Go}"
+                              FontSize="{Binding Int_Fontsize}"
+                              IsChecked="{Binding IsGoOn}"
+                              Style="{DynamicResource style_FuncToggleBtn}"
+                              Tag="../Resources/Stopwatch.png" >
+                    <ToggleButton.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem x:Name="btn_start_cmd_list" Header="Strat Cmd List" Click="btn_start_cmd_list_Click"/>
+                        </ContextMenu>
+                    </ToggleButton.ContextMenu>
+                </ToggleButton>
+
+                <!--<ComboBox Grid.Row="11"
+                          Grid.ColumnSpan="2"
+                          Tag="../Resources/Send.png"
+                          Style="{DynamicResource style_combobox}" />-->
+
+                <Grid Grid.Row="11"
+                      Grid.ColumnSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="5.5*" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.8*" />
+                        <ColumnDefinition x:Name="grid_cmd"
+                                          Width="4*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <!--浮水印-->
+                    <Rectangle Grid.Column="0"
+                               Grid.Row="1"
+                               Grid.ColumnSpan="3"
+                               Height="{Binding ActualHeight, ElementName=Btn_Send, Mode=OneWay}"
+                               Fill="White" />
+                    <TextBox x:Name="txtBox_comment"
+                             Background="Transparent"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                             FontSize="15"
+                             BorderBrush="Transparent"
+                             GotFocus="txtBox_comment_GotFocus"
+                             KeyDown="txtBox_comment_KeyDown"
+                             LostFocus="txtBox_comment_LostFocus"
+                             Text="{Binding btn_cmd_txt, Mode=TwoWay}"
+                             TextChanged="txtBox_comment_TextChanged"
+                             VerticalAlignment="Center"
+                             Style="{StaticResource style_txtbox}" />
+                    <Button Grid.Row="1"
+                            x:Name="Btn_Send"
+                            Click="Btn_Send_Click"
+                            Style="{DynamicResource style_SendBtn}"
+                            Tag="../Resources/Send.png" />
+                    <Button Grid.Row="1"
+                            Grid.Column="2"
+                            x:Name="Btn_cmd_list"
+                            Opacity="0.5"
+                            Click="Btn_cmd_list_Click"
+                            Style="{DynamicResource style_SendBtn}"
+                            Tag="../Resources/triangle_down.png">
+                        <Button.ContextMenu>
+                            <ContextMenu FontFamily="Segoe Print">
+                                <MenuItem Header="D1?"
+                                          Click="MenuItem_Click" />
+                                <MenuItem Header="D1 0,0,0"
+                                          Click="MenuItem_Click" />
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+                </Grid>
+
+                <Button x:Name="btn_D0"
+                        Grid.Row="3"
+                        Grid.ColumnSpan="2"
+                        Click="btn_D0_Click"
+                        Property:UI_DependencyProperty.Image="Resources/Question.png"
+                        Content="DAC?"
+                        FontSize="{Binding Int_Fontsize}"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/Question.png" />
+
+                <ComboBox x:Name="ComBox_Calibration"
+                          Grid.Row="4"
+                          Grid.ColumnSpan="2"
+                          DropDownClosed="ComBox_Calibration_DropDownClosed"
+                          DropDownOpened="ComBox_Calibration_DropDownOpened"
+                          FontSize="{Binding Int_Fontsize}"
+                          ItemsSource="{Binding list_combox_Calibration_items}"
+                          SelectedIndex="0"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          Tag="../Resources/Calibration.png">
+                </ComboBox>
+
+                <Button Name="btn_K_VOA"
+                        Grid.Row="5"
+                        Grid.ColumnSpan="2"
+                        Click="K_VOA_Click"
+                        Content="K VOA"
+                        Property:UI_DependencyProperty.Image="Resources/Search.png"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/Search.png" />
+
+                <Button Name="btn_K_DAC"
+                        Grid.Row="6"
+                        Grid.ColumnSpan="2"
+                        Click="K_DAC_Click"
+                        Content="K DAC"
+                        Property:UI_DependencyProperty.Image="Resources/Search.png"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/Search.png" />
+
+                <Button Name="K_WL"
+                        Grid.Row="7"
+                        Grid.ColumnSpan="2"
+                        Click="K_WL_Click"
+                        Content="K WL"
+                        Property:UI_DependencyProperty.Image="Resources/Search.png"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/Search.png" />
+
+                <Button Name="Btn_Save"
+                        Grid.Row="9"
+                        Grid.ColumnSpan="2"
+                        Click="Btn_Save_Click"
+                        Content="Save"
+                        Property:UI_DependencyProperty.Image="Resources/Save.png"
+                        Style="{DynamicResource style_FuncBtn}"
+                        Tag="../Resources/Save.png" />
+
+                <!--<ComboBox x:Name="ComBox_SaveData"
+                          Grid.Row="9"
+                          Grid.ColumnSpan="2"
+                          DropDownClosed="ComBox_SaveData_DropDownClosed"
+                          FontSize="{Binding Int_Fontsize}"
+                          ItemsSource="{Binding list_combox_SaveData_items}"
+                          SelectedIndex="0"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          Tag="../Resources/Save.png">
+                </ComboBox>-->
+
+                <!--<ComboBox Name="Combox_Switch"
+                          Grid.Row="7"
+                          Grid.ColumnSpan="2"
+                          DropDownClosed="Combox_Switch_DropDownClosed"
+                          DropDownOpened="Combox_Switch_DropDownOpened"
+                          FontSize="{Binding Int_Fontsize}"
+                          ItemsSource="{Binding list_combox_switch_items}"
+                          SelectedIndex="{Binding switch_index}"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          Tag="../Resources/box.png"
+                          Visibility="Visible" />-->
+                <!--<ComboBox Name="Combox_Station"
+                          Grid.Row="7"
+                          Grid.ColumnSpan="2"
+                          FontSize="{Binding Int_Fontsize}"
+                          SelectedItem="{Binding station_type}"
+                          ItemsSource="{Binding list_combox_Working_Table_Type_items}"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          Tag="../Resources/box.png"
+                          Visibility="Visible" />-->
+
+                <ToggleButton Name="tbtn_switch"
+                              Grid.Row="7"
+                              Grid.ColumnSpan="2"
+                              Click="tbtn_switch_Click"
+                              Content="Switch"
+                              Style="{DynamicResource style_FuncToggleBtn}"
+                              Tag="../Resources/box.png"
+                              Visibility="Hidden" />
+
+                <ComboBox Name="Combox_Switch_Laser_Band"
+                          Grid.Row="8"
+                          Grid.ColumnSpan="2"
+                          SelectedItem="{Binding selected_band}"
+                          DropDownClosed="Combox_Switch_Laser_Band_DropDownClosed"
+                          ItemsSource="{Binding list_combox_TLS_WL_Range_items}"
+                          Style="{DynamicResource style_FuncCombobox}"
+                          FontSize="{Binding Int_Fontsize}"
+                          SelectedIndex="0"
+                          Tag="../Resources/Change.png" />
+
+                <Grid Name="grid_Unit"
+                      Grid.Row="10"
+                      Grid.ColumnSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="1.5*" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.8*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <ToggleButton Name="TBtn_UnitMode"
+                                  Grid.Column="0"
+                                  Grid.Row="1"
+                                  MaxWidth="48"
+                                  MinWidth="40"
+                                  MaxHeight="30"
+                                  Margin="10,0,18,0"
+                                  Click="TBtn_Unit_Click"
+                                  IsChecked="{Binding dB_or_dBm}"
+                                  Style="{StaticResource SwitchTypeToggleButton}" />
+                    <Viewbox Grid.Column="1"
+                             Grid.Row="1"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center">
+                        <TextBlock FontFamily="Segoe Print"
+                                   FontSize="{Binding Int_Fontsize}"
+                                   MouseLeftButtonDown="grid_Unit_MouseLeftButtonDown">
+                        <Run Name="run_dBm"
+                             Foreground="#FFACACAC"
+                             Text="dBm" />
+                        <Run Foreground="White"
+                             Text="/" />
+                        <Run Name="run_dB"
+                             Foreground="White"
+                             Text="dB" />
+                        </TextBlock>
+                    </Viewbox>
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="3"
+              Grid.Column="1"
+              Background="{Binding Background, ElementName=border_status}">
+            <Button x:Name="btn_Stop"
+                    Click="btn_Stop_Click"
+                    Content="Stop"
+                    FontSize="{Binding Int_Fontsize}"
+                    Foreground="White"
+                    Style="{DynamicResource style_FuncBtn}"
+                    Tag="../Resources/Stop.png" />
+        </Grid>
+        <Grid Grid.Row="3"
+              Grid.Column="2"
+              Background="Black">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.85*" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.17*" />
+                <ColumnDefinition Width="0.013*" />
+            </Grid.ColumnDefinitions>
+            <Border Name="border_status"
+                    Grid.Column="0"
+                    Background="#FF1D363A"
+                    BorderBrush="White"
+                    BorderThickness="0.8,0,0.8,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.05*" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Viewbox Grid.Column="1"
+                             HorizontalAlignment="Left"
+                             MaxHeight="40">
+                        <Label x:Name="lab_status"
+                               Content="{Binding Str_Status}"
+                               FontFamily="Segoe Print"
+                               Foreground="White" />
+                    </Viewbox>
+
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Background="{Binding Background, ElementName=border_status}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.03*" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Viewbox Grid.Column="1"
+                         HorizontalAlignment="Left"
+                         MaxHeight="40">
+                    <Label x:Name="lab_read"
+                           Content="{Binding Str_cmd_read}"
+                           FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                           Foreground="White" />
+                </Viewbox>
+            </Grid>
+
+            <Border Grid.Column="2"
+                    Background="{Binding Background, ElementName=border_status}"
+                    BorderThickness="1,0,0,0"
+                    BorderBrush="Gainsboro">
+                <Grid Name="grid_process_schedule">
+                    <TextBlock Foreground="White"
+                               FontFamily="{Binding FontFamily, ElementName=lab_status}"
+                               FontSize="19"
+                               KeyDown="TextBlock_KeyDown"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                        <Run Text="{Binding msg_3, Mode=TwoWay}" />
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="3"
+                    Background="{Binding Background, ElementName=border_status}">
+                <ToggleButton Grid.Column="3"
+                              BorderThickness="0.8,0,0.8,0"
+                              BorderBrush="#FFCBCBCB"
+                              Name="btn_desktop"
+                              Command="{Binding AllWindow_Minimum}"
+                              Click="btn_desktop_Click">
+
+                </ToggleButton>
+            </Border>
+
+        </Grid>
+
+        <Frame x:Name="Frame_Navigation"
+               Grid.Row="2"
+               Grid.Column="2"
+               NavigationUIVisibility="Hidden"
+               Visibility="Hidden" />
+
+        <pageTransitions:PageTransition Name="pageTransitionControl"
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        TransitionType="Fade"
+                                        Grid.ColumnSpan="2"
+                                        Grid.RowSpan="1"
+                                        Margin="5,0,-5,0" />
+
+        <TextBox x:Name="txtnum"
+                 Grid.Row="2"
+                 Grid.Column="2"
+                 Width="120"
+                 Height="23"
+                 Margin="18,47,0,0"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 Text="1"
+                 TextWrapping="Wrap"
+                 Visibility="Hidden" />
+
+    </Grid>
+</Window>

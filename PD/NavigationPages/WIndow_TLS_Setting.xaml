@@ -1,0 +1,24 @@
+﻿<Window x:Class="PD.NavigationPages.WIndow_TLS_Setting"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cusTxtBox="clr-namespace:WpfControlLibrary1;assembly=Customized_TxtBox"
+        xmlns:local="clr-namespace:PD.NavigationPages"
+        mc:Ignorable="d"
+        Title="TLS_Setting" Height="650" Width="350">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <cusTxtBox:UserControl1 Grid.Row="3"
+                                                Grid.Column="3"
+                                                txtbox_content="TLS BoardNum"
+                                                Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                txtbox_value="{Binding tls_BoardNumber, Mode=TwoWay}" />
+            <cusTxtBox:UserControl1 Grid.Row="4"
+                                                Grid.Column="3"
+                                                txtbox_content="TLS Address"
+                                                Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                txtbox_value="{Binding tls_Addr, Mode=TwoWay}" />
+        </StackPanel>
+    </Grid>
+</Window>

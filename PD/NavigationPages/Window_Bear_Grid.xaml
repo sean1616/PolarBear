@@ -1,0 +1,315 @@
+﻿<Window x:Class="PD.NavigationPages.Window_Bear_Grid"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PD.NavigationPages"
+        mc:Ignorable="d"       
+        xmlns:vm="clr-namespace:PD.ViewModel"
+        xmlns:sector_btn="clr-namespace:PD.UI"
+        Title=" "
+        Width="260"
+        Height="600"
+        MinHeight="150"
+        Topmost="True"
+        Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen"       
+        WindowStyle="None">
+    
+    <Window.DataContext>
+        <vm:ComViewModel />
+    </Window.DataContext>
+
+    <Window.Resources>
+        <Style x:Key="ProgressBarStyle"
+               TargetType="{x:Type ProgressBar}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ProgressBar}">
+                        <Border BorderBrush="#BBC6C4">
+                            <Grid x:Name="PART_Track">
+                                <Rectangle x:Name="PART_Indicator"
+                                           HorizontalAlignment="Left">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0.5,0"
+                                                             EndPoint="0.5,1">
+                                            <GradientStop Offset="1"
+                                                          Color="#FF1D5666" />
+                                            <GradientStop Color="#FF09B6FF" />
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="mainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Name="window_grid_row_1"
+                           Height="30" MinHeight="25"/>
+            <RowDefinition Height="300*"/>
+            <RowDefinition Height="100*" />
+            <RowDefinition Height="30" MinHeight="5"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" >
+            <Border x:Name="border_title"
+                    MouseMove="border_title_MouseMove"
+                    PreviewMouseLeftButtonDown="border_title_PreviewMouseLeftButtonDown"
+                    MouseLeftButtonUp="border_title_MouseLeftButtonUp"
+                    Background="#FFC7C7C7" />
+            <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <Button x:Name="btn_min"
+                        Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/Min_white.png"
+                        Margin="3"
+                        MaxHeight="30"
+                        MaxWidth="30"
+                        Background="Transparent"
+                        Click="btn_min_Click" />
+                <Button x:Name="btn_close"
+                        Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                        Background="Transparent"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/close.png"
+                        Margin="3"
+                        MaxHeight="30"
+                        MaxWidth="30"
+                        Click="btn_close_Click" />
+            </StackPanel>
+        </Grid>
+        
+        <DataGrid  x:Name="dataGrid"
+                   Grid.Row="1"
+                   AutoGenerateColumns="False"
+                   FontFamily="Segoe Print"
+                   CanUserReorderColumns="False"
+                   ItemsSource="{Binding}"
+                   SelectionUnit="FullRow">
+            <DataGrid.Columns>
+                <DataGridTextColumn  Width="60*"
+                                    MinWidth="60"
+                                    Binding="{Binding Channel}"
+                                    Header="Ch" />
+                <DataGridTextColumn Width="100*"
+                                    MinWidth="100"
+                                    Binding="{Binding Delta_IL}"
+                                    Header="Delta IL" />
+            </DataGrid.Columns>               
+        </DataGrid>
+
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.ColumnSpan="2"
+                    Background="#FFBDB8B8"
+                    BorderThickness="0,0,1,0" />
+            <TextBlock Text="BW"
+                        FontFamily="Segoe Print"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="Value"
+                       Grid.Column="1"
+                       FontFamily="Segoe Print"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Grid.Row="0" />
+            <TextBlock Grid.Row="1"
+                       Text="0.5dB BW"
+                       FontFamily="Segoe Print"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+            <TextBlock Grid.Row="2"
+                       Text="3dB BW"
+                       FontFamily="Segoe Print"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+            <TextBlock x:Name="txt_05dB_BW"
+                       Grid.Row="1"
+                       FontFamily="Segoe Print"
+                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding BW_05}" />
+            <TextBlock x:Name="txt_3dB_BW"
+                       Grid.Row="2"
+                       FontFamily="Segoe Print"
+                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding BW_3}" />
+        </Grid>
+        
+        <Grid Grid.Row="3" Background="#FF706F6F">
+            <Button x:Name="btn_cal_deltaIL" Click="btn_cal_deltaIL_Click" Style="{StaticResource style_FuncBtn_CenterAlign}"
+                    Content="Cal." Background="#FF595757"/>
+        </Grid>
+    </Grid>
+
+    <!--<Grid Name="window_grid"
+          Background="Transparent"
+          MouseDown="Image_MouseDown"
+          MouseMove="Grid_MouseMove"
+          MouseUp="Grid_MouseUp">
+        <Grid.RowDefinitions>
+            <RowDefinition Name="window_grid_row_1"
+                           Height="1*" />
+            <RowDefinition Height="12*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.4*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="0.4*" />
+        </Grid.ColumnDefinitions>
+        
+        --><!--Window Button--><!--
+        <Grid Grid.Row="0"
+              Grid.Column="0"
+              Grid.ColumnSpan="4">
+            <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">                
+                <Button x:Name="btn_min"
+                        Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/Min_black.png"
+                        Margin="3"
+                        MaxHeight="30"
+                        MaxWidth="30"
+                        Background="Transparent"
+                        Click="btn_min_Click" />
+                <Button x:Name="btn_close"
+                        Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                        Background="Transparent"
+                        Style="{DynamicResource style_WindowFuncBtn}"
+                        Tag="../Resources/Close_black.png"
+                        Margin="3"
+                        MaxHeight="30"
+                        MaxWidth="30"
+                        Click="btn_close_Click" />
+            </StackPanel>
+        </Grid>
+
+
+
+        <Grid x:Name="grid_test_result"
+              Grid.Row="1"
+              Grid.Column="1"
+              >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.3*" />
+                <ColumnDefinition Width="0.6*"/>
+                <ColumnDefinition Width="0.3*"/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.3*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.3*" />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="0*" />
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="txt_No1"
+                       Grid.Row="1"
+                       Grid.Column="1"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding txt_No[0]}" />
+            <TextBlock x:Name="txt_No2"
+                       Grid.Row="2"
+                       Grid.Column="1"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding txt_No[1]}" />
+            <TextBlock x:Name="txt_No3"
+                       Grid.Row="3"
+                       Grid.Column="1"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding txt_No[2]}" />
+            <TextBlock x:Name="txt_No4"
+                       Grid.Row="4"
+                       Grid.Column="1"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding txt_No[3]}" />
+            <TextBlock x:Name="txt_No5"
+                       Grid.Row="5"
+                       Grid.Column="1"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding txt_No[4]}" />
+            <TextBlock x:Name="txt_No6"
+                       Grid.Row="6"
+                       Grid.Column="1"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding txt_No[5]}" />
+            <TextBlock x:Name="txt_No7"
+                       Grid.Row="7"
+                       Grid.Column="1"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding txt_No[6]}" />
+            <TextBlock x:Name="txt_No8"
+                       Grid.Row="8"
+                       Grid.Column="1"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding txt_No[7]}" />
+
+            --><!--  Ch1  --><!--            
+            <TextBlock Grid.Row="1"
+                       Grid.Column="3"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding List_bear_grid_data[0], Mode=TwoWay}" />
+
+            --><!--  Ch2  --><!--           
+            <TextBlock Grid.Row="2"
+                       Grid.Column="3"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding List_bear_grid_data[1], Mode=TwoWay}" />
+
+            --><!--  Ch3  --><!--         
+            <TextBlock Grid.Row="3"
+                       Grid.Column="3"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding List_bear_grid_data[2], Mode=TwoWay}" />
+
+            --><!--  Ch4  --><!--
+            <TextBlock Grid.Row="4"
+                       Grid.Column="3"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding List_bear_grid_data[3], Mode=TwoWay}" />
+
+            --><!--  Ch5  --><!--
+            <TextBlock Grid.Row="5"
+                       Grid.Column="3"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding List_bear_grid_data[4], Mode=TwoWay}" />
+
+            --><!--  Ch6  --><!--
+            <TextBlock Grid.Row="6"
+                       Grid.Column="3"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding List_bear_grid_data[5], Mode=TwoWay}" />
+
+            --><!--  Ch7  --><!--
+            <TextBlock Grid.Row="7"
+                       Grid.Column="3"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding List_bear_grid_data[6], Mode=TwoWay}" />
+
+            --><!--  Ch8  --><!--
+            <TextBlock Grid.Row="8"
+                       Grid.Column="3"
+                       Style="{StaticResource style_board_window_txtblock}"
+                       Text="{Binding List_bear_grid_data[7], Mode=TwoWay}" />
+        </Grid>               
+    </Grid>-->
+</Window>

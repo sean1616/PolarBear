@@ -1,0 +1,178 @@
+﻿<UserControl x:Class="PD.NavigationPages.Page_Log_Command"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:pageTransitions="clr-namespace:WpfPageTransitions;assembly=WpfPageTransitions"
+             xmlns:local="clr-namespace:PD.NavigationPages"
+             Loaded="UserControl_Loaded"
+             Background="White"
+             mc:Ignorable="d" 
+             d:DesignHeight="1280" d:DesignWidth="1900">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="10*" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.05*" />
+            <ColumnDefinition Width="1.2*"/>
+            <ColumnDefinition Width="0.05*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="1"
+              Grid.ColumnSpan="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="2*"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.1*" />                
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.1*" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.1*" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.1*" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.1*" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.1*" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.1*" />
+                <ColumnDefinition />                
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Content="Log"
+                    Width="150"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    Grid.Row="1"                    
+                    Click="Button_Page_Log_Click"
+                    FontFamily="Segoe Print" />
+            <Button Grid.Column="2"
+                    Content="Command"
+                    Width="150"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    Grid.Row="1"
+                    Click="Button_Page_Command_Click"
+                    FontFamily="Segoe Print" />
+            <!--<Button Grid.Column="4"
+                    Content="String"
+                    Width="150"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    Grid.Row="1"
+                    Click="Button_Page_StringList_Click"
+                    FontFamily="Segoe Print" />-->
+            <Button x:Name="btn_page_variable" Grid.Column="4"
+                    Content="Variable"
+                    Width="150"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    Grid.Row="1"
+                    Click="btn_page_variable_Click"
+                    FontFamily="Segoe Print" />
+
+            <Button x:Name="btn_LastScript" Grid.Column="6"
+                    Content="Last Script"
+                    Width="150"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    Grid.Row="1"
+                    Click="btn_LastScript_Click_1"
+                    FontFamily="Segoe Print" />
+            <!--<Button Grid.Column="8"
+                    Content="List"
+                    Width="150"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    Grid.Row="1"
+                    Click="Button_Page_StringList_Click"
+                    FontFamily="Segoe Print" />-->
+            <Button Grid.Column="10"
+                    x:Name="btn_load"
+                    Content="Load"
+                    Width="150"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    Grid.Row="1"
+                    Click="btn_load_Click"
+                    FontFamily="Segoe Print" />
+            <Button Grid.Column="12"
+                    x:Name="btn_save"
+                    Content="Save"
+                    Width="150"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    Grid.Row="1"
+                    Click="btn_save_Click"
+                    FontFamily="Segoe Print" />
+            <Button Grid.Column="14"
+                    x:Name="btn_Go"
+                    Content="Go"
+                    Width="150"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    Grid.Row="1"
+                    Click="btn_Go_Click"
+                    FontFamily="Segoe Print" />
+        </Grid>
+
+        <Grid x:Name="grid_cmdList_function" Grid.Row="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="8*" />                
+            </Grid.RowDefinitions>
+            <Button Name="btn_add" Style="{DynamicResource style_PictureBtn}" Click="btn_add_Click" ToolTip="Add">
+                <Image Source="../Resources/plus_gray.png"/>
+            </Button>
+            <Button Name="btn_remove" Style="{DynamicResource style_PictureBtn}" ToolTip="Delete"
+                    Grid.Row="1" Click="btn_remove_Click">
+                <Image Source="../Resources/minus_gray.png" />
+            </Button>
+            <Button Name="btn_copy" Style="{DynamicResource style_PictureBtn}" Click="btn_copy_Click" Grid.Row="2" ToolTip="Copy">
+                <Image Source="../Resources/copy_gray.png"/>
+            </Button>
+            <Button Name="btn_paste" Style="{DynamicResource style_PictureBtn}" ToolTip="Paste"
+                    Grid.Row="3" Click="btn_paste_Click">
+                <Image Source="../Resources/paste_gray.png" />
+            </Button>
+            <Button Name="btn_refresh" ToolTip="Refresh"
+                    Style="{DynamicResource style_PictureBtn}"
+                    Grid.Row="4"
+                    Click="btn_refresh_Click">
+                <Image Source="../Resources/refresh_gray.png" />
+            </Button>
+            <Button Name="btn_Test"
+                    ToolTip="Test"
+                    Style="{DynamicResource style_PictureBtn}"
+                    Grid.Row="5"
+                    Click="btn_Test_Click">
+                <Image Source="../Resources/refresh_gray.png" />
+            </Button>
+
+            <Button Name="btn_lastScript"
+                    ToolTip="Last Script"
+                    Style="{DynamicResource style_PictureBtn}"
+                    Grid.Row="6"
+                    Click="btn_lastScript_Click">
+                <Image Source="../Resources/Network.png" />
+            </Button>
+
+            <Button Name="btn_clear" ToolTip="Clear All"
+                    Style="{DynamicResource style_PictureBtn}"
+                    Grid.Row="8"
+                    Click="btn_clear_Click">
+                <Image Source="../Resources/clean_gray.png" />
+            </Button>
+        </Grid>
+
+        <pageTransitions:PageTransition Name="pageTransitionControl"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        TransitionType="None"
+                                        />
+    </Grid>
+</UserControl>

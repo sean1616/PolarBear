@@ -1,0 +1,114 @@
+﻿<UserControl x:Class="PD.UI.UC_TimerBlock"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+             xmlns:local="clr-namespace:PD.UI"
+             mc:Ignorable="d"
+             d:DesignHeight="650"
+             d:DesignWidth="900"
+             >
+
+    <UserControl.Resources>
+        <Storyboard x:Key="Storyboard1">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(ed:Arc.EndAngle)"
+                                           Storyboard.TargetName="Process_Arc_1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3"
+                                      Value="{Binding Gauge_EndAngle, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_TimerBlock}}, NotifyOnTargetUpdated=True}" />
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </UserControl.Resources>
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Binding.TargetUpdated">
+            <BeginStoryboard x:Name="Storyboard1_BeginStoryboard"
+                             Storyboard="{StaticResource Storyboard1}" />
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <Grid x:Name="grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15*" />
+            <RowDefinition Height="180*" />
+            <RowDefinition Height="15*" />
+            <RowDefinition Height="35*" />
+        </Grid.RowDefinitions>
+        <Viewbox Grid.Row="1">
+            <!--Gauge-->
+            <Grid Width="230">
+                <ed:Arc x:Name="arc"
+                        Width="185"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        Grid.RowSpan="1"
+                        Height="185"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        ArcThickness="{Binding ArcThickness, ElementName=Process_Arc_1}"
+                        ArcThicknessUnit="Pixel"
+                        EndAngle="360"
+                        Fill="#dbdcdc"
+                        StartAngle="0"
+                        Stretch="None"
+                        Stroke="Transparent" />
+                <ed:Arc x:Name="Process_Arc_1"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        Grid.RowSpan="1"
+                        Width="185"
+                        Height="185"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        ArcThickness="10"
+                        ArcThicknessUnit="Pixel"
+                        EndAngle="360"
+                        Fill="{Binding Gauge_Color, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_TimerBlock}}}"
+                        StartAngle="0"
+                        Stretch="None"
+                        Stroke="Transparent" />
+                <Grid 
+                      Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2.4*" />
+                        <RowDefinition Height="0.5*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0"
+                                Grid.RowSpan="5"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+                        <TextBox x:Name="txtBlock_timer_Value"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Bottom"
+                                   FontSize="38"
+                                   FontFamily="Segoe Print"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                 TextChanged="txtBlock_timer_Value_TextChanged"
+                                   Text="{Binding Txt_Time, FallbackValue=0, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_TimerBlock}}}"
+                                 Style="{DynamicResource Window_Bear_Timer_txtBox}" />
+                        <!--<TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Bottom"
+                                   FontSize="19"
+                                   FontFamily="Segoe Print"
+                                   Foreground="Black"
+                                   Text="{Binding Gauge_Unit, FallbackValue=dBm, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_Gauge}}}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap" />-->
+                    </StackPanel>                    
+                </Grid>
+
+                
+            </Grid>
+        </Viewbox>
+        <Viewbox Grid.Row="3">
+            <TextBlock HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Grid.Row="2"                     
+                     TextWrapping="Wrap"
+                     Text="{Binding Txt_Time_Msg, FallbackValue=hours, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_TimerBlock}}}"
+                       Style="{DynamicResource Window_Bear_Timer_txtBlock}"
+                     />
+        </Viewbox>
+    </Grid>
+</UserControl>
