@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Wpf_Control_Library.Text_TextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Wpf_Control_Library"
+             MouseEnter="userControl_MouseEnter"
+             MouseLeave="userControl_MouseLeave"
+             mc:Ignorable="d"              
+             d:DesignHeight="100" d:DesignWidth="500">
+    <Grid Name="grid_background"
+          Focusable="False"
+          Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.08*" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="0.45*" />
+            <ColumnDefinition Width="0.04*" />
+        </Grid.ColumnDefinitions>
+        <Border Name="border_background"
+                Focusable="False"
+                Grid.Column="0"
+                Grid.ColumnSpan="4" />
+        <TextBlock Grid.Row="3"
+                   Grid.Column="1"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   FontSize="14"
+                   Focusable="False"
+                   FontFamily="{Binding FontFamily, FallbackValue=Comic Sans MS, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Text_TextBox}}}"
+                   Text="{Binding txtbox_content, FallbackValue=Center X, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Text_TextBox}}}" />
+        <TextBox x:Name="textBox"
+                 Focusable="True"                 
+                 Grid.Row="3"
+                 Grid.Column="2"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Center"
+                 HorizontalContentAlignment="Center"                     
+                 FontSize="13"                 
+                 FontFamily="{Binding FontFamily, FallbackValue=Comic Sans MS, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Text_TextBox}}}"
+                 KeyDown="textBox_KeyDown"
+                 GotFocus="textBox_GotFocus"
+                 LostFocus="textBox_LostFocus"
+                 Text="{Binding txtbox_value, UpdateSourceTrigger=PropertyChanged ,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Text_TextBox}}}" />
+
+    </Grid>
+</UserControl>

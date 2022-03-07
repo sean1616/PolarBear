@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="Wpf_Control_Library.RecGauge"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Wpf_Control_Library"
+             mc:Ignorable="d"
+             d:DesignHeight="800"
+             d:DesignWidth="100">
+    <UserControl.Resources>
+        <Storyboard x:Key="Storyboard_GaugeScale_Changed">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)"
+                                           Storyboard.TargetName="border">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3"
+                                      Value="{Binding Gauge_Scale, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RecGauge}}, NotifyOnTargetUpdated=True}" />
+            </DoubleAnimationUsingKeyFrames>
+
+        </Storyboard>
+    </UserControl.Resources>
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Binding.TargetUpdated">
+            <BeginStoryboard Storyboard="{StaticResource Storyboard_GaugeScale_Changed}" />
+        </EventTrigger>
+    </UserControl.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15*" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Viewbox Grid.Row="1"
+                 MinHeight="25"
+                 Grid.Column="1">
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Text="{Binding Gauge_value, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RecGauge}}}"
+                       FontFamily="Comic Sans MS" />
+        </Viewbox>
+        <Border Background="#FFB0B0B0"
+                Grid.Row="0" />
+        <Border x:Name="border"
+                RenderTransformOrigin="0.5,1"
+                Grid.Row="0">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="1" />
+                    <SkewTransform />
+                    <RotateTransform />
+                    <TranslateTransform />
+                </TransformGroup>
+            </Border.RenderTransform>
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1"
+                                     StartPoint="0.5,0">
+                    <GradientStop Color="#FFA8BD22"
+                                  Offset="1" />
+                    <GradientStop Color="#FFE40505" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+    </Grid>
+</UserControl>
