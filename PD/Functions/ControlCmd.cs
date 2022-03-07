@@ -2385,14 +2385,23 @@ namespace PD.Functions
 
                 if (readback)
                 {
+                    double wl_read = 0;
                     switch (vm.Laser_type)
                     {
                         case "Agilent":
-                            vm.Double_Laser_Wavelength = vm.tls.ReadWL();
+                            wl_read = vm.tls.ReadWL();
+                            if (wl_read > 0)
+                                vm.Double_Laser_Wavelength = wl_read;
+                            else
+                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString() , Message = "ReadWL back error" });
                             break;
 
                         case "Golight":
-                            vm.Double_Laser_Wavelength = vm.tls_GL.ReadWL();
+                            wl_read = vm.tls_GL.ReadWL();
+                            if (wl_read > 0)
+                                vm.Double_Laser_Wavelength = wl_read;
+                            else
+                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
                             break;
                     }
 

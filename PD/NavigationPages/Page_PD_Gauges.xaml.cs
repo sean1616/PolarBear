@@ -378,7 +378,7 @@ namespace PD.NavigationPages
                     try
                     {
                         txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true);
+                        cmd.Set_WL(wl, true);
                     }
                     catch { }
                 else
@@ -401,7 +401,7 @@ namespace PD.NavigationPages
                     try
                     {
                         txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true);
+                        cmd.Set_WL(wl, true);
                     }
                     catch { }
                 else
