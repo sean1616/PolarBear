@@ -1,0 +1,20 @@
+﻿PD-v5.5.0
+
+
+winexe
+C#
+.cs
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear_v5\PD\obj\Debug\
+PD
+none
+false
+DEBUG;TRACE
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear_v5\PD\App.xaml
+30-1572604221
+
+70-4155284
+98-1168334027
+MainWindow.xaml;NavigationPages\Page_Board_Grid.xaml;NavigationPages\Page_Chart.xaml;NavigationPages\Page_StringList.xaml;NavigationPages\Page_Command.xaml;NavigationPages\Page_DataGrid.xaml;NavigationPages\Page_Laser.xaml;NavigationPages\Page_Log.xaml;NavigationPages\Page_Log_Command.xaml;NavigationPages\Page_PD_Gauges.xaml;NavigationPages\Page_Variable.xaml;NavigationPages\Page_VariableList.xaml;NavigationPages\Window_Bear_Grid.xaml;NavigationPages\Window_Bear_Timer.xaml;NavigationPages\Window_Chart_Popup.xaml;NavigationPages\Window_MessageBox.xaml;NavigationPages\Window_PowerSupply_Setting.xaml;NavigationPages\WIndow_TLS_Setting.xaml;UI\Sector_BTN.xaml;UI\UC_Gauge.xaml;UI\UC_Setting_Button.xaml;UI\UC_Setting_ToggleButton.xaml;UI\UC_TimerBlock.xaml;NavigationPages\Page_Ref_Chart.xaml;NavigationPages\Page_Ref_Grid.xaml;NavigationPages\Page_Setting.xaml;NavigationPages\Window_Bear.xaml;NavigationPages\Window_Password.xaml;NavigationPages\Window_Ref.xaml;NavigationPages\Window_Switch_Box.xaml;
+
+True
+

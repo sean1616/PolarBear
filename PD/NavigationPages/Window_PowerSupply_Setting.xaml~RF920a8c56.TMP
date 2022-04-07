@@ -1,0 +1,520 @@
+﻿<Window x:Class="PD.NavigationPages.Window_PowerSupply_Setting"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:PD.ViewModel"
+        xmlns:cusTxtBox="clr-namespace:WpfControlLibrary1;assembly=Customized_TxtBox"
+        xmlns:local="clr-namespace:PD.NavigationPages"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        Loaded="Window_Loaded"
+        FontFamily="Segoe Print"
+        Title="Connection Setting"
+        Height="950"
+        Width="1200">
+    <Window.Resources>
+        <local:VisValueConverter x:Key="VisValueConverter" />
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:ComViewModel />
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*" />
+            <RowDefinition Height="0.7*" />
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="0.7*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Grid.Row="1">
+            <Button Name="btn_save_boardtable"
+                    Content="Save"
+                    Width="120"
+                    Margin="5"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    FontFamily="Segoe Print"
+                    Click="btn_save_boardtable_Click" />
+            <Button Name="btn_load_boardtable"
+                    Content="Load"
+                    Width="120"
+                    Grid.Column="1"
+                    Margin="5"
+                    Click="btn_load_boardtable_Click"
+                    Style="{DynamicResource style_Btn_only_txt}"
+                    FontFamily="Segoe Print" />
+        </StackPanel>
+
+        <!--Channel PowerSupply-->
+        <Grid Grid.Row="2"
+              Grid.ColumnSpan="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*" />
+                <RowDefinition Height="3*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="8*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Border x:Name="view1_boarder"
+                    BorderThickness="0,0,0,1"
+                    BorderBrush="Black"
+                    Grid.Column="1">
+                <StackPanel Orientation="Vertical"
+                            Grid.Row="1"
+                            Grid.Column="1">
+                    <Grid Height="30" />
+
+                    <!--Title-->
+                    <Viewbox x:Name="viewbox">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label x:Name="label_channel"
+                                   Content="Channel"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="0"
+                                   MinWidth="70"
+                                   FontSize="12"
+                                   FontFamily="Segoe Print" />
+                            <Label x:Name="label_ID"
+                                   Content="ID"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Grid.Column="1"
+                                   MinWidth="70"
+                                   FontSize="12"
+                                   FontFamily="Segoe Print"
+                                   VerticalAlignment="Center" />
+                            <Label Content="Comport"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Grid.Column="2"
+                                   MinWidth="70"
+                                   FontSize="12"
+                                   FontFamily="Segoe Print"
+                                   VerticalAlignment="Center" />
+                            <Label x:Name="label"
+                                   Content="BautRate"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Grid.Column="3"
+                                   MinWidth="70"
+                                   FontSize="12"
+                                   FontFamily="Segoe Print"
+                                   VerticalAlignment="Center" />
+                            <Label Grid.Column="5"
+                                   Width="{Binding ActualWidth, ElementName=label, Mode=OneWay}" />
+
+                            <ComboBox x:Name="combox_comType"
+                                      Height="{Binding ActualHeight, ElementName=txtTile, Mode=OneWay}"
+                                      VerticalContentAlignment="Center"
+                                      HorizontalAlignment="Center"
+                                      Grid.Column="6"
+                                      MinWidth="70"
+                                      Text="Type"
+                                      FontSize="12"
+                                      FontFamily="Segoe Print"
+                                      ItemsSource="{Binding list_combox_PowerMeterType_items}"
+                                      DropDownClosed="ComboBox_DropDownClosed" />
+
+                            <Label x:Name="label_BoardNum"
+                                   Content="BoardNum"
+                                   Visibility="{Binding typeGPIBVis}"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Grid.Column="7"
+                                   MinWidth="70"
+                                   FontSize="12"
+                                   FontFamily="Segoe Print" />
+                            <Label x:Name="label_Address"
+                                   Content="Address"
+                                   Visibility="{Binding typeGPIBVis}"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Grid.Column="8"
+                                   MinWidth="70"
+                                   FontSize="12"
+                                   FontFamily="Segoe Print" />
+                            <Label x:Name="label_Slot"
+                                   Content="Slot"
+                                   Visibility="{Binding typeGPIBVis}"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Grid.Column="9"
+                                   MinWidth="70"
+                                   FontSize="12"
+                                   FontFamily="Segoe Print" />
+                            <Label x:Name="lab_avrg"
+                                   Content="AverageTime"
+                                   Visibility="{Binding typeGPIBVis}"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Grid.Column="10"
+                                   MinWidth="80"
+                                   FontSize="12"
+                                   FontFamily="Segoe Print" />
+
+                            <Label Content="ID"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Visibility="{Binding typeGPIBVis, Converter={StaticResource VisValueConverter}}"
+                                   Grid.Column="7"
+                                   MinWidth="70"
+                                   FontSize="13"
+                                   FontFamily="Segoe Print"
+                                   VerticalAlignment="Center" />
+                            <Label x:Name="textBlock"
+                                   Content="Comport"
+                                   Visibility="{Binding typeGPIBVis, Converter={StaticResource VisValueConverter}}"
+                                   HorizontalAlignment="Center"
+                                   Grid.Column="8"
+                                   MinWidth="70"
+                                   FontSize="13"
+                                   FontFamily="Segoe Print"
+                                   VerticalAlignment="Center"
+                                   HorizontalContentAlignment="Center" />
+                            <Label Name="txtTile"
+                                   Content="BautRate"
+                                   Visibility="{Binding typeGPIBVis, Converter={StaticResource VisValueConverter}}"
+                                   HorizontalAlignment="Center"
+                                   Grid.Column="9"
+                                   MinWidth="70"
+                                   FontSize="13"
+                                   FontFamily="Segoe Print"
+                                   VerticalAlignment="Center"
+                                   HorizontalContentAlignment="Center" />
+                            <Label x:Name="lab_CMD"
+                                   Content="Command"
+                                   Visibility="{Binding typeGPIBVis, Converter={StaticResource VisValueConverter}}"
+                                   HorizontalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Grid.Column="10"
+                                   MinWidth="70"
+                                   FontSize="12"
+                                   FontFamily="Segoe Print" />
+
+                        </Grid>
+                    </Viewbox>
+
+                    <!--Channel Setting-->
+                    <ScrollViewer x:Name="viewer"
+                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  Background="White">
+                        <ItemsControl x:Name="itms_gauges"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      AllowDrop="True"
+                                      ItemsSource="{Binding list_ChannelModels}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Viewbox MaxHeight="80"
+                                             Name="vbox_pwsupply">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ActualWidth, ElementName=label_channel, Mode=OneWay}" />
+                                                <ColumnDefinition Width="{Binding ActualWidth, ElementName=label_ID, Mode=OneWay}" />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="{Binding channel}"
+                                                   HorizontalAlignment="Center"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Grid.Column="0"
+                                                   MinWidth="70"
+                                                   FontSize="{Binding Int_Fontsize}"
+                                                   FontFamily="Segoe Print" />
+                                            <TextBox Text="{Binding Board_ID}"
+                                                     HorizontalContentAlignment="Center"
+                                                     Grid.Column="1"
+                                                     MinWidth="70"
+                                                     VerticalContentAlignment="Center"
+                                                     Style="{StaticResource style_txtbox}" />
+                                            <TextBox Text="{Binding Board_Port}"
+                                                     HorizontalContentAlignment="Center"
+                                                     Grid.Column="2"
+                                                     MinWidth="70"
+                                                     VerticalAlignment="Center"
+                                                     Style="{StaticResource style_txtbox}" />
+                                            <TextBox Text="{Binding BautRate}"
+                                                     VerticalAlignment="Center"
+                                                     HorizontalContentAlignment="Center"
+                                                     Grid.Column="3"
+                                                     MinWidth="70"
+                                                     Style="{StaticResource style_txtbox}" />
+                                            <!--<Label Content="{Binding BautRate}" HorizontalContentAlignment="Center" Grid.Column="3" MinWidth="70" Style="{StaticResource style_label}"/>-->
+                                            <Label Grid.Column="4"
+                                                   MinWidth="70" />
+
+                                            <ComboBox ItemsSource="{Binding list_combox_PowerMeterType_items}"
+                                                      SelectedValue="{Binding PM_Type, Mode=TwoWay}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"
+                                                      Grid.Column="5"
+                                                      MinWidth="50"
+                                                      FontSize="{Binding Int_Fontsize}"
+                                                      FontFamily="Segoe Print"
+                                                      IsEnabled="True"
+                                                      Width="{Binding ActualWidth, ElementName=combox_comType, Mode=OneWay}" />
+                                            <TextBox Text="{Binding PM_Board_ID}"
+                                                     Visibility="{Binding typeGPIBVis, Converter={StaticResource VisValueConverter}}"
+                                                     HorizontalContentAlignment="Center"
+                                                     Grid.Column="6"
+                                                     MinWidth="70"
+                                                     Style="{StaticResource style_txtbox}"
+                                                     Width="{Binding ActualWidth, ElementName=label_BoardNum, Mode=OneWay}" />
+                                            <Label Content="{Binding PM_Board_Port}"
+                                                   Visibility="{Binding typeGPIBVis, Converter={StaticResource VisValueConverter}}"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalContentAlignment="Center"
+                                                   Grid.Column="7"
+                                                   MinWidth="70"
+                                                   Style="{StaticResource style_label}"
+                                                   Width="{Binding ActualWidth, ElementName=label_Address, Mode=OneWay}" />
+                                            <Label Content="{Binding PM_BautRate}"
+                                                   Visibility="{Binding typeGPIBVis, Converter={StaticResource VisValueConverter}}"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalContentAlignment="Center"
+                                                   Grid.Column="8"
+                                                   MinWidth="70"
+                                                   Style="{StaticResource style_label}"
+                                                   Width="{Binding ActualWidth, ElementName=label_Slot, Mode=OneWay}" />
+                                            <TextBox Text="{Binding PM_GetPower_CMD}"
+                                                     VerticalAlignment="Center"
+                                                     HorizontalContentAlignment="Center"
+                                                     Visibility="{Binding typeGPIBVis, Converter={StaticResource VisValueConverter}}"
+                                                     Grid.Column="9"
+                                                     MinWidth="70"
+                                                     Style="{StaticResource style_txtbox}"
+                                                     Width="{Binding ActualWidth, ElementName=lab_avrg, Mode=OneWay}" />
+                                            <Label Grid.Column="10"
+                                                   MinWidth="70" />
+
+                                            <TextBox Text="{Binding PM_GPIB_BoardNum}"
+                                                     Visibility="{Binding typeGPIBVis}"
+                                                     VerticalAlignment="Center"
+                                                     HorizontalContentAlignment="Center"
+                                                     Grid.Column="6"
+                                                     MinWidth="60"
+                                                     Style="{StaticResource style_txtbox}"
+                                                     Width="{Binding ActualWidth, ElementName=label_BoardNum, Mode=OneWay}" />
+                                            <TextBox Text="{Binding PM_Address}"
+                                                     Visibility="{Binding typeGPIBVis}"
+                                                     VerticalAlignment="Center"
+                                                     HorizontalContentAlignment="Center"
+                                                     Grid.Column="7"
+                                                     MinWidth="60"
+                                                     Style="{StaticResource style_txtbox}"
+                                                     Width="{Binding ActualWidth, ElementName=label_Address, Mode=OneWay}" />
+                                            <TextBox Text="{Binding PM_Slot}"
+                                                     Visibility="{Binding typeGPIBVis}"
+                                                     VerticalAlignment="Center"
+                                                     HorizontalContentAlignment="Center"
+                                                     Grid.Column="8"
+                                                     MinWidth="60"
+                                                     Style="{StaticResource style_txtbox}"
+                                                     Width="{Binding ActualWidth, ElementName=label_Slot, Mode=OneWay}" />
+                                            <TextBox Text="{Binding PM_AveTime}"
+                                                     VerticalAlignment="Center"
+                                                     HorizontalContentAlignment="Center"
+                                                     Visibility="{Binding typeGPIBVis}"
+                                                     Grid.Column="9"
+                                                     MinWidth="60"
+                                                     Style="{StaticResource style_txtbox}"
+                                                     Width="{Binding ActualWidth, ElementName=lab_avrg, Mode=OneWay}" />
+                                        </Grid>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <Grid Height="50"/>                   
+                </StackPanel>
+            </Border>
+
+            <!--Other port setting-->
+            <ScrollViewer Grid.Row="1"
+                          Grid.Column="1"
+                          Grid.RowSpan="3">
+                <StackPanel x:Name="sPanel_other_ports"
+                            Orientation="Vertical">
+                    <Grid Grid.Column="1"
+                          Grid.Row="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Switch"
+                                   HorizontalAlignment="Left"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="0"
+                                   MinWidth="70"
+                                   FontSize="{Binding Int_Fontsize}"
+                                   FontFamily="Segoe Print"
+                                   Grid.ColumnSpan="2" />
+                            <TextBox Text="  "
+                                     HorizontalContentAlignment="Center"
+                                     Grid.Column="1"
+                                     MinWidth="70"
+                                     Style="{StaticResource style_txtbox_noWaterPrint}" />
+                            <TextBox Text="{Binding Comport_Switch}"
+                                     HorizontalContentAlignment="Center"
+                                     Grid.Column="2"
+                                     MinWidth="70"
+                                     VerticalAlignment="Center"
+                                     Style="{StaticResource style_txtbox_noWaterPrint}" />
+                            <TextBox Text="{Binding Switch_BoudRate}"
+                                     VerticalAlignment="Center"
+                                     HorizontalContentAlignment="Center"
+                                     Grid.Column="3"
+                                     MinWidth="70"
+                                     Style="{StaticResource style_txtbox_noWaterPrint}" />
+                            <Label Grid.Column="4"
+                                   MinWidth="70" />
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Column="1"
+                          Grid.Row="2">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="TLS Filter"
+                                   HorizontalAlignment="Left"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="0"
+                                   MinWidth="70"
+                                   FontSize="{Binding Int_Fontsize}"
+                                   FontFamily="Segoe Print"
+                                   Grid.ColumnSpan="2" />
+                            <TextBox Text="  "
+                                     HorizontalContentAlignment="Center"
+                                     Grid.Column="1"
+                                     MinWidth="70"
+                                     Style="{StaticResource style_txtbox_noWaterPrint}" />
+                            <TextBox Text="{Binding Comport_TLS_Filter}"
+                                     HorizontalContentAlignment="Center"
+                                     Grid.Column="2"
+                                     MinWidth="70"
+                                     VerticalAlignment="Center"
+                                     Style="{StaticResource style_txtbox_noWaterPrint}" />
+                            <TextBox Text="{Binding TLS_Filter_BoudRate}"
+                                     VerticalAlignment="Center"
+                                     HorizontalContentAlignment="Center"
+                                     Grid.Column="3"
+                                     MinWidth="70"
+                                     Style="{StaticResource style_txtbox_noWaterPrint}" />
+                            <Label Grid.Column="4"
+                                   MinWidth="70" />
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Column="1"
+                          Grid.Row="3">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Chamber"
+                                   HorizontalAlignment="Left"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="0"
+                                   MinWidth="70"
+                                   FontSize="{Binding Int_Fontsize}"
+                                   FontFamily="Segoe Print"
+                                   Grid.ColumnSpan="2" />
+                            <TextBox Text="  "
+                                     HorizontalContentAlignment="Center"
+                                     Grid.Column="1"
+                                     MinWidth="70"
+                                     Style="{StaticResource style_txtbox_noWaterPrint}" />
+                            <TextBox Text="{Binding Comport_chamber}"
+                                     HorizontalContentAlignment="Center"
+                                     Grid.Column="2"
+                                     MinWidth="70"
+                                     VerticalAlignment="Center"
+                                     Style="{StaticResource style_txtbox_noWaterPrint}" />
+                            <TextBox Text="{Binding Chamber_BoudRate}"
+                                     VerticalAlignment="Center"
+                                     HorizontalContentAlignment="Center"
+                                     Grid.Column="3"
+                                     MinWidth="70"
+                                     Style="{StaticResource style_txtbox_noWaterPrint}" />
+                            <Label Grid.Column="4"
+                                   MinWidth="70" />
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+       
+    </Grid>
+</Window>

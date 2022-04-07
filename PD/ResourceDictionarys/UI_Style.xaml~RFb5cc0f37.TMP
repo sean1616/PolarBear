@@ -1,0 +1,2881 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+                    xmlns:local="clr-namespace:PD.Models"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Fill Brushes -->
+
+    <LinearGradientBrush x:Key="NormalBrush"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#FFF"
+                              Offset="0.0" />
+                <GradientStop Color="#CCC"
+                              Offset="1.0" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HorizontalNormalBrush"
+                         StartPoint="0,0"
+                         EndPoint="1,0">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#FFF"
+                              Offset="0.0" />
+                <GradientStop Color="#CCC"
+                              Offset="1.0" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="LightBrush"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#FFF"
+                              Offset="0.0" />
+                <GradientStop Color="#EEE"
+                              Offset="1.0" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HorizontalLightBrush"
+                         StartPoint="0,0"
+                         EndPoint="1,0">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#FFF"
+                              Offset="0.0" />
+                <GradientStop Color="#EEE"
+                              Offset="1.0" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="DarkBrush"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#FFF"
+                              Offset="0.0" />
+                <GradientStop Color="#AAA"
+                              Offset="1.0" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PressedBrush"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#BBB"
+                              Offset="0.0" />
+                <GradientStop Color="#EEE"
+                              Offset="0.1" />
+                <GradientStop Color="#EEE"
+                              Offset="0.9" />
+                <GradientStop Color="#FFF"
+                              Offset="1.0" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="DisabledForegroundBrush"
+                     Color="#888" />
+
+    <SolidColorBrush x:Key="DisabledBackgroundBrush"
+                     Color="#EEE" />
+
+    <SolidColorBrush x:Key="WindowBackgroundBrush"
+                     Color="#FFF" />
+
+    <SolidColorBrush x:Key="SelectedBackgroundBrush"
+                     Color="#DDD" />
+
+    <!-- Border Brushes -->
+
+    <LinearGradientBrush x:Key="NormalBorderBrush"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#CCC"
+                              Offset="0.0" />
+                <GradientStop Color="#444"
+                              Offset="1.0" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HorizontalNormalBorderBrush"
+                         StartPoint="0,0"
+                         EndPoint="1,0">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#CCC"
+                              Offset="0.0" />
+                <GradientStop Color="#444"
+                              Offset="1.0" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="DefaultedBorderBrush"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#777"
+                              Offset="0.0" />
+                <GradientStop Color="#000"
+                              Offset="1.0" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PressedBorderBrush"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#444"
+                              Offset="0.0" />
+                <GradientStop Color="#888"
+                              Offset="1.0" />
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="DisabledBorderBrush"
+                     Color="#AAA" />
+
+    <SolidColorBrush x:Key="SolidBorderBrush"
+                     Color="#888" />
+
+    <SolidColorBrush x:Key="LightBorderBrush"
+                     Color="#AAA" />
+
+    <!-- Miscellaneous Brushes -->
+    <SolidColorBrush x:Key="GlyphBrush"
+                     Color="#444" />
+
+    <SolidColorBrush x:Key="LightColorBrush"
+                     Color="#DDD" />
+    
+    
+
+    <Style x:Key="style_Gauge_Background" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid>
+                        <!--<Grid.RowDefinitions>
+                            <RowDefinition Height="{Binding GaugeSize_Height}"/>
+                            <RowDefinition />
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>-->
+                        <Border x:Name="border"
+                                Grid.RowSpan="3"
+                                Background="Transparent"
+                                BorderThickness="2"
+                                CornerRadius="8" />
+                        <ContentPresenter Grid.RowSpan="3"
+                                          x:Name="contentPresenter"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Focusable="False"
+                                          SnapsToDevicePixels="True" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <!--<Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FF10E2C4" />
+                        </Trigger>-->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FFF1F1F1" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FF10E2C4" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FF68FCDF" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Laser_txtBlock" TargetType="{x:Type TextBlock}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontFamily" Value="Segoe Print" />
+    </Style>
+
+    <Style x:Key="Setting_Title_txtBlock"
+           TargetType="{x:Type TextBlock}">
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
+        <Setter Property="FontSize"
+                Value="15" />
+        <Setter Property="Background"
+                Value="{x:Null}" />
+        <Setter Property="Foreground"
+                Value="White" />
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+    </Style>
+
+    <Style x:Key="Chart_txtBlock" TargetType="{x:Type TextBlock}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontFamily" Value="Segoe Print" />
+    </Style>
+
+    <Style x:Key="Setting_txtBlock" TargetType="{x:Type TextBlock}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="15,0,0,0" />
+        <Setter Property="FontFamily" Value="Segoe Print" />
+    </Style>
+
+    <Style x:Key="Window_Bear_Timer_txtBox"
+           TargetType="{x:Type TextBox}">
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
+        <Setter Property="BorderBrush"
+                Value="Transparent" />
+        <Setter Property="Background"
+                Value="Transparent" />       
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
+        <Setter Property="Foreground"
+                Value="Black" />
+        <Setter Property="FontSize"
+                Value="25" />
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+    </Style>
+
+    <Style x:Key="Window_Bear_Timer_txtBlock"
+           TargetType="{x:Type TextBlock}">
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Foreground"
+                Value="Black" />
+        <Setter Property="FontSize"
+                Value="25" />
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+    </Style>
+
+    <Style x:Key="Setting_Input_txtBox" TargetType="{x:Type TextBox}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,5,0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Segoe Print" />
+    </Style>
+    
+    <Style x:Key="Setting_Input_button" TargetType="{x:Type Button}">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="IsManipulationEnabled" Value="False" />
+        <Setter Property="Tag" Value="" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.2*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Background="Transparent" />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="3">
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <ContentPresenter
+                            x:Name="contentPresenter"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            SnapsToDevicePixels="True" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FF98DEB5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SwitchTypeToggleButton" TargetType="{x:Type ToggleButton}">
+        <Style.Resources>
+            <Color x:Key="Color.Additional.LightGrey">#FF33D3C4</Color>
+            <Color x:Key="Color.Additional.MediumGrey">#FF00ADB6</Color>
+            <Color x:Key="Color.MedtronicBranding.MedtronicBlue">#004B87</Color>
+            <Color x:Key="Color.MedtronicBranding.CobaltBlue">#0085CA</Color>
+
+            <SolidColorBrush x:Key="ToggleButtonFalseBackground" Color="{StaticResource Color.Additional.LightGrey}" />
+            <SolidColorBrush x:Key="ToggleButtonTrueBackground" Color="{StaticResource Color.MedtronicBranding.CobaltBlue}" />
+            <SolidColorBrush x:Key="ToggleButtonFalseForeground" Color="{StaticResource Color.Additional.MediumGrey}" />
+            <SolidColorBrush x:Key="ToggleButtonTrueForeground" Color="{StaticResource Color.MedtronicBranding.MedtronicBlue}" />
+            <Style x:Key="OnContentControl" TargetType="ContentControl">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="OffContentControl" TargetType="ContentControl">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <!--<TextBlock FontSize="24"
+                                       Foreground="White"
+                                       Text="X" />-->
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+
+        </Style.Resources>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid x:Name="MainRow">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding ElementName=TopRow, Path=ActualHeight}" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="{Binding ElementName=TopRow, Path=ActualHeight}" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition x:Name="TopRow" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Ellipse
+                                x:Name="BackgroundEllipse1"
+                                Grid.RowSpan="2"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Width="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                HorizontalAlignment="Left"
+                                Fill="{StaticResource ToggleButtonTrueBackground}" />
+                            <Ellipse
+                                x:Name="BackgroundEllipse2"
+                                Grid.Row="0"
+                                Grid.RowSpan="2"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Width="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                HorizontalAlignment="Right"
+                                Fill="{StaticResource ToggleButtonFalseBackground}" />
+                            <Border
+                                x:Name="BackgroundBorder"
+                                Grid.Row="0"
+                                Grid.RowSpan="2"
+                                Grid.Column="1"
+                                Background="{StaticResource ToggleButtonTrueBackground}" />
+                        </Grid>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition x:Name="AnimationWidth" />
+                                <ColumnDefinition Width="{Binding ElementName=MainRow, Path=ActualHeight}" />
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="AnimationSizeBorder" Grid.Column="0" />
+                            <ContentControl Grid.Column="0" Style="{StaticResource OnContentControl}" />
+                        </Grid>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding ElementName=MainRow, Path=ActualHeight}" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <ContentControl Grid.Column="1" Style="{StaticResource OffContentControl}" />
+                        </Grid>
+                        <Grid Background="Transparent">
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                <Border Width="{Binding ElementName=AnimationSizeBorder, Path=ActualWidth}" />
+                                <Ellipse
+                                    x:Name="ForegroundEllipse"
+                                    Width="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                    Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                    HorizontalAlignment="Right"
+                                    Fill="{StaticResource ToggleButtonTrueForeground}" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="BackgroundBorder" Property="Background" Value="{StaticResource ToggleButtonFalseBackground}" />
+                            <Setter TargetName="ForegroundEllipse" Property="Fill" Value="{StaticResource ToggleButtonFalseForeground}" />
+                            <!--<Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="AnimationSizeBorder"  Storyboard.TargetProperty="(Border.Width)" To="0" Duration="0:0:3"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="AnimationSizeBorder"  Storyboard.TargetProperty="(Border.Width)" From="0" Duration="0:0:3"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>-->
+                            <Setter TargetName="AnimationSizeBorder" Property="Width" Value="0" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SwitchTypeToggleButton_In_SettingPage" TargetType="{x:Type ToggleButton}">
+        <Style.Resources>
+            <Color x:Key="Color.Additional.LightGrey">#cfcfcf</Color>
+            <Color x:Key="Color.Additional.MediumGrey">#8c8c8c</Color>
+            <Color x:Key="Color.MedtronicBranding.MedtronicBlue">#004B87</Color>
+            <Color x:Key="Color.MedtronicBranding.CobaltBlue">#0085CA</Color>
+
+            <SolidColorBrush x:Key="ToggleButtonFalseBackground" Color="{StaticResource Color.Additional.LightGrey}" />
+            <SolidColorBrush x:Key="ToggleButtonFalseForeground" Color="{StaticResource Color.Additional.MediumGrey}" />
+            <SolidColorBrush x:Key="ToggleButtonTrueBackground" Color="{StaticResource Color.MedtronicBranding.CobaltBlue}" />
+            <SolidColorBrush x:Key="ToggleButtonTrueForeground" Color="{StaticResource Color.MedtronicBranding.MedtronicBlue}" />
+            <Style x:Key="OnContentControl" TargetType="ContentControl">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="OffContentControl" TargetType="ContentControl">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <!--<TextBlock FontSize="24"
+                                       Foreground="White"
+                                       Text="X" />-->
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+
+        </Style.Resources>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid x:Name="MainRow">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding ElementName=TopRow, Path=ActualHeight}" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="{Binding ElementName=TopRow, Path=ActualHeight}" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition x:Name="TopRow" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Ellipse x:Name="BackgroundEllipse1"
+                                     Grid.RowSpan="2"
+                                     Grid.Column="0"
+                                     Grid.ColumnSpan="3"
+                                     Width="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     HorizontalAlignment="Left"
+                                     Fill="{StaticResource ToggleButtonTrueBackground}" />
+                            <Ellipse x:Name="BackgroundEllipse2"
+                                     Grid.Row="0"
+                                     Grid.RowSpan="2"
+                                     Grid.Column="0"
+                                     Grid.ColumnSpan="3"
+                                     Width="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     HorizontalAlignment="Right"
+                                     Fill="{StaticResource ToggleButtonFalseBackground}" />
+                            <Border x:Name="BackgroundBorder"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="1"
+                                    Background="{StaticResource ToggleButtonTrueBackground}" />
+                        </Grid>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition x:Name="AnimationWidth" />
+                                <ColumnDefinition Width="{Binding ElementName=MainRow, Path=ActualHeight}" />
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="AnimationSizeBorder" Grid.Column="0" />
+                            <ContentControl Grid.Column="0" Style="{StaticResource OnContentControl}" />
+                        </Grid>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding ElementName=MainRow, Path=ActualHeight}" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <ContentControl Grid.Column="1" Style="{StaticResource OffContentControl}" />
+                        </Grid>
+                        <Grid Background="Transparent">
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                <Border Width="{Binding ElementName=AnimationSizeBorder, Path=ActualWidth}" />
+                                <Ellipse
+                                    x:Name="ForegroundEllipse"
+                                    Width="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                    Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                    HorizontalAlignment="Right"
+                                    Fill="{StaticResource ToggleButtonTrueForeground}" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="false">
+                            <Setter TargetName="BackgroundBorder" Property="Background" Value="{StaticResource ToggleButtonFalseBackground}" />
+                            <Setter TargetName="ForegroundEllipse" Property="Fill" Value="{StaticResource ToggleButtonFalseForeground}" />
+                            <Setter TargetName="AnimationSizeBorder" Property="Width" Value="0" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="style_Btn_only_txt"
+           TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels"
+                Value="True" />
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
+        <Setter Property="FontFamily"
+                Value="Segoe UI Symbol" />
+        <!--<Setter Property="FontSize"
+                Value="14" />-->
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <ControlTemplate.Resources>
+                        <Storyboard x:Key="Storyboard_btn_mouse_in">
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(Brush.Opacity)"
+                                                           Storyboard.TargetName="border">
+                                <EasingDoubleKeyFrame KeyTime="0"
+                                                      Value="0" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.1"
+                                                      Value="1" />
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </ControlTemplate.Resources>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="4*"/>
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.RowSpan="3"
+                                Grid.ColumnSpan="3"
+                                CornerRadius="8"
+                                BorderThickness="2"
+                                BorderBrush="#FF999999">
+                            <Border.Background>
+                                <SolidColorBrush Color="#FFFDFDFD"
+                                                 Opacity="0" />
+                            </Border.Background>
+                        </Border>
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1"
+                                 MaxHeight="30"
+                                 Margin="3">
+                            <ContentPresenter />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>                        
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Trigger.ExitActions>
+                                <RemoveStoryboard BeginStoryboardName="Storyboard_btn_mouse_in_BeginStoryboard" />
+                            </Trigger.ExitActions>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard x:Name="Storyboard_btn_mouse_in_BeginStoryboard"
+                                                 Storyboard="{StaticResource Storyboard_btn_mouse_in}" />
+                            </Trigger.EnterActions>
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FFC5C5C5" />                            
+                        </Trigger>
+                        <Trigger Property="IsPressed"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    TargetName="border"
+                                    Value="#FFE0E0E0" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    
+
+    <!--  RadioButton - Page  -->
+    <Style x:Key="style_PageBtn" TargetType="{x:Type RadioButton}">
+        <Setter Property="BorderBrush" Value="Black" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="10,10,0,0" />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="4">
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            MaxHeight="30"
+                            Margin="3">
+                            <ContentPresenter
+                                x:Name="contentPresenter"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Focusable="False"
+                                OpacityMask="Black"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#FF9C9C9C" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FFDEDEDE" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="White" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  RadioButton - Switch Box  -->
+    <Style x:Key="style_Switch Box" TargetType="{x:Type RadioButton}">
+        <Setter Property="BorderBrush" Value="Black" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="3*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="4*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Background="{TemplateBinding Background}" />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            HorizontalAlignment="Left">
+                            <Image
+                                Name="image"
+                                HorizontalAlignment="Center"
+                                Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                Visibility="Hidden" />
+                        </Viewbox>
+                        <Viewbox
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="3">
+                            <ContentPresenter
+                                x:Name="contentPresenter"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Focusable="False"
+                                OpacityMask="Black"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FFDEDEDE" />
+                            <Setter TargetName="image" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="image" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FFC9C9C9" />
+                            <Setter TargetName="image" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_FuncToggleBtn" TargetType="{x:Type ToggleButton}">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="1.5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Background="Transparent" />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0">
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <Viewbox Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            <ContentPresenter
+                            x:Name="contentPresenter"                            
+                            Focusable="False"
+                            SnapsToDevicePixels="True" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FF8D8D8D" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FFD1D1D1" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_FuncToggleBtn_Laser" TargetType="{x:Type ToggleButton}">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Background="Transparent" />
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Grid.Row="1"
+                                          Grid.Column="1"
+                                          Focusable="False"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          SnapsToDevicePixels="True" />
+                        <!--<Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="8">
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>-->
+                        <!--<Viewbox Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            <ContentPresenter
+                            x:Name="contentPresenter"                            
+                            Focusable="False"
+                            SnapsToDevicePixels="True" />
+                        </Viewbox>-->
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FF8D8D8D" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FFD1D1D1" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_FuncToggleBtn_for_Combox"
+           TargetType="{x:Type ToggleButton}">
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="Foreground"
+                Value="White" />
+        <Setter Property="FontSize"
+                Value="16" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.RowSpan="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Background="Transparent" />
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="0"
+                                 Margin="8">
+                            <Image HorizontalAlignment="Center"
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Grid.Row="1"
+                                          Grid.Column="1"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          Focusable="False"
+                                          SnapsToDevicePixels="True" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF98DEB5" />
+                        </Trigger>
+                        <Trigger Property="IsChecked"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FFD1D1D1" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_FuncCombobox" TargetType="{x:Type ComboBox}">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="BorderBrush" Value="Gray" />
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="MaxDropDownHeight"
+                Value="420" />
+        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="1.5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <ToggleButton
+                            Name="ToggleButton"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.ColumnSpan="2"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            ClickMode="Press"
+                            Focusable="false"
+                            Foreground="White"
+                            IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                            Style="{StaticResource style_FuncToggleBtn}" />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            >
+                            <!--<Image Source="{Binding Path=(local:UI_DependencyProperty.Image), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />-->
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <Viewbox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" 
+                            VerticalAlignment="Center">
+                            <ContentPresenter
+                            Name="ContentSite"                           
+                            Content="{TemplateBinding SelectionBoxItem}"
+                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                            IsHitTestVisible="False"
+                            TextBlock.Foreground="White" />
+                        </Viewbox>                        
+                        <Popup
+                            Name="Popup"
+                            AllowsTransparency="False"
+                            Focusable="False"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            Placement="Right"
+                            PopupAnimation="Slide">
+                            <Grid
+                                Name="DropDown"
+                                MinWidth="{TemplateBinding ActualWidth}"
+                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                Background="White"
+                                SnapsToDevicePixels="True">
+                                <Border
+                                    x:Name="DropDownBorder"
+                                    BorderBrush="Gray"
+                                    BorderThickness="2" />
+                                <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
+                        </Trigger>
+                        <Trigger Property="IsGrouping" Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                        </Trigger>
+                        <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="0" />
+                            <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsEditable" Value="true">
+                            <Setter Property="IsTabStop" Value="false" />
+                            <!--<Setter TargetName="PART_EditableTextBox"
+                                    Property="Visibility"
+                                    Value="Visible" />-->
+                            <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ToggleButton" Property="Background" Value="#FF8D8D8D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers />
+    </Style>
+
+    <Style x:Key="style_WindowFuncBtn" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Tag" Value="" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Border
+                            x:Name="border"
+                                Background="#FF727272"
+                                CornerRadius="2" />
+                        <Viewbox
+                            Grid.Row="1"
+                            Margin="5">
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FF8D8D8D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_SendBtn"
+           TargetType="{x:Type Button}">
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="3.5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Column="1"
+                                Grid.Row="0"
+                                Grid.RowSpan="3"
+                                Background="White"
+                                />
+                        <Viewbox Grid.Row="1" Grid.Column="1">
+                            <Image HorizontalAlignment="Center"
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF8D8D8D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_BearToggleBtn"
+           TargetType="{x:Type ToggleButton}">
+        <Setter Property="SnapsToDevicePixels"
+                Value="True" />
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid>
+                        <Border x:Name="border"
+                                Background="Transparent"
+                                CornerRadius="2" />
+                        <Viewbox Grid.Row="1"
+                                 Margin="5">
+                            <Image HorizontalAlignment="Center"
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF8D8D8D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_OnlyImage_Btn"
+           TargetType="{x:Type Button}">
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="1.5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1.5*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.RowSpan="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="8"                                
+                                BorderThickness="0,0,0,3"
+                                Background="Transparent" />
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1">
+                            <Image HorizontalAlignment="Center"
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>                        
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="BorderBrush"
+                                    Value="#FF47DADA" />
+                        </Trigger>
+                        <Trigger Property="Button.IsPressed"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FFDADADA" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_FuncBtn" TargetType="{x:Type Button}">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="1.5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Background="Transparent" />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0">
+                            <Image HorizontalAlignment="Center"
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <!--<Image Source="{Binding Path=(local:UI_DependencyProperty.Image), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />-->
+                            <!--<Image Source="{TemplateBinding local:UI_DependencyProperty.OriginalImage}" />-->
+                        </Viewbox>
+                        <Viewbox Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            <ContentPresenter
+                            x:Name="contentPresenter"
+                            Grid.Row="1"
+                            Grid.Column="1"                           
+                            Focusable="False"
+                            SnapsToDevicePixels="True" />
+                        </Viewbox>                        
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FF8D8D8D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_FuncBtn_Laser" TargetType="{x:Type Button}">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Tag" Value="" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Background="Transparent" />
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Grid.Row="1"
+                                          Grid.Column="1"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left"
+                                          Focusable="False"
+                                          SnapsToDevicePixels="True" />
+                        <!--<Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="3">
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>-->
+                        <!--<Viewbox Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            <ContentPresenter
+                            x:Name="contentPresenter"
+                            Grid.Row="1"
+                            Grid.Column="1"                           
+                            Focusable="False"
+                            SnapsToDevicePixels="True" />
+                        </Viewbox>-->
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FF8D8D8D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_FuncBtn_Black" TargetType="{x:Type Button}">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Tag" Value="" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Background="Transparent" />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="3">
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <ContentPresenter
+                            x:Name="contentPresenter"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            SnapsToDevicePixels="True" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FFEBEBEB" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_FuncBtn_CenterAlign" TargetType="{x:Type Button}">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Tag" Value="" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Background="Transparent" />
+                        <ContentPresenter
+                            x:Name="contentPresenter"
+                            Grid.Row="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            SnapsToDevicePixels="True" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FF8D8D8D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_BearBtn0"
+           TargetType="{x:Type Button}">
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="FontSize"
+                Value="{Binding Int_Fontsize}" />
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="Focusable"
+                Value="False" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="MaxHeight"
+                Value="50" />
+        <Setter Property="Foreground"
+                Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="9*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="6*" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                BorderBrush="#FFB0B0B0"
+                                BorderThickness="2"
+                                CornerRadius="4"
+                                Grid.RowSpan="3"
+                                Background="Transparent" />
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Focusable="False"
+                                              SnapsToDevicePixels="True" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="BorderBrush"
+                                    Value="#FF47DADA" />
+                        </Trigger>
+                        <Trigger Property="Button.IsPressed"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FFDADADA" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_BearBtn"
+           TargetType="{x:Type Button}">
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="FontSize"
+                Value="{Binding Int_Fontsize}" />
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="Focusable"
+                Value="False" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="MaxHeight"
+                Value="50" />
+        <Setter Property="Foreground"
+                Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="9*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="6*"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                BorderBrush="Transparent" BorderThickness="2" CornerRadius="4"
+                                Grid.RowSpan="3"
+                                Background="Transparent" />
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1">
+                            <ContentPresenter x:Name="contentPresenter"                                              
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Focusable="False"
+                                              SnapsToDevicePixels="True" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>                      
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="BorderBrush"
+                                    Value="#FF47DADA" />
+                        </Trigger>
+                        <Trigger Property="Button.IsPressed"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FFDADADA" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_BearBtn2"
+           TargetType="{x:Type Button}">
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="FontSize"
+                Value="{Binding Int_Fontsize}" />
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="MaxHeight"
+                Value="50" />
+        <Setter Property="Foreground"
+                Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="7*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="6*" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                BorderBrush="Transparent"
+                                BorderThickness="0.5"
+                                Grid.RowSpan="3"
+                                Background="Transparent" />
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Focusable="False"
+                                              SnapsToDevicePixels="True" />
+                        </Viewbox>
+                    </Grid>
+                    <!--<ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF1EB1B8" />
+                            <Setter TargetName="border"
+                                    Property="BorderBrush"
+                                    Value="#FF252525" />
+                        </Trigger>
+                        <Trigger Property="Button.IsPressed"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF7EFBD9" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>-->
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_BearBtn3"
+           TargetType="{x:Type Button}">
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="FontSize"
+                Value="{Binding Int_Fontsize}" />
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="MaxHeight"
+                Value="50" />
+        <Setter Property="Foreground"
+                Value="DarkBlue" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="8*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="6*" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                BorderBrush="Transparent"
+                                BorderThickness="0.5"
+                                Grid.RowSpan="3"
+                                Background="Transparent" />
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Focusable="False"
+                                              SnapsToDevicePixels="True" />
+                        </Viewbox>
+                    </Grid>
+                    <!--<ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF1EB1B8" />
+                            <Setter TargetName="border"
+                                    Property="BorderBrush"
+                                    Value="#FF252525" />
+                        </Trigger>
+                        <Trigger Property="Button.IsPressed"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF7EFBD9" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>-->
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_PictureBtn"
+           TargetType="{x:Type Button}">
+        <Setter Property="MaxHeight" Value="30"/>
+        <Setter Property="MaxWidth" Value="30"/>
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.4*" />
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="0.4*" />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.RowSpan="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                CornerRadius="2"
+                                Background="Transparent" />
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1">
+                            <ContentPresenter />
+                        </Viewbox>
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1">
+                            <Image HorizontalAlignment="Center"
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>                      
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF8D8D8D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_Chart_CheckBox" TargetType="{x:Type CheckBox}">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="FontSize"
+                Value="13" />
+        <Setter Property="Foreground"
+                Value="White" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Background="{TemplateBinding Background}"
+                            />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0" MaxHeight="27" HorizontalAlignment="Left">
+                            <Image Name="image" HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            MaxHeight="30"
+                            Margin="3">
+                            <ContentPresenter
+                                x:Name="contentPresenter"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Focusable="False"
+                                OpacityMask="Black"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF8D8D8D" />
+                        </Trigger>
+                        <Trigger Property="IsChecked"
+                                 Value="False">                           
+                            <Setter TargetName="image"
+                                    Property="Visibility"
+                                    Value="Hidden" />
+                        </Trigger>
+                        <Trigger Property="IsChecked"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FFC9C9C9" />
+                            <Setter TargetName="image"
+                                    Property="Visibility"
+                                    Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_Chart_btn" TargetType="{x:Type Button}">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="border"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Background="{TemplateBinding Background}"
+                            />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0">
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            MaxHeight="30"
+                            Margin="3">
+                            <ContentPresenter
+                                x:Name="contentPresenter"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Focusable="False"
+                                OpacityMask="Black"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Viewbox>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FFDEDEDE" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="ComboBoxToggleButton"
+                     TargetType="ToggleButton">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+            <Border x:Name="Border"
+                    Grid.ColumnSpan="2"
+                    CornerRadius="2"
+                    Background="{StaticResource NormalBrush}"
+                    BorderBrush="{StaticResource NormalBorderBrush}"
+                    BorderThickness="1" />
+            <Border Grid.Column="0"
+                    CornerRadius="2,0,0,2"
+                    Margin="1"
+                    Background="{StaticResource WindowBackgroundBrush}"
+                    BorderBrush="{StaticResource NormalBorderBrush}"
+                    BorderThickness="0,0,1,0" />
+            <Path x:Name="Arrow"
+                  Grid.Column="1"
+                  Fill="{StaticResource GlyphBrush}"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Data="M 0 0 L 4 4 L 8 0 Z" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="ToggleButton.IsMouseOver"
+                     Value="true">
+                <Setter TargetName="Border"
+                        Property="Background"
+                        Value="{StaticResource DarkBrush}" />
+            </Trigger>
+            <Trigger Property="ToggleButton.IsChecked"
+                     Value="true">
+                <Setter TargetName="Border"
+                        Property="Background"
+                        Value="{StaticResource PressedBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter TargetName="Border"
+                        Property="Background"
+                        Value="{StaticResource DisabledBackgroundBrush}" />
+                <Setter TargetName="Border"
+                        Property="BorderBrush"
+                        Value="{StaticResource DisabledBorderBrush}" />
+                <Setter Property="Foreground"
+                        Value="{StaticResource DisabledForegroundBrush}" />
+                <Setter TargetName="Arrow"
+                        Property="Fill"
+                        Value="{StaticResource DisabledForegroundBrush}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="ComboBoxTextBox"
+                     TargetType="TextBox">
+        <Border x:Name="PART_ContentHost"
+                Focusable="False"
+                Background="{TemplateBinding Background}" />
+    </ControlTemplate>
+
+    <Style x:Key="style_ComboBox_Editable"
+           TargetType="ComboBox">
+        <Setter Property="SnapsToDevicePixels"
+                Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+                Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
+                Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll"
+                Value="true" />
+        <Setter Property="MinWidth"
+                Value="120" />
+        <Setter Property="MinHeight"
+                Value="20" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <ToggleButton Name="ToggleButton"
+                                      Template="{StaticResource ComboBoxToggleButton}"
+                                      Grid.Column="0"
+                                      Focusable="false"
+                                      IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"
+                                      ClickMode="Press">
+                        </ToggleButton>
+                        <ContentPresenter Name="ContentSite"
+                                          IsHitTestVisible="False"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          Margin="3,3,23,3"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left" />
+                        <TextBox x:Name="PART_EditableTextBox"
+                                 Style="{x:Null}"
+                                 Template="{StaticResource ComboBoxTextBox}"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Margin="3,3,23,3"
+                                 Focusable="True"
+                                 Background="Transparent"
+                                 Visibility="Hidden"
+                                 IsReadOnly="{TemplateBinding IsReadOnly}" />
+                        <Popup Name="Popup"
+                               Placement="Bottom"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               PopupAnimation="Slide">
+                            <Grid Name="DropDown"
+                                  SnapsToDevicePixels="True"
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <Border x:Name="DropDownBorder"
+                                        Background="{StaticResource WindowBackgroundBrush}"
+                                        BorderThickness="1"
+                                        BorderBrush="{StaticResource SolidBorderBrush}" />
+                                <ScrollViewer Margin="4,6,4,6"
+                                              SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True"
+                                                KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems"
+                                 Value="false">
+                            <Setter TargetName="DropDownBorder"
+                                    Property="MinHeight"
+                                    Value="95" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled"
+                                 Value="false">
+                            <Setter Property="Foreground"
+                                    Value="{StaticResource DisabledForegroundBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsGrouping"
+                                 Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll"
+                                    Value="false" />
+                        </Trigger>
+                        <Trigger SourceName="Popup"
+                                 Property="Popup.AllowsTransparency"
+                                 Value="true">
+                            <Setter TargetName="DropDownBorder"
+                                    Property="CornerRadius"
+                                    Value="4" />
+                            <Setter TargetName="DropDownBorder"
+                                    Property="Margin"
+                                    Value="0,2,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsEditable"
+                                 Value="true">
+                            <Setter Property="IsTabStop"
+                                    Value="false" />
+                            <Setter TargetName="PART_EditableTextBox"
+                                    Property="Visibility"
+                                    Value="Visible" />
+                            <Setter TargetName="ContentSite"
+                                    Property="Visibility"
+                                    Value="Hidden" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="style_combobox" TargetType="{x:Type ComboBox}">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="BorderBrush" Value="Gray" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="1.5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <ToggleButton
+                            Name="ToggleButton"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.ColumnSpan="2"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            ClickMode="Press"
+                            Focusable="false"
+                            Foreground="{TemplateBinding Foreground}"
+                            IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                            Style="{StaticResource style_FuncToggleBtn}" />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0">
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <Viewbox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            <ContentPresenter
+                            Name="ContentSite"                           
+                            Content="{TemplateBinding SelectionBoxItem}"
+                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                            IsHitTestVisible="False"
+                            TextBlock.Foreground="White" />
+                        </Viewbox>
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center">
+                            <TextBox x:Name="PART_EditableTextBox"
+                                     Style="{x:Null}"
+                                     Foreground="White"
+                                     Template="{StaticResource ComboBoxTextBox}"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center"
+                                     Margin="3,3,23,3"
+                                     Focusable="True"
+                                     Background="Transparent"
+                                     Visibility="Hidden"
+                                     IsReadOnly="{TemplateBinding IsReadOnly}" />
+                        </Viewbox>
+                        <Popup
+                            Name="Popup"
+                            AllowsTransparency="True"
+                            Focusable="False"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            Placement="Bottom"
+                            PopupAnimation="Slide">
+                            <Grid
+                                Name="DropDown"
+                                MinWidth="{TemplateBinding ActualWidth}"
+                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                SnapsToDevicePixels="True">
+                                <Border
+                                    x:Name="DropDownBorder"
+                                    Background="White"
+                                    BorderBrush="Gray"
+                                    BorderThickness="2" />
+                                <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
+                        </Trigger>
+                        <Trigger Property="IsGrouping" Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                        </Trigger>
+                        <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="0" />
+                            <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsEditable"
+                                 Value="true">
+                            <Setter Property="IsTabStop"
+                                    Value="false" />
+                            <Setter TargetName="PART_EditableTextBox"
+                                    Property="Visibility"
+                                    Value="Visible" />
+                            <Setter TargetName="ContentSite"
+                                    Property="Visibility"
+                                    Value="Hidden" />
+                        </Trigger>
+                     
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers />
+    </Style>
+
+    <Style x:Key="style_refPath_combobox"
+           TargetType="{x:Type ComboBox}">
+        <Setter Property="Tag"
+                Value="" />
+        <Setter Property="BorderBrush"
+                Value="Gray" />
+        <Setter Property="Background"
+                Value="White" />
+        <Setter Property="SnapsToDevicePixels"
+                Value="true" />
+        <Setter Property="OverridesDefaultStyle"
+                Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
+                Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll"
+                Value="true" />
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="MinWidth"
+                Value="50" />
+        <Setter Property="MinHeight"
+                Value="32" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="1.5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>                                        
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center">
+                            <ContentPresenter Name="ContentSite"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              IsHitTestVisible="False"
+                                              TextBlock.Foreground="White" />
+                        </Viewbox>
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center">
+                            <TextBox x:Name="PART_EditableTextBox"
+                                     Style="{x:Null}"
+                                     Foreground="White"
+                                     Template="{StaticResource ComboBoxTextBox}"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center"
+                                     Margin="3,3,23,3"
+                                     Focusable="True"
+                                     Background="Transparent"
+                                     Visibility="Hidden"
+                                     IsReadOnly="{TemplateBinding IsReadOnly}" />
+                        </Viewbox>
+                        <Popup Name="Popup"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               Placement="Bottom"
+                               PopupAnimation="Slide">
+                            <Grid Name="DropDown"
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                  SnapsToDevicePixels="True">
+                                <Border x:Name="DropDownBorder"
+                                        Background="White"
+                                        BorderBrush="Gray"
+                                        BorderThickness="2" />
+                                <ScrollViewer Margin="4,6,4,6"
+                                              SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True"
+                                                KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems"
+                                 Value="false">
+                            <Setter TargetName="DropDownBorder"
+                                    Property="MinHeight"
+                                    Value="95" />
+                        </Trigger>
+                        <Trigger Property="IsGrouping"
+                                 Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll"
+                                    Value="false" />
+                        </Trigger>
+                        <Trigger SourceName="Popup"
+                                 Property="Popup.AllowsTransparency"
+                                 Value="true">
+                            <Setter TargetName="DropDownBorder"
+                                    Property="CornerRadius"
+                                    Value="0" />
+                            <Setter TargetName="DropDownBorder"
+                                    Property="Margin"
+                                    Value="0,2,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsEditable"
+                                 Value="true">
+                            <Setter Property="IsTabStop"
+                                    Value="false" />
+                            <Setter TargetName="PART_EditableTextBox"
+                                    Property="Visibility"
+                                    Value="Visible" />
+                            <Setter TargetName="ContentSite"
+                                    Property="Visibility"
+                                    Value="Hidden" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers />
+    </Style>
+
+    <Style x:Key="style_combobox_black" TargetType="{x:Type ComboBox}">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="BorderBrush" Value="Gray" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.08*" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="0.45*" />
+                            <ColumnDefinition Width="0.04*" />
+                        </Grid.ColumnDefinitions>
+                        <ToggleButton
+                            Name="ToggleButton"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.ColumnSpan="4"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            ClickMode="Press"
+                            Focusable="false"
+                            Foreground="{TemplateBinding Foreground}"
+                            IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                            Style="{StaticResource style_FuncToggleBtn}" />                       
+                        <ContentPresenter
+                            Name="ContentSite"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding SelectionBoxItem}"
+                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                            IsHitTestVisible="False"
+                            TextBlock.FontSize="14"
+                            TextBlock.Foreground="Black" />
+                        <Popup
+                            Name="Popup"
+                            AllowsTransparency="True"
+                            Focusable="False"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            Placement="Bottom"
+                            PopupAnimation="Slide">
+                            <Grid
+                                Name="DropDown"
+                                MinWidth="{TemplateBinding ActualWidth}"
+                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                SnapsToDevicePixels="True">
+                                <Border
+                                    x:Name="DropDownBorder"
+                                    Background="White"
+                                    BorderBrush="Gray"
+                                    BorderThickness="2" />
+                                <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
+                        </Trigger>
+                        <Trigger Property="IsGrouping" Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                        </Trigger>
+                        <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="0" />
+                            <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsEditable" Value="true">
+                            <Setter Property="IsTabStop" Value="false" />
+                            <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers />
+    </Style>
+
+    <Style x:Key="style_combobox_setting" TargetType="{x:Type ComboBox}">
+        <Setter Property="Tag" Value="" />
+        <Setter Property="BorderBrush" Value="Gray" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="4*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <ToggleButton
+                            Name="ToggleButton"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.ColumnSpan="2"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            ClickMode="Press"
+                            Focusable="false"
+                            Foreground="{TemplateBinding Foreground}"
+                            IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                            Style="{StaticResource style_FuncToggleBtn}" />
+                        <Viewbox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="3">
+                            <Image HorizontalAlignment="Center" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <ContentPresenter
+                            Name="ContentSite"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding SelectionBoxItem}"
+                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                            IsHitTestVisible="False"
+                            TextBlock.Foreground="Black" />
+                        <!--<TextBox x:Name="PART_EditableTextBox"
+                                 Style="{x:Null}"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 Focusable="True"
+                                 Visibility="Hidden"
+                                 IsReadOnly="{TemplateBinding IsReadOnly}" />-->
+                        <Popup
+                            Name="Popup"
+                            AllowsTransparency="True"
+                            Focusable="False"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            Placement="Bottom"
+                            PopupAnimation="Slide">
+                            <Grid
+                                Name="DropDown"
+                                MinWidth="{TemplateBinding ActualWidth}"
+                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                SnapsToDevicePixels="True">
+                                <Border
+                                    x:Name="DropDownBorder"
+                                    Background="White"
+                                    BorderBrush="Gray"
+                                    BorderThickness="2" />
+                                <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
+                        </Trigger>
+                        <Trigger Property="IsGrouping" Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                        </Trigger>
+                        <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                            <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="0" />
+                            <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsEditable" Value="true">
+                            <Setter Property="IsTabStop" Value="false" />
+                            <!--<Setter TargetName="PART_EditableTextBox"
+                                    Property="Visibility"
+                                    Value="Visible" />-->
+                            <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers />
+    </Style>
+
+    <!--<Style x:Key="style_label" TargetType="Label">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Margin" Value="2"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Background" Value="#FF4CFFDF"/>
+        <Setter Property="FontFamily" Value="Segoe Print"/>
+    </Style>-->
+
+    <Style x:Key="style_txtbox" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}">
+                        <Grid>
+                            <TextBlock x:Name="txtblock"
+                                       Text="{Binding waterPrint1}"
+                                       Background="{x:Null}"
+                                       Foreground="#FF898686" />
+                            <ScrollViewer Grid.Row="1"
+                                          x:Name="PART_ContentHost"
+                                          Focusable="false"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!--<Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="border" Property="Opacity" Value="0.6" />
+                        </Trigger>-->
+                        <!--<Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Opacity" TargetName="txtblock" Value="0"/>
+                        </Trigger>-->
+                        <Trigger Property="IsFocused" Value="true">
+                            <Setter Property="Opacity"
+                                    TargetName="txtblock"
+                                    Value="0" />
+                        </Trigger>
+                        <!--<Trigger Property="IsFocused" Value="true">
+                            <Setter TargetName="border" Property="BorderThickness" Value="3" />
+                        </Trigger>-->
+                        <!--<Trigger Property="IsFocused"
+                                 Value="true">
+                            <Setter TargetName="txt_label"
+                                    Property="Opacity"
+                                    Value="0" />
+                        </Trigger>-->
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_txtbox_noWaterPrint" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}">
+                        <Grid>                            
+                            <ScrollViewer Grid.Row="1"
+                                          x:Name="PART_ContentHost"
+                                          Focusable="false"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!--<Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="border" Property="Opacity" Value="0.6" />
+                        </Trigger>-->
+                        <!--<Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Opacity" TargetName="txtblock" Value="0"/>
+                        </Trigger>-->                       
+                        <!--<Trigger Property="IsFocused" Value="true">
+                            <Setter TargetName="border" Property="BorderThickness" Value="3" />
+                        </Trigger>-->
+                        <!--<Trigger Property="IsFocused"
+                                 Value="true">
+                            <Setter TargetName="txt_label"
+                                    Property="Opacity"
+                                    Value="0" />
+                        </Trigger>-->
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_Dac_txtbox" TargetType="TextBox">        
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Visibility"
+                Value="{Binding GaugeText_visible}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border
+                        x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="1"
+                        SnapsToDevicePixels="True">
+                        <ScrollViewer
+                            x:Name="PART_ContentHost"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Focusable="false"                            
+                            HorizontalScrollBarVisibility="Hidden"
+                            VerticalScrollBarVisibility="Hidden" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="border" Property="Opacity" Value="0.6" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="true">
+                            <Setter TargetName="border" Property="BorderBrush" Value="DarkBlue" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_Gauge_txtbox"
+           TargetType="TextBox">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="Visibility"
+                Value="{Binding GaugeText_visible}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="#FFDADADA"
+                            BorderThickness="2"
+                            CornerRadius="4"
+                            SnapsToDevicePixels="True">
+                        <Viewbox>
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Center"
+                                          VerticalContentAlignment="Center"
+                                          Focusable="false"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden" />
+                        </Viewbox>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled"
+                                 Value="false">
+                            <Setter TargetName="border"
+                                    Property="Opacity"
+                                    Value="0.6" />
+                        </Trigger>
+                        <Trigger Property="IsFocused"
+                                 Value="true">
+                            <Setter TargetName="border"
+                                    Property="BorderBrush"
+                                    Value="#FF47DADA" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver"
+                                 Value="true">
+                            <Setter TargetName="border"
+                                    Property="BorderBrush"
+                                    Value="#FF6A6A6A" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_UserID_txtbox"
+           TargetType="TextBox">
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="5*" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.RowSpan="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="#FF555555"
+                                CornerRadius="20" 
+                                BorderThickness="0,2,2,2"
+                                SnapsToDevicePixels="True"
+                                >
+                        </Border>
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Center"
+                                          VerticalContentAlignment="Center"
+                                          Focusable="false"                                          
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden" />
+                        </Viewbox>
+                        <Button Command="{Binding BearTestCommand}"
+                                Grid.Column="0"
+                                Grid.Row="0"
+                                Grid.RowSpan="3"
+                                Tag="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                Style="{DynamicResource style_button_onlyImage}" />
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled"
+                                 Value="false">
+                            <Setter TargetName="border"
+                                    Property="Opacity"
+                                    Value="0.6" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="OpacityMask"
+                                    Value="#FFCFCFCF" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="style_button_onlyImage"
+           TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Viewbox>
+                            <Image HorizontalAlignment="Center"
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_SN_txtbox"
+           TargetType="TextBox">
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="Visibility"
+                Value="{Binding GaugeText_visible_Reverse}" />
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="#FFDADADA"
+                            BorderThickness="2"
+                            CornerRadius="4"
+                            SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      VerticalAlignment="Center"
+                                      VerticalContentAlignment="Center"
+                                      Focusable="false"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled"
+                                 Value="false">
+                            <Setter TargetName="border"
+                                    Property="Opacity"
+                                    Value="0.6" />
+                        </Trigger>
+                        <Trigger Property="IsFocused"
+                                 Value="true">
+                            <Setter TargetName="border"
+                                    Property="BorderBrush"
+                                    Value="#FF47DADA" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="style_board_window" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="{Binding Int_Fontsize}" />
+    </Style>
+
+    <Style x:Key="style_label" TargetType="Label">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="{Binding Int_Fontsize}" />
+    </Style>
+
+    <Style x:Key="style_board_window_txtblock" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Margin"
+                Value="5" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="{Binding Int_Fontsize}" />
+    </Style>
+
+    <Style x:Key="style_board_window_label" TargetType="Label">
+        <Setter Property="FontFamily" Value="Segoe Print" />
+        <Setter Property="Margin"
+                Value="5" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="{Binding Int_Fontsize}" />
+    </Style>
+
+
+
+</ResourceDictionary>

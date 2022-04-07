@@ -1,0 +1,16 @@
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\WpfControlLibrary1.csprojResolveAssemblyReference.cache
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\UserControl1.g.cs
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\UserControl1.baml
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\WpfControlLibrary1.csproj.GenerateResource.cache
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\WpfControlLibrary1.csproj.CoreCompileInputs.cache
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\Text_ToggleButton.baml
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\Text_ToggleButton.g.cs
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\bin\Debug\Customized_UserControl.dll
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\bin\Debug\Customized_UserControl.pdb
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\Customized_UserControl_MarkupCompile.cache
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\Customized_UserControl_MarkupCompile.lref
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\Customized_UserControl.g.resources
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\Customized_UserControl.dll
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\Customized_UserControl.pdb
+C:\Users\sean_wu\source\repos\Customized_TxtBox\WpfControlLibrary1\obj\Debug\Customized_TxtBox.Properties.Resources.resources
