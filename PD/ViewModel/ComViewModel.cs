@@ -367,7 +367,7 @@ namespace PD.ViewModel
                                             "Trusted_Connection=false;" +
                                             "Server=" + "OPTICOMM-MFG" + ";" +
                                             "Data Source=" + server_IP + ";" +
-                                            "Initial Catalog=" + dataBase + ";Pooling=false;Connection Timeout=90";  //DataBase： "UFA", "CTF"為不同的資料庫
+                                            "Initial Catalog=" + dataBase + ";Pooling=false;Connection Timeout=2";  //DataBase： "UFA", "CTF"為不同的資料庫
 
                 string tableName = "Board_V";
                 string boardSN = board_no;   //板號 ex: "U4V35"
@@ -376,6 +376,8 @@ namespace PD.ViewModel
                 DataSet ds = new DataSet();
                 SqlConnection connection = new SqlConnection(connstring);
                 SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, connection);
+                Console.WriteLine("ConnectionTimeout: {0}",
+            connection.ConnectionTimeout);
                 connection.Open();
                 dataAdapter.Fill(ds, tableName);
                 connection.Close();
@@ -384,7 +386,7 @@ namespace PD.ViewModel
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     //vm.BoardTable_Dictionary.Clear();
-                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; )
                     {
                         string board_SN, V1_Ratio, V2_Ratio;
                         board_SN = ds.Tables[0].Rows[i]["Board_SN"].ToString().Trim();
@@ -402,11 +404,11 @@ namespace PD.ViewModel
             {
                 Save_Log(new LogMember()
                 {
-                    Status = "Get Board Data",
-                    Message = "Add board data to dictionary error",
+                    Status = "Get_BoardRatio_Database",
+                    Message = "SqlConnection error",
                     isShowMSG = false,
                     Channel = channel.ToString()
-                });
+                });                
             }
 
             return new string[] { "0.00068665598", "0.00068665598" };  //若資料庫中無此板號

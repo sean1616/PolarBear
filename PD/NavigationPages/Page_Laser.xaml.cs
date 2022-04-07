@@ -155,7 +155,7 @@ namespace PD.NavigationPages
 
         }
 
-        private async void btn_TLS_on_Click(object sender, RoutedEventArgs e)
+        private void btn_TLS_on_Click(object sender, RoutedEventArgs e)
         {
             vm.isLaserActive = !vm.isLaserActive;
             cmd.Set_TLS_Active(vm.isLaserActive);
