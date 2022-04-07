@@ -203,7 +203,7 @@ namespace PD
             #endregion
 
             #region Board Setting
-            vm.txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
+            //vm.txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
 
             if (vm.station_type.Equals("Hermetic_Test"))
             {
