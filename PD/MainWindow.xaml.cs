@@ -79,6 +79,7 @@ namespace PD
             else version = "";
 
             vm.Title = "Polar Bear " + version;
+            vm.txt_now_version = version.Replace("v", "");
             txt_version.Text = version;
             #endregion
 
@@ -111,13 +112,14 @@ namespace PD
                 vm.PD_B_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_PD_B");
 
                 vm.product_type = vm.Ini_Read("Productions", "Product");
+                vm.Is_k_WL_manual_setting = Generic_GetINISetting(vm.Is_k_WL_manual_setting, "Scan", "is_k_WL_manual_setting");
                 vm.selected_K_WL_Type = vm.Ini_Read("Productions", "K_WL_Type");
 
                 vm.txt_Auto_Update_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Auto_Update_Path")) ? vm.txt_Auto_Update_Path : vm.Ini_Read("Connection", "Auto_Update_Path");
                 vm.Server_IP = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Server_IP")) ? vm.Server_IP : vm.Ini_Read("Connection", "Server_IP");
                 vm.txt_save_wl_data_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Save_Hermetic_Data_Path")) ? vm.txt_save_wl_data_path : vm.Ini_Read("Connection", "Save_Hermetic_Data_Path");
                 vm.txt_board_table_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Table_Path")) ? vm.txt_board_table_path : vm.Ini_Read("Connection", "Control_Board_Table_Path");
-                vm.txt_now_version = vm.Ini_Read("Connection", "Latest_Version");
+                //vm.txt_now_version = vm.Ini_Read("Connection", "Latest_Version");
 
                 vm.Auto_Update = Generic_GetINISetting(vm.Auto_Update, "Connection", "Auto_Update");
 
@@ -5277,7 +5279,7 @@ namespace PD
 
                                             vm.list_GaugeModels[ch].GaugeValue = vm.Save_All_PD_Value[ch].Max(x => x.Y).ToString();
                                         }
-                                        break;
+                                        break;  //Break this run, and reverse
                                     }
                                 }
                             }
@@ -5289,8 +5291,6 @@ namespace PD
                         //}
 
                         #region Iteration Scan condition change         
-
-
 
                         if (!isToEnd)
                         {
@@ -5310,13 +5310,17 @@ namespace PD
                                 gap_temp = gap_temp / 5 >= 0.01 ? Math.Round(gap_temp / 5, 2) : 0.01;
                                 if (end_temp >= start_temp)
                                 {
-                                    start_temp += gap_temp;
-                                    end_temp -= gap_temp;
+                                    start_temp += 0.01;
+                                    end_temp -= 0.01;
+                                    //start_temp += gap_temp;
+                                    //end_temp -= gap_temp;
                                 }
                                 else
                                 {
-                                    start_temp -= gap_temp;
-                                    end_temp += gap_temp;
+                                    start_temp -= 0.01;
+                                    end_temp += 0.01;
+                                    //start_temp -= gap_temp;
+                                    //end_temp += gap_temp;
                                 }
                             }
                         }
@@ -5338,7 +5342,7 @@ namespace PD
                         }
 
                         if (IL_threshold < -12)
-                            IL_threshold /= 2;
+                            IL_threshold /= 1.7;
                         #endregion
                     }
 

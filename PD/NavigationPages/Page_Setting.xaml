@@ -240,6 +240,10 @@
                         <cusTxtBox:UserControl1 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                 txtbox_content="V3-Scan End"
                                                 txtbox_value="{Binding int_V3_scan_end, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <wpfuc:Text_ToggleButton txtbox_content="Manual Setting"
+                                                 FontFamily="Segoe Print"
+                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                 Ischecked="{Binding Is_k_WL_manual_setting, Mode=TwoWay}" />
 
                     </StackPanel>
                 </Grid>

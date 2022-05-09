@@ -1542,7 +1542,7 @@ namespace PD.ViewModel
             }
         }
 
-        private string _txt_now_version = "";
+        private string _txt_now_version = "5.5.5";
         public string txt_now_version
         {
             get { return _txt_now_version; }
@@ -3259,6 +3259,18 @@ namespace PD.ViewModel
             {
                 _is_switch_mode = value;
                 OnPropertyChanged("Is_switch_mode");
+            }
+        }
+
+        private bool _is_k_WL_manual_setting = false;
+        public bool Is_k_WL_manual_setting
+        {
+            get { return _is_k_WL_manual_setting; }
+            set
+            {
+                _is_k_WL_manual_setting = value;
+                ini.IniWriteValue("Scan", "is_k_WL_manual_setting", value.ToString(), ini_path);
+                OnPropertyChanged("Is_k_WL_manual_setting");
             }
         }
 
