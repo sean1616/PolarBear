@@ -454,7 +454,7 @@ namespace PD.NavigationPages
                             }
 
                             string board_id = vm.BoardTable_SelectedBoard;
-                            string path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\" + board_id + "-boardtable.txt";
+                            string path = Path.Combine(vm.txt_board_table_path, board_id + "-boardtable.txt" );
 
                             if (!File.Exists(path))
                             {

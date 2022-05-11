@@ -2421,7 +2421,7 @@ namespace PD.ViewModel
                             }
 
                             string board_id = board_info[0];
-                            string path = string.Concat(txt_board_table_path, board_id, "-boardtable.txt");
+                            string path = Path.Combine(txt_board_table_path, board_id + "-boardtable.txt");
 
                             if (!File.Exists(path))
                             {

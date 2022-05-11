@@ -59,7 +59,7 @@ namespace PD.Functions
                 gap = 0.1;
             }
 
-            vm.csv_product_wl_setting_path = vm.CurrentPath + @"\Product_WL";
+            vm.csv_product_wl_setting_path = System.IO.Path.Combine(vm.CurrentPath , "Product_WL");
             CSVFunctions.Read_Ref_CSV(vm.csv_product_wl_setting_path, "product_wl_setting", vm);
 
             string key = string.Format("{0}_{1}", vm.product_type, vm.selected_band);
@@ -230,7 +230,7 @@ namespace PD.Functions
             
             vm.int_rough_scan_start = v12_roughscan_start==null ? vm.int_rough_scan_start : (int)v12_roughscan_start;
             vm.int_rough_scan_stop = v12_roughscan_end == null ? vm.int_rough_scan_stop : (int)v12_roughscan_end;
-            vm.int_V3_scan_start = v3_Scan_Start_voltage == null ? vm.int_V3_scan_start : (int)v12_roughscan_end * 1638;
+            vm.int_V3_scan_start = v3_Scan_Start_voltage == null ? vm.int_V3_scan_start : (int)v3_Scan_Start_voltage * 1638;
             vm.int_V3_scan_end = v3_Scan_End_voltage == null ? vm.int_V3_scan_end : (int)v3_Scan_End_voltage * 1638;
             vm.int_V3_scan_gap = v3_Scan_gap == null ? vm.int_V3_scan_gap : (int)v3_Scan_gap;
 

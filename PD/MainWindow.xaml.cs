@@ -232,7 +232,7 @@ namespace PD
                     }
 
                     string board_id = board_info[0];
-                    string path = string.Concat(vm.txt_board_table_path, board_id, "-boardtable.txt");
+                    string path = Path.Combine(vm.txt_board_table_path, board_id + "-boardtable.txt");
 
                     if (!File.Exists(path))
                     {
@@ -2135,6 +2135,9 @@ namespace PD
                                 vm.port_PD.Write(command + "\r");
 
                                 vm.list_GaugeModels[ch].GaugeD0_3 = dac.ToString();
+
+                                vm.Str_cmd_read = string.Format("Ch{0} : {1},{2},{3}", (ch + 1).ToString(), preDac[0], preDac[1], dac);
+
 
                                 await Task.Delay(vm.Int_Write_Delay);//wait for chip stable
 

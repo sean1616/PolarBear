@@ -859,7 +859,7 @@ namespace PD.NavigationPages
                                                 vm.board_read.Add(new List<string>());
 
                                                 string board_id = str_ID;
-                                                string path = string.Concat(vm.txt_board_table_path, board_id, "-boardtable.txt");
+                                                string path = Path.Combine(vm.txt_board_table_path, board_id + "-boardtable.txt");
 
                                                 if (!File.Exists(path))
                                                 {
