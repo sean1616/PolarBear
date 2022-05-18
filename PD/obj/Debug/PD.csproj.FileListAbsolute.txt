@@ -1,6 +1,3 @@
-C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\bin\Debug\PD-v5.5.8.exe.config
-C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\bin\Debug\PD-v5.5.8.exe
-C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\bin\Debug\PD-v5.5.8.pdb
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ExcelDataReader.DataSet.dll
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ExcelDataReader.dll
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\bin\Debug\MahApps.Metro.dll
@@ -82,8 +79,6 @@ C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Switch_Box.g.cs
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\App.g.cs
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\GeneratedInternalTypeHelper.g.cs
-C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.8_MarkupCompile.cache
-C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.8_MarkupCompile.lref
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\App.baml
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\MainWindow.baml
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Board_Grid.baml
@@ -115,10 +110,16 @@ C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Password.baml
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Ref.baml
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Switch_Box.baml
-C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.8.g.resources
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD.Properties.Resources.resources
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD.csproj.GenerateResource.cache
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD.csproj.CoreCompileInputs.cache
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD.csproj.CopyComplete
-C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.8.exe
-C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.8.pdb
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD.csprojResolveAssemblyReference.cache
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\bin\Debug\PD-v5.5.9.exe.config
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\bin\Debug\PD-v5.5.9.exe
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\bin\Debug\PD-v5.5.9.pdb
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.9_MarkupCompile.cache
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.9_MarkupCompile.lref
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.9.g.resources
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.9.exe
+C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.9.pdb

@@ -95,7 +95,7 @@ namespace PD.UI {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.5.8;component/ui/uc_timerblock.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.5.9;component/ui/uc_timerblock.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\UI\UC_TimerBlock.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

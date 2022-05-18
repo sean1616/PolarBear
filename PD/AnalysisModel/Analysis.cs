@@ -963,6 +963,66 @@ namespace PD.AnalysisModel
             return txt;
         }
 
+        public CurveFittingResultModel CurFitting(List<DataPoint> list_datapoint)
+        {
+            CurveFittingResultModel curveFittingResultModel = new CurveFittingResultModel(list_datapoint);
+
+            List<System.Drawing.PointF> point = new List<PointF>();
+
+            List<double> BestCoeffs = new List<double>();
+
+            if (list_datapoint.Count < 1)
+            {
+                vm.ErrorCode = 21;
+                curveFittingResultModel.isCurfitSuccess = false;
+            }
+            else
+            {
+                #region initialize
+                string Best_DAC = "";
+                #endregion
+
+                int mid_i = (int)Math.Round((double)list_datapoint.Count / 2);
+                double mid_X = Math.Round(list_datapoint[mid_i].X, 2);
+
+                //foreach (DataPoint dp in list_datapoint)
+                //    point.Add(new PointF((float)(dp.X - list_datapoint[mid_i].X), (float)dp.Y));
+
+                foreach (DataPoint dp in list_datapoint)
+                    point.Add(new PointF((float)(dp.X), (float)dp.Y));
+
+                // Find a good fit.
+                int degree = 2;
+                BestCoeffs = CurveFunctions.FindPolynomialLeastSquaresFit(point, degree);
+
+                if (degree == 2)
+                {
+                    curveFittingResultModel.Best_X = Math.Round((-1 * BestCoeffs[1] / (2 * BestCoeffs[2])));
+                    Best_DAC = curveFittingResultModel.Best_X.ToString();
+                }
+                else
+                {
+                    curveFittingResultModel.isCurfitSuccess = false;
+                    return curveFittingResultModel;
+                }
+
+                curveFittingResultModel.BestCoeffs = BestCoeffs;
+
+
+                //string txt = "";
+                //foreach (double coeff in BestCoeffs)
+                //{
+                //    txt += ", " + Math.Round(coeff, 10).ToString();
+                //}
+                //string coe = txt.Substring(1);
+
+                //string str_curfit_result = Best_DAC;  //If Curfit result is not a number , error occurs.
+            }
+
+            return curveFittingResultModel;
+        }
+
+
         public DataPoint CurFit(List<DataPoint> list_datapoint)
         {
             List<System.Drawing.PointF> point = new List<PointF>();
@@ -1025,8 +1085,6 @@ namespace PD.AnalysisModel
                 }
 
                 vm.Str_cmd_read = vm.Str_cmd_read.Substring(2);
-
-
             }
 
             return curfitResult;

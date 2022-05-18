@@ -2177,9 +2177,22 @@ namespace PD
                         try
                         {
                             List<DataPoint> data = vm.ChartNowModel.list_dataPoints[ch].Where(x => x.Y == vm.ChartNowModel.list_dataPoints[ch].Max(y => y.Y)).ToList();
-                            string command = string.Format("D1 {0},{1},{2}", vm.ChartNowModel.preDac[0], vm.ChartNowModel.preDac[1], data[0].X);
+
+                            double best_dac = data[0].X;
+                            double best_IL = data.First().Y;
+
+                            if (vm.Bool_isCurfitting)
+                            {
+                                CurveFittingResultModel curveFittingResultModel = anly.CurFitting(vm.ChartNowModel.list_dataPoints[ch]);
+                                List<DataPoint> dataPoints = curveFittingResultModel.GetDrawLinePoints();
+
+                                best_dac = curveFittingResultModel.Best_X;
+                            }
+
+                            vm.list_GaugeModels[ch].GaugeValue = best_IL.ToString();
+
+                            string command = string.Format("D1 {0},{1},{2}", vm.ChartNowModel.preDac[0], vm.ChartNowModel.preDac[1], best_dac);
                             vm.port_PD.Write(command + "\r");
-                            vm.list_GaugeModels[ch].GaugeValue = data.First().Y.ToString();
 
                             await Task.Delay(vm.Int_Read_Delay);
 
@@ -5170,9 +5183,12 @@ namespace PD
                     vm.list_GaugeModels[lastCh].GaugeValue = "";
 
                     #region Product parameter setting
-                    vm.product_type = string.IsNullOrEmpty(vm.SNMembers[ch].ProductType) ? vm.product_type : vm.SNMembers[ch].ProductType;
-                    vm.selected_band = string.IsNullOrEmpty(vm.SNMembers[ch].LaserBand) ? vm.selected_band : vm.SNMembers[ch].LaserBand;
-                    setting.Product_Setting();
+                    if (vm.SN_Judge)
+                    {
+                        vm.product_type = string.IsNullOrEmpty(vm.SNMembers[ch].ProductType) ? vm.product_type : vm.SNMembers[ch].ProductType;
+                        vm.selected_band = string.IsNullOrEmpty(vm.SNMembers[ch].LaserBand) ? vm.selected_band : vm.SNMembers[ch].LaserBand;
+                        setting.Product_Setting();
+                    }
                     #endregion
 
                     gap_temp = vm.float_WL_Scan_Gap;
@@ -5288,10 +5304,6 @@ namespace PD
                             }
                             #endregion
                         }
-                        //foreach (double wl in wl_list)
-                        //{
-
-                        //}
 
                         #region Iteration Scan condition change         
 
@@ -5304,12 +5316,36 @@ namespace PD
                             if (gap_temp <= 0.01) break;
 
                             List<DataPoint> listPoints = vm.Save_All_PD_Value[ch].OrderBy(x => x.Y).ToList();
+
                             if (listPoints.Last().Y < -40) break;
                             if (listPoints.Count > 1)
                             {
+                                //原先是以全數列中最大的兩個IL做為起點、終點
                                 start_temp = listPoints.Last().X;
                                 listPoints.RemoveAt(listPoints.Count - 1);
                                 end_temp = listPoints.Last().X;
+
+                                //改為以數列內最後三點，其中最高的兩點，作為起點、終點
+                                if(listPoints.Count > 2)
+                                {
+                                    if (vm.Save_All_PD_Value[ch][vm.Save_All_PD_Value[ch].Count - 2].Y > vm.Save_All_PD_Value[ch].Last().Y)
+                                    {
+                                        start_temp = vm.Save_All_PD_Value[ch][vm.Save_All_PD_Value[ch].Count - 2].X;
+                                        end_temp = vm.Save_All_PD_Value[ch][vm.Save_All_PD_Value[ch].Count - 3].X;
+                                    }
+                                    else
+                                    {
+                                        start_temp = vm.Save_All_PD_Value[ch].Last().X;
+                                        end_temp = vm.Save_All_PD_Value[ch][vm.Save_All_PD_Value[ch].Count - 2].X;
+                                    }
+                                }
+                                else
+                                {
+                                    start_temp = vm.Save_All_PD_Value[ch].Last().X;
+                                    end_temp = vm.Save_All_PD_Value[ch][vm.Save_All_PD_Value[ch].Count - 1].X;
+                                }
+                                
+
                                 gap_temp = gap_temp / 5 >= 0.01 ? Math.Round(gap_temp / 5, 2) : 0.01;
                                 if (end_temp >= start_temp)
                                 {
@@ -5325,6 +5361,9 @@ namespace PD
                                     //start_temp -= gap_temp;
                                     //end_temp += gap_temp;
                                 }
+
+                                vm.Save_Log("WL Scan", (ch + 1).ToString(), "start_temp", start_temp.ToString() + " nm");
+                                vm.Save_Log("WL Scan", (ch + 1).ToString(), "end_temp", end_temp.ToString() + " nm");
                             }
                         }
                         else
@@ -5349,11 +5388,14 @@ namespace PD
                         #endregion
                     }
 
+                    List<DataPoint> listPoints_final = vm.Save_All_PD_Value[ch].OrderBy(x => x.Y).ToList();
+
                     double finalIL = Math.Round(vm.Save_All_PD_Value[ch].Max(x => x.Y), 3);
 
                     if (finalIL > -30)
                     {
-                        vm.list_GaugeModels[ch].GaugeBearSay_1 = Math.Round(vm.Double_Laser_Wavelength, 2).ToString();
+                        //vm.list_GaugeModels[ch].GaugeBearSay_1 = Math.Round(vm.Double_Laser_Wavelength, 2).ToString();
+                        vm.list_GaugeModels[ch].GaugeBearSay_1 = Math.Round(listPoints_final.Last().X, 2).ToString();
                         vm.list_GaugeModels[ch].GaugeBearSay_2 = finalIL.ToString();
                     }
                     else vm.list_GaugeModels[ch].GaugeBearSay_1 = "NG";
@@ -5973,6 +6015,50 @@ namespace PD
             vm.Str_cmd_read = "Engineer";
         }
 
+        private void txt_version_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            OxyPlot.Wpf.LineSeries ls = new OxyPlot.Wpf.LineSeries();
+            ls.MarkerType = MarkerType.Circle;
+            ls.MarkerSize = 5;
+            ls.MarkerFill = System.Windows.Media.Color.FromRgb(132, 220, 123);
 
+            cmd.Clean_Chart();
+
+            if (_Page_Chart.Plot_Chart.Series.Count > 16)
+            {
+                for (int i = 16; i < _Page_Chart.Plot_Chart.Series.Count; i++)
+                {
+                    _Page_Chart.Plot_Chart.Series.RemoveAt(i);
+                }
+            }
+
+            _Page_Chart.No1.MarkerSize = 6;
+            DataPoint dp = new DataPoint(0.5, 1);
+            List<DataPoint> list_curfit_testPoints = new List<DataPoint>()
+            {
+                new DataPoint (1000 , -12),
+                new DataPoint (2000 , -10),
+                new DataPoint ( 3000, -3),
+                new DataPoint ( 4000, -8),
+                new DataPoint ( 5000, -11 ),
+            };
+
+            ls.ItemsSource = list_curfit_testPoints;
+
+            _Page_Chart.Plot_Chart.Series.Add(ls);
+
+            CurveFittingResultModel curveFittingResultModel = anly.CurFitting(list_curfit_testPoints);
+            List<DataPoint> dataPoints = curveFittingResultModel.GetDrawLinePoints();
+
+            #region Set Chart data points   
+            foreach (DataPoint d in dataPoints)
+            {
+                vm.ChartNowModel.list_dataPoints[0].Add(d);
+                cmd.Update_Chart(d.X, d.Y, 0);
+            }
+            #endregion
+
+            MessageBox.Show("Best Dac: " + curveFittingResultModel.Best_X.ToString());
+        }
     }
 }

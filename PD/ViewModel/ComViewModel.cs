@@ -3348,6 +3348,17 @@ namespace PD.ViewModel
             }
         }
 
+        private bool _bool_isCurfitting = false;
+        public bool Bool_isCurfitting
+        {
+            get { return _bool_isCurfitting; }
+            set
+            {
+                _bool_isCurfitting = value;
+                OnPropertyChanged("Bool_isCurfitting");
+            }
+        }
+
         private List<int> list_curfit_resultDac = new List<int>();
         public List<int> List_curfit_resultDac
         {
