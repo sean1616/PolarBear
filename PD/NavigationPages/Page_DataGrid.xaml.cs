@@ -1063,8 +1063,10 @@ namespace PD.NavigationPages
                     {
                         if (vm.isStop) break;
 
-                        vm.tls.SetWL(wl);  //切換TLS WL 
-                        vm.pm.SetWL(wl);   //切換PowerMeter WL 
+                        cmd.Set_WL(wl, false);
+
+                        //vm.tls.SetWL(wl);  //切換TLS WL 
+                        //vm.pm.SetWL(wl);   //切換PowerMeter WL 
 
                         vm.Double_Laser_Wavelength = wl;
 
