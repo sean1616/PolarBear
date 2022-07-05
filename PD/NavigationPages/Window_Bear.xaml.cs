@@ -405,7 +405,7 @@ namespace PD.NavigationPages
 
             if (switch_index > 0 && switch_index < 13)   //Switch 1~12
             {
-                if (string.IsNullOrWhiteSpace("I1 " + switch_index.ToString())) //Check comment box is empty or not
+                if (string.IsNullOrWhiteSpace("SW0 " + switch_index.ToString())) //Check comment box is empty or not
                     return;
 
                 if (switch_index < 9 && int_saved_combox_index >= 9)  //換頁 page1
@@ -429,7 +429,7 @@ namespace PD.NavigationPages
 
                 try
                 {
-                    vm.Str_Command = "I1 " + switch_index.ToString();
+                    vm.Str_Command = "SW0 " + switch_index.ToString();
                     vm.port_Switch.Write(vm.Str_Command + "\r");
                     await vm.AccessDelayAsync(vm.Int_Write_Delay);
                 }

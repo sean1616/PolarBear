@@ -1181,7 +1181,7 @@ namespace PD.Functions
                         {
                             if (vm.port_Switch.IsOpen)
                             {
-                                vm.Str_Command = "I1 " + switch_index.ToString();
+                                vm.Str_Command = "SW0 " + switch_index.ToString();
                                 vm.port_Switch.Write(vm.Str_Command + "\r");
                                 await Task.Delay(vm.Int_Write_Delay * 2);
                                 //System.Threading.Thread.Sleep(vm.Int_Write_Delay);

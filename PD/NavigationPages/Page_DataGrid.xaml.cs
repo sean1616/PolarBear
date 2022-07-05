@@ -1111,7 +1111,7 @@ namespace PD.NavigationPages
                                         RefPath = Path.Combine(@"D:\Ref\", RefName);
 
                                         await vm.Port_Switch_ReOpen();
-                                        vm.port_Switch.Write(string.Format("I1 {0}", vm.switch_index));
+                                        vm.port_Switch.Write(string.Format("SW0 {0}", vm.switch_index));
                                     }
                                     IL = await cmd.Get_PM_Value((vm.switch_index - 1));
 

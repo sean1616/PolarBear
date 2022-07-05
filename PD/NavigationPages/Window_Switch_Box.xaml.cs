@@ -96,7 +96,7 @@ namespace PD.NavigationPages
 
             if (ch > 0 && ch < 13)   //Switch 1~12
             {
-                if (string.IsNullOrWhiteSpace("I1 " + ch.ToString())) //Check comment box is empty or not
+                if (string.IsNullOrWhiteSpace("SW0 " + ch.ToString())) //Check comment box is empty or not
                     return;
 
                 //Gauge顯示項控制
@@ -123,7 +123,7 @@ namespace PD.NavigationPages
 
                 try
                 {
-                    vm.Str_Command = "I1 " + ch.ToString();
+                    vm.Str_Command = "SW0 " + ch.ToString();
                     vm.port_Switch.Write(vm.Str_Command + "\r");
                     await vm.AccessDelayAsync(vm.Int_Write_Delay);
                 }

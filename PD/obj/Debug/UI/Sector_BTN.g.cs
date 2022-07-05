@@ -55,7 +55,7 @@ namespace PD.UI {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.5.11;component/ui/sector_btn.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.5.12;component/ui/sector_btn.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\UI\Sector_BTN.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

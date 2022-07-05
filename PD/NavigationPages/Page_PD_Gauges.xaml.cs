@@ -1113,7 +1113,7 @@ namespace PD.NavigationPages
                         #region Switch write Cmd
                         try
                         {
-                            vm.Str_Command = "I1 " + gm.GaugeChannel;
+                            vm.Str_Command = "SW0 " + gm.GaugeChannel;
                             vm.port_Switch.Write(vm.Str_Command + "\r");
                             //await vm.AccessDelayAsync(vm.Int_Write_Delay);
 
@@ -1347,7 +1347,7 @@ namespace PD.NavigationPages
 
                 int pre_ch = vm.switch_index;
 
-                if (string.IsNullOrWhiteSpace("I1 " + gm.GaugeChannel)) //Check comment box is empty or not
+                if (string.IsNullOrWhiteSpace("SW0 " + gm.GaugeChannel)) //Check comment box is empty or not
                     return;
 
                 if (vm.IsGoOn)
@@ -1381,7 +1381,7 @@ namespace PD.NavigationPages
                         {
                             if (vm.port_Switch.IsOpen)
                             {
-                                vm.Str_Command = "I1 " + switch_index.ToString();
+                                vm.Str_Command = "SW0 " + switch_index.ToString();
                                 vm.port_Switch.Write(vm.Str_Command + "\r");
                                 await Task.Delay(vm.Int_Write_Delay);
 

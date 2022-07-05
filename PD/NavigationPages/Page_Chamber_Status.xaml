@@ -957,12 +957,12 @@
                                                 </Viewbox>
                                             </Grid>
                                             <Border Grid.Row="2"
-                                                    HorizontalAlignment="Center"
                                                     Background="White">
                                                 <CheckBox IsChecked="{Binding is_PDFail}"
                                                           HorizontalAlignment="Center"
                                                           VerticalAlignment="Center"
-                                                          Style="{DynamicResource CheckBoxStyle1}" />
+                                                          Style="{DynamicResource CheckBoxStyle1}"
+                                                          Background="White" />
                                             </Border>
                                             <Border Grid.Row="3"
                                                     Background="White">
@@ -970,7 +970,8 @@
                                                           HorizontalAlignment="Center"
                                                           VerticalAlignment="Center"
                                                           IsEnabled="False"
-                                                          Style="{DynamicResource CheckBoxStyle1}" />
+                                                          Style="{DynamicResource CheckBoxStyle1}"
+                                                          Background="White" />
                                             </Border>
                                         </Grid>
                                     </DataTemplate>

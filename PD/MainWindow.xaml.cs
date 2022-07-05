@@ -2061,7 +2061,7 @@ namespace PD
                             {
                                 await vm.Port_Switch_ReOpen();
 
-                                vm.Str_Command = "I1 " + vm.switch_index.ToString();
+                                vm.Str_Command = "SW0 " + vm.switch_index.ToString();
                                 vm.port_Switch.Write(vm.Str_Command + "\r");
                                 await Task.Delay(vm.Int_Write_Delay);
 
@@ -4379,7 +4379,7 @@ namespace PD
 
                 if (vm.Is_switch_mode)
                 {
-                    vm.Str_Command = $"I1 {(ch + 1)}";
+                    vm.Str_Command = $"SW0 {(ch + 1)}";
                     try { vm.port_Switch.Write(vm.Str_Command + "\r"); }
                     catch { vm.Str_cmd_read = "Set Switch Error"; return; }
                     //vm.port_Switch.Close();
@@ -4809,7 +4809,7 @@ namespace PD
                     if (!vm.Bool_Gauge[ch]) continue;
 
                     #region Set Switch
-                    vm.Str_Command = "I1 " + (ch + 1).ToString();
+                    vm.Str_Command = "SW0 " + (ch + 1).ToString();
                     try { vm.port_Switch.Write(vm.Str_Command + "\r"); }
                     catch { vm.Str_cmd_read = "Set Switch Error"; return; }
 
@@ -4865,7 +4865,7 @@ namespace PD
                 await vm.Port_Switch_ReOpen();
                 try
                 {
-                    vm.Str_Command = "I1 " + (ch + 1).ToString();
+                    vm.Str_Command = "SW0 " + (ch + 1).ToString();
                     vm.port_Switch.Write(vm.Str_Command + "\r");
                     await vm.AccessDelayAsync(vm.Int_Read_Delay);
                 }
@@ -4923,7 +4923,7 @@ namespace PD
                     await vm.Port_Switch_ReOpen();
                     try
                     {
-                        vm.Str_Command = "I1 " + (ch + 1).ToString();
+                        vm.Str_Command = "SW0 " + (ch + 1).ToString();
                         vm.port_Switch.Write(vm.Str_Command + "\r");
                         await vm.AccessDelayAsync(vm.Int_Read_Delay);
                     }
@@ -5071,7 +5071,7 @@ namespace PD
                             {
                                 await vm.Port_Switch_ReOpen();
 
-                                vm.Str_Command = "I1 " + vm.switch_index.ToString();
+                                vm.Str_Command = "SW0 " + vm.switch_index.ToString();
                                 vm.port_Switch.Write(vm.Str_Command + "\r");
                                 await Task.Delay(vm.Int_Write_Delay);
 
@@ -5203,7 +5203,7 @@ namespace PD
                     {
                         await vm.Port_Switch_ReOpen();
 
-                        vm.Str_Command = "I1 " + vm.switch_index.ToString();
+                        vm.Str_Command = "SW0 " + vm.switch_index.ToString();
                         vm.port_Switch.Write(vm.Str_Command + "\r");
                         await Task.Delay(vm.Int_Write_Delay);
 
