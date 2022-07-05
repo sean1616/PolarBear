@@ -19,6 +19,7 @@ using PD.ViewModel;
 using PD.NavigationPages;
 using PD.AnalysisModel;
 using PD.Functions;
+using PD.Models;
 
 using OxyPlot;
 using OxyPlot.Wpf;
@@ -37,6 +38,7 @@ namespace PD.NavigationPages
         Page_Ref_Grid _Page_Ref_Grid;
         Page_Ref_Chart _Page_Ref_Chart;
         Page_Board_Grid _Page_Board_Grid;
+        Page_Chamber_Status _Page_Chamber_Status;
         ObservableCollection<DataPoint> list_datapoint;
         ObservableCollection<ObservableCollection<DataPoint>> list_list_datapoint;
         Analysis analysis;
@@ -454,7 +456,7 @@ namespace PD.NavigationPages
                             }
 
                             string board_id = vm.BoardTable_SelectedBoard;
-                            string path = Path.Combine(vm.txt_board_table_path, board_id + "-boardtable.txt" );
+                            string path = Path.Combine(vm.txt_board_table_path, board_id + "-boardtable.txt");
 
                             if (!File.Exists(path))
                             {
@@ -738,141 +740,151 @@ namespace PD.NavigationPages
         {
             try
             {
-                string folder = @"D:\";
-
-                System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-                saveFileDialog.Title = "Save Data";
-                saveFileDialog.InitialDirectory = @"D:\";
-                saveFileDialog.FileName = "BoardData_" + DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00") + ".csv";
-                saveFileDialog.Filter = "CSV (*.csv)|*.csv|TXT (*.txt)|*.txt|All files (*.*)|*.*";
-
-                string BoardData_server_filePath = @"\\192.168.2.3\shared\SeanWu\PD_Fast_Calibration_Voltage_Monitor";
-                string BoardData_filePath = @"D:\BoardData_001.csv";
-                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (pageTransitionControl.CurrentPage.Name != "Chamber_Status")
                 {
-                    BoardData_filePath = saveFileDialog.FileName;
-                    folder = Path.GetDirectoryName(BoardData_filePath);
+                    string folder = @"D:\";
 
-                    if (!Directory.Exists(BoardData_server_filePath))
-                        Directory.CreateDirectory(BoardData_server_filePath);  //Creat folder on 192 server
+                    System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+                    saveFileDialog.Title = "Save Data";
+                    if (Directory.Exists(vm.txt_Chamber_Status_Path))
+                        saveFileDialog.InitialDirectory = vm.txt_Chamber_Status_Path;
+                    else
+                        saveFileDialog.InitialDirectory = @"D:\";
+                    saveFileDialog.FileName = "BoardData_" + DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00") + ".csv";
+                    saveFileDialog.Filter = "CSV (*.csv)|*.csv|TXT (*.txt)|*.txt|All files (*.*)|*.*";
 
-                    string extension = Path.GetExtension(BoardData_filePath);
-
-                    string filepath = "";
-                    string filepath_server = "";
-
-                    #region String Builder
-                    StringBuilder _stringBuilder = new StringBuilder();
-
-                    //Header Title
-                    _stringBuilder.Append("Board ID");
-                    _stringBuilder.Append(",");
-                    _stringBuilder.Append("V123");
-                    _stringBuilder.Append(",");
-                    _stringBuilder.Append("DAC");
-                    _stringBuilder.Append(",");
-                    _stringBuilder.Append("V before");
-                    _stringBuilder.Append(",");
-                    _stringBuilder.Append("V now");
-                    _stringBuilder.Append(",");
-                    _stringBuilder.Append("Delta V");
-                    _stringBuilder.Append(",");
-                    _stringBuilder.Append("Ratio");
-
-                    _stringBuilder.AppendLine();  //換行
-
-                    int max_dataCount = vm.memberBoardDatas.Count;  //計算資料行數
-
-                    //資料內容
-                    for (int i = 0; i < max_dataCount; i++)
+                    string BoardData_server_filePath = @"\\192.168.2.3\shared\SeanWu\PD_Fast_Calibration_Voltage_Monitor";
+                    string BoardData_filePath = @"D:\BoardData_001.csv";
+                    if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
-                        _stringBuilder.Append(vm.memberBoardDatas[i].Board_ID);
+                        BoardData_filePath = saveFileDialog.FileName;
+                        folder = Path.GetDirectoryName(BoardData_filePath);
+
+                        if (!Directory.Exists(BoardData_server_filePath))
+                            Directory.CreateDirectory(BoardData_server_filePath);  //Creat folder on 192 server
+
+                        string extension = Path.GetExtension(BoardData_filePath);
+
+                        string filepath = "";
+                        string filepath_server = "";
+
+                        #region String Builder
+                        StringBuilder _stringBuilder = new StringBuilder();
+
+                        //Header Title
+                        _stringBuilder.Append("Board ID");
                         _stringBuilder.Append(",");
-                        _stringBuilder.Append(vm.memberBoardDatas[i].V_123);
+                        _stringBuilder.Append("V123");
                         _stringBuilder.Append(",");
-                        _stringBuilder.Append(vm.memberBoardDatas[i].DAC);
+                        _stringBuilder.Append("DAC");
                         _stringBuilder.Append(",");
-                        _stringBuilder.Append(vm.memberBoardDatas[i].Vb);
+                        _stringBuilder.Append("V before");
                         _stringBuilder.Append(",");
-                        _stringBuilder.Append(vm.memberBoardDatas[i].Va);
+                        _stringBuilder.Append("V now");
                         _stringBuilder.Append(",");
-                        _stringBuilder.Append(vm.memberBoardDatas[i].delta_V);
+                        _stringBuilder.Append("Delta V");
                         _stringBuilder.Append(",");
-                        _stringBuilder.Append(vm.memberBoardDatas[i].Ratio);
+                        _stringBuilder.Append("Ratio");
 
                         _stringBuilder.AppendLine();  //換行
-                    }
-                    #endregion
 
-                    if (extension.Equals(".csv"))
-                    {
-                        #region Save as csv
+                        int max_dataCount = vm.memberBoardDatas.Count;  //計算資料行數
 
-                        filepath = Path.Combine(folder, Path.GetFileNameWithoutExtension(BoardData_filePath)) + ".csv";
-
-                        if (!File.Exists(filepath))
+                        //資料內容
+                        for (int i = 0; i < max_dataCount; i++)
                         {
-                            File.AppendAllText(filepath, "");  //Creat a csv file
+                            _stringBuilder.Append(vm.memberBoardDatas[i].Board_ID);
+                            _stringBuilder.Append(",");
+                            _stringBuilder.Append(vm.memberBoardDatas[i].V_123);
+                            _stringBuilder.Append(",");
+                            _stringBuilder.Append(vm.memberBoardDatas[i].DAC);
+                            _stringBuilder.Append(",");
+                            _stringBuilder.Append(vm.memberBoardDatas[i].Vb);
+                            _stringBuilder.Append(",");
+                            _stringBuilder.Append(vm.memberBoardDatas[i].Va);
+                            _stringBuilder.Append(",");
+                            _stringBuilder.Append(vm.memberBoardDatas[i].delta_V);
+                            _stringBuilder.Append(",");
+                            _stringBuilder.Append(vm.memberBoardDatas[i].Ratio);
+
+                            _stringBuilder.AppendLine();  //換行
+                        }
+                        #endregion
+
+                        if (extension.Equals(".csv"))
+                        {
+                            #region Save as csv
+
+                            filepath = Path.Combine(folder, Path.GetFileNameWithoutExtension(BoardData_filePath)) + ".csv";
+
+                            if (!File.Exists(filepath))
+                            {
+                                File.AppendAllText(filepath, "");  //Creat a csv file
+                            }
+
+                            filepath_server = Path.Combine(BoardData_server_filePath, vm.Station_ID + "_" + Path.GetFileNameWithoutExtension(BoardData_filePath)) + ".csv";
+
+                            if (Directory.Exists(BoardData_server_filePath))
+                            {
+                                if (!File.Exists(filepath_server))
+                                {
+                                    File.AppendAllText(filepath_server, "");  //Creat a csv file
+                                }
+                                else
+                                {
+                                    int name_count = 0;
+                                    for (int i = 0; i < 100; i++)
+                                    {
+                                        name_count++;
+                                        filepath_server =
+                                            Path.Combine(BoardData_server_filePath, vm.Station_ID + "_" +
+                                            Path.GetFileNameWithoutExtension(BoardData_filePath)) + "_" +
+                                            name_count.ToString("000") + ".csv";
+                                        if (!File.Exists(filepath_server)) break;
+                                    }
+
+                                }
+                            }
+
+                            //Clear file content and lock the file
+                            FileStream fileStream = File.Open(filepath, FileMode.Open);
+                            fileStream.SetLength(0);
+                            fileStream.Close();
+
+                            File.AppendAllText(filepath, _stringBuilder.ToString());  //Save string builder to csv
+
+                            File.AppendAllText(filepath_server, _stringBuilder.ToString());  //Save string builder to csv (save on server)
+                            #endregion
                         }
 
-                        filepath_server = Path.Combine(BoardData_server_filePath, vm.Station_ID + "_" + Path.GetFileNameWithoutExtension(BoardData_filePath)) + ".csv";
-
-                        if (Directory.Exists(BoardData_server_filePath))
+                        else if (extension.Equals(".txt"))
                         {
-                            if (!File.Exists(filepath_server))
-                            {
-                                File.AppendAllText(filepath_server, "");  //Creat a csv file
-                            }
-                            else
-                            {
-                                int name_count = 0;
-                                for (int i = 0; i < 100; i++)
+                            #region Save as txt
+                            filepath = Path.Combine(folder, Path.GetFileNameWithoutExtension(BoardData_filePath)) + ".txt";
+                            if (File.Exists(filepath))
+                                File.Delete(filepath);
+
+                            filepath_server = Path.Combine(BoardData_server_filePath, Path.GetFileNameWithoutExtension(BoardData_filePath)) + ".csv";
+
+                            if (Directory.Exists(BoardData_server_filePath))
+                                if (!File.Exists(filepath_server))
                                 {
-                                    name_count++;
-                                    filepath_server = 
-                                        Path.Combine(BoardData_server_filePath, vm.Station_ID + "_" + 
-                                        Path.GetFileNameWithoutExtension(BoardData_filePath)) + "_" + 
-                                        name_count.ToString("000") + ".csv";
-                                    if (!File.Exists(filepath_server)) break;                                        
+                                    File.AppendAllText(filepath_server, "");  //Creat a csv file
                                 }
 
-                            }
+                            File.AppendAllText(filepath, _stringBuilder.ToString());  //Save string builder to csv
+
+                            File.AppendAllText(filepath_server, _stringBuilder.ToString());  //Save string builder to csv (server)
+
+                            #endregion
                         }
 
-                        //Clear file content and lock the file
-                        FileStream fileStream = File.Open(filepath, FileMode.Open);
-                        fileStream.SetLength(0);
-                        fileStream.Close();
-
-                        File.AppendAllText(filepath, _stringBuilder.ToString());  //Save string builder to csv
-
-                        File.AppendAllText(filepath_server, _stringBuilder.ToString());  //Save string builder to csv (save on server)
-                        #endregion
+                        vm.Str_cmd_read = "File Saved";
                     }
+                }
+                else if (pageTransitionControl.CurrentPage.Name == "Chamber_Status")
+                {
 
-                    else if (extension.Equals(".txt"))
-                    {
-                        #region Save as txt
-                        filepath = Path.Combine(folder, Path.GetFileNameWithoutExtension(BoardData_filePath)) + ".txt";
-                        if (File.Exists(filepath))
-                            File.Delete(filepath);
-
-                        filepath_server = Path.Combine(BoardData_server_filePath, Path.GetFileNameWithoutExtension(BoardData_filePath)) + ".csv";
-
-                        if (Directory.Exists(BoardData_server_filePath))
-                            if (!File.Exists(filepath_server))
-                            {
-                                File.AppendAllText(filepath_server, "");  //Creat a csv file
-                            }
-
-                        File.AppendAllText(filepath, _stringBuilder.ToString());  //Save string builder to csv
-
-                        File.AppendAllText(filepath_server, _stringBuilder.ToString());  //Save string builder to csv (server)
-
-                        #endregion
-                    }
-
-                    vm.Str_cmd_read = "File Saved";
                 }
             }
             catch (Exception ex)
@@ -1031,6 +1043,7 @@ namespace PD.NavigationPages
                 if (msgBoxResult != MessageBoxResult.Cancel)
                 {
                     vm.Str_Status = "Get Ref";
+                    vm.dB_or_dBm = false;
 
                     List<double> list_wl = new List<double>();
 
@@ -1044,9 +1057,17 @@ namespace PD.NavigationPages
                         {
                             list_wl.Add(wl);
                         }
+
+                        vm.Ref_memberDatas.Clear();
+
+                        for (int i = 0; i < vm.Ref_Dictionaries.Count; i++)
+                        {
+                            vm.Ref_Dictionaries[i].Clear();
+                        }
                     }
                     else if (msgBoxResult == MessageBoxResult.No)
                     {
+                        //add specific channel ref to ref.txt
                         for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
                         {
                             for (int ch = 0; ch < vm.ch_count; ch++)
@@ -1068,9 +1089,10 @@ namespace PD.NavigationPages
                         //vm.tls.SetWL(wl);  //切換TLS WL 
                         //vm.pm.SetWL(wl);   //切換PowerMeter WL 
 
-                        vm.Double_Laser_Wavelength = wl;
 
-                        vm.Str_cmd_read = wl.ToString();
+                        vm.Double_Laser_Wavelength = Math.Round(wl, 2);
+
+                        vm.Str_cmd_read = Math.Round(wl, 2).ToString();
 
                         await Task.Delay(vm.Int_Set_WL_Delay);
 
@@ -1093,9 +1115,32 @@ namespace PD.NavigationPages
                                     }
                                     IL = await cmd.Get_PM_Value((vm.switch_index - 1));
 
-                                    string msg = string.Format("{0},{1}", wl.ToString(), IL.ToString());
+                                    string msg = string.Format("{0},{1}", Math.Round(wl, 2).ToString(), IL.ToString());
 
                                     File.AppendAllText(RefPath, msg + "\r");
+
+                                    vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+
+                                    vm.Ref_memberDatas.Add(new RefModel()
+                                    {
+                                        Wavelength = Math.Round(wl, 2),
+                                        Ch_1 = vm.Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
+                                        Ch_2 = vm.Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
+                                        Ch_3 = vm.Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
+                                        Ch_4 = vm.Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
+                                        Ch_5 = vm.Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
+                                        Ch_6 = vm.Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
+                                        Ch_7 = vm.Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
+                                        Ch_8 = vm.Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
+                                        Ch_9 = vm.Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
+                                        Ch_10 = vm.Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
+                                        Ch_11 = vm.Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
+                                        Ch_12 = vm.Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
+                                        Ch_13 = vm.Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
+                                        Ch_14 = vm.Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
+                                        Ch_15 = vm.Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
+                                        Ch_16 = vm.Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
+                                    });
                                 }
                             }
                         }
@@ -1139,6 +1184,183 @@ namespace PD.NavigationPages
         {
             TextBlock txtBK = (TextBlock)combox_chSelect.SelectedItem;
             txt_chSelected.Text = txtBK.Text;
+        }
+
+        private void Button_FastC_Status_Click(object sender, RoutedEventArgs e)
+        {
+            _Page_Chamber_Status = new Page_Chamber_Status(vm);
+
+            pageTransitionControl.ShowPage(_Page_Chamber_Status);
+
+            save_path = txt_path.Text;
+
+            pageTransitionControl.CurrentPage.Name = "Chamber_Status";
+
+
+            #region Get Chamber Status Table Data from server
+
+            if (Directory.Exists(vm.txt_Chamber_Status_Path))
+            {
+                string[] list_chamber_directory = Directory.GetDirectories(vm.txt_Chamber_Status_Path);
+
+                if (list_chamber_directory.Length > 0)
+                {
+                    vm.List_FastCalibration_Status.Clear();
+                    vm.List_FastCalibration_Status = new ObservableCollection<FastCalibrationStatusModel>();
+
+                    for (int i = 0; i < list_chamber_directory.Length; i++)
+                    {
+                        string str = list_chamber_directory[i];
+
+                        vm.List_FastCalibration_Status.Add(new FastCalibrationStatusModel()
+                        {
+                            station_name = Path.GetFileName(str),
+                            station_volt_measurment_directory_path = str,
+                            ch_count = 16,
+                            station_volt_measurment_log_path_list = Directory.GetFiles(str).ToList()
+                        });
+
+                        //Set ch amount
+                        vm.List_FastCalibration_Status[i].FailureMode_Models = new ObservableCollection<FastCalibrationStatus_FailureMode_Model>();
+
+                        for (int j = 0; j < vm.List_FastCalibration_Status[i].ch_count; j++)
+                        {
+                            vm.List_FastCalibration_Status[i].FailureMode_Models.Add(new FastCalibrationStatus_FailureMode_Model() { is_PDFail = false, is_VoltFail = false });
+                            vm.List_FastCalibration_Status[i].FailureMode_Models[j].ch_name = (j + 1).ToString();
+                        }
+
+                        //lastest file name
+                        List<string> list_log_a = new List<string>();
+                        List<string> list_log_b = new List<string>();
+                        foreach (string path in vm.List_FastCalibration_Status[i].station_volt_measurment_log_path_list)
+                        {
+                            if (Path.GetFileNameWithoutExtension(path).Last() == 'a' || Path.GetFileNameWithoutExtension(path).Last() == 'A')
+                            {
+                                list_log_a.Add(path);
+                            }
+                            else if (Path.GetFileNameWithoutExtension(path).Last() == 'b' || Path.GetFileNameWithoutExtension(path).Last() == 'B')
+                            {
+                                list_log_b.Add(path);
+                            }
+                        }
+                        vm.List_FastCalibration_Status[i].station_volt_measurment_A_latest = list_log_a.Count > 0 ? list_log_a.Last() : "";
+                        vm.List_FastCalibration_Status[i].station_volt_measurment_B_latest = list_log_b.Count > 0 ? list_log_b.Last() : "";
+
+                        //Read CSV file
+                        #region Read CSV file
+                        List<string> list_UFV_A = new List<string>();
+                        List<string> list_UFV_B = new List<string>();
+
+                        //Read A FastPD
+                        if (File.Exists(vm.List_FastCalibration_Status[i].station_volt_measurment_A_latest))
+                            using (DataTable dtt = CSVFunctions.Read_CSV(vm.List_FastCalibration_Status[i].station_volt_measurment_A_latest))
+                            {
+                                if (dtt.Rows.Count != 0)
+                                {
+                                    if (dtt.Columns.Count == 7)
+                                        if (dtt.Rows[0][5].ToString().Equals("Delta V"))
+                                        {
+                                            list_UFV_A = new List<string>();
+                                            for (int j = 1; j < dtt.Rows.Count; j++)
+                                            {
+                                                string boardName = dtt.Rows[j][0].ToString();
+                                                if (!list_UFV_A.Contains(boardName)) list_UFV_A.Add(boardName);  //Get all UFV names
+                                            }
+
+                                            foreach (string UFVName in list_UFV_A)
+                                            {
+                                                int index_of_channel = 0;
+                                                index_of_channel = list_UFV_A.IndexOf(UFVName);
+
+                                                vm.List_FastCalibration_Status[i].FailureMode_Models[index_of_channel].ch_UFV = UFVName;
+
+                                                for (int k = 1; k < dtt.Rows.Count; k++)
+                                                {
+                                                    if (dtt.Rows[k][0].ToString() == UFVName)
+                                                    {
+                                                        if (double.TryParse(dtt.Rows[k][5].ToString(), out double dV))
+                                                        {
+                                                            if (Math.Abs(dV) >= 0.025)
+                                                            {
+                                                                vm.List_FastCalibration_Status[i].FailureMode_Models[index_of_channel].is_VoltFail = true;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+
+                                        }
+                                }
+                            }
+
+                        //Read B FastPD
+                        if (File.Exists(vm.List_FastCalibration_Status[i].station_volt_measurment_B_latest))
+                            using (DataTable dtt = CSVFunctions.Read_CSV(vm.List_FastCalibration_Status[i].station_volt_measurment_B_latest))
+                            {
+                                if (dtt.Rows.Count != 0)
+                                {
+                                    if (dtt.Columns.Count == 7)
+                                        if (dtt.Rows[0][5].ToString().Equals("Delta V"))
+                                        {
+                                            list_UFV_B = new List<string>();
+                                            for (int j = 1; j < dtt.Rows.Count; j++)
+                                            {
+                                                string boardName = dtt.Rows[j][0].ToString();
+                                                if (!list_UFV_B.Contains(boardName)) list_UFV_B.Add(boardName);  //Get all UFV names
+
+                                                list_UFV_B = list_UFV_B.Except(list_UFV_A).ToList();
+                                            }
+
+                                            foreach (string UFVName in list_UFV_B)
+                                            {
+                                                int index_of_channel = 0;
+                                                index_of_channel = list_UFV_B.IndexOf(UFVName) + 8; //becase B Fast PD is 8~15
+
+                                                if (vm.List_FastCalibration_Status[i].FailureMode_Models.Count > index_of_channel)
+                                                    vm.List_FastCalibration_Status[i].FailureMode_Models[index_of_channel].ch_UFV = UFVName;
+
+                                                for (int k = 1; k < dtt.Rows.Count; k++)
+                                                {
+                                                    if (dtt.Rows[k][0].ToString() == UFVName)
+                                                    {
+                                                        if (double.TryParse(dtt.Rows[k][5].ToString(), out double dV))
+                                                        {
+                                                            if (Math.Abs(dV) >= 0.025)
+                                                            {
+                                                                if (vm.List_FastCalibration_Status[i].FailureMode_Models.Count > index_of_channel)
+                                                                {
+                                                                    vm.List_FastCalibration_Status[i].FailureMode_Models[index_of_channel].is_VoltFail = true;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+
+                                        }
+                                }
+                            }
+                        #endregion
+
+
+                    }
+                }
+            }
+            else
+            {
+                vm.List_FastCalibration_Status = new ObservableCollection<FastCalibrationStatusModel>()
+                {
+                    new FastCalibrationStatusModel(),
+                    new FastCalibrationStatusModel()
+                };
+            }
+
+
+
+
+            #endregion
         }
     }
 }

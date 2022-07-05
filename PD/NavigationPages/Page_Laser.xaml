@@ -749,31 +749,36 @@
                 <Button Name="btn_TLS_connect"
                         Click="btn_TLS_connect_Click"
                         Content="Connect"
-                        Style="{DynamicResource style_FuncBtn_Laser}" />
+                        Style="{DynamicResource style_FuncBtn_CenterAlign}" />
             </Grid>
             <Grid Grid.Row="2">
                 <Button Name="btn_Set_Unit"
                         Click="btn_Set_Unit_Click"
                         Content="TLS Unit"
-                        Style="{DynamicResource style_FuncBtn_Laser}" />
+                        Style="{DynamicResource style_FuncBtn_CenterAlign}" />
             </Grid>
             <Grid Grid.Row="3">
                 <Button Name="btn_PM_Unit"
                         Click="btn_PM_Unit_Click"
                         Content="PM Unit"
-                        Style="{DynamicResource style_FuncBtn_Laser}" />
+                        Style="{DynamicResource style_FuncBtn_CenterAlign}" />
             </Grid>
             <Grid Grid.Row="4">
                 <Button Name="btn_Set_PM_MaxMinFunc"
                         Click="btn_Set_PM_MaxMinFunc_Click"
                         Content="PM MinMax"
-                        Style="{DynamicResource style_FuncBtn_Laser}" />
+                        Style="{DynamicResource style_FuncBtn_CenterAlign}" />
             </Grid>
             <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="128*" />
+                    <ColumnDefinition Width="43*" />
+                </Grid.ColumnDefinitions>
                 <Button Name="btn_TLS_Lambda_Scan"
                         Click="btn_TLS_Lambda_Scan_Click"
                         Content="Scan"
-                        Style="{DynamicResource style_FuncBtn_Laser}" />                
+                        Style="{DynamicResource style_FuncBtn_CenterAlign}"
+                        Grid.ColumnSpan="2" />
             </Grid>
             <Grid Grid.Row="6">
                 <ToggleButton Name="btn_TLS_on"
@@ -792,25 +797,25 @@
                 <Button Name="btn_PDL_connect"
                         Click="btn_PDL_connect_Click"
                         Content="Connect"
-                        Style="{DynamicResource style_FuncBtn_Laser}" />
+                        Style="{StaticResource style_FuncBtn_CenterAlign}" />
             </Grid>
             <Grid Grid.Row="9">
                 <Button Name="btn_PDL_On"
                         Click="btn_PDL_On_Click"
                         Content="Start"
-                        Style="{DynamicResource style_FuncBtn_Laser}" />
+                        Style="{DynamicResource style_FuncBtn_CenterAlign}" />
             </Grid>
             <Grid Grid.Row="10">
                 <Button Name="btn_PDL_Stop"
                         Click="btn_PDL_Stop_Click"
                         Content="Stop"
-                        Style="{DynamicResource style_FuncBtn_Laser}" />
+                        Style="{DynamicResource style_FuncBtn_CenterAlign}" />
             </Grid>
             <Grid Grid.Row="11">
                 <Button Name="btn_PDL_Reset"
                         Click="btn_PDL_Reset_Click"
                         Content="Reset"
-                        Style="{DynamicResource style_FuncBtn_Laser}" />
+                        Style="{DynamicResource style_FuncBtn_CenterAlign}" />
             </Grid>
         </Grid>
     </Grid>

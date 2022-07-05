@@ -6,10 +6,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PD.NavigationPages"
     Name="page_ref_grid"
+    xmlns:vm="clr-namespace:PD.ViewModel"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:ComViewModel />
+    </UserControl.DataContext>
 
     <Grid>       
         <DataGrid
@@ -18,7 +23,7 @@
             AutoGenerateColumns="False"
                   FontFamily="Segoe Print"
             CanUserReorderColumns="False"
-            ItemsSource="{Binding}"
+                  ItemsSource="{Binding }"
             SelectionUnit="FullRow">
             
             <DataGrid.Columns>

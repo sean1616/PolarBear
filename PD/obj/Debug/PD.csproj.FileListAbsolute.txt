@@ -123,3 +123,241 @@ C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.10_Marku
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.10.g.resources
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.10.exe
 C:\Users\sean_wu\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.10.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\PD-v5.5.10.exe.config
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\PD-v5.5.10.exe
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\PD-v5.5.10.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ExcelDataReader.DataSet.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ExcelDataReader.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\MahApps.Metro.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\Microsoft.Xaml.Behaviors.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\OxyPlot.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\OxyPlot.Wpf.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\System.Windows.Interactivity.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\WpfAnimatedGif.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ControlzEx.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\NationalInstruments.Common.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\NationalInstruments.Common.Native.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\DiCon.Instrument.HP.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ExcelDataReader.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ExcelDataReader.xml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ExcelDataReader.DataSet.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ExcelDataReader.DataSet.xml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\MahApps.Metro.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\MahApps.Metro.xml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\Microsoft.Xaml.Behaviors.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\Microsoft.Xaml.Behaviors.xml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\OxyPlot.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\OxyPlot.xml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\OxyPlot.Wpf.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\OxyPlot.Wpf.xml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\WpfAnimatedGif.xml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\WpfPageTransitions.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\Wpf_Control_Library.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ControlzEx.pdb
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ControlzEx.xml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\de\MahApps.Metro.resources.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\de\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\es\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\fr\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\it\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ja\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ko\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\ru\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\zh-Hans\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\bin\Debug\zh-Hant\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD.csproj.AssemblyReference.cache
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\MainWindow.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Board_Grid.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Chamber_Status.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Chart.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_StringList.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Command.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_DataGrid.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Laser.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Log.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Log_Command.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_PD_Gauges.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Variable.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_VariableList.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear_Grid.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear_Timer.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Chart_Popup.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_MessageBox.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_PowerSupply_Setting.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\WIndow_TLS_Setting.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\Sector_BTN.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\UC_Chamber_Status.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\UC_Gauge.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\UC_Setting_Button.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\UC_Setting_ToggleButton.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\UC_TimerBlock.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Chart.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Grid.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Setting.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Password.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Ref.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Switch_Box.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\App.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.10_MarkupCompile.cache
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.10_MarkupCompile.lref
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\App.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\MainWindow.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Board_Grid.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Chart.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_StringList.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Command.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_DataGrid.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Laser.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Log.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Log_Command.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_PD_Gauges.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Variable.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_VariableList.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear_Grid.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear_Timer.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Chart_Popup.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_MessageBox.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_PowerSupply_Setting.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\WIndow_TLS_Setting.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\Sector_BTN.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\UC_Gauge.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\UC_Setting_Button.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\UC_Setting_ToggleButton.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\UC_TimerBlock.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Chart.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Grid.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Setting.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Password.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Ref.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Switch_Box.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Chamber_Status.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\UI\UC_Chamber_Status.baml
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.10.g.resources
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD.Properties.Resources.resources
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD.csproj.GenerateResource.cache
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD.csproj.CoreCompileInputs.cache
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD.csproj.CopyComplete
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.10.exe
+D:\sean_wu\C\source\repos\Polar Bear\PolarBear\PD\obj\Debug\PD-v5.5.10.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\PD-v5.5.11.exe.config
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\PD-v5.5.11.exe
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\PD-v5.5.11.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ExcelDataReader.DataSet.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ExcelDataReader.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\MahApps.Metro.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\Microsoft.Xaml.Behaviors.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\OxyPlot.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\OxyPlot.Wpf.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\System.Windows.Interactivity.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\WpfAnimatedGif.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ControlzEx.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\NationalInstruments.Common.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\NationalInstruments.Common.Native.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\DiCon.Instrument.HP.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ExcelDataReader.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ExcelDataReader.xml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ExcelDataReader.DataSet.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ExcelDataReader.DataSet.xml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\MahApps.Metro.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\MahApps.Metro.xml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\Microsoft.Xaml.Behaviors.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\Microsoft.Xaml.Behaviors.xml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\OxyPlot.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\OxyPlot.xml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\OxyPlot.Wpf.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\OxyPlot.Wpf.xml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\WpfAnimatedGif.xml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\WpfPageTransitions.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\Wpf_Control_Library.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ControlzEx.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ControlzEx.xml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\de\MahApps.Metro.resources.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\de\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\es\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\fr\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\it\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ja\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ko\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\ru\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\zh-Hans\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\zh-Hant\Microsoft.Expression.Drawing.resources.dll
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.csproj.AssemblyReference.cache
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\MainWindow.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Board_Grid.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Chamber_Status.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Chart.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_StringList.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Command.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_DataGrid.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Laser.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Log.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Log_Command.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_PD_Gauges.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Variable.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_VariableList.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear_Grid.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear_Timer.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Chart_Popup.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_MessageBox.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_PowerSupply_Setting.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\WIndow_TLS_Setting.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\Sector_BTN.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_Chamber_Status.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_Gauge.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_Setting_Button.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_Setting_ToggleButton.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_TimerBlock.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Chart.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Grid.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Setting.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Password.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Ref.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Switch_Box.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\App.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.5.11_MarkupCompile.cache
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.5.11_MarkupCompile.lref
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\App.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\MainWindow.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Board_Grid.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Chamber_Status.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Chart.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_StringList.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Command.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_DataGrid.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Laser.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Log.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Log_Command.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_PD_Gauges.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Variable.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_VariableList.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear_Grid.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear_Timer.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Chart_Popup.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_MessageBox.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_PowerSupply_Setting.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\WIndow_TLS_Setting.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\Sector_BTN.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_Chamber_Status.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_Gauge.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_Setting_Button.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_Setting_ToggleButton.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_TimerBlock.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Chart.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Ref_Grid.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Setting.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Bear.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Password.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Ref.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Switch_Box.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.5.11.g.resources
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.Properties.Resources.resources
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.csproj.GenerateResource.cache
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.csproj.CoreCompileInputs.cache
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.csproj.CopyComplete
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.5.11.exe
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.5.11.pdb

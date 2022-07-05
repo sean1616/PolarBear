@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using PD.ViewModel;
+using PD.Models;
 
 namespace PD.NavigationPages
 {
@@ -15,7 +16,7 @@ namespace PD.NavigationPages
     public partial class Page_Ref_Grid : UserControl
     {
         ComViewModel vm;
-        ObservableCollection<Member> Ref_memberDatas = new ObservableCollection<Member>();
+        //ObservableCollection<RefModel> Ref_memberDatas = new ObservableCollection<RefModel>();
 
         List<Dictionary<double, double>> dictionaries = new List<System.Collections.Generic.Dictionary<double, double>>();
 
@@ -26,7 +27,7 @@ namespace PD.NavigationPages
             DataContext = vm;
             this.vm = vm;
 
-            dataGrid.DataContext = Ref_memberDatas;
+            dataGrid.DataContext = vm.Ref_memberDatas;
 
             for (int i = 0; i < 16; i++)
             {
@@ -72,26 +73,26 @@ namespace PD.NavigationPages
             catch { }
         }
 
-        public class Member
-        {
-            public double Wavelength { get; set; }
-            public double Ch_1 { get; set; }
-            public double Ch_2 { get; set; }
-            public double Ch_3 { get; set; }
-            public double Ch_4 { get; set; }
-            public double Ch_5 { get; set; }
-            public double Ch_6 { get; set; }
-            public double Ch_7 { get; set; }
-            public double Ch_8 { get; set; }
-            public double Ch_9 { get; set; }
-            public double Ch_10 { get; set; }
-            public double Ch_11 { get; set; }
-            public double Ch_12 { get; set; }
-            public double Ch_13 { get; set; }
-            public double Ch_14 { get; set; }
-            public double Ch_15 { get; set; }
-            public double Ch_16 { get; set; }
-        }
+        //public class Member
+        //{
+        //    public double Wavelength { get; set; }
+        //    public double Ch_1 { get; set; }
+        //    public double Ch_2 { get; set; }
+        //    public double Ch_3 { get; set; }
+        //    public double Ch_4 { get; set; }
+        //    public double Ch_5 { get; set; }
+        //    public double Ch_6 { get; set; }
+        //    public double Ch_7 { get; set; }
+        //    public double Ch_8 { get; set; }
+        //    public double Ch_9 { get; set; }
+        //    public double Ch_10 { get; set; }
+        //    public double Ch_11 { get; set; }
+        //    public double Ch_12 { get; set; }
+        //    public double Ch_13 { get; set; }
+        //    public double Ch_14 { get; set; }
+        //    public double Ch_15 { get; set; }
+        //    public double Ch_16 { get; set; }
+        //}
 
         private void Read_Ref_Analyze(string path, int ch)
         {
@@ -158,10 +159,10 @@ namespace PD.NavigationPages
 
                 double d = new double();
 
-                int count_ch_Number = vm.Ref_Dictionaries.Count;
+                //int count_ch_Number = vm.Ref_Dictionaries.Count;
                 foreach (double wl in vm.list_wl) //顯示讀取的Ref data
                 {
-                    Ref_memberDatas.Add(new Member()
+                    vm.Ref_memberDatas.Add(new RefModel()
                     {
                         Wavelength = wl,
                         Ch_1 = dictionaries[0].ContainsKey(wl) ? dictionaries[0][wl] : d,

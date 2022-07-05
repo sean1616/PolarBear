@@ -136,6 +136,36 @@ namespace PD.Functions
                                         vm.list_StringModels.Add(member);
                                     }
                                     break;
+
+                                //case "Chamber_Status":
+                                //    if (CSV_keyValuePair.Count == 7)
+                                //        if (CSV_Header[5].Equals("Delta V"))
+                                //        {
+                                //            List<string> list_UFV = new List<string>();
+                                //            for (int i = 0; i < table.Rows.Count; i++)
+                                //            {
+                                //                foreach(string boardName in CSV_keyValuePair["Board ID"])
+                                //                {
+                                //                    if (!list_UFV.Contains(boardName)) list_UFV.Add(boardName);  //Get all UFV names
+                                //                }
+                                //            }
+
+                                //            foreach(string UFVName in list_UFV)
+                                //            {
+                                //                //i is channel
+                                //                for (int i = 1; i < table.Rows.Count; i++)
+                                //                {
+                                //                    if(table.Rows[i][0] == UFVName)
+                                //                    {
+                                //                        vm.List_FastCalibration_Status
+                                //                    }
+                                //                }
+                                //            }
+                                           
+
+                                //        }
+                                //    break;
+
                                 case "page_commandList":
                                     vm.ComMembers.Clear();
 
@@ -271,6 +301,85 @@ namespace PD.Functions
                 else vm.Str_cmd_read = "檔案 " + path + " 不存在!";
             }
             else vm.Str_cmd_read = "沒有提供Path參數!";
+        }
+
+        public static DataTable Read_CSV(string path)
+        {
+            DataSet ds;
+            DataTable table = new DataTable();
+            if (path.Length > 0)
+            {
+                if (Path.GetExtension(path) == string.Empty) path = path + ".csv";
+
+                //Find Ref.xlsx file
+                if (File.Exists(path))
+                {
+                    var extension = Path.GetExtension(path).ToLower();
+                    using (var stream = new System.IO.FileStream(path, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
+                    {
+                        #region 判斷格式套用讀取方法
+                        IExcelDataReader reader = null;
+                        if (extension == ".xls")
+                        {
+                            Console.WriteLine(" => XLS格式");
+                            reader = ExcelReaderFactory.CreateBinaryReader(stream, new ExcelReaderConfiguration()
+                            {
+                                FallbackEncoding = Encoding.GetEncoding("big5")
+                            });
+                        }
+                        else if (extension == ".xlsx")
+                        {
+                            Console.WriteLine(" => XLSX格式");
+                            reader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+                        }
+                        else if (extension == ".csv")
+                        {
+                            Console.WriteLine(" => CSV格式");
+                            reader = ExcelReaderFactory.CreateCsvReader(stream, new ExcelReaderConfiguration()
+                            {
+                                FallbackEncoding = Encoding.GetEncoding("big5")
+                            });
+                        }
+                        else if (extension == ".txt")
+                        {
+                            Console.WriteLine(" => Text(Tab Separated)格式");
+                            reader = ExcelReaderFactory.CreateCsvReader(stream, new ExcelReaderConfiguration()
+                            {
+                                FallbackEncoding = Encoding.GetEncoding("big5"),
+                                AutodetectSeparators = new char[] { '\t' }
+                            });
+                        }
+
+                        //沒有對應產生任何格式
+                        if (reader == null)
+                        {
+                            Console.WriteLine("未知的處理檔案：" + extension);
+                        }
+                        Console.WriteLine(" => 轉換中");
+                        #endregion
+
+                        //顯示已讀取資料
+                        using (reader)
+                        {
+                            ds = reader.AsDataSet(new ExcelDataSetConfiguration()
+                            {
+                                UseColumnDataType = false,
+                                ConfigureDataTable = (tableReader) => new ExcelDataTableConfiguration()
+                                {
+                                    //設定讀取資料時是否忽略標題(True為不使用Header, False為使用Header)
+                                    UseHeaderRow = false
+                                }
+                            });
+
+                            table = ds.Tables[0]; //Read the first table in the file
+                        }
+                    }
+                }
+                //else vm.Str_cmd_read = "檔案 " + path + " 不存在!";
+            }
+            //else vm.Str_cmd_read = "沒有提供Path參數!";
+
+            return table;
         }
 
         public static string Creat_New_CSV(string fileName, List<string> list_column_titles)

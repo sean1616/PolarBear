@@ -8,19 +8,14 @@ using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Data;
 using System.Data.SqlClient;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
-using GPIB_utility;
-using DiCon.UCB;
-using DiCon.UCB.Communication;
+
 using OxyPlot;
-using OxyPlot.Series;
 
 using PD.Functions;
 using PD.Models;
@@ -1445,12 +1440,28 @@ namespace PD.ViewModel
 
         public string Station_ID { get; set; } = "S00";
 
-        //private ObservableCollection<ObservableCollection<string>> _ComList_Table = new ObservableCollection<ObservableCollection<string>>();
-        //public ObservableCollection<ObservableCollection<string>> ComList_Table
+        //private string _ChamberStatus_FilePath = @"\\192.168.2.3\shared\SeanWu\ChamberStatus";
+        //public string ChamberStatus_FilePath
         //{
-        //    get { return _ComList_Table; }
-        //    set { _ComList_Table = value; }
+        //    get { return _ChamberStatus_FilePath; }
+        //    set
+        //    {
+        //        _ChamberStatus_FilePath = value;
+        //        OnPropertyChanged("ChamberStatus_FilePath");
+        //    }
         //}
+
+        private ObservableCollection<FastCalibrationStatusModel> _List_FastCalibration_Status =
+            new ObservableCollection<FastCalibrationStatusModel>() { new FastCalibrationStatusModel() };
+        public ObservableCollection<FastCalibrationStatusModel> List_FastCalibration_Status
+        {
+            get { return _List_FastCalibration_Status; }
+            set
+            {
+                _List_FastCalibration_Status = value;
+                OnPropertyChanged("List_FastCalibration_Status");
+            }
+        }
 
         private string[] _txt_No = new string[] { "Ch 1", "Ch 2", "Ch 3", "Ch 4", "Ch 5", "Ch 6", "Ch 7", "Ch 8" };
         public string[] txt_No
@@ -1529,6 +1540,18 @@ namespace PD.ViewModel
                 _txt_Auto_Update_Path = value;
                 ini.IniWriteValue("Connection", "Auto_Update_Path", value.ToString(), ini_path);
                 OnPropertyChanged("txt_Auto_Update_Path");
+            }
+        }
+
+        private string _txt_Chamber_Status_Path = @"\\192.168.2.3\shared\SeanWu\ChamberStatus";
+        public string txt_Chamber_Status_Path
+        {
+            get { return _txt_Chamber_Status_Path; }
+            set
+            {
+                _txt_Chamber_Status_Path = value;
+                ini.IniWriteValue("Connection", "Chamber_Status_Path", value.ToString(), ini_path);
+                OnPropertyChanged("txt_Chamber_Status_Path");
             }
         }
 
@@ -4314,6 +4337,17 @@ namespace PD.ViewModel
             {
                 _list_bear_say = value;
                 OnPropertyChanged("List_bear_say");
+            }
+        }
+
+        private ObservableCollection<RefModel> _Ref_memberDatas = new ObservableCollection<RefModel>();
+        public ObservableCollection<RefModel> Ref_memberDatas
+        {
+            get { return _Ref_memberDatas; }
+            set
+            {
+                _Ref_memberDatas = value;
+                OnPropertyChanged("Ref_memberDatas");
             }
         }
 

@@ -453,6 +453,17 @@
                                  controls:TextBoxHelper.Watermark="Update Path"
                                  FontFamily="Segoe Print" />
 
+                        <TextBox Name="txt_Chamber_Status_Path"
+                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                 Text="{Binding txt_Chamber_Status_Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalContentAlignment="Center"
+                                 ToolTip="Chamber Status Path"
+                                 controls:TextBoxHelper.ClearTextButton="True"
+                                 controls:TextBoxHelper.Watermark="Chamber Status Path"
+                                 FontFamily="Segoe Print" />
+
+
                         <TextBox Name="txt_now_version"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                  Text="{Binding txt_now_version, Mode=TwoWay}"
@@ -486,7 +497,7 @@
                   Style="{StaticResource style_combobox_black}" />
 
         <Image Name="Img_gif"
-               Grid.Row="8"
+               Grid.Row="9"
                Grid.RowSpan="4"
                Grid.Column="4"
                gif:ImageBehavior.AnimatedSource="../Resources/byby_1.gif"
