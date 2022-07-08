@@ -164,115 +164,7 @@ namespace PD.NavigationPages
         private void btn_TLS_connect_Click(object sender, RoutedEventArgs e)
         {
             cmd.Connect_TLS();
-            //try
-            //{
-            //    switch (vm.Laser_type)
-            //    {
-            //        case "Agilent":
-
-            //            #region Tunable Laser setting
-            //            vm.tls = new HPTLS();
-            //            vm.tls.BoardNumber = vm.tls_BoardNumber;
-            //            vm.tls.Addr = vm.tls_Addr;
-
-            //            try
-            //            {
-            //                if (!vm.tls.Open())
-            //                {
-            //                    vm.Str_cmd_read = "GPIB Setting Error. Check Address.";
-            //                    return;
-            //                }
-            //                else
-            //                {
-            //                    double d = vm.tls.ReadWL();
-            //                    if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
-            //                    {
-            //                        vm.Str_cmd_read = "Laser Connection Error.";
-            //                        return;
-            //                    }
-            //                }
-            //                vm.tls.init();
-
-            //                vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-            //                slider_WL.Value = vm.Double_Laser_Wavelength;
-
-            //                vm.isConnected = true;
-            //            }
-            //            catch
-            //            {
-            //                vm.Str_cmd_read = "TLS GPIB Setting Error.";
-            //            }
-            //            #endregion
-
-            //            #region PowerMeter Setting
-            //            //Power Meter setting
-            //            vm.pm = new HPPM();
-            //            vm.pm.Addr = vm.pm_Addr;
-            //            vm.pm.Slot = vm.PM_slot;
-            //            vm.pm.BoardNumber = vm.tls_BoardNumber;
-            //            if (vm.pm.Open() == false)
-            //            {
-            //                vm.Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
-            //                return;
-            //            }
-            //            vm.pm.init();
-            //            vm.pm.setUnit(1);
-            //            vm.pm.AutoRange(true);
-            //            vm.pm.aveTime(vm.PM_AveTime);
-
-            //            try
-            //            {
-            //                if (vm.pm.Open())
-            //                    vm.Double_PM_Wavelength = vm.pm.ReadWL();
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                MessageBox.Show(ex.StackTrace.ToString());
-            //            }
-            //            #endregion                      
-
-            //            break;
-
-            //        case "Golight":
-
-            //            if (!string.IsNullOrEmpty(vm.Golight_ChannelModel.Board_Port))
-            //            {
-            //                if (vm.tls_GL.Open(vm.Golight_ChannelModel.Board_Port))
-            //                {
-            //                    vm.isConnected = true;
-
-            //                    vm.float_TLS_WL_Range[0] = (float)vm.tls_GL.ReadWL_Min();
-            //                    vm.float_TLS_WL_Range[1] = (float)vm.tls_GL.ReadWL_Max();
-
-            //                    vm.Save_Log(new Models.LogMember()
-            //                    {
-            //                        isShowMSG = false,
-            //                        Message = "Golight TLS connected",
-            //                    });
-            //                }
-            //                else
-            //                    vm.Save_Log(new Models.LogMember()
-            //                    {
-            //                        isShowMSG = true,
-            //                        Message = "Connect Golight TLS Fail"
-            //                    });
-            //            }
-            //            else
-            //                vm.Save_Log(new Models.LogMember()
-            //                {
-            //                    isShowMSG = true,
-            //                    Message = "Golight comport is null or empty"
-            //                });
-
-            //            break;
-            //    }
-
-            //    vm.Ini_Write("Connection", "Laser_type", vm.Laser_type);
-            //}
-            //catch (TimeoutException ex)
-            //{
-            //    MessageBox.Show(ex.StackTrace.ToString());
-            //}
+          
 
         }
 
@@ -404,11 +296,12 @@ namespace PD.NavigationPages
             if (e.Key == Key.Enter)
             {
                 double wl = Convert.ToDouble(txt_WL.Text);
-                if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                {
-                    vm.Str_cmd_read = "WL out of range";
-                    return;
-                }
+                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
+                //{
+                //    vm.Str_cmd_read = "WL out of range";
+                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                //    return;
+                //}
 
                 if (!vm.IsGoOn) cmd.Set_WL(wl, false);
                 else
@@ -416,14 +309,15 @@ namespace PD.NavigationPages
 
                 //await cmd.Set_TLS_Filter(wl);
             }
-            if (e.Key == Key.Up)
+            else if (e.Key == Key.Up)
             {
                 double wl = Convert.ToDouble(txt_WL.Text) + 0.01;
-                if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                {
-                    vm.Str_cmd_read = "WL out of range";
-                    return;
-                }
+                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
+                //{
+                //    vm.Str_cmd_read = "WL out of range";
+                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                //    return;
+                //}
 
                 if (!vm.IsGoOn)
                     try
@@ -443,32 +337,27 @@ namespace PD.NavigationPages
 
                 //await cmd.Set_TLS_Filter(wl);
             }
-            if (e.Key == Key.Down)
+            else if (e.Key == Key.Down)
             {
                 double wl = Convert.ToDouble(txt_WL.Text) - 0.01;
-                if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                {
-                    vm.Str_cmd_read = "WL out of range";
-                    return;
-                }
+                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
+                //{
+                //    vm.Str_cmd_read = "WL out of range";
+                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                //    return;
+                //}
 
                 if (!vm.IsGoOn)
                     try
                     {
                         txt_WL.Text = (wl).ToString();
                         cmd.Set_WL(wl, false);
-                        //vm.tls.SetWL(wl);
-                        //await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
-                        //vm.pm.SetWL(Convert.ToDouble(txt_WL.Text));
-                        //await vm.AccessDelayAsync(vm.Int_Set_WL_Delay / 2);
                     }
                     catch { }
                 else
                     vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
 
                 vm.Double_Laser_Wavelength = wl;
-
-                //await cmd.Set_TLS_Filter(wl);
             }
         }
 

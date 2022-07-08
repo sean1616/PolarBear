@@ -186,6 +186,11 @@ namespace PD.NavigationPages
 
         private void Img_gif_Loaded(object sender, RoutedEventArgs e)
         {
+            _GIF_controller = ImageBehavior.GetAnimationController(Img_gif);
+            i = _GIF_controller.FrameCount;
+            int b = _GIF_controller.CurrentFrame;
+            _GIF_controller.GotoFrame(1);
+            _GIF_controller.Pause();
         }
 
         private void btn_ini_Click(object sender, RoutedEventArgs e)
@@ -267,6 +272,8 @@ namespace PD.NavigationPages
             }
         }
 
+       
+
         private void ComBox_Laser_Selection_DropDownClosed(object sender, EventArgs e)
         {
             ComboBox obj = (ComboBox)sender;
@@ -288,13 +295,9 @@ namespace PD.NavigationPages
             }
         }
 
-        private void Image_Loaded(object sender, RoutedEventArgs e)
-        {
-            _GIF_controller = ImageBehavior.GetAnimationController(Img_gif);
-            i = _GIF_controller.FrameCount;
-            int b = _GIF_controller.CurrentFrame;
-            _GIF_controller.GotoFrame(1);
-            _GIF_controller.Pause();
-        }
+        //private void Image_Loaded(object sender, RoutedEventArgs e)
+        //{
+            
+        //}
     }
 }

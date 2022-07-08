@@ -4,17 +4,17 @@
 library
 C#
 .cs
-C:\Users\sean_wu\source\repos\Wpf_Control_Library\Wpf_Control_Library\obj\Debug\
+D:\sean_wu\C\source\repos\Wpf_Control_Library\Wpf_Control_Library\obj\Debug\
 Wpf_Control_Library
 none
 false
 DEBUG;TRACE
 
-41098934887
+4-1716474413
 
-11-1636383479
-1152876042
-RecGauge.xaml;Text_TextBox.xaml;Text_ToggleButton.xaml;UserControl1.xaml;
+8338385564
+11-1031316594
+Button_Icon_Only.xaml;RecGauge.xaml;Text_TextBox.xaml;Text_ToggleButton.xaml;
 
-False
+True
 

@@ -74,8 +74,8 @@ namespace Wpf_Control_Library
 
         private void userControl_MouseLeave(object sender, MouseEventArgs e)
         {
-            //border_background.Background = Brushes.Transparent;
             border_background.Background = Brushes.Transparent;
+            //border_background.Background = TBtn_Auto_Connect_TLS.IsFocused ? border_Background : Brushes.Transparent;
         }
     }
 }

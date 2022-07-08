@@ -187,10 +187,10 @@
             <ColumnDefinition Width="0.45*" />
             <ColumnDefinition Width="0.04*" />
         </Grid.ColumnDefinitions>
-        <Border x:Name="border_background"
+        <Border x:Name="border_background" 
                 Focusable="False"
                 Grid.Column="0"                
-                Grid.ColumnSpan="4" />
+                Grid.ColumnSpan="4"/>
         <TextBlock x:Name="txtblock"
                    Grid.Column="1"
                    HorizontalAlignment="Left"

@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="Wpf_Control_Library.Button_Icon_Only"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Wpf_Control_Library"
+             mc:Ignorable="d"  
+             d:DesignHeight="100" d:DesignWidth="100">
+    
+    <Grid>
+        <Button Style="{DynamicResource style_Icon_Only}"
+                Click="BTN_Click">
+            <Button.Resources>
+                <Style x:Key="style_Icon_Only"
+                       TargetType="{x:Type Button}">
+                    <Setter Property="Tag"
+                            Value="" />
+                    <Setter Property="FocusVisualStyle"
+                            Value="{x:Null}" />
+                   
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="4*" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Border x:Name="border"
+                                            Grid.Row="0"
+                                            Grid.RowSpan="3"
+                                            CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Button_Icon_Only}}}"
+                                            Grid.ColumnSpan="3"
+                                            Background="{Binding BTN_Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Button_Icon_Only}}}" />
+                                    <!--<Image Grid.Row="1"
+                                           Grid.Column="1"
+                                           Source="{Binding Content.Source, RelativeSource={RelativeSource TemplatedParent}}" />-->
+                                    <Image Grid.Row="1"
+                                           Grid.Column="1"
+                                           Source="{Binding ImgSource, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Button_Icon_Only}}}" />
+                                    <!--<Border Grid.Row="1"
+                                            Grid.Column="1">
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding Source, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Button_Icon_Only}}}" />
+                                        </Border.Background>
+                                    </Border>-->
+
+
+                                    <!--<ContentPresenter x:Name="contentPresenter"
+                                                      Grid.Row="1"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"
+                                                      Focusable="False"
+                                                      SnapsToDevicePixels="True"
+                                                      Grid.Column="1" />-->
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver"
+                                             Value="True">
+                                        <Setter TargetName="border"
+                                                Property="Background"
+                                                Value="{Binding BTN_Background_MouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Button_Icon_Only}}}" />
+                                    </Trigger>                                   
+                                    <Trigger Property="Button.IsPressed"
+                                             Value="True">
+                                        <Setter TargetName="border"
+                                                Property="Background"
+                                                Value="#FFC7C7C7" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+            </Button.Resources>
+        </Button>
+    </Grid>
+</UserControl>

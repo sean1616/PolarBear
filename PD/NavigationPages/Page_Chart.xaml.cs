@@ -378,5 +378,10 @@ namespace PD.NavigationPages
             //}
             //catch { vm.Show_Bear_Window("No Data", false, "String", false); }
         }
+
+        private void btn_line_x_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

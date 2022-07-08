@@ -5915,32 +5915,57 @@ namespace PD
 
             switch (vm.selected_band)
             {
+                case "C+L Band":
+                    vm.float_TLS_WL_Range = new float[2] { 1520, 1620 };
+                    if (!vm.isConnected)
+                        if (vm.list_wl != null)
+                            vm.Double_Laser_Wavelength = 1560;
+                    break;
+
+                case "U Band":
+                    vm.float_TLS_WL_Range = new float[2] { 1625, 1675 };
+                    if (!vm.isConnected)
+                        if (vm.list_wl != null)
+                            vm.Double_Laser_Wavelength = 1650;
+                    break;
+
+                case "L Band":
+                    vm.float_TLS_WL_Range = new float[2] { 1560, 1625 };
+                    if (!vm.isConnected)
+                        if (vm.list_wl != null)
+                            vm.Double_Laser_Wavelength = 1560;
+                    break;
+
                 case "C Band":
-                    vm.float_TLS_WL_Range = new float[2] { 1523, 1573 };
+                    vm.float_TLS_WL_Range = new float[2] { 1520, 1573 };
                     if (!vm.isConnected)
                         if (vm.list_wl != null)
                             vm.Double_Laser_Wavelength = 1523;
                     break;
 
-                case "L Band":
-                    vm.float_TLS_WL_Range = new float[2] { 1560, 1620 };
+                case "S Band":
+                    vm.float_TLS_WL_Range = new float[2] { 1460, 1520 };
                     if (!vm.isConnected)
                         if (vm.list_wl != null)
-                            vm.Double_Laser_Wavelength = 1560;
+                            vm.Double_Laser_Wavelength = 1500;
                     break;
 
-                case "C+L Band":
-                    vm.float_TLS_WL_Range = new float[2] { 1523, 1620 };
+                case "E Band":
+                    vm.float_TLS_WL_Range = new float[2] { 1360, 1460 };
                     if (!vm.isConnected)
                         if (vm.list_wl != null)
-                            vm.Double_Laser_Wavelength = 1560;
+                            vm.Double_Laser_Wavelength = 1400;
                     break;
 
                 case "O Band":
-                    vm.float_TLS_WL_Range = new float[2] { 1260, 1340 };
+                    vm.float_TLS_WL_Range = new float[2] { 1260, 1360 };
                     if (!vm.isConnected)
                         if (vm.list_wl != null)
                             vm.Double_Laser_Wavelength = 1300;
+                    break;
+
+                case "Auto":
+                    vm.float_TLS_WL_Range = new float[2] { 1260, 1675 };                    
                     break;
             }
 

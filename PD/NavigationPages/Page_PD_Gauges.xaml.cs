@@ -154,7 +154,7 @@ namespace PD.NavigationPages
                         {
 
                             //vm.Cmd_WriteDac(gm.GaugeChannel, preDac[0], preDac[1], gm.GaugeD0_3);  //Write Dac
-                            
+
                             cmd.Set_Dac(vm.Selected_Comport, gm);
                         }
                         else
@@ -279,7 +279,7 @@ namespace PD.NavigationPages
                 cmd.Set_Dac(vm.Selected_Comport, gm);
             }
         }
-        
+
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             obj = sender as TextBox; //Get the focused textbox name            
@@ -355,11 +355,12 @@ namespace PD.NavigationPages
             if (e.Key == Key.Enter)
             {
                 double wl = Convert.ToDouble(txt_WL.Text);
-                if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                {
-                    vm.Str_cmd_read = "WL out of range";
-                    return;
-                }
+                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
+                //{
+                //    vm.Str_cmd_read = "WL out of range";
+                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                //    return;
+                //}
 
                 if (!vm.IsGoOn) cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true);
                 else
@@ -368,11 +369,12 @@ namespace PD.NavigationPages
             if (e.Key == Key.Up)
             {
                 double wl = Convert.ToDouble(txt_WL.Text) + 0.01;
-                if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                {
-                    vm.Str_cmd_read = "WL out of range";
-                    return;
-                }
+                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
+                //{
+                //    vm.Str_cmd_read = "WL out of range";
+                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                //    return;
+                //}
 
                 if (!vm.IsGoOn)
                     try
@@ -391,11 +393,12 @@ namespace PD.NavigationPages
             if (e.Key == Key.Down)
             {
                 double wl = Convert.ToDouble(txt_WL.Text) - 0.01;
-                if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                {
-                    vm.Str_cmd_read = "WL out of range";
-                    return;
-                }
+                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
+                //{
+                //    vm.Str_cmd_read = "WL out of range";
+                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                //    return;
+                //}
 
                 if (!vm.IsGoOn)
                     try

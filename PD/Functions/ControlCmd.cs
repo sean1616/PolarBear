@@ -288,8 +288,15 @@ namespace PD.Functions
                                     }
                                     else  //distribution system
                                     {
-                                        await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Channel = vm.list_ChannelModels[0].channel.Replace("ch ","")
-                                            , Comport = vm.list_ChannelModels[0].PM_Board_Port, Command = "GETPOWER" });
+                                        await CommandSwitch(new ComMember()
+                                        {
+                                            YN = true,
+                                            No = vm.Cmd_Count.ToString(),
+                                            Channel = vm.list_ChannelModels[0].channel.Replace("ch ", "")
+                                            ,
+                                            Comport = vm.list_ChannelModels[0].PM_Board_Port,
+                                            Command = "GETPOWER"
+                                        });
 
                                     }
                                 }
@@ -514,7 +521,7 @@ namespace PD.Functions
                             if (string.IsNullOrEmpty(cm.Comport))
                                 await vm.Port_ReOpen(vm.Selected_Comport);
                             else await vm.Port_ReOpen(cm.Comport);
-                            
+
                             vm.port_PD.Write("P0?\r");
 
                             await Task.Delay(vm.Int_Read_Delay);
@@ -1073,16 +1080,16 @@ namespace PD.Functions
 
                         string rs232_cmd = vm.list_ChannelModels[ch - 1].PM_GetPower_CMD;
 
-                        if (vm.list_ChannelModels[ch-1].PM_Type == "GPIB")
+                        if (vm.list_ChannelModels[ch - 1].PM_Type == "GPIB")
                         {
 
                         }
-                        else if (vm.list_ChannelModels[ch-1].PM_Type == "RS232")
+                        else if (vm.list_ChannelModels[ch - 1].PM_Type == "RS232")
                         {
                             string comport = "";
                             if (string.IsNullOrEmpty(cm.Comport)) comport = vm.Selected_Comport;
                             else comport = cm.Comport;
-                            
+
                             await Get_IL_rs232(ch, comport, rs232_cmd);  //Y axis value
 
                             if (ch == 0)
@@ -2221,7 +2228,8 @@ namespace PD.Functions
                         {
                             if (!vm.tls.Open())
                             {
-                                vm.Str_cmd_read = "GPIB Setting Error. Check Address.";
+                                vm.Str_cmd_read = "GPIB Setting Error, Check Address.";
+                                vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
                                 return;
                             }
                             else
@@ -2229,20 +2237,22 @@ namespace PD.Functions
                                 double d = vm.tls.ReadWL();
                                 if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
                                 {
-                                    vm.Str_cmd_read = "Laser Connection Error.";
+                                    vm.Str_cmd_read = "Laser Connection Failed";
+                                    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
                                     return;
                                 }
                             }
                             vm.tls.init();
 
                             vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-                            //slider_WL.Value = vm.Double_Laser_Wavelength;
 
                             vm.isConnected = true;
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            vm.Str_cmd_read = "TLS GPIB Setting Error.";
+                            vm.Str_cmd_read = "TLS GPIB Setting Error";
+                            vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                            MessageBox.Show(ex.StackTrace.ToString());
                         }
                         #endregion
 
@@ -2255,6 +2265,7 @@ namespace PD.Functions
                         if (vm.pm.Open() == false)
                         {
                             vm.Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
+                            vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
                             return;
                         }
                         vm.pm.init();
@@ -2294,7 +2305,7 @@ namespace PD.Functions
                                         vm.float_TLS_WL_Range[1] = float.Parse(wl_min_max[1]);
                                     }
                                 }
-                                
+
                                 vm.Save_Log(new Models.LogMember()
                                 {
                                     isShowMSG = false,
@@ -2305,7 +2316,7 @@ namespace PD.Functions
                                 {
                                     isShowMSG = false,
                                     Message = "Get TLS WL Range",
-                                    Result= ReadWLMinMax
+                                    Result = ReadWLMinMax
                                 });
                             }
                             else
@@ -2327,7 +2338,7 @@ namespace PD.Functions
 
                 vm.Ini_Write("Connection", "Laser_type", vm.Laser_type);
             }
-            catch (TimeoutException ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.StackTrace.ToString());
             }
@@ -2349,7 +2360,7 @@ namespace PD.Functions
                         vm.tls_GL.SetActive(_laserActive);
                         break;
                 }
-                              
+
                 await Task.Delay(vm.Int_Set_WL_Delay + 100);
             }
             catch (Exception ex)
@@ -2358,10 +2369,40 @@ namespace PD.Functions
             }
         }
 
+        private string WL_Range_Analyze(double wl)
+        {
+            if (wl >= 1523 && wl <= 1620)
+                return "C+L Band";
+            else if (wl >= 1625 && wl <= 1675)
+                return "U Band";
+            else if (wl >= 1560 && wl <= 1625)
+                return "L Band";
+            else if (wl >= 1520 && wl <= 1573)
+                return "C Band";
+            else if (wl >= 1460 && wl <= 1520)
+                return "S Band";
+            else if (wl >= 1360 && wl <= 1460)
+                return "E Band";
+            else if (wl >= 1260 && wl <= 1360)
+                return "O Band";
+
+            else return "";  //Out of range
+        }
+
         public async void Set_WL(double wl, bool readback)
         {
             try
             {
+                string band = WL_Range_Analyze(wl);
+                if (string.IsNullOrEmpty(band))
+                {
+                    vm.Str_cmd_read = "WL out of range";
+                    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                    return;
+                }
+                else
+                    vm.selected_band = band;
+
                 if (!vm.isConnected) Connect_TLS();
 
                 switch (vm.Laser_type)
@@ -2374,7 +2415,7 @@ namespace PD.Functions
                         vm.tls_GL.SetWL((float)wl);
                         break;
                 }
-                
+
                 if (vm.PD_or_PM)
                     if (vm.PM_sync)
                         if (vm.pm != null) vm.pm.SetWL(wl);
@@ -2393,7 +2434,7 @@ namespace PD.Functions
                             if (wl_read > 0)
                                 vm.Double_Laser_Wavelength = wl_read;
                             else
-                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString() , Message = "ReadWL back error" });
+                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
                             break;
 
                         case "Golight":
@@ -2436,14 +2477,14 @@ namespace PD.Functions
                         vm.tls_GL.SetPower(power);
                         break;
                 }
-                
+
                 await Task.Delay(vm.Int_Set_WL_Delay);
 
                 if (readback)
                 {
                     if (vm.Laser_type.Equals("Golight"))
                         vm.Double_Laser_Power = Math.Round(vm.tls_GL.ReadPower(), 1);
-                }            
+                }
             }
             catch { vm.Save_Log("Set TLS Power", "Set Power Error", true); }
         }
@@ -2454,25 +2495,26 @@ namespace PD.Functions
             {
                 if (vm.is_TLS_Filter)
                 {
-                    if (!string.IsNullOrEmpty(vm.port_TLS_Filter.PortName))
-                    {
-                        if (!vm.port_TLS_Filter.IsOpen)
-                            vm.port_TLS_Filter.Open();
-
-                        await Task.Delay(100);
-
-                        vm.port_TLS_Filter.Write(string.Format("WL {0}", wl) + "\r");
-
-                        await Task.Delay(vm.Int_Read_Delay);
-
-                        if (vm.port_TLS_Filter.IsOpen)
+                    if (vm.port_TLS_Filter != null)
+                        if (!string.IsNullOrEmpty(vm.port_TLS_Filter.PortName))
                         {
-                            vm.port_TLS_Filter.DiscardInBuffer();
-                            vm.port_TLS_Filter.DiscardOutBuffer();
+                            if (!vm.port_TLS_Filter.IsOpen)
+                                vm.port_TLS_Filter.Open();
 
-                            vm.port_TLS_Filter.Close();
+                            await Task.Delay(100);
+
+                            vm.port_TLS_Filter.Write(string.Format("WL {0}", wl) + "\r");
+
+                            await Task.Delay(vm.Int_Read_Delay);
+
+                            if (vm.port_TLS_Filter.IsOpen)
+                            {
+                                vm.port_TLS_Filter.DiscardInBuffer();
+                                vm.port_TLS_Filter.DiscardOutBuffer();
+
+                                vm.port_TLS_Filter.Close();
+                            }
                         }
-                    }
                 }
             }
             catch
@@ -2522,7 +2564,7 @@ namespace PD.Functions
                             case "3":
                                 if (!string.IsNullOrEmpty(gm.GaugeD0_1) && !string.IsNullOrEmpty(gm.GaugeD0_2))
                                 {
-                                    string[] preDac = await anly.Analyze_PreDAC(comport, gm.GaugeChannel);                                   
+                                    string[] preDac = await anly.Analyze_PreDAC(comport, gm.GaugeChannel);
                                     DAC = string.Format("{0},{1},{2}", preDac[0], preDac[1], gm.GaugeD0_3);
                                 }
                                 else
@@ -2532,7 +2574,7 @@ namespace PD.Functions
                                 DAC = string.Format("{0},{0},{0}", gm.GaugeD0_1.ToString(), gm.GaugeD0_2.ToString(), gm.GaugeD0_3.ToString());
                                 break;
                         }
-                        vm.Str_Command = string.Format("{0}1 {1}", TF_or_VOA, DAC);                        
+                        vm.Str_Command = string.Format("{0}1 {1}", TF_or_VOA, DAC);
                     }
                     else  //Control board type: V
                     {
@@ -2798,7 +2840,7 @@ namespace PD.Functions
             string ID = "";
 
             try
-            {               
+            {
                 string[] myPorts = System.IO.Ports.SerialPort.GetPortNames(); //取得所有的comport
 
                 await Task.Delay(10);
@@ -2807,7 +2849,7 @@ namespace PD.Functions
                 {
                     try
                     {
-                        vm.list_combox_comports.Add(myPorts[i]);  
+                        vm.list_combox_comports.Add(myPorts[i]);
                     }
                     catch { }
                 }
@@ -2821,10 +2863,10 @@ namespace PD.Functions
                     await Cmd_Write_RecieveData($"SN{ch}?", true, 0);
 
                     //PM板指令與PD板不同，PM板指令錯誤時會回傳0
-                    if (vm.Str_cmd_read.Equals("0")) 
+                    if (vm.Str_cmd_read.Equals("0"))
                     {
                         await vm.Port_ReOpen(comport);
-                        await Cmd_Write_RecieveData($"SN?", true, 0);  
+                        await Cmd_Write_RecieveData($"SN?", true, 0);
                     }
 
                     ID = vm.Str_cmd_read;
@@ -2839,7 +2881,7 @@ namespace PD.Functions
                 else
                     vm.Save_Log(new LogMember()
                     {
-                        isShowMSG=true,
+                        isShowMSG = true,
                         Status = "Get Board ID",
                         Channel = ch.ToString(),
                         Message = "Comport is not exist"
@@ -2927,11 +2969,11 @@ namespace PD.Functions
                 if (vm.dB_or_dBm)  //dB
                 {
                     power = Math.Round(power - vm.float_WL_Ref[0], 4);
-                    vm.Double_Powers[ch-1] = power;
+                    vm.Double_Powers[ch - 1] = power;
                 }
                 else  //dBm
                 {
-                    vm.Double_Powers[ch -1] = power;
+                    vm.Double_Powers[ch - 1] = power;
                 }
                 //vm.list_GaugeModels[ch-1].GaugeValue = vm.Double_Powers[ch-1].ToString();
 
@@ -3126,11 +3168,11 @@ namespace PD.Functions
             //if (string.IsNullOrEmpty(gm.GaugeBearSay_1)) return 1;
             //if (vm.List_bear_say.Count == 0) return 1;  //ErrorCode:1 => BearSay is empty
             //if (string.IsNullOrWhiteSpace(SNnumber)) return 3; //ErrorCode:3 => SN number is empty
-                        
+
             //DateTime dt = DateTime.Now;
             //string a = dt.ToString("yyyy/MM/dd HH:mm:ss");
-                        
-            
+
+
 
             using (System.IO.StreamWriter file =
                  new System.IO.StreamWriter(path, true))
@@ -3139,7 +3181,7 @@ namespace PD.Functions
                 {
                     string line = $"{wl.ToString()},{dic_keyPairs[wl]}";
                     file.WriteLine(line);
-                }                
+                }
             }
 
             //if (File.Exists(filePath))

@@ -73,12 +73,14 @@ namespace Wpf_Control_Library
 
         private void userControl_MouseEnter(object sender, MouseEventArgs e)
         {
-            border_background.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFACE6E3"));
+            //border_background.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF98DEB5"));
+            //border_background.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFACE6E3"));
             border_background.Background = border_Background;
         }
 
         private void userControl_MouseLeave(object sender, MouseEventArgs e)
         {
+            //border_background.Background = Brushes.Transparent;
             //border_background.Background = Brushes.Transparent;
             //border_background.Background = Brushes.Transparent;
             border_background.Background = textBox.IsFocused ? border_Background : Brushes.Transparent;

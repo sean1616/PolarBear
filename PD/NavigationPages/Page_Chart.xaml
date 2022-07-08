@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              xmlns:ui="clr-namespace:PD.NavigationPages"
+             xmlns:wpfuc="clr-namespace:Wpf_Control_Library;assembly=Wpf_Control_Library"
              xmlns:fnc="clr-namespace:PD.Functions"
              xmlns:vm="clr-namespace:PD.ViewModel"
              d:DesignHeight="1080"
@@ -287,20 +288,35 @@
             </oxy:Plot.Series>
         </oxy:Plot>
 
-        <Button x:Name="btn_PopupWindow"
-                Grid.Column="1"
-                Height="28"
-                Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                Style="{DynamicResource style_WindowFuncBtn}"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Tag="../Resources/normal.png"
-                Margin="3"
-                MaxHeight="30"
-                MaxWidth="30"
-                IsTabStop="False"
-                Click="btn_PopupWindow_Click">
-            <Image Source="../Resources/Min_black.png" />
-        </Button>
+        <StackPanel Grid.Column="1" Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top">
+            <!--<wpfuc:Button_Icon_Only x:Name="btn_line_x"
+                                    Height="28"
+                                    Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                                    Margin="0,3,3,3"
+                                    BTN_Background="#FF8B8585"
+                                    BTN_Background_MouseOver="#FFC3C3C3"
+                                    CornerRadius="4"
+                                    Click="btn_line_x_Click"
+                                    ToolTip="Set X Min/Max"
+                                    ImgSource="../Resources/Box.png" />-->
+            <wpfuc:Button_Icon_Only x:Name="btn_PopupWindow"
+                                    Height="30"
+                                    Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    ImgSource="../Resources/normal.png"
+                                    CornerRadius="4"
+                                    Margin="3"
+                                    BTN_Background="#FF8B8585"
+                                    BTN_Background_MouseOver="#FFC3C3C3"
+                                    MaxHeight="30"
+                                    MaxWidth="30"
+                                    IsTabStop="False"
+                                    Click="btn_PopupWindow_Click" />
+
+        </StackPanel>
+       
     </Grid>
 </UserControl>

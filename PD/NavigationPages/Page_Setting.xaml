@@ -25,6 +25,46 @@
                                      Value="#FF4AD87E" />
             </ColorAnimationUsingKeyFrames>
         </Storyboard>
+
+        <Style x:Key="{x:Type ToolTip}"
+               TargetType="ToolTip">
+            <Setter Property="OverridesDefaultStyle"
+                    Value="true" />
+            <Setter Property="HasDropShadow"
+                    Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border Name="Border"
+                                BorderThickness="1"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                Background="#FF676565">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
+                            </Border.BorderBrush>
+                            <ContentPresenter Margin="4"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Top"
+                                              TextBlock.FontFamily="Segoe Print"
+                                              TextBlock.Foreground="White"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasDropShadow"
+                                     Value="true">
+                                <Setter TargetName="Border"
+                                        Property="CornerRadius"
+                                        Value="4" />
+                                <Setter TargetName="Border"
+                                        Property="SnapsToDevicePixels"
+                                        Value="true" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </UserControl.Resources>
 
     <UserControl.DataContext>
@@ -42,17 +82,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="11*" />
         </Grid.RowDefinitions>
 
         <!--Column 1-->
@@ -79,7 +109,8 @@
 
         <Grid Grid.Column="1"
               Grid.RowSpan="15"
-              Grid.Row="1">
+              Grid.Row="1"
+              Margin="0,0,1,0">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <Grid>
                     <StackPanel Orientation="Vertical">
@@ -136,23 +167,31 @@
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding SN_Judge, Mode=TwoWay}"
                                                  FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  txtbox_content="SN Judge" />
                         <wpfuc:Text_ToggleButton Grid.Row="9"
                                                  Grid.Column="1"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding SN_AutoTab, Mode=TwoWay}"
                                                  FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  txtbox_content="SN Auto Tab" />
                         <wpfuc:Text_ToggleButton Grid.Column="1"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding is_TLS_Filter, Mode=TwoWay}"
                                                  FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  txtbox_content="TLS Filter" />
 
                         <wpfuc:Text_ToggleButton Grid.Row="10"
                                                  Grid.Column="1"
                                                  txtbox_content="Switch mode"
                                                  FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding Is_switch_mode, Mode=TwoWay}" />
                         <wpfuc:Text_ToggleButton Grid.Row="11"
@@ -160,6 +199,8 @@
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  txtbox_content="Update Chart"
                                                  FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  Ischecked="{Binding is_update_chart, Mode=TwoWay}" />
 
                     </StackPanel>
@@ -195,7 +236,8 @@
 
         <Grid Grid.Column="2"
               Grid.RowSpan="15"
-              Grid.Row="1">
+              Grid.Row="1"
+              Margin="0,0,1,0">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <Grid>
                     <StackPanel Orientation="Vertical">
@@ -242,6 +284,8 @@
                                                 txtbox_value="{Binding int_V3_scan_end, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <wpfuc:Text_ToggleButton txtbox_content="Manual Setting"
                                                  FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding Is_k_WL_manual_setting, Mode=TwoWay}" />
 
@@ -280,18 +324,23 @@
 
         <Grid Grid.Column="3"
               Grid.RowSpan="15"
-              Grid.Row="1">
+              Grid.Row="1"
+              Margin="0,0,1,0">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <Grid>
                     <StackPanel Orientation="Vertical">
                         <wpfuc:Text_ToggleButton Grid.Column="3"
                                                  Ischecked="{Binding Auto_Connect_TLS, Mode=TwoWay}"
                                                  FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  txtbox_content="Auto Connect" />
                         <wpfuc:Text_ToggleButton Grid.Row="2"
                                                  Grid.Column="3"
                                                  FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  txtbox_content="Distributed System"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding IsDistributedSystem, Mode=TwoWay}" />
@@ -299,6 +348,8 @@
                                                  Grid.Column="3"
                                                  FontFamily="Segoe Print"
                                                  txtbox_content="PD / PM"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding PD_or_PM, Mode=TwoWay}" />
                         <cusTxtBox:UserControl1 Grid.Row="3"
@@ -335,7 +386,7 @@
                                                 txtbox_content="PM AverageTime"
                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                 txtbox_value="{Binding PM_AveTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                       
+
                         <!--<cusTxtBox:UserControl1 Grid.Row="7"
                                                 Grid.Column="3"
                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
@@ -359,12 +410,16 @@
                         <wpfuc:Text_ToggleButton Grid.Row="10"
                                                  Grid.Column="3"
                                                  FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding Auto_Update, Mode=TwoWay}"
                                                  txtbox_content="Auto Update" />
                         <wpfuc:Text_ToggleButton Grid.Row="11"
                                                  Grid.Column="3"
                                                  FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  txtbox_content="Arduino"
                                                  Ischecked="{Binding IsArduinoOn, Mode=TwoWay}" />
@@ -401,7 +456,8 @@
 
         <Grid Grid.Column="4"
               Grid.Row="1"
-              Grid.RowSpan="7">
+              Grid.RowSpan="7"
+              Margin="0,0,1,0">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <Grid>
                     <StackPanel Orientation="Vertical">
@@ -463,7 +519,6 @@
                                  controls:TextBoxHelper.Watermark="Chamber Status Path"
                                  FontFamily="Segoe Print" />
 
-
                         <TextBox Name="txt_now_version"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                  Text="{Binding txt_now_version, Mode=TwoWay}"
@@ -484,35 +539,36 @@
                                  controls:TextBoxHelper.Watermark="Server IP"
                                  FontFamily="Segoe Print" />
 
+                        <Image Name="Img_gif"
+                               Grid.Row="9"
+                               Grid.RowSpan="4"
+                               Grid.Column="4"
+                               gif:ImageBehavior.AnimatedSource="../Resources/byby_1.gif"
+                               gif:ImageBehavior.AutoStart="False"
+                               MouseEnter="Img_gif_MouseEnter"
+                               MouseLeave="Img_gif_MouseLeave"
+                               Opacity="0.05"
+                               PreviewMouseLeftButtonDown="Img_gif_MouseLeftButtonDown"
+                               PreviewMouseRightButtonDown="Img_gif_MouseRightButtonDown" />
+                        <Image Loaded="Img_gif_Loaded" />
                     </StackPanel>
                 </Grid>
             </ScrollViewer>
         </Grid>
 
-        <!--Cell base , don't delete or hidden-->
+        <!--Cell base , don't delete or collapse-->
         <ComboBox Name="ComBox_Cell_Base"
-                  Grid.Row="8"
-                  Grid.Column="4"
+                  Grid.Row="0"
+                  Grid.Column="0"
                   Visibility="Hidden"
-                  Style="{StaticResource style_combobox_black}" />
+                  Style="{StaticResource style_combobox_black}"
+                  Background="{x:Null}" />
 
-        <Image Name="Img_gif"
-               Grid.Row="9"
-               Grid.RowSpan="4"
-               Grid.Column="4"
-               gif:ImageBehavior.AnimatedSource="../Resources/byby_1.gif"
-               gif:ImageBehavior.AutoStart="False"
-               MouseEnter="Img_gif_MouseEnter"
-               MouseLeave="Img_gif_MouseLeave"
-               Loaded="Img_gif_Loaded"
-               Opacity="0.05"
-               PreviewMouseLeftButtonDown="Img_gif_MouseLeftButtonDown"
-               PreviewMouseRightButtonDown="Img_gif_MouseRightButtonDown" />
 
-        <Image Grid.Row="8"
+        <!--<Image Grid.Row="8"
                Grid.RowSpan="4"
                Grid.Column="4"
                Loaded="Image_Loaded"
-               Visibility="Hidden" />
+               Visibility="Hidden" />-->
     </Grid>
 </UserControl>
