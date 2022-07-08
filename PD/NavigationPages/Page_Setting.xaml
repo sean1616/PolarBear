@@ -82,7 +82,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height="11*" />
+            <RowDefinition Height="12*" />
         </Grid.RowDefinitions>
 
         <!--Column 1-->
@@ -94,7 +94,7 @@
                 BorderThickness="0,0,1,0" />
         <Grid Grid.Row="0"
               Grid.Column="1"
-              Margin="5,5,5,2"
+              Margin="0,5,2,2"
               Background="#FF36836E">
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -128,6 +128,8 @@
                                   Grid.Row="2"
                                   Grid.Column="1"
                                   SelectedItem="{Binding station_type}"
+                                  DropDownOpened="ComBox_DropDownOpened"
+                                  DropDownClosed="ComBox_DropDownClosed"
                                   ItemsSource="{Binding list_combox_Working_Table_Type_items}"
                                   Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                   Style="{StaticResource style_combobox_black}">
@@ -140,8 +142,7 @@
                                   DropDownOpened="ComBox_Control_Board_Type_DropDownOpened"
                                   SelectedIndex="0"
                                   ItemsSource="{Binding list_combox_Control_Board_Type_items}"
-                                  Style="{StaticResource style_combobox_black}">
-                        </ComboBox>
+                                  Style="{StaticResource style_combobox_black}" />
 
                         <ComboBox Name="ComBox_Laser_Selection"
                                   Grid.Row="8"
@@ -151,16 +152,25 @@
                                   DropDownClosed="ComBox_Laser_Selection_DropDownClosed"
                                   Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                   ItemsSource="{Binding list_combox_Laser_Type_items}"
-                                  Style="{StaticResource style_combobox_black}">
-                        </ComboBox>
-                        <cusTxtBox:UserControl1 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                  Style="{StaticResource style_combobox_black}" />
+
+                        <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                 txtbox_content="Read-Cmd Delay"
-                                                txtbox_value="{Binding Int_Read_Delay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <cusTxtBox:UserControl1 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                FontFamily="Segoe Print"
+                                                border_Background="#FF98DEB5"
+                                                Background="White"
+                                            txtbox_value="{Binding Int_Read_Delay, Mode=TwoWay}" />
+                        <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                 txtbox_content="Write-Cmd Delay"
+                                            FontFamily="Segoe Print"
+                                            border_Background="#FF98DEB5"
+                                            Background="White"
                                                 txtbox_value="{Binding Int_Write_Delay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <cusTxtBox:UserControl1 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                 txtbox_content="Set-WL Delay"
+                                            FontFamily="Segoe Print"
+                                            border_Background="#FF98DEB5"
+                                            Background="White"
                                                 txtbox_value="{Binding Int_Set_WL_Delay, Mode=TwoWay}" />
                         <wpfuc:Text_ToggleButton Grid.Row="9"
                                                  Grid.Column="1"
@@ -221,7 +231,7 @@
                 BorderThickness="0,0,1,0" />
         <Grid Grid.Row="0"
               Grid.Column="2"
-              Margin="5,5,5,2"
+              Margin="1,5,2,2"
               Background="#FF36836E">
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -309,7 +319,7 @@
 
         <Grid Grid.Row="0"
               Grid.Column="3"
-              Margin="5,5,5,2"
+              Margin="1,5,2,2"
               Background="#FF36836E">
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -318,7 +328,7 @@
             </Grid.RowDefinitions>
             <Viewbox Grid.Row="1">
                 <TextBlock Style="{StaticResource Setting_Title_txtBlock}"
-                           Text="Connect" />
+                           Text="Connection" />
             </Viewbox>
         </Grid>
 
@@ -440,7 +450,7 @@
         <!--Column 4-->
         <Grid Grid.Row="0"
               Grid.Column="4"
-              Margin="5,5,5,2"
+              Margin="1,5,1,2"
               Background="#FF36836E">
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -519,7 +529,17 @@
                                  controls:TextBoxHelper.Watermark="Chamber Status Path"
                                  FontFamily="Segoe Print" />
 
-                        <TextBox Name="txt_now_version"
+                        <TextBox Name="txt_equipment_setting_Path"
+                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                 Text="{Binding txt_Equip_Setting_Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalContentAlignment="Center"
+                                 ToolTip="Comport Setting Path"
+                                 controls:TextBoxHelper.ClearTextButton="True"
+                                 controls:TextBoxHelper.Watermark="Comport Setting Path"
+                                 FontFamily="Segoe Print" />
+
+                        <!--<TextBox Name="txt_now_version"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                  Text="{Binding txt_now_version, Mode=TwoWay}"
                                  HorizontalAlignment="Stretch"
@@ -527,14 +547,14 @@
                                  ToolTip="Version Now"
                                  controls:TextBoxHelper.ClearTextButton="True"
                                  controls:TextBoxHelper.Watermark="Now Version"
-                                 FontFamily="Segoe Print" />
+                                 FontFamily="Segoe Print" />-->
 
                         <TextBox Name="txt_Server_IP"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                  Text="{Binding Server_IP, Mode=TwoWay}"
                                  HorizontalAlignment="Stretch"
                                  VerticalContentAlignment="Center"
-                                 ToolTip="Server IP"
+                                 ToolTip="SQL Server IP"
                                  controls:TextBoxHelper.ClearTextButton="True"
                                  controls:TextBoxHelper.Watermark="Server IP"
                                  FontFamily="Segoe Print" />
@@ -560,9 +580,7 @@
         <ComboBox Name="ComBox_Cell_Base"
                   Grid.Row="0"
                   Grid.Column="0"
-                  Visibility="Hidden"
-                  Style="{StaticResource style_combobox_black}"
-                  Background="{x:Null}" />
+                  Visibility="Hidden"/>
 
 
         <!--<Image Grid.Row="8"

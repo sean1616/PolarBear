@@ -8,9 +8,11 @@ using System.Windows.Controls;
 using System.IO;
 using System.IO.Ports;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 using WpfAnimatedGif;
 
 using PD;
+using PD.Models;
 using PD.ViewModel;
 using PD.NavigationPages;
 
@@ -272,7 +274,20 @@ namespace PD.NavigationPages
             }
         }
 
-       
+        int pre_combobox_index = 0;
+        private void ComBox_DropDownOpened(object sender, EventArgs e)
+        {
+            ComboBox cbb = (ComboBox)sender;
+            pre_combobox_index = cbb.SelectedIndex;
+            cbb.SelectedIndex = -1;
+        }
+
+        private void ComBox_DropDownClosed(object sender, EventArgs e)
+        {
+            ComboBox cbb = (ComboBox)sender;
+            if (cbb.SelectedIndex < 0)
+                cbb.SelectedIndex = pre_combobox_index;
+        }
 
         private void ComBox_Laser_Selection_DropDownClosed(object sender, EventArgs e)
         {

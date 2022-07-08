@@ -2968,7 +2968,9 @@ namespace PD.Functions
             {
                 if (vm.dB_or_dBm)  //dB
                 {
-                    power = Math.Round(power - vm.float_WL_Ref[0], 4);
+                    if (vm.float_WL_Ref.Count > 0)
+                        power = Math.Round(power - vm.float_WL_Ref[0], 4);
+
                     vm.Double_Powers[ch - 1] = power;
                 }
                 else  //dBm

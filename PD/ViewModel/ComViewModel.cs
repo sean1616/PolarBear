@@ -409,6 +409,188 @@ namespace PD.ViewModel
             return new string[] { "0.00068665598", "0.00068665598" };  //若資料庫中無此板號
         }
 
+        public void Set_StationType(string station_type)
+        {
+            if (string.IsNullOrEmpty(station_type)) return;
+            Ini_Write("Connection", "Station", station_type);
+            if (station_type.Equals("Hermetic_Test") || station_type.Equals("Hermetic Test"))
+            {
+                if (int.TryParse(Ini_Read("Connection", "Hermetic_ch_count"), out int i))
+                    ch_count = i;
+                else ch_count = 12;
+
+                BoudRate = 115200;
+                Bool_Gauge = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false };
+                bo_temp_gauge = new bool[] { true, true, true, true, true, true, true, true, true, true, true, true };
+
+                GaugeText_visible = Visibility.Hidden;
+                GaugeTabEnable = true;
+                GaugeSize_Height = new GridLength(6, GridUnitType.Star);
+                GaugeTxtSize_Height = new GridLength(1, GridUnitType.Star);
+
+                GaugeChart_visible = Visibility.Collapsed;
+
+                PD_or_PM = true;
+                Is_switch_mode = true;
+
+                foreach (GaugeModel gm in _list_GaugeModels)
+                {
+                    gm.SN_Row = 1;
+                    gm.GaugeMode = Visibility.Visible;
+                }
+
+                is_update_chart = false;
+            }
+            else if (station_type.Equals("Testing"))
+            {
+                PD_or_PM = true;
+                BoudRate = 115200;
+                ch_count = 1;
+                switch_index = 1;
+                Is_switch_mode = false;
+                GaugeText_visible = Visibility.Visible;
+                GaugeTabEnable = false;
+                GaugeSize_Height = new GridLength(7, GridUnitType.Star);
+                GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
+
+                GaugeGrid1_visible = Visibility.Collapsed;  //Only Channel 1 will Show!!
+                GaugeGrid2_visible = Visibility.Collapsed;
+                GaugeGrid3_visible = Visibility.Collapsed;
+
+                GaugeChart_visible = Visibility.Visible;
+
+                foreach (GaugeModel gm in _list_GaugeModels)
+                {
+                    gm.SN_Row = 2;
+                    gm.GaugeMode = Visibility.Collapsed;
+                }
+
+                is_update_chart = true;
+            }
+            else if (station_type.Equals("UV_Curing") || station_type.Equals("UV Curing"))
+            {
+                PD_or_PM = true;
+                //BoudRate = 9600;
+                ch_count = 1;
+                switch_index = 1;
+                Is_switch_mode = false;
+                GaugeText_visible = Visibility.Visible;
+                GaugeTabEnable = false;
+                GaugeSize_Height = new GridLength(7, GridUnitType.Star);
+                GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
+
+                GaugeGrid1_visible = Visibility.Collapsed;  //Only Channel 1 will Show!!
+                GaugeGrid2_visible = Visibility.Collapsed;
+                GaugeGrid3_visible = Visibility.Collapsed;
+
+                GaugeChart_visible = Visibility.Visible;
+
+                ComMembers.Clear();
+                cmd_SelectedSource = new ObservableCollection<string>() { "SetPower", "SetTimer", "Start", "Stop" };
+
+                Cmd_Count = 0;
+
+                Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "1", "UVSETPOW", "40", "", "", "", " ", "Set CH1 Power to 40%");
+                Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "2", "UVSETPOW", "30", "", "", "", " ", "Set CH2 Power to 30%");
+                Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "1", "UVSETTIMER", "5", "", "", "", " ", "Set CH1 Timer to 5S");
+                Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "2", "UVSETTIMER", "5", "", "", "", " ", "Set CH2 Timer to 5S");
+
+                Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "0", "UVSTART", "", "", "", "", " ", "Start all channel");
+                Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "0", "UVSTOP", "", "", "", "", " ", "Stop all channel");
+
+                foreach (GaugeModel gm in _list_GaugeModels)
+                {
+                    gm.SN_Row = 2;
+                    gm.GaugeMode = Visibility.Collapsed;
+                }
+
+                is_update_chart = true;
+            }
+            else if (station_type.Equals("Chamber_S_16ch"))
+            {
+                PD_or_PM = false;
+                BoudRate = 115200;
+                ch_count = 16;
+                PD_A_ChannelModel.Board_Port = Ini_Read("Connection", "COM_PD_A");
+                PD_B_ChannelModel.Board_Port = Ini_Read("Connection", "COM_PD_B");
+
+                if (!string.IsNullOrEmpty(PD_B_ChannelModel.Board_Port))
+                    port_PD_B = new SerialPort(PD_B_ChannelModel.Board_Port, 115200, Parity.None, 8, StopBits.One);
+
+                Save_Log("Get COM A", PD_A_ChannelModel.Board_Port, false);
+                Save_Log("Get COM B", PD_B_ChannelModel.Board_Port, false);
+                Is_switch_mode = false;
+                GaugeText_visible = Visibility.Visible;
+                GaugeTabEnable = false;
+                GaugeSize_Height = new GridLength(7, GridUnitType.Star);
+                GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
+
+                GaugeGrid1_visible = Visibility.Visible;
+                GaugeGrid2_visible = Visibility.Visible;
+                GaugeGrid3_visible = Visibility.Collapsed;
+
+                GaugeChart_visible = Visibility.Collapsed;
+
+                foreach (GaugeModel gm in _list_GaugeModels)
+                {
+                    gm.SN_Row = 2;
+                    gm.GaugeMode = Visibility.Collapsed;
+                }
+
+                is_update_chart = true;
+            }
+            else if (station_type == "Fast_Calibration")
+            {
+                PD_or_PM = false;
+                BoudRate = 115200;
+                ch_count = 8;
+                Is_switch_mode = false;
+                GaugeText_visible = Visibility.Visible;
+                GaugeTabEnable = false;
+                GaugeSize_Height = new GridLength(7, GridUnitType.Star);
+                GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
+
+                GaugeGrid1_visible = Visibility.Visible;
+                GaugeGrid2_visible = Visibility.Visible;
+                GaugeGrid3_visible = Visibility.Collapsed;
+
+                GaugeChart_visible = Visibility.Collapsed;
+
+                foreach (GaugeModel gm in _list_GaugeModels)
+                {
+                    gm.SN_Row = 2;
+                    gm.GaugeMode = Visibility.Collapsed;
+                }
+
+                is_update_chart = true;
+            }
+            else
+            {
+                PD_or_PM = false;
+                BoudRate = 115200;
+                ch_count = 8;
+                Is_switch_mode = false;
+                GaugeText_visible = Visibility.Visible;
+                GaugeTabEnable = false;
+                GaugeSize_Height = new GridLength(7, GridUnitType.Star);
+                GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
+
+                GaugeGrid1_visible = Visibility.Visible;
+                GaugeGrid2_visible = Visibility.Visible;
+                GaugeGrid3_visible = Visibility.Collapsed;
+
+                GaugeChart_visible = Visibility.Collapsed;
+
+                foreach (GaugeModel gm in _list_GaugeModels)
+                {
+                    gm.SN_Row = 2;
+                    gm.GaugeMode = Visibility.Collapsed;
+                }
+
+                is_update_chart = true;
+            }
+        }
+
         private void BearTest()
         {
             #region Get Board Name
@@ -893,7 +1075,11 @@ namespace PD.ViewModel
 
                 await Task.Delay(10);  //100ms
             }
-            catch (Exception ex) { Str_cmd_read = "Port Open Error"; cmd.Save_Log_Message("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString()); throw ex; }
+            catch (Exception ex) 
+            { 
+                Str_cmd_read = "Port Open Error";
+                cmd.Save_Log_Message("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString());
+                throw ex; }
         }
 
         public async Task Port_ReOpen(SerialPort port, string comport, int boudRate)
@@ -1555,6 +1741,18 @@ namespace PD.ViewModel
             }
         }
 
+        private string _txt_Equip_Setting_Path = "";
+        public string txt_Equip_Setting_Path
+        {
+            get { return _txt_Equip_Setting_Path; }
+            set
+            {
+                _txt_Equip_Setting_Path = value;
+                ini.IniWriteValue("Connection", "Equip_Setting_Path", value.ToString(), ini_path);
+                OnPropertyChanged("txt_Equip_Setting_Path");
+            }
+        }
+
         private string _Server_IP = @"172.16.10.108";
         public string Server_IP
         {
@@ -2026,186 +2224,8 @@ namespace PD.ViewModel
             set
             {
                 _station_type = value;
-                Ini_Write("Connection", "Station", value);
-                if (_station_type.Equals("Hermetic_Test") || _station_type.Equals("Hermetic Test"))
-                {
-                    int i = 12;
-                    if (int.TryParse(Ini_Read("Connection", "Hermetic_ch_count"), out i))
-                        ch_count = i;
-                    else ch_count = 12;
 
-                    BoudRate = 115200;
-                    Bool_Gauge = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false };
-                    bo_temp_gauge = new bool[] { true, true, true, true, true, true, true, true, true, true, true, true };
-
-                    Is_switch_mode = true;
-
-                    GaugeText_visible = Visibility.Hidden;
-                    GaugeTabEnable = true;
-                    GaugeSize_Height = new GridLength(6, GridUnitType.Star);
-                    GaugeTxtSize_Height = new GridLength(1, GridUnitType.Star);
-
-                    GaugeChart_visible = Visibility.Collapsed;
-
-                    PD_or_PM = true;
-                    Is_switch_mode = true;
-
-                    foreach (GaugeModel gm in _list_GaugeModels)
-                    {
-                        gm.SN_Row = 1;
-                        gm.GaugeMode = Visibility.Visible;
-                    }
-
-                    is_update_chart = false;
-                }
-                else if (_station_type.Equals("Testing"))
-                {
-                    PD_or_PM = true;
-                    BoudRate = 115200;
-                    ch_count = 1;
-                    switch_index = 1;
-                    Is_switch_mode = false;
-                    GaugeText_visible = Visibility.Visible;
-                    GaugeTabEnable = false;
-                    GaugeSize_Height = new GridLength(7, GridUnitType.Star);
-                    GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
-
-                    GaugeGrid1_visible = Visibility.Collapsed;  //Only Channel 1 will Show!!
-                    GaugeGrid2_visible = Visibility.Collapsed;
-                    GaugeGrid3_visible = Visibility.Collapsed;
-
-                    GaugeChart_visible = Visibility.Visible;
-
-                    foreach (GaugeModel gm in _list_GaugeModels)
-                    {
-                        gm.SN_Row = 2;
-                        gm.GaugeMode = Visibility.Collapsed;
-                    }
-
-                    is_update_chart = true;
-                }
-                else if (_station_type.Equals("UV_Curing") || _station_type.Equals("UV Curing"))
-                {
-                    PD_or_PM = true;
-                    //BoudRate = 9600;
-                    ch_count = 1;
-                    switch_index = 1;
-                    Is_switch_mode = false;
-                    GaugeText_visible = Visibility.Visible;
-                    GaugeTabEnable = false;
-                    GaugeSize_Height = new GridLength(7, GridUnitType.Star);
-                    GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
-
-                    GaugeGrid1_visible = Visibility.Collapsed;  //Only Channel 1 will Show!!
-                    GaugeGrid2_visible = Visibility.Collapsed;
-                    GaugeGrid3_visible = Visibility.Collapsed;
-
-                    GaugeChart_visible = Visibility.Visible;
-
-                    ComMembers.Clear();
-                    cmd_SelectedSource = new ObservableCollection<string>() { "SetPower", "SetTimer", "Start", "Stop" };
-
-                    Cmd_Count = 0;
-
-                    Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "1", "UVSETPOW", "40", "", "", "", " ", "Set CH1 Power to 40%");
-                    Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "2", "UVSETPOW", "30", "", "", "", " ", "Set CH2 Power to 30%");
-                    Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "1", "UVSETTIMER", "5", "", "", "", " ", "Set CH1 Timer to 5S");
-                    Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "2", "UVSETTIMER", "5", "", "", "", " ", "Set CH2 Timer to 5S");
-
-                    Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "0", "UVSTART", "", "", "", "", " ", "Start all channel");
-                    Save_Command(Cmd_Count++, "UV_Curing", "", Selected_Comport, "0", "UVSTOP", "", "", "", "", " ", "Stop all channel");
-
-                    foreach (GaugeModel gm in _list_GaugeModels)
-                    {
-                        gm.SN_Row = 2;
-                        gm.GaugeMode = Visibility.Collapsed;
-                    }
-
-                    is_update_chart = true;
-                }
-                else if (_station_type.Equals("Chamber_S_16ch"))
-                {
-                    PD_or_PM = false;
-                    BoudRate = 115200;
-                    ch_count = 16;
-                    PD_A_ChannelModel.Board_Port = Ini_Read("Connection", "COM_PD_A");
-                    PD_B_ChannelModel.Board_Port = Ini_Read("Connection", "COM_PD_B");
-
-                    if (!string.IsNullOrEmpty(PD_B_ChannelModel.Board_Port))
-                        port_PD_B = new SerialPort(PD_B_ChannelModel.Board_Port, 115200, Parity.None, 8, StopBits.One);
-
-                    Save_Log("Get COM A", PD_A_ChannelModel.Board_Port, false);
-                    Save_Log("Get COM B", PD_B_ChannelModel.Board_Port, false);
-                    Is_switch_mode = false;
-                    GaugeText_visible = Visibility.Visible;
-                    GaugeTabEnable = false;
-                    GaugeSize_Height = new GridLength(7, GridUnitType.Star);
-                    GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
-
-                    GaugeGrid1_visible = Visibility.Visible;
-                    GaugeGrid2_visible = Visibility.Visible;
-                    GaugeGrid3_visible = Visibility.Collapsed;
-
-                    GaugeChart_visible = Visibility.Collapsed;
-
-                    foreach (GaugeModel gm in _list_GaugeModels)
-                    {
-                        gm.SN_Row = 2;
-                        gm.GaugeMode = Visibility.Collapsed;
-                    }
-
-                    is_update_chart = true;
-                }
-                else if (_station_type == "Fast_Calibration")
-                {
-                    PD_or_PM = false;
-                    BoudRate = 115200;
-                    ch_count = 8;
-                    Is_switch_mode = false;
-                    GaugeText_visible = Visibility.Visible;
-                    GaugeTabEnable = false;
-                    GaugeSize_Height = new GridLength(7, GridUnitType.Star);
-                    GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
-
-                    GaugeGrid1_visible = Visibility.Visible;
-                    GaugeGrid2_visible = Visibility.Visible;
-                    GaugeGrid3_visible = Visibility.Collapsed;
-
-                    GaugeChart_visible = Visibility.Collapsed;
-
-                    foreach (GaugeModel gm in _list_GaugeModels)
-                    {
-                        gm.SN_Row = 2;
-                        gm.GaugeMode = Visibility.Collapsed;
-                    }
-
-                    is_update_chart = true;
-                }
-                else
-                {
-                    PD_or_PM = false;
-                    BoudRate = 115200;
-                    ch_count = 8;
-                    Is_switch_mode = false;
-                    GaugeText_visible = Visibility.Visible;
-                    GaugeTabEnable = false;
-                    GaugeSize_Height = new GridLength(7, GridUnitType.Star);
-                    GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
-
-                    GaugeGrid1_visible = Visibility.Visible;
-                    GaugeGrid2_visible = Visibility.Visible;
-                    GaugeGrid3_visible = Visibility.Collapsed;
-
-                    GaugeChart_visible = Visibility.Collapsed;
-
-                    foreach (GaugeModel gm in _list_GaugeModels)
-                    {
-                        gm.SN_Row = 2;
-                        gm.GaugeMode = Visibility.Collapsed;
-                    }
-
-                    is_update_chart = true;
-                }
+                Set_StationType(value);
 
                 OnPropertyChanged("station_type");
             }
@@ -3417,7 +3437,7 @@ namespace PD.ViewModel
 
         public double List_curfit_resultWL_single { get; set; }
 
-        private int _int_fontsize = 17;
+        private int _int_fontsize = 12;
         public int Int_Fontsize
         {
             get { return _int_fontsize; }

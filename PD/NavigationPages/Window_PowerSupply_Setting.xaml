@@ -109,7 +109,7 @@
                                HorizontalContentAlignment="Center"
                                VerticalAlignment="Center"
                                Grid.Column="0"
-                               FontSize="12"
+                               FontSize="{Binding Int_Fontsize}"
                                FontFamily="Segoe Print" />
                         <Label x:Name="label_ID"
                                Content="ID"
@@ -117,7 +117,7 @@
                                HorizontalContentAlignment="Center"
                                Grid.Column="1"
                                MinWidth="70"
-                               FontSize="12"
+                               FontSize="{Binding Int_Fontsize}"
                                FontFamily="Segoe Print"
                                VerticalAlignment="Center" />
                         <Label Content="Comport"
@@ -125,16 +125,16 @@
                                    HorizontalContentAlignment="Center"
                                    Grid.Column="2"
                                    MinWidth="70"
-                                   FontSize="12"
-                                   FontFamily="Segoe Print"
+                               FontSize="{Binding Int_Fontsize}"
+                               FontFamily="Segoe Print"
                                    VerticalAlignment="Center" />
                             <Label x:Name="label"
                                    Content="BautRate"
                                    HorizontalAlignment="Stretch"
                                    HorizontalContentAlignment="Center"
                                    Grid.Column="3"
-                                   FontSize="12"
-                                   FontFamily="Segoe Print"
+                               FontSize="{Binding Int_Fontsize}"
+                               FontFamily="Segoe Print"
                                    VerticalAlignment="Center" />
                             <Label Grid.Column="5"
                                    Width="{Binding ActualWidth, ElementName=label, Mode=OneWay}" />
@@ -146,8 +146,8 @@
                                       Grid.Column="5"
                                       MinWidth="70"
                                       Text="Type"
-                                      FontSize="12"
-                                      FontFamily="Segoe Print"
+                                  FontSize="{Binding Int_Fontsize}"
+                                  FontFamily="Segoe Print"
                                       ItemsSource="{Binding list_combox_PowerMeterType_items}"
                                       DropDownClosed="ComboBox_DropDownClosed" />
 
@@ -158,32 +158,32 @@
                                    HorizontalContentAlignment="Center"
                                    Grid.Column="6"
                                    MinWidth="70"
-                                   FontSize="12"
-                                   FontFamily="Segoe Print" />
+                               FontSize="{Binding Int_Fontsize}"
+                               FontFamily="Segoe Print" />
                             <Label x:Name="label_Address"
                                    Content="Address"
                                    HorizontalAlignment="Center"
                                    HorizontalContentAlignment="Center"
                                    Grid.Column="7"
                                    MinWidth="70"
-                                   FontSize="12"
-                                   FontFamily="Segoe Print" />
+                               FontSize="{Binding Int_Fontsize}"
+                               FontFamily="Segoe Print" />
                             <Label x:Name="label_Slot"
                                    Content="Slot"
                                    HorizontalAlignment="Center"
                                    HorizontalContentAlignment="Center"
                                    Grid.Column="8"
                                    MinWidth="70"
-                                   FontSize="12"
-                                   FontFamily="Segoe Print" />
+                               FontSize="{Binding Int_Fontsize}"
+                               FontFamily="Segoe Print" />
                             <Label x:Name="lab_avrg"
                                    Content="AverageTime"
                                    HorizontalAlignment="Center"
                                    HorizontalContentAlignment="Center"
                                    Grid.Column="9"
                                    MinWidth="80"
-                                   FontSize="12"
-                                   FontFamily="Segoe Print" />
+                               FontSize="{Binding Int_Fontsize}"
+                               FontFamily="Segoe Print" />
 
                             <!--Visibility="{Binding typeGPIBVis, Converter={StaticResource VisValueConverter}}"-->
                             <Label Content="ID"
@@ -191,16 +191,16 @@
                                    HorizontalContentAlignment="Center"
                                    Grid.Column="10"
                                    MinWidth="70"
-                                   FontSize="13"
-                                   FontFamily="Segoe Print"
+                               FontSize="{Binding Int_Fontsize}"
+                               FontFamily="Segoe Print"
                                    VerticalAlignment="Center" />
                             <Label x:Name="textBlock"
                                    Content="Comport"
                                    HorizontalAlignment="Center"
                                    Grid.Column="11"
                                    MinWidth="70"
-                                   FontSize="13"
-                                   FontFamily="Segoe Print"
+                               FontSize="{Binding Int_Fontsize}"
+                               FontFamily="Segoe Print"
                                    VerticalAlignment="Center"
                                    HorizontalContentAlignment="Center" />
                             <Label Name="txtTile"
@@ -208,8 +208,8 @@
                                    HorizontalAlignment="Center"
                                    Grid.Column="12"
                                    MinWidth="70"
-                                   FontSize="13"
-                                   FontFamily="Segoe Print"
+                               FontSize="{Binding Int_Fontsize}"
+                               FontFamily="Segoe Print"
                                    VerticalAlignment="Center"
                                    HorizontalContentAlignment="Center" />
                             <Label x:Name="lab_CMD"
@@ -218,8 +218,8 @@
                                    HorizontalContentAlignment="Center"
                                    Grid.Column="13"
                                    MinWidth="70"
-                                   FontSize="12"
-                                   FontFamily="Segoe Print" />
+                               FontSize="12"
+                               FontFamily="Segoe Print" />
 
                         </Grid>
                     <!--</Viewbox>-->
@@ -231,6 +231,7 @@
                         <ItemsControl x:Name="itms_gauges"
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Top"
+                                      Loaded="itms_gauges_Loaded"
                                       AllowDrop="True"
                                       ItemsSource="{Binding list_ChannelModels}">
                             <ItemsControl.ItemsPanel>
@@ -386,9 +387,11 @@
                           Grid.RowSpan="3">
                 <StackPanel x:Name="sPanel_other_ports"
                             Orientation="Vertical">
-                    <Grid Grid.Column="1"
+                    <Grid x:Name="grid_base"
+                          Height="40"
+                          Grid.Column="1"
                           Grid.Row="1">
-                        <Grid>
+                        <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition />
@@ -415,7 +418,7 @@
                                    FontFamily="Segoe Print"
                                    Grid.ColumnSpan="2" />
                             <TextBox Text="  "
-                                     HorizontalContentAlignment="Center"
+                                     VerticalAlignment="Center"
                                      Grid.Column="1"
                                      MinWidth="70"
                                      FontSize="{Binding Int_Fontsize}"
@@ -427,21 +430,20 @@
                                      VerticalAlignment="Center"
                                      FontSize="{Binding Int_Fontsize}"
                                      Style="{StaticResource style_txtbox_noWaterPrint}" />
-                            <Viewbox Grid.Column="3">
                                 <TextBox Text="{Binding Switch_BoudRate}"
                                          VerticalAlignment="Center"
                                          HorizontalContentAlignment="Center"
                                          Grid.Column="3"
                                          MinWidth="70"
                                          Style="{StaticResource style_txtbox_noWaterPrint}" />
-                            </Viewbox>
                             <Label Grid.Column="4"
                                    MinWidth="70" />
                         </Grid>
                     </Grid>
 
                     <Grid Grid.Column="1"
-                          Grid.Row="2">
+                          Grid.Row="2"
+                          Height="{Binding ActualHeight, ElementName=grid_base, Mode=OneWay}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -469,7 +471,7 @@
                                    FontFamily="Segoe Print"
                                    Grid.ColumnSpan="2" />
                             <TextBox Text="  "
-                                     HorizontalContentAlignment="Center"
+                                     VerticalAlignment="Center"
                                      Grid.Column="1"
                                      MinWidth="70"
                                      FontSize="{Binding Int_Fontsize}"
@@ -494,7 +496,8 @@
                     </Grid>
 
                     <Grid Grid.Column="1"
-                          Grid.Row="3">
+                          Grid.Row="3"
+                          Height="{Binding ActualHeight, ElementName=grid_base, Mode=OneWay}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -522,7 +525,7 @@
                                    FontFamily="Segoe Print"
                                    Grid.ColumnSpan="2" />
                             <TextBox Text="  "
-                                     HorizontalContentAlignment="Center"
+                                     VerticalAlignment="Center"
                                      Grid.Column="1"
                                      MinWidth="70"
                                      FontSize="{Binding Int_Fontsize}"
@@ -548,7 +551,8 @@
                     </Grid>
 
                     <Grid Grid.Column="1"
-                          Grid.Row="3">
+                          Grid.Row="3"
+                          Height="{Binding ActualHeight, ElementName=grid_base, Mode=OneWay}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -576,7 +580,7 @@
                                    FontFamily="Segoe Print"
                                    Grid.ColumnSpan="2" />
                             <TextBox Text="  "
-                                     HorizontalContentAlignment="Center"
+                                     VerticalAlignment="Center"
                                      Grid.Column="1"
                                      MinWidth="70"
                                      FontSize="{Binding Int_Fontsize}"
@@ -602,7 +606,8 @@
                     </Grid>
 
                     <Grid Grid.Column="1"
-                          Grid.Row="3">
+                          Grid.Row="3"
+                          Height="{Binding ActualHeight, ElementName=grid_base, Mode=OneWay}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -630,7 +635,7 @@
                                    FontFamily="Segoe Print"
                                    Grid.ColumnSpan="2" />
                             <TextBox Text="  "
-                                     HorizontalContentAlignment="Center"
+                                     VerticalAlignment="Center"
                                      Grid.Column="1"
                                      MinWidth="70"
                                      FontSize="{Binding Int_Fontsize}"
@@ -655,7 +660,7 @@
                         </Grid>
                     </Grid>
 
-                    <Grid >
+                    <Grid Height="{Binding ActualHeight, ElementName=grid_base, Mode=OneWay}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -683,7 +688,7 @@
                                    FontFamily="Segoe Print"
                                    Grid.ColumnSpan="2" />
                             <TextBox Text="  "
-                                     HorizontalContentAlignment="Center"
+                                     VerticalAlignment="Center"
                                      Grid.Column="1"
                                      MinWidth="70"
                                      FontSize="{Binding Int_Fontsize}"

@@ -107,7 +107,6 @@ namespace PD
                 vm.station_type = vm.Ini_Read("Connection", "Station");
                 if (string.IsNullOrEmpty(vm.station_type)) vm.station_type = "Testing";
 
-
                 vm.PD_A_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_PD_A");
                 vm.PD_B_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_PD_B");
 
@@ -115,6 +114,7 @@ namespace PD
                 vm.Is_k_WL_manual_setting = Generic_GetINISetting(vm.Is_k_WL_manual_setting, "Scan", "is_k_WL_manual_setting");
                 vm.selected_K_WL_Type = vm.Ini_Read("Productions", "K_WL_Type");
 
+                vm.txt_Equip_Setting_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Equip_Setting_Path")) ? "" : vm.Ini_Read("Connection", "Equip_Setting_Path");
                 vm.txt_Chamber_Status_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Chamber_Status_Path")) ? vm.txt_Chamber_Status_Path : vm.Ini_Read("Connection", "Chamber_Status_Path");
                 vm.txt_Auto_Update_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Auto_Update_Path")) ? vm.txt_Auto_Update_Path : vm.Ini_Read("Connection", "Auto_Update_Path");
                 vm.Server_IP = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Server_IP")) ? vm.Server_IP : vm.Ini_Read("Connection", "Server_IP");
@@ -205,65 +205,6 @@ namespace PD
                 { "Calibration", "DAC -> 0", "VOA -> 0", "TF -> 0", "K VOA", "K TF", "ReadData", "K WL" };
             #endregion
 
-            #region Board Setting
-            //vm.txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
-
-            if (vm.station_type.Equals("Hermetic_Test"))
-            {
-                vm.list_Board_Setting.Clear();
-                //vm.list_Chart_UI_Models[0].Button_IsChecked = true;
-                //vm.IsCheck = new List<bool>();
-                for (int i = 0; i < vm.ch_count; i++)
-                {
-                    string Board_ID = "Board_ID_" + (i + 1).ToString();
-                    string Board_COM = "Board_COM_" + (i + 1).ToString();
-                    vm.list_Board_Setting.Add(new List<string>() { vm.Ini_Read("Board_ID", Board_ID), vm.Ini_Read("Board_Comport", Board_COM) });
-                    //vm.IsCheck.Add(false);
-                }
-                vm.list_Board_Setting = new List<List<string>>(vm.list_Board_Setting);
-
-                int k = 0;
-                foreach (List<string> board_info in vm.list_Board_Setting)
-                {
-                    vm.board_read.Add(new List<string>());
-
-                    if (string.IsNullOrEmpty(board_info[0]))
-                    {
-                        k++; continue;
-                    }
-
-                    string board_id = board_info[0];
-                    string path = Path.Combine(vm.txt_board_table_path, board_id + "-boardtable.txt");
-
-                    if (!File.Exists(path))
-                    {
-                        vm.Str_cmd_read = "UFV Board table is not exist";
-                        vm.Save_Log("Get Board Table", (k + 1).ToString(), vm.Str_cmd_read);
-                        k++;
-                        continue;
-                    }
-
-                    StreamReader str = new StreamReader(path);
-
-                    while (true)  //Read board v3 data
-                    {
-                        string readline = str.ReadLine();
-
-                        if (string.IsNullOrEmpty(readline)) break;
-
-                        vm.board_read[k].Add(readline);
-                    }
-                    str.Close(); //(關閉str)
-
-                    k++;
-                }
-            }
-
-            vm.Comport_Switch = vm.Ini_Read("Connection", "Comport_Switch");
-            vm.Comport_TLS_Filter = vm.Ini_Read("Connection", "Comport_TLS_Filter");
-
-            #endregion            
-
             #region Timer Setting
             vm.timer2 = new System.Timers.Timer();
             vm.timer2.Interval = vm.Int_Read_Delay;
@@ -336,10 +277,110 @@ namespace PD
             }
             #endregion
 
+            #region Board Setting
+            //vm.txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
+
+            if (!string.IsNullOrEmpty(vm.txt_Equip_Setting_Path))
+                if (File.Exists(vm.txt_Equip_Setting_Path))
+                    using (DataTable dtt = CSVFunctions.Read_CSV(vm.txt_Equip_Setting_Path))
+                    {
+                        if (dtt != null)
+                        {
+                            if (dtt.Rows.Count != 0)
+                            {
+                                if (dtt.Columns.Count >= 13)
+                                {
+                                    if (vm.list_ChannelModels.Count == dtt.Rows.Count - 1)
+                                        for (int i = 0; i < dtt.Rows.Count - 1; i++)
+                                        {
+                                            vm.list_ChannelModels[i].channel = dtt.Rows[i + 1][0].ToString();
+                                            vm.list_ChannelModels[i].Board_ID = dtt.Rows[i + 1][1].ToString();
+                                            vm.list_ChannelModels[i].Board_Port = dtt.Rows[i + 1][2].ToString();
+                                            if (int.TryParse(dtt.Rows[i + 1][3].ToString(), out int brt))
+                                                vm.list_ChannelModels[i].BautRate = brt;
+                                            vm.list_ChannelModels[i].PM_Type = dtt.Rows[i + 1][4].ToString();
+                                            if (int.TryParse(dtt.Rows[i + 1][5].ToString(), out int PM_GPIB_BoardNum))
+                                                vm.list_ChannelModels[i].PM_GPIB_BoardNum = PM_GPIB_BoardNum;
+                                            if (int.TryParse(dtt.Rows[i + 1][6].ToString(), out int PM_Addr))
+                                                vm.list_ChannelModels[i].PM_Address = PM_Addr;
+                                            if (int.TryParse(dtt.Rows[i + 1][7].ToString(), out int PM_Slot))
+                                                vm.list_ChannelModels[i].PM_Slot = PM_Slot;
+                                            if (int.TryParse(dtt.Rows[i + 1][8].ToString(), out int PM_AveTime))
+                                                vm.list_ChannelModels[i].PM_AveTime = PM_AveTime;
+                                            vm.list_ChannelModels[i].PM_Board_ID = dtt.Rows[i + 1][9].ToString();
+                                            vm.list_ChannelModels[i].PM_Board_Port = dtt.Rows[i + 1][10].ToString();
+                                            if (int.TryParse(dtt.Rows[i + 1][11].ToString(), out int PM_BautRate))
+                                                vm.list_ChannelModels[i].PM_BautRate = PM_BautRate;
+                                            vm.list_ChannelModels[i].PM_GetPower_CMD = dtt.Rows[i + 1][12].ToString();
+                                        }
+                                }
+                            }
+                        }
+                    }
+            string sss = vm.list_ChannelModels[0].PM_GetPower_CMD;
+
+            if (vm.station_type.Equals("Hermetic_Test"))
+            {
+                vm.list_Board_Setting.Clear();
+                for (int i = 0; i < vm.ch_count; i++)
+                {
+                    string Board_ID = "Board_ID_" + (i + 1).ToString();
+                    string Board_COM = "Board_COM_" + (i + 1).ToString();
+                    vm.list_Board_Setting.Add(new List<string>() { vm.Ini_Read("Board_ID", Board_ID), vm.Ini_Read("Board_Comport", Board_COM) });
+                    //vm.IsCheck.Add(false);
+                }
+                vm.list_Board_Setting = new List<List<string>>(vm.list_Board_Setting);
+
+                int k = 0;
+                foreach (List<string> board_info in vm.list_Board_Setting)
+                {
+                    vm.board_read.Add(new List<string>());
+
+                    if (string.IsNullOrEmpty(board_info[0]))
+                    {
+                        k++; continue;
+                    }
+
+                    string board_id = board_info[0];
+                    string path = Path.Combine(vm.txt_board_table_path, board_id + "-boardtable.txt");
+
+                    if (!File.Exists(path))
+                    {
+                        vm.Str_cmd_read = "UFV Board table is not exist";
+                        vm.Save_Log("Get Board Table", (k + 1).ToString(), vm.Str_cmd_read);
+                        k++;
+                        continue;
+                    }
+
+                    StreamReader str = new StreamReader(path);
+
+                    while (true)  //Read board v3 data
+                    {
+                        string readline = str.ReadLine();
+
+                        if (string.IsNullOrEmpty(readline)) break;
+
+                        vm.board_read[k].Add(readline);
+                    }
+                    str.Close(); //(關閉str)
+
+                    k++;
+                }
+            }
+
+            vm.Comport_Switch = vm.Ini_Read("Connection", "Comport_Switch");
+            vm.Comport_TLS_Filter = vm.Ini_Read("Connection", "Comport_TLS_Filter");
+
+            #endregion
+
+            sss = vm.list_ChannelModels[0].PM_GetPower_CMD;
+
             #region Arduino Setting
             //if (vm.IsDistributedSystem)
             //    Arduino_Setting();
             #endregion
+
+            sss = vm.list_ChannelModels[0].PM_GetPower_CMD;
 
             #region Others Setting
             vm.List_D0_value = new ObservableCollection<ObservableCollection<string>>();
@@ -354,6 +395,8 @@ namespace PD
             if (!string.IsNullOrEmpty(statId))
                 vm.Station_ID = statId;
             #endregion
+
+             sss = vm.list_ChannelModels[0].PM_GetPower_CMD;
         }
 
         public T Generic_GetINISetting<T>(T input, string region, string variable) where T : new()
@@ -5199,25 +5242,28 @@ namespace PD
                     vm.switch_index = ch + 1;
 
                     #region switch re-open && Switch write Cmd
-                    try
+                    if (vm.Is_switch_mode)
                     {
-                        await vm.Port_Switch_ReOpen();
+                        try
+                        {
+                            await vm.Port_Switch_ReOpen();
 
-                        vm.Str_Command = "SW0 " + vm.switch_index.ToString();
-                        vm.port_Switch.Write(vm.Str_Command + "\r");
-                        await Task.Delay(vm.Int_Write_Delay);
+                            vm.Str_Command = "SW0 " + vm.switch_index.ToString();
+                            vm.port_Switch.Write(vm.Str_Command + "\r");
+                            await Task.Delay(vm.Int_Write_Delay);
 
-                        vm.port_Switch.DiscardInBuffer();       // RX
-                        vm.port_Switch.DiscardOutBuffer();      // TX
+                            vm.port_Switch.DiscardInBuffer();       // RX
+                            vm.port_Switch.DiscardOutBuffer();      // TX
 
-                        vm.port_Switch.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        vm.Str_cmd_read = "Set Switch Error";
-                        vm.Save_Log(vm.Str_Status, vm.switch_index.ToString(), vm.Str_cmd_read);
-                        MessageBox.Show(ex.StackTrace.ToString());
-                        return false;
+                            vm.port_Switch.Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            vm.Str_cmd_read = "Set Switch Error";
+                            vm.Save_Log(vm.Str_Status, vm.switch_index.ToString(), vm.Str_cmd_read);
+                            MessageBox.Show(ex.StackTrace.ToString());
+                            return false;
+                        }
                     }
                     #endregion                   
 
@@ -5327,7 +5373,7 @@ namespace PD
                                 end_temp = listPoints.Last().X;
 
                                 //改為以數列內最後三點，其中最高的兩點，作為起點、終點
-                                if(listPoints.Count > 2)
+                                if (listPoints.Count > 2)
                                 {
                                     if (vm.Save_All_PD_Value[ch][vm.Save_All_PD_Value[ch].Count - 2].Y > vm.Save_All_PD_Value[ch].Last().Y)
                                     {
@@ -5345,7 +5391,7 @@ namespace PD
                                     start_temp = vm.Save_All_PD_Value[ch].Last().X;
                                     end_temp = vm.Save_All_PD_Value[ch][vm.Save_All_PD_Value[ch].Count - 1].X;
                                 }
-                                
+
 
                                 gap_temp = gap_temp / 5 >= 0.01 ? Math.Round(gap_temp / 5, 2) : 0.01;
                                 if (end_temp >= start_temp)
@@ -5965,7 +6011,7 @@ namespace PD
                     break;
 
                 case "Auto":
-                    vm.float_TLS_WL_Range = new float[2] { 1260, 1675 };                    
+                    vm.float_TLS_WL_Range = new float[2] { 1260, 1675 };
                     break;
             }
 

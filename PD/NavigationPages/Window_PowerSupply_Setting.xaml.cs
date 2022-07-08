@@ -44,6 +44,11 @@ namespace PD.NavigationPages
         {
             if (!vm.IsDistributedSystem)
             {
+                
+            }
+            else  //distribution system
+            {
+                #region Save Comport in INI
                 try
                 {
                     for (int ch = 0; ch < vm.ch_count; ch++)
@@ -55,7 +60,7 @@ namespace PD.NavigationPages
                         vm.Ini_Write("Board_Comport", board_com, vm.list_ChannelModels[ch].Board_Port);
                     }
 
-                    #region Board Setting
+                    #region Get board calibration data
                     vm.txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
 
                     if (vm.station_type.Equals("Hermetic_Test"))
@@ -116,21 +121,17 @@ namespace PD.NavigationPages
 
                     vm.Ini_Write("Connection", "COM_PD_A", vm.PD_A_ChannelModel.Board_Port);
                     vm.Ini_Write("Connection", "COM_PD_B", vm.PD_B_ChannelModel.Board_Port);
-                
+
                     vm.Ini_Write("Connection", "COM_Golight", vm.Golight_ChannelModel.Board_Port);
-
-                    vm.Str_cmd_read = "Board Table Saved";
-
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.StackTrace.ToString());
                 }
-            }
-            else  //distribution system
-            {
+                #endregion
+
                 List<string> list_titles = new List<string>(){"Channel", "ID", "Comport", "BautRate",
-                    "PM_Type", "PM_Board", "PM_Address", "PM_Slot", "PM_AverageTime", "PM_ID", "PM_Comport", "PM_BautRate", "PM_GetPower_Cmd" };
+                    "PM_Type", "PM_GPIB_BoardName", "PM_Address", "PM_Slot", "PM_AverageTime", "PM_ID", "PM_Comport", "PM_BautRate", "PM_GetPower_Cmd" };
                 string filePath = CSVFunctions.Creat_New_CSV("Control_Board_Setting", list_titles);
 
                 if (string.IsNullOrEmpty(filePath))
@@ -142,11 +143,13 @@ namespace PD.NavigationPages
                 for (int i = 0; i < vm.list_ChannelModels.Count; i++)
                 {
                     ChannelModel cm = vm.list_ChannelModels[i];
-                    List<string> list_datas = new List<string>() { cm.channel,
+                    List<string> list_datas = new List<string>() { 
+                        cm.channel,
                         cm.Board_ID,
                         cm.Board_Port,
                         cm.BautRate.ToString(),
-                        cm.PM_Type, cm.PM_Board_Port,
+                        cm.PM_Type, 
+                        cm.PM_GPIB_BoardNum.ToString(),
                         cm.PM_Address.ToString(),
                         cm.PM_Slot.ToString(),
                         cm.PM_AveTime.ToString(),
@@ -156,6 +159,10 @@ namespace PD.NavigationPages
                         cm.PM_GetPower_CMD};
                     CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, list_datas);
                 }
+
+                vm.txt_Equip_Setting_Path = filePath;
+                vm.Ini_Write("Connection", "Equip_Setting_Path", filePath);
+                vm.Str_cmd_read = "Board Table Saved";
             }
         }
 
@@ -310,6 +317,11 @@ namespace PD.NavigationPages
             //    MessageBox.Show(ex.StackTrace.ToString());
             //}
             //cmd.id
+        }
+
+        private void itms_gauges_Loaded(object sender, RoutedEventArgs e)
+        {
+            string s = vm.list_ChannelModels[0].PM_GetPower_CMD;
         }
     }
 
