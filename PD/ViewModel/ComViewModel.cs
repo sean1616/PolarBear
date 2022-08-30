@@ -87,7 +87,7 @@ namespace PD.ViewModel
                 _PD_B_ChannelModel = value;
                 OnPropertyChanged_Normal("PD_B_ChannelModel");
 
-                
+
             }
         }
 
@@ -381,7 +381,7 @@ namespace PD.ViewModel
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     //vm.BoardTable_Dictionary.Clear();
-                    for (int i = 0; i < ds.Tables[0].Rows.Count; )
+                    for (int i = 0; i < ds.Tables[0].Rows.Count;)
                     {
                         string board_SN, V1_Ratio, V2_Ratio;
                         board_SN = ds.Tables[0].Rows[i]["Board_SN"].ToString().Trim();
@@ -403,7 +403,7 @@ namespace PD.ViewModel
                     Message = "SqlConnection error",
                     isShowMSG = false,
                     Channel = channel.ToString()
-                });                
+                });
             }
 
             return new string[] { "0.00068665598", "0.00068665598" };  //若資料庫中無此板號
@@ -659,7 +659,11 @@ namespace PD.ViewModel
             {
                 Str_Status = lm.Status;
                 Str_cmd_read = lm.Message.ToString();
-                msgModel.msg_3 = lm.TimeSpan;
+
+                if (lm.TimeSpan != null)
+                    msgModel.msg_3 = lm.TimeSpan;
+
+                Show_Bear_Window(Str_cmd_read);
             }
 
             LogMembers.Add(lm);
@@ -938,6 +942,15 @@ namespace PD.ViewModel
             Double_Powers = new List<double>(Double_Powers);
         }
 
+        public void Show_Bear_Window(string msg)
+        {
+            Winbear = new Window_Bear(this, false, "String");
+            BearBtn_visibility = Visibility.Collapsed;
+            BearSay_RowSpan = 3;
+            Str_bear_say = msg;
+            Winbear.Show();
+        }
+
         public void Show_Bear_Window(object bear_say, bool _is_txt_reshow, string type)
         {
             if (Winbear != null)
@@ -1038,14 +1051,6 @@ namespace PD.ViewModel
 
         public async Task Port_ReOpen(string comport)
         {
-            if (!_pd_or_pm)  //PD type
-            {
-                if (_isGoOn)
-                {
-
-                }
-            }
-
             try
             {
                 if (port_PD != null)
@@ -1075,11 +1080,11 @@ namespace PD.ViewModel
 
                 await Task.Delay(10);  //100ms
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 Str_cmd_read = "Port Open Error";
-                cmd.Save_Log_Message("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString());
-                throw ex; }
+                throw ex;
+            }
         }
 
         public async Task Port_ReOpen(SerialPort port, string comport, int boudRate)
@@ -1391,6 +1396,10 @@ namespace PD.ViewModel
         {
             try
             {
+
+                if (string.IsNullOrEmpty(DAC1) && string.IsNullOrEmpty(DAC2) && string.IsNullOrEmpty(DAC3))
+                    return;
+
                 int channel = int.Parse(ch);
                 if (_station_type.Equals("Hermetic_Test"))
                     await Port_ReOpen(list_Board_Setting[int.Parse(ch) - 1][1]);
@@ -1416,30 +1425,36 @@ namespace PD.ViewModel
 
                 if (!PD_or_PM)  //PD mode
                 {
-                    int d2 = -1 * Math.Abs(int.Parse(DAC2.ToString()));
-
-                    string cd = "VOA" + channel.ToString() + " " + DAC3;  //Write Dac
-
-                    if (_station_type.Equals("Chamber_S_16ch"))
+                    if(int.TryParse(DAC2, out int d2))
                     {
-                        if (int.Parse(ch) < 9)
-                        {
-                            port_PD.Write(cd + "\r");
-                        }
-                        else if (int.Parse(ch) < 17 && int.Parse(ch) > 8)
-                        {
-                            port_PD_B.Write(cd + "\r");
-                        }
-                    }
-                    else
-                        port_PD.Write(cd + "\r");
-
-                    await Task.Delay(Int_Write_Delay);
-
-                    if (d2 != 0)
+                        d2 = -1 * Math.Abs(d2);
                         Str_Command = "D" + channel.ToString() + " " + d2.ToString();  //Write Dac
-                    else
+                    }
+                    else if(!string.IsNullOrEmpty(DAC1))
+                    {
                         Str_Command = "D" + channel.ToString() + " " + DAC1;  //Write Dac
+                    }
+
+                    if (DAC3 != null)
+                    {
+                        string cd = "VOA" + channel.ToString() + " " + DAC3;  //Write Dac
+
+                        if (_station_type.Equals("Chamber_S_16ch"))
+                        {
+                            if (int.Parse(ch) < 9)
+                            {
+                                port_PD.Write(cd + "\r");
+                            }
+                            else if (int.Parse(ch) < 17 && int.Parse(ch) > 8)
+                            {
+                                port_PD_B.Write(cd + "\r");
+                            }
+                        }
+                        else
+                            port_PD.Write(cd + "\r");
+
+                        await Task.Delay(Int_Write_Delay);
+                    }
                 }
                 else  //PM mode
                 {
@@ -1471,7 +1486,7 @@ namespace PD.ViewModel
                 }
                 catch
                 {
-                    Save_Log("Write Dac", "Write Dac Error", true);
+                    Save_Log("Write Dac", "Write Dac Error", false);
                 }
 
             }
@@ -2332,6 +2347,7 @@ namespace PD.ViewModel
                 value = value < 1 ? 1 : value;
                 if (value < 1) value = 1;
                 _ch_count = value;
+                
                 if (station_type == "Hermetic_Test")
                 {
                     if (value <= 4)
@@ -2987,6 +3003,9 @@ namespace PD.ViewModel
         //    set { _HermeticData_Save_or_Read = value; }
         //}
 
+        public List<double> wl_list { get; set; } = new List<double>();
+        public int wl_list_index { get; set; } = 0;
+
         private double _float_WL_Scan_Start = 1526;
         public double float_WL_Scan_Start
         {
@@ -3196,7 +3215,7 @@ namespace PD.ViewModel
                 OnPropertyChanged("Complement");
             }
         }
-        
+
         private DiCon.Instrument.HP.GLTLS _tls_GL = new DiCon.Instrument.HP.GLTLS();
         public DiCon.Instrument.HP.GLTLS tls_GL
         {
@@ -3318,6 +3337,20 @@ namespace PD.ViewModel
                 OnPropertyChanged("Is_k_WL_manual_setting");
             }
         }
+
+        private bool _is_FastScan_Mode = false;
+        public bool Is_FastScan_Mode
+        {
+            get { return _is_FastScan_Mode; }
+            set
+            {
+                _is_FastScan_Mode = value;
+                ini.IniWriteValue("Scan", "Is_FastScan_Mode", value.ToString(), ini_path);
+                OnPropertyChanged("Is_FastScan_Mode");
+            }
+        }
+
+        public string IL_ALL { get; set; } = "";
 
         private bool _is_update_chart = true;
         public bool is_update_chart

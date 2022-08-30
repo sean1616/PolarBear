@@ -32,7 +32,7 @@ namespace PD.NavigationPages
 
         public Page_Chart(ComViewModel vm)
         {
-            InitializeComponent();            
+            InitializeComponent();
 
             //System.Windows.Data.Binding LS_16_Title_Binding = new System.Windows.Data.Binding();
             //LS_16_Title_Binding.Source = vm;
@@ -48,7 +48,7 @@ namespace PD.NavigationPages
 
             //BindingOperations.SetBinding(LS, LineSeries.TitleProperty, LS_16_Title_Binding);
             //BindingOperations.SetBinding(LS, LineSeries.TitleProperty, LS_16_ItemSource_Binding);
-            
+
             //Plot_Chart.Series.Add(LS);
 
             this.DataContext = vm;
@@ -69,8 +69,8 @@ namespace PD.NavigationPages
 
         private void Plot_Chart_Loaded(object sender, RoutedEventArgs e)
         {
-            
-            
+
+
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -99,7 +99,7 @@ namespace PD.NavigationPages
             if (judge)
             {
                 //vm.IsCheck = new List<bool>() { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-                cbox_all.IsChecked = false;                
+                cbox_all.IsChecked = false;
             }
             else
             {
@@ -119,7 +119,6 @@ namespace PD.NavigationPages
         {
             try
             {
-
                 if (vm.int_chart_now > 1)
                 {
                     vm.int_chart_now--;
@@ -132,14 +131,16 @@ namespace PD.NavigationPages
                     vm.Chart_x_title = vm.ChartNowModel.title_x;
                     vm.Chart_y_title = vm.ChartNowModel.title_y;
 
+                    vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
 
-                    for (int i = 0; i < vm.list_ch_title.Count; i++)
+                    for (int i = 0; i < vm.ch_count; i++)
                     {
-                        if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
-                        {
-                            if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
-                                vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
-                        }
+                        if (i < vm.list_ch_title.Count)
+                            if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
+                            {
+                                if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
+                                    vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
+                            }
                     }
                 }
             }
@@ -164,7 +165,7 @@ namespace PD.NavigationPages
                     vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now]);
 
                 if (vm.Chart_All_DataPoints.Count != 0)
-                    vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);
+                    vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);  //Update Chart UI
 
                 vm.int_chart_now++;
 
@@ -173,21 +174,22 @@ namespace PD.NavigationPages
                 vm.Chart_x_title = vm.ChartNowModel.title_x;
                 vm.Chart_y_title = vm.ChartNowModel.title_y;
 
+                vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
 
-                for (int i = 0; i < vm.list_ch_title.Count; i++)
+                for (int i = 0; i < vm.ch_count; i++)
                 {
-                    if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
-                    {
-                        if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
-                            vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
-                    }
+                    if (i < vm.list_ch_title.Count)
+                        if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
+                        {
+                            if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
+                                vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
+                        }
                 }
             }
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.StackTrace.ToString());
             }
-
         }
 
         private void btn_Save_Chart_Click(object sender, RoutedEventArgs e)

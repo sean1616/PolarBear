@@ -364,7 +364,7 @@ namespace PD.Functions
                                 await vm.Port_ReOpen(vm.Selected_Comport);
                             else await vm.Port_ReOpen(cm.Comport);
 
-                            vm.port_PD.Write("PD?\r");
+                            vm.port_PD.Write("P0?\r");
 
                             //if (cm.Channel == "16")   //Write Cmd to port_B
                             //    vm.port_PD_B.Write("P0?\r");
@@ -819,7 +819,7 @@ namespace PD.Functions
                     else await vm.Port_ReOpen(vm.Selected_Comport);
 
                     vm.port_PD.Write(cm.Value_1 + "\r");
-                    await vm.AccessDelayAsync(125);
+                    await Task.Delay(125);
                     await Cmd_RecieveData(cm.Value_1, false);
                     break;
 
@@ -832,13 +832,21 @@ namespace PD.Functions
 
                     string[] dac123 = new string[] { cm.Value_1, cm.Value_2, cm.Value_3 };
 
-                    if (!string.IsNullOrEmpty(cm.Value_1) && !string.IsNullOrEmpty(cm.Value_2))
+                    if (!string.IsNullOrEmpty(cm.Value_1) || !string.IsNullOrEmpty(cm.Value_2))
                     {
-                        if (cm.Value_1.First().Equals('*')) dac123[0] = vm.list_VariableModels[int.Parse(cm.Value_1.Remove(0, 1))].VariableContent.ToString();
-                        if (cm.Value_2.First().Equals('*')) dac123[1] = vm.list_VariableModels[int.Parse(cm.Value_2.Remove(0, 1))].VariableContent.ToString();
-                        if (cm.Value_3.First().Equals('*')) dac123[2] = vm.list_VariableModels[int.Parse(cm.Value_3.Remove(0, 1))].VariableContent.ToString();
+                        if (cm.Value_1 != null)
+                            if (cm.Value_1.First().Equals('*'))
+                                dac123[0] = vm.list_VariableModels[int.Parse(cm.Value_1.Remove(0, 1))].VariableContent.ToString();
+
+                        if (cm.Value_2 != null)
+                            if (cm.Value_2.First().Equals('*'))
+                                dac123[1] = vm.list_VariableModels[int.Parse(cm.Value_2.Remove(0, 1))].VariableContent.ToString();
+
+                        if (cm.Value_3 != null)
+                            if (cm.Value_3.First().Equals('*'))
+                                dac123[2] = vm.list_VariableModels[int.Parse(cm.Value_3.Remove(0, 1))].VariableContent.ToString();
                     }
-                    else  //PD , select V3
+                    else if (cm.Value_3 != null) //PD , select V3
                     {
                         int dac = int.Parse(cm.Value_3);
                         if (dac >= -65535 && dac <= 65535)
@@ -855,6 +863,7 @@ namespace PD.Functions
                     //If Dac if out of range
                     foreach (string s in dac123)
                     {
+                        if (string.IsNullOrEmpty(s)) continue;
                         int dac = int.Parse(s);
                         if (dac < -65535 || dac > 65535)
                         {
@@ -863,7 +872,7 @@ namespace PD.Functions
                             {
                                 Status = "Set Dac",
                                 Message = "Dac out of range",
-                                isShowMSG = true
+                                isShowMSG = false
                             });
                         }
                     }
@@ -2393,17 +2402,19 @@ namespace PD.Functions
         {
             try
             {
+                wl = Math.Round(wl, 2);
                 string band = WL_Range_Analyze(wl);
                 if (string.IsNullOrEmpty(band))
                 {
                     vm.Str_cmd_read = "WL out of range";
-                    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
-                    return;
+                    vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = false });
+                    //return;
                 }
                 else
                     vm.selected_band = band;
 
-                if (!vm.isConnected) Connect_TLS();
+                //if (!vm.isConnected)
+                Connect_TLS();
 
                 switch (vm.Laser_type)
                 {
@@ -2416,13 +2427,16 @@ namespace PD.Functions
                         break;
                 }
 
-                if (vm.PD_or_PM)
-                    if (vm.PM_sync)
-                        if (vm.pm != null) vm.pm.SetWL(wl);
+                if (!vm.IsDistributedSystem)
+                {
+                    if (vm.PD_or_PM)
+                        if (vm.PM_sync)
+                            if (vm.pm != null) vm.pm.SetWL(wl);
+                }
 
                 Set_TLS_Filter(wl);
 
-                await Task.Delay(vm.Int_Set_WL_Delay);
+                await Task.Delay(vm.Int_Read_Delay);
 
                 if (readback)
                 {
@@ -2438,11 +2452,15 @@ namespace PD.Functions
                             break;
 
                         case "Golight":
+
                             wl_read = vm.tls_GL.ReadWL();
+
                             if (wl_read > 0)
                                 vm.Double_Laser_Wavelength = wl_read;
-                            else
-                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
+
+                            if (wl_read != wl)
+                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "SetWL failed" });
+
                             break;
                     }
 
@@ -2543,7 +2561,6 @@ namespace PD.Functions
             {
                 if (vm.PD_or_PM)  //PM mode
                 {
-
                     if (vm.Control_board_type == 0)  //Control board type: UFV
                     {
                         string TF_or_VOA = "D", DAC;
@@ -2643,7 +2660,8 @@ namespace PD.Functions
                     vm.port_PD.Write(vm.Str_Command + "\r");
                     await Task.Delay(vm.Int_Write_Delay);
 
-                    vm.port_PD.Close();
+                    if (vm.IsDistributedSystem)
+                        vm.port_PD.Close();
                 }
             }
             catch { vm.Str_cmd_read = "Write Dac Error"; }
@@ -2772,67 +2790,185 @@ namespace PD.Functions
 
         public async Task Get_Power()
         {
-            switch (vm.GetPWSettingModel.TypeName)
-            {
-                case "PM":
-                    int ch = 1;
-                    if (vm.station_type.Equals("Hermetic_Test")) ch = vm.switch_index;
+            if (!vm.IsDistributedSystem)
+                switch (vm.GetPWSettingModel.TypeName)
+                {
+                    case "PM":
+                        int ch = 1;
+                        if (vm.station_type.Equals("Hermetic_Test")) ch = vm.switch_index;
 
-                    double p = await Get_PM_Value((ch - 1));  //Y axis value
+                        double p = await Get_PM_Value((ch - 1));  //Y axis value
 
-                    //vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
-                    break;
+                        //vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
+                        break;
 
-                case "PD":
-                    string comport = vm.GetPWSettingModel.Comport;
-                    await Get_PD_Value(comport);  //Y axis value
+                    case "PD":
+                        string comport = vm.GetPWSettingModel.Comport;
+                        await Get_PD_Value(comport);  //Y axis value
 
-                    for (int i = 0; i < vm.ch_count; i++)
-                    {
-                        if (vm.BoolAllGauge || vm.list_GaugeModels[i].boolGauge)
+                        for (int i = 0; i < vm.ch_count; i++)
                         {
-                            vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                            if (vm.BoolAllGauge || vm.list_GaugeModels[i].boolGauge)
+                            {
+                                vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                            }
+                        }
+
+                        break;
+
+                    case "Tablet":
+
+                        break;
+                }
+            else  //Distribution System
+            {
+                for (int ch = 0; ch <= vm.list_ChannelModels.Count; ch++)
+                {
+                    string rs232_cmd = vm.list_ChannelModels[ch - 1].PM_GetPower_CMD;
+
+                    if (vm.list_ChannelModels[ch - 1].PM_Type == "GPIB")
+                    {
+
+                    }
+                    else if (vm.list_ChannelModels[ch - 1].PM_Type == "RS232")
+                    {
+                        string comport = vm.list_ChannelModels[ch - 1].PM_Board_Port;
+
+                        await Get_IL_rs232(ch, comport, rs232_cmd);  //Y axis value
+
+                        if (ch == 0)
+                        {
+                            for (int i = 0; i < vm.ch_count; i++)
+                            {
+                                vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                            }
+                        }
+                        else
+                        {
+                            double p = vm.Double_Powers[ch - 1];
+                            vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
                         }
                     }
-
-                    break;
-
-                case "Tablet":
-
-                    break;
+                }
             }
         }
 
-        public async Task Get_Power(int ch)
+        public async Task<List<List<double>>> Get_Power(int ch, bool isRead)
         {
-            switch (vm.GetPWSettingModel.TypeName)
+            List<List<double>> listDD = new List<List<double>>();
+
+            if (!vm.IsDistributedSystem)
             {
-                case "PM":
-                    double p = await Get_PM_Value((ch));  //Y axis value
+                switch (vm.GetPWSettingModel.TypeName)
+                {
+                    case "PM":
+                        double p = await Get_PM_Value((ch));  //Y axis value
+                        break;
 
-                    //vm.list_GaugeModels[ch].GaugeValue = p.ToString();
+                    case "PD":
+                        string comport = vm.GetPWSettingModel.Comport;
+                        await Get_PD_Value(comport);  //Y axis value
 
-                    break;
-
-                case "PD":
-                    string comport = vm.GetPWSettingModel.Comport;
-                    await Get_PD_Value(comport);  //Y axis value
-
-                    for (int i = 0; i < vm.ch_count; i++)
-                    {
-                        if (vm.BoolAllGauge || vm.list_GaugeModels[i].boolGauge)
+                        for (int i = 0; i < vm.ch_count; i++)
                         {
-                            vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                            if (vm.BoolAllGauge || vm.list_GaugeModels[i].boolGauge)
+                            {
+                                vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
 
+                            }
                         }
-                    }
+                        break;
 
-                    break;
+                    case "Tablet":
 
-                case "Tablet":
-
-                    break;
+                        break;
+                }
             }
+            else
+            {
+                ch++;
+                string rs232_cmd = vm.list_ChannelModels[ch - 1].PM_GetPower_CMD;
+
+                switch (vm.list_ChannelModels[ch - 1].PM_Type)
+                {
+                    case "GPIB":
+                        break;
+
+                    case "RS232":
+
+                        #region RS232
+                        string comport = vm.list_ChannelModels[ch - 1].PM_Board_Port;
+
+                        listDD = await Get_IL_rs232(ch, comport, rs232_cmd, isRead);  //Y axis value
+                        if (!isRead)
+                        {
+                            if (vm.list_ChannelModels.Count == 1 && listDD.Count > 1)
+                                return listDD;
+                            else
+                            {
+                                if (ch == 0)
+                                {
+                                    for (int i = 0; i < vm.ch_count; i++)
+                                    {
+                                        vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                    }
+                                }
+                                else
+                                {
+                                    double p = vm.Double_Powers[ch - 1];
+                                    vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
+                                }
+
+                                if (listDD.Count > 0)
+                                    if (listDD[0].Count > 0)
+                                    {
+                                        foreach (double IL in listDD[0])
+                                        {
+                                            DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], IL);
+                                            vm.ChartNowModel.list_dataPoints[ch - 1].Add(dp);
+                                            vm.Save_All_PD_Value[ch - 1].Add(dp);
+                                            vm.wl_list_index++;
+                                        }
+                                    }
+                            }
+                        }
+                        else
+                        {
+                            if (ch == 0)
+                            {
+                                for (int i = 0; i < vm.ch_count; i++)
+                                {
+                                    vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                }
+                            }
+                            else
+                            {
+                                double p = vm.Double_Powers[ch - 1];
+                                vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
+                            }
+
+                            //Get the rest of IL
+                            if (listDD.Count > 0)
+                            {
+                                foreach (double IL in listDD[0])
+                                {
+                                    vm.list_GaugeModels[ch - 1].GaugeValue = IL.ToString();
+
+                                    DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], IL);
+                                    vm.ChartNowModel.list_dataPoints[ch - 1].Add(dp);
+                                    vm.Save_All_PD_Value[ch - 1].Add(dp);
+
+                                    vm.wl_list_index++;
+                                }
+                            }
+                        }
+                        #endregion
+
+                        break;
+                }
+            }
+
+            return listDD;
         }
 
         public async Task<string> Get_Board_ID(string comport, int ch)
@@ -2950,6 +3086,8 @@ namespace PD.Functions
                     await vm.Port_ReOpen(comport);
             }
 
+
+
             vm.port_PD.Write(cmd + "\r");
 
             await Task.Delay(vm.Int_Read_Delay);
@@ -2960,8 +3098,6 @@ namespace PD.Functions
 
             //Show read back message
             string msg = anly.Read_analysis(cmd, dataBuffer);
-
-            //await Cmd_RecieveData("P0_Read", false);
 
             double power = double.Parse(msg);
             try
@@ -2984,6 +3120,138 @@ namespace PD.Functions
             catch (Exception ex) { MessageBox.Show(ex.StackTrace.ToString()); }
 
             return vm.Double_Powers;
+        }
+
+        public async Task<List<List<double>>> Get_IL_rs232(int ch, string comport, string cmd, bool isRead)
+        {
+            if (!string.IsNullOrEmpty(comport))
+            {
+                if (!vm.port_PD.IsOpen)
+                    await vm.Port_ReOpen(comport);
+            }
+
+            List<List<double>> listDD = new List<List<double>>();
+
+            vm.port_PD.Write(cmd + "\r");
+
+            if (isRead)
+                await Task.Delay(vm.Int_Read_Delay);
+
+            int size = vm.port_PD.BytesToRead;
+            byte[] dataBuffer = new byte[size];
+            int length = vm.port_PD.Read(dataBuffer, 0, size);
+
+            //Show read back message
+            string msg = anly.Read_analysis(cmd, dataBuffer);
+
+            if (vm.Is_FastScan_Mode)
+            {
+                listDD.Add(new List<double>());
+
+                if (true)
+                {
+                    if (size > 0)
+                        vm.IL_ALL += msg;
+
+                    List<string> msgList = vm.IL_ALL.Split('-').ToList();
+                    string str_saved_IL = "";
+
+                    if (msgList.Count > 2)  //at least two IL in list
+                    {
+                        msgList.RemoveAt(0);
+
+                        for (int i = 0; i < msgList.Count; i++)
+                        {
+                            str_saved_IL += "-" + msgList[i];
+
+                            if (double.TryParse(msgList[i], out double power))
+                            {
+                                power = power * -1;
+                                if (vm.dB_or_dBm)  //dB
+                                {
+                                    if (vm.float_WL_Ref.Count > 0)
+                                        power = Math.Round(power - vm.float_WL_Ref[0], 4);
+
+                                    vm.Double_Powers[ch - 1] = power;
+                                }
+                                else  //dBm
+                                {
+                                    vm.Double_Powers[ch - 1] = power;
+                                }
+
+                                listDD[0].Add(power);
+                            }
+                        }
+
+                        vm.IL_ALL = vm.IL_ALL.Substring(str_saved_IL.Length);
+                    }
+                }
+            }
+            else  //set IL immediately
+            {
+                if (double.TryParse(msg, out double power))
+                    try
+                    {
+                        if (vm.dB_or_dBm)  //dB
+                        {
+                            if (vm.float_WL_Ref.Count > 0)
+                                power = Math.Round(power - vm.float_WL_Ref[0], 4);
+
+                            vm.Double_Powers[ch - 1] = power;
+                        }
+                        else  //dBm
+                        {
+                            vm.Double_Powers[ch - 1] = power;
+                        }
+
+                        await Task.Delay(vm.Int_Set_WL_Delay);
+                    }
+                    catch (Exception ex) { MessageBox.Show(ex.StackTrace.ToString()); }
+
+                listDD.Add(new List<double>() { vm.Double_Powers[ch - 1] });
+            }
+
+            return listDD;
+
+            //List<string> msgList = msg.Split('-').ToList();
+
+            //if (msgList.Count > 2)
+            //{
+            //    List<double> list_D = new List<double>();
+
+            //    msgList.RemoveAt(0);
+
+            //    for (int i = 0; i < msgList.Count; i++)
+            //    {
+            //        if (double.TryParse(msgList[i], out double d))
+            //            list_D.Add(d * -1);
+            //    }
+
+            //    return list_D;
+            //}
+            //else  //Only one IL return
+            //{
+            //    double power = double.Parse(msg);
+            //    try
+            //    {
+            //        if (vm.dB_or_dBm)  //dB
+            //        {
+            //            if (vm.float_WL_Ref.Count > 0)
+            //                power = Math.Round(power - vm.float_WL_Ref[0], 4);
+
+            //            vm.Double_Powers[ch - 1] = power;
+            //        }
+            //        else  //dBm
+            //        {
+            //            vm.Double_Powers[ch - 1] = power;
+            //        }
+
+            //        await Task.Delay(vm.Int_Set_WL_Delay);
+            //    }
+            //    catch (Exception ex) { MessageBox.Show(ex.StackTrace.ToString()); }
+            //}
+
+
         }
 
         public async Task<List<double>> Get_PD_Value(string comport)
@@ -3290,9 +3558,7 @@ namespace PD.Functions
             vm.Chart_All_Datapoints_History.Add(vm.Chart_All_DataPoints);
             vm.int_chart_count = vm.Chart_All_Datapoints_History.Count;
             vm.int_chart_now = vm.int_chart_count;
-            await Task.Delay(50);
-
-            //MessageBox.Show("Stop");
+            await Task.Delay(3);
         }
 
         public void Update_Chart(double X, double Y, int ch)

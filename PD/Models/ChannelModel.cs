@@ -179,17 +179,95 @@ namespace PD.Models
         }
 
         //RS232
-        public int PM_BautRate { get; set; } = 115200;
-        public string PM_Board_ID { get; set; } = "";
-        public string PM_Board_Port { get; set; } = "COM1";
-        public string PM_GetPower_CMD { get; set; } = "P0?";
+        private int _PM_BautRate { get; set; } = 115200;
+        public int PM_BautRate
+        {
+            get { return _PM_BautRate; }
+            set
+            {
+                _PM_BautRate = value;
+                OnPropertyChanged("PM_BautRate");
+            }
+        }
+
+        private string _PM_Board_ID { get; set; } = "";
+        public string PM_Board_ID
+        {
+            get { return _PM_Board_ID; }
+            set
+            {
+                _PM_Board_ID = value;
+                OnPropertyChanged("PM_Board_ID");
+            }
+        }
+
+        private string _PM_Board_Port = "COM1";
+        public string PM_Board_Port
+        {
+            get { return _PM_Board_Port; }
+            set
+            {
+                _PM_Board_Port = value;
+                OnPropertyChanged("PM_Board_Port");
+            }
+        }
+
+        private string _PM_GetPower_CMD { get; set; } = "P0?";
+        public string PM_GetPower_CMD
+        {
+            get { return _PM_GetPower_CMD; }
+            set
+            {
+                _PM_GetPower_CMD = value;
+                OnPropertyChanged("PM_GetPower_CMD");
+            }
+        }
         //public int panel_z_index { get; set; } = 0;
 
         //GPIB
-        public int PM_GPIB_BoardNum { get; set; } = 0;
-        public int PM_Address { get; set; } = 24;
-        public int PM_Slot { get; set; } = 1;
-        public int PM_AveTime { get; set; } = 20;
+        private int _PM_GPIB_BoardNum { get; set; } = 0;
+        public int PM_GPIB_BoardNum
+        {
+            get { return _PM_GPIB_BoardNum; }
+            set
+            {
+                _PM_GPIB_BoardNum = value;
+                OnPropertyChanged("PM_GPIB_BoardNum");
+            }
+        }
+
+        private int _PM_Address { get; set; } = 24;
+        public int PM_Address
+        {
+            get { return _PM_Address; }
+            set
+            {
+                _PM_Address = value;
+                OnPropertyChanged("PM_Address");
+            }
+        }
+
+        private int _PM_Slot { get; set; } = 1;
+        public int PM_Slot
+        {
+            get { return _PM_Slot; }
+            set
+            {
+                _PM_Slot = value;
+                OnPropertyChanged("PM_Slot");
+            }
+        }
+
+        private int _PM_AveTime { get; set; } = 20;
+        public int PM_AveTime
+        {
+            get { return _PM_AveTime; }
+            set
+            {
+                _PM_AveTime = value;
+                OnPropertyChanged("PM_AveTime");
+            }
+        }
         #endregion
     }
 }

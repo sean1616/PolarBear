@@ -1986,7 +1986,13 @@
                         <Viewbox Grid.Row="1"
                                  Grid.Column="1">
                             <Image HorizontalAlignment="Center"
-                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                                   Source="{Binding Content.Source, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <!--<Image HorizontalAlignment="Center"
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />-->
+                        </Viewbox>
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1">
+                            <ContentPresenter />
                         </Viewbox>
                     </Grid>
                     <ControlTemplate.Triggers>

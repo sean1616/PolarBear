@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:PD.ViewModel"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:cusTxtBox="clr-namespace:WpfControlLibrary1;assembly=Customized_TxtBox"
         xmlns:local="clr-namespace:PD.NavigationPages"
         mc:Ignorable="d"
@@ -15,6 +16,45 @@
         Width="1200">
     <Window.Resources>
         <local:VisValueConverter x:Key="VisValueConverter" />
+
+        <Style x:Key="{x:Type ToolTip}"
+               TargetType="ToolTip">
+            <Setter Property="OverridesDefaultStyle"
+                    Value="true" />
+            <Setter Property="HasDropShadow"
+                    Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border Name="Border"
+                                BorderThickness="1"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                Background="#FF676565">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
+                            </Border.BorderBrush>
+                            <ContentPresenter Margin="4"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Top"
+                                              TextBlock.FontFamily="Segoe Print"
+                                              TextBlock.Foreground="White" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasDropShadow"
+                                     Value="true">
+                                <Setter TargetName="Border"
+                                        Property="CornerRadius"
+                                        Value="4" />
+                                <Setter TargetName="Border"
+                                        Property="SnapsToDevicePixels"
+                                        Value="true" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Window.DataContext>
@@ -33,33 +73,54 @@
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="1"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Grid.Row="1">
-            <Button Name="btn_Board_ID"
-                    Content="Get ID"
-                    Width="120"
-                    Margin="5"
-                    Style="{DynamicResource style_Btn_only_txt}"
-                    FontFamily="Segoe Print"
-                    Click="btn_Board_ID_Click" />
-            <Button Name="btn_save_boardtable"
-                    Content="Save"
-                    Width="120"
-                    Margin="5"
-                    Style="{DynamicResource style_Btn_only_txt}"
-                    FontFamily="Segoe Print"
-                    Click="btn_save_boardtable_Click" />
-            <Button Name="btn_load_boardtable"
-                    Content="Load"
-                    Width="120"
-                    Grid.Column="1"
-                    Margin="5"
-                    Click="btn_load_boardtable_Click"
-                    Style="{DynamicResource style_Btn_only_txt}"
-                    FontFamily="Segoe Print" />
-        </StackPanel>
+        <Grid Grid.Row="1"
+              Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="12.5*" />
+                <ColumnDefinition Width="12.5*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBox Name="txt_equipment_setting_Path"
+                     Height="{Binding ActualHeight, ElementName=btn_save_boardtable, Mode=OneWay}"
+                     Text="{Binding txt_Equip_Setting_Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     HorizontalAlignment="Stretch"
+                     VerticalContentAlignment="Center"
+                     ToolTip="Comport Setting Path"
+                     controls:TextBoxHelper.ClearTextButton="True"
+                     controls:TextBoxHelper.Watermark="Comport Setting Path"
+                     FontFamily="Segoe Print"
+                     Grid.Column="1" />
+            <StackPanel Grid.Column="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Grid.Row="1">
+                <Button Name="btn_Board_ID"
+                        Content="Get ID"
+                        Width="120"
+                        Margin="5"
+                        Style="{DynamicResource style_Btn_only_txt}"
+                        FontFamily="Segoe Print"
+                        Click="btn_Board_ID_Click" />
+                <Button Name="btn_save_boardtable"
+                        Content="Save"
+                        Width="120"
+                        Margin="5"
+                        Style="{DynamicResource style_Btn_only_txt}"
+                        FontFamily="Segoe Print"
+                        Click="btn_save_boardtable_Click" />
+                <Button Name="btn_load_boardtable"
+                        Content="Load"
+                        Width="120"
+                        Grid.Column="1"
+                        Margin="5"
+                        Click="btn_load_boardtable_Click"
+                        Style="{DynamicResource style_Btn_only_txt}"
+                        FontFamily="Segoe Print" />
+            </StackPanel>
+        </Grid>
+
+        
 
         <!--Channel PowerSupply-->
         <Grid Grid.Row="2"

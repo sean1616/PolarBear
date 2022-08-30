@@ -617,6 +617,7 @@ namespace PD.AnalysisModel
                         }
                     }
 
+
                     list_read_value.RemoveAt(0);  //list dBm in string type
 
                     vm.Double_Powers = new List<double>();

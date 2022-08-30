@@ -386,12 +386,25 @@ namespace PD.Functions
         {
             try
             {
-                string folder = @"D:\";
+                string folder = System.Reflection.Assembly.GetEntryAssembly().Location;
+                string FileName = fileName + "_" + DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00") + ".csv";
+
+                for (int i = 1; i <= 1000; i++)
+                {
+                    if (File.Exists(Path.Combine(folder, FileName)))
+                    {
+                        FileName =
+                            String.Format("ControlBoard_Table_{0}_{1}.csv",
+                            DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00"),
+                            i.ToString());
+                    }
+                    else break;
+                }
 
                 System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
                 saveFileDialog.Title = "Save Data";
-                saveFileDialog.InitialDirectory = @"D:\";
-                saveFileDialog.FileName = fileName + DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00") + ".csv";
+                saveFileDialog.InitialDirectory = folder;
+                saveFileDialog.FileName = FileName;
                 saveFileDialog.Filter = "CSV (*.csv)|*.csv|TXT (*.txt)|*.txt|All files (*.*)|*.*";
 
                 string BoardData_filePath = @"D:\" + fileName + @"_001.csv";

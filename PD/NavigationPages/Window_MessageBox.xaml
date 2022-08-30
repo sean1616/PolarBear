@@ -71,12 +71,16 @@
                         Style="{DynamicResource style_WindowFuncBtn}"
                         Tag="../Resources/Min_black.png"
                         Margin="3"
+                        MaxHeight="60"
+                        MaxWidth="60"
                         Background="Transparent"
                         Click="btn_min_Click" />
                 <Button x:Name="btn_close"
                         Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                         Background="Transparent"
                         Style="{DynamicResource style_WindowFuncBtn}"
+                        MaxHeight="60"
+                        MaxWidth="60"
                         Tag="../Resources/Close_black.png"
                         Margin="3"
                         Click="btn_close_Click" />
@@ -130,16 +134,22 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
+            <TextBlock x:Name="txt_bear_say_something"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontFamily="Segoe Print"
+                       FontSize="20"
+                       Text="Bear Say"
+                       Grid.Row="0"
+                       Grid.Column="1"
+                       Grid.ColumnSpan="3"
+                       Grid.RowSpan="3" />
             <Viewbox  Grid.Row="1"
                       Grid.Column="1"
                       Grid.ColumnSpan="3"
                       MaxHeight="40">
-                <TextBlock x:Name="txt_bear_say_something"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           FontFamily="Segoe Print"
-                           FontSize="20"
-                           Text="Bear Say" />
+             
             </Viewbox>
 
             <!--  Button 1  -->

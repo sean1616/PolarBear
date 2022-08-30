@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
+using System.Data;
 using PD.ViewModel;
 using PD.Models;
 using PD.Functions;
@@ -36,119 +37,112 @@ namespace PD.NavigationPages
             viewer.DataContext = vm;  //將DataContext指給使用者控制項，必要!
             //viewer_2.DataContext = vm;
             sPanel_other_ports.DataContext = vm;
+            txt_equipment_setting_Path.DataContext = vm;
 
             cmd = new ControlCmd(vm);
-        }                
+        }
 
         private void btn_save_boardtable_Click(object sender, RoutedEventArgs e)
         {
-            if (!vm.IsDistributedSystem)
+            #region Save Comport in INI
+            try
             {
-                
-            }
-            else  //distribution system
-            {
-                #region Save Comport in INI
-                try
+                for (int ch = 0; ch < vm.ch_count; ch++)
                 {
-                    for (int ch = 0; ch < vm.ch_count; ch++)
-                    {
-                        string board_id = "Board_ID_" + (ch + 1);
-                        vm.Ini_Write("Board_ID", board_id, vm.list_ChannelModels[ch].Board_ID);
+                    string board_id = "Board_ID_" + (ch + 1);
+                    vm.Ini_Write("Board_ID", board_id, vm.list_ChannelModels[ch].Board_ID);
 
-                        string board_com = "Board_COM_" + (ch + 1);
-                        vm.Ini_Write("Board_Comport", board_com, vm.list_ChannelModels[ch].Board_Port);
-                    }
-
-                    #region Get board calibration data
-                    vm.txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
-
-                    if (vm.station_type.Equals("Hermetic_Test"))
-                    {
-                        vm.list_Board_Setting.Clear();
-                        //vm.IsCheck.Clear();
-                        for (int i = 0; i < vm.ch_count; i++)
-                        {
-                            string Board_ID = "Board_ID_" + (i + 1).ToString();
-                            string Board_COM = "Board_COM_" + (i + 1).ToString();
-                            vm.list_Board_Setting.Add(new List<string>() { vm.Ini_Read("Board_ID", Board_ID), vm.Ini_Read("Board_Comport", Board_COM) });
-                            //vm.IsCheck.Add(false);
-                            vm.list_Chart_UI_Models[i].Button_IsChecked = false;
-                        }
-                        vm.list_Board_Setting = new List<List<string>>(vm.list_Board_Setting);
-
-                        int k = 0;
-                        foreach (List<string> board_info in vm.list_Board_Setting)
-                        {
-                            vm.board_read.Add(new List<string>());
-
-                            if (string.IsNullOrEmpty(board_info[0]))
-                            {
-                                k++; continue;
-                            }
-
-                            string board_id = board_info[0];
-                            string path = string.Concat(vm.txt_board_table_path, board_id, "-boardtable.txt");
-
-                            if (!File.Exists(path))
-                            {
-                                vm.Str_cmd_read = "UFV Board table is not exist";
-                                vm.Save_Log("Get Board Table", (k + 1).ToString(), vm.Str_cmd_read);
-                                k++;
-                                continue;
-                            }
-
-                            StreamReader str = new StreamReader(path);
-
-                            while (true)  //Read board v3 data
-                            {
-                                string readline = str.ReadLine();
-
-                                if (string.IsNullOrEmpty(readline)) break;
-
-                                vm.board_read[k].Add(readline);
-                            }
-                            str.Close(); //(關閉str)
-
-                            k++;
-                        }
-                    }
-
-                    #endregion
-
-                    vm.Ini_Write("Connection", "Comport_Switch", vm.Comport_Switch);
-                    vm.Ini_Write("Connection", "Comport_TLS_Filter", vm.Comport_TLS_Filter);
-
-                    vm.Ini_Write("Connection", "COM_PD_A", vm.PD_A_ChannelModel.Board_Port);
-                    vm.Ini_Write("Connection", "COM_PD_B", vm.PD_B_ChannelModel.Board_Port);
-
-                    vm.Ini_Write("Connection", "COM_Golight", vm.Golight_ChannelModel.Board_Port);
+                    string board_com = "Board_COM_" + (ch + 1);
+                    vm.Ini_Write("Board_Comport", board_com, vm.list_ChannelModels[ch].Board_Port);
                 }
-                catch (Exception ex)
+
+                #region Get board calibration data
+                if (Directory.Exists(vm.txt_board_table_path))
                 {
-                    MessageBox.Show(ex.StackTrace.ToString());
+                    vm.list_Board_Setting.Clear();
+                    //vm.IsCheck.Clear();
+                    for (int i = 0; i < vm.ch_count; i++)
+                    {
+                        string Board_ID = "Board_ID_" + (i + 1).ToString();
+                        string Board_COM = "Board_COM_" + (i + 1).ToString();
+                        vm.list_Board_Setting.Add(new List<string>() { vm.Ini_Read("Board_ID", Board_ID), vm.Ini_Read("Board_Comport", Board_COM) });
+                        //vm.IsCheck.Add(false);
+                        vm.list_Chart_UI_Models[i].Button_IsChecked = false;
+                    }
+                    vm.list_Board_Setting = new List<List<string>>(vm.list_Board_Setting);
+
+                    int k = 0;
+                    foreach (List<string> board_info in vm.list_Board_Setting)
+                    {
+                        vm.board_read.Add(new List<string>());
+
+                        if (string.IsNullOrEmpty(board_info[0]))
+                        {
+                            k++; continue;
+                        }
+
+                        string board_id = board_info[0];
+                        string path = string.Concat(vm.txt_board_table_path, board_id, "-boardtable.txt");
+
+                        if (!File.Exists(path))
+                        {
+                            vm.Str_cmd_read = "UFV Board table is not exist";
+                            vm.Save_Log("Get Board Table", (k + 1).ToString(), vm.Str_cmd_read);
+                            k++;
+                            continue;
+                        }
+
+                        StreamReader str = new StreamReader(path);
+
+                        while (true)  //Read board v3 data
+                        {
+                            string readline = str.ReadLine();
+
+                            if (string.IsNullOrEmpty(readline)) break;
+
+                            vm.board_read[k].Add(readline);
+                        }
+                        str.Close(); //(關閉str)
+
+                        k++;
+                    }
                 }
                 #endregion
 
-                List<string> list_titles = new List<string>(){"Channel", "ID", "Comport", "BautRate",
+                vm.Ini_Write("Connection", "Comport_Switch", vm.Comport_Switch);
+                vm.Ini_Write("Connection", "Comport_TLS_Filter", vm.Comport_TLS_Filter);
+
+                vm.Ini_Write("Connection", "COM_PD_A", vm.PD_A_ChannelModel.Board_Port);
+                vm.Ini_Write("Connection", "COM_PD_B", vm.PD_B_ChannelModel.Board_Port);
+
+                vm.Ini_Write("Connection", "COM_Golight", vm.Golight_ChannelModel.Board_Port);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.StackTrace.ToString());
+            }
+            #endregion
+
+            #region Save equipment setting table
+            List<string> list_titles = new List<string>(){"Channel", "ID", "Comport", "BautRate",
                     "PM_Type", "PM_GPIB_BoardName", "PM_Address", "PM_Slot", "PM_AverageTime", "PM_ID", "PM_Comport", "PM_BautRate", "PM_GetPower_Cmd" };
-                string filePath = CSVFunctions.Creat_New_CSV("Control_Board_Setting", list_titles);
+            string filePath = CSVFunctions.Creat_New_CSV("Control_Board_Setting", list_titles);
 
-                if (string.IsNullOrEmpty(filePath))
-                {
-                    vm.Save_Log(new LogMember() { Message = "Creat CSV file failed." });
-                    return;
-                }
+            if (string.IsNullOrEmpty(filePath))
+            {
+                vm.Save_Log(new LogMember() { Message = "Creat CSV file failed." });
+                return;
+            }
 
-                for (int i = 0; i < vm.list_ChannelModels.Count; i++)
-                {
-                    ChannelModel cm = vm.list_ChannelModels[i];
-                    List<string> list_datas = new List<string>() { 
+            for (int i = 0; i < vm.list_ChannelModels.Count; i++)
+            {
+                ChannelModel cm = vm.list_ChannelModels[i];
+                List<string> list_datas = new List<string>() {
                         cm.channel,
                         cm.Board_ID,
                         cm.Board_Port,
                         cm.BautRate.ToString(),
-                        cm.PM_Type, 
+                        cm.PM_Type,
                         cm.PM_GPIB_BoardNum.ToString(),
                         cm.PM_Address.ToString(),
                         cm.PM_Slot.ToString(),
@@ -157,13 +151,14 @@ namespace PD.NavigationPages
                         cm.PM_Board_Port,
                         cm.PM_BautRate.ToString(),
                         cm.PM_GetPower_CMD};
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, list_datas);
-                }
-
-                vm.txt_Equip_Setting_Path = filePath;
-                vm.Ini_Write("Connection", "Equip_Setting_Path", filePath);
-                vm.Str_cmd_read = "Board Table Saved";
+                CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, list_datas);
             }
+
+            vm.txt_Equip_Setting_Path = filePath;
+            vm.Ini_Write("Connection", "Equip_Setting_Path", filePath);
+            vm.Str_cmd_read = "Board Table Saved";
+            vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = false });
+            #endregion
         }
 
         private void ComboBox_DropDownClosed(object sender, EventArgs e)
@@ -202,8 +197,80 @@ namespace PD.NavigationPages
 
         private void btn_load_boardtable_Click(object sender, RoutedEventArgs e)
         {
-            #region Board Setting
-            vm.txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
+            string folder = System.Reflection.Assembly.GetEntryAssembly().Location;
+            //string FileName = "ControlBoard_Table_" + DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00") + ".csv";
+
+            var dialog = new Microsoft.Win32.OpenFileDialog();
+            //System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            dialog.Title = "Load equipment setting table";
+            dialog.InitialDirectory = folder;
+            dialog.FileName = vm.txt_Equip_Setting_Path;
+            //saveFileDialog.FileName = FileName;
+            dialog.Filter = "CSV (*.csv)|*.csv|TXT (*.txt)|*.txt|All files (*.*)|*.*";
+
+            bool? result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                string filePath = dialog.FileName;
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    if (File.Exists(filePath))
+                    {
+                        using (DataTable dtt = CSVFunctions.Read_CSV(filePath))
+                        {
+                            if (dtt != null)
+                            {
+                                if (dtt.Rows.Count != 0)
+                                {
+                                    if (dtt.Columns.Count >= 13)
+                                    {
+                                        int loopIndex = (vm.list_ChannelModels.Count >= dtt.Rows.Count - 1) ? dtt.Rows.Count - 1 : vm.list_ChannelModels.Count;
+
+                                        if (vm.list_ChannelModels.Count < dtt.Rows.Count - 1)
+                                        {
+                                            vm.Str_cmd_read = "Channel Counts < DataTable Rows";
+                                            vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = true });
+                                        }
+
+                                        for (int i = 0; i < loopIndex; i++)
+                                        {
+                                            vm.list_ChannelModels[i].channel = dtt.Rows[i + 1][0].ToString();
+                                            vm.list_ChannelModels[i].Board_ID = dtt.Rows[i + 1][1].ToString();
+                                            vm.list_ChannelModels[i].Board_Port = dtt.Rows[i + 1][2].ToString();
+                                            if (int.TryParse(dtt.Rows[i + 1][3].ToString(), out int brt))
+                                                vm.list_ChannelModels[i].BautRate = brt;
+                                            vm.list_ChannelModels[i].PM_Type = dtt.Rows[i + 1][4].ToString();
+                                            if (int.TryParse(dtt.Rows[i + 1][5].ToString(), out int PM_GPIB_BoardNum))
+                                                vm.list_ChannelModels[i].PM_GPIB_BoardNum = PM_GPIB_BoardNum;
+                                            if (int.TryParse(dtt.Rows[i + 1][6].ToString(), out int PM_Addr))
+                                                vm.list_ChannelModels[i].PM_Address = PM_Addr;
+                                            if (int.TryParse(dtt.Rows[i + 1][7].ToString(), out int PM_Slot))
+                                                vm.list_ChannelModels[i].PM_Slot = PM_Slot;
+                                            if (int.TryParse(dtt.Rows[i + 1][8].ToString(), out int PM_AveTime))
+                                                vm.list_ChannelModels[i].PM_AveTime = PM_AveTime;
+                                            vm.list_ChannelModels[i].PM_Board_ID = dtt.Rows[i + 1][9].ToString();
+                                            vm.list_ChannelModels[i].PM_Board_Port = dtt.Rows[i + 1][10].ToString();
+                                            if (int.TryParse(dtt.Rows[i + 1][11].ToString(), out int PM_BautRate))
+                                                vm.list_ChannelModels[i].PM_BautRate = PM_BautRate;
+                                            vm.list_ChannelModels[i].PM_GetPower_CMD = dtt.Rows[i + 1][12].ToString();
+                                        }
+                                    }
+                                }
+                                //vm.Str_cmd_read = vm.list_ChannelModels[0].PM_Board_Port;
+                            }
+                        }
+                    }
+                    else
+                        vm.Save_Log(new LogMember() { Message = "Equip setting file is not exist", isShowMSG = true });
+                }
+            }
+
+
+
+            string sss = vm.list_ChannelModels[0].PM_Board_Port;
+
+            #region Get Board From Server
 
             if (vm.station_type.Equals("Hermetic_Test"))
             {
@@ -218,6 +285,12 @@ namespace PD.NavigationPages
                     vm.list_Chart_UI_Models[i].Button_IsChecked = false;
                 }
                 vm.list_Board_Setting = new List<List<string>>(vm.list_Board_Setting);
+
+                if (!Directory.Exists(vm.txt_board_table_path))
+                {
+                    vm.Str_cmd_read = vm.txt_board_table_path + "\r\n" + " Directory is not exist";
+                    return;
+                }
 
                 int k = 0;
                 foreach (List<string> board_info in vm.list_Board_Setting)
@@ -264,7 +337,8 @@ namespace PD.NavigationPages
 
             #endregion
 
-            vm.Str_cmd_read = "Board Table Loaded";
+            vm.Str_cmd_read = "BoardTable loaded from server";
+            vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = false });
         }
 
         //DiCon.UCB.Communication.ICommunication icomm;
@@ -274,49 +348,9 @@ namespace PD.NavigationPages
         {
             for (int i = 0; i < vm.list_ChannelModels.Count; i++)
             {
-                vm.list_ChannelModels[i].Board_ID = await cmd.Get_Board_ID(vm.list_ChannelModels[i].Board_Port, i+1);
+                if (!string.IsNullOrEmpty(vm.list_ChannelModels[i].Board_Port))
+                    vm.list_ChannelModels[i].Board_ID = await cmd.Get_Board_ID(vm.list_ChannelModels[i].Board_Port, i + 1);
             }
-            
-            //try
-            //{
-            //    await vm.Port_ReOpen(vm.Selected_Comport);
-
-            //    vm.Str_Command = "ID?";
-            //    await cmd.Cmd_Write_RecieveData(vm.Str_Command, true, 0);
-
-            //    #region Get Board Name     
-            //    if (vm.Str_cmd_read.Equals("DiCon Fiberoptics Inc, MEMS UFA"))
-            //    {
-            //        try
-            //        {
-            //            rs232 = new DiCon.UCB.Communication.RS232.RS232(vm.Selected_Comport);
-            //            rs232.OpenPort();
-            //            icomm = (DiCon.UCB.Communication.ICommunication)rs232;
-
-            //            tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
-
-            //            string str_ID = string.Empty;
-
-            //            str_ID = tf.ReadSN();
-            //            vm.Str_Status = str_ID;
-
-            //            await Task.Delay(125);
-            //            rs232.ClosePort();
-            //        }
-            //        catch { }
-            //    }
-            //    #endregion
-
-            //    vm.Save_Log(new LogMember()
-            //    {
-            //        Status = vm.Str_Status,
-            //        Message = vm.Str_cmd_read
-            //    });
-            //}catch(Exception ex)
-            //{
-            //    MessageBox.Show(ex.StackTrace.ToString());
-            //}
-            //cmd.id
         }
 
         private void itms_gauges_Loaded(object sender, RoutedEventArgs e)
@@ -328,15 +362,15 @@ namespace PD.NavigationPages
     public class VisValueConverter : IValueConverter
     {
         object IValueConverter.Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {                        
-            if((Visibility)value == Visibility.Visible)
+        {
+            if ((Visibility)value == Visibility.Visible)
             {
                 return Visibility.Collapsed;
             }
             else
             {
                 return Visibility.Visible;
-            }                        
+            }
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

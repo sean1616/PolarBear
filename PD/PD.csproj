@@ -67,8 +67,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\Customized_TxtBox.dll</HintPath>
     </Reference>
-    <Reference Include="DiCon.Instrument.HP">
-      <HintPath>..\..\..\DiCon.Instrument.HP.dll</HintPath>
+    <Reference Include="DiCon.Instrument.HP, Version=1.6.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\DiCon.Instrument.HP.dll</HintPath>
     </Reference>
     <Reference Include="DiCon.UCB.Communication">
       <HintPath>\\192.168.2.3\shared\SeanWu\Software\UFAO_optimized_20190313_NoFunction\bin\Debug\DiCon.UCB.Communication.dll</HintPath>

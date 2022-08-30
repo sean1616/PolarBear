@@ -112,7 +112,7 @@ namespace PD
 
                 vm.product_type = vm.Ini_Read("Productions", "Product");
                 vm.Is_k_WL_manual_setting = Generic_GetINISetting(vm.Is_k_WL_manual_setting, "Scan", "is_k_WL_manual_setting");
-                vm.selected_K_WL_Type = vm.Ini_Read("Productions", "K_WL_Type");
+                vm.selected_K_WL_Type = String.IsNullOrEmpty(vm.Ini_Read("Productions", "K_WL_Type")) ? "ALL Range" : vm.Ini_Read("Productions", "K_WL_Type");
 
                 vm.txt_Equip_Setting_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Equip_Setting_Path")) ? "" : vm.Ini_Read("Connection", "Equip_Setting_Path");
                 vm.txt_Chamber_Status_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Chamber_Status_Path")) ? vm.txt_Chamber_Status_Path : vm.Ini_Read("Connection", "Chamber_Status_Path");
@@ -121,6 +121,8 @@ namespace PD
                 vm.txt_save_wl_data_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Save_Hermetic_Data_Path")) ? vm.txt_save_wl_data_path : vm.Ini_Read("Connection", "Save_Hermetic_Data_Path");
                 vm.txt_board_table_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Table_Path")) ? vm.txt_board_table_path : vm.Ini_Read("Connection", "Control_Board_Table_Path");
                 //vm.txt_now_version = vm.Ini_Read("Connection", "Latest_Version");
+
+                vm.Is_FastScan_Mode = Generic_GetINISetting(vm.Is_FastScan_Mode, "Scan", "Is_FastScan_Mode");
 
                 vm.Auto_Update = Generic_GetINISetting(vm.Auto_Update, "Connection", "Auto_Update");
 
@@ -278,8 +280,6 @@ namespace PD
             #endregion
 
             #region Board Setting
-            //vm.txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
-
             if (!string.IsNullOrEmpty(vm.txt_Equip_Setting_Path))
                 if (File.Exists(vm.txt_Equip_Setting_Path))
                     using (DataTable dtt = CSVFunctions.Read_CSV(vm.txt_Equip_Setting_Path))
@@ -290,34 +290,39 @@ namespace PD
                             {
                                 if (dtt.Columns.Count >= 13)
                                 {
-                                    if (vm.list_ChannelModels.Count == dtt.Rows.Count - 1)
-                                        for (int i = 0; i < dtt.Rows.Count - 1; i++)
-                                        {
-                                            vm.list_ChannelModels[i].channel = dtt.Rows[i + 1][0].ToString();
-                                            vm.list_ChannelModels[i].Board_ID = dtt.Rows[i + 1][1].ToString();
-                                            vm.list_ChannelModels[i].Board_Port = dtt.Rows[i + 1][2].ToString();
-                                            if (int.TryParse(dtt.Rows[i + 1][3].ToString(), out int brt))
-                                                vm.list_ChannelModels[i].BautRate = brt;
-                                            vm.list_ChannelModels[i].PM_Type = dtt.Rows[i + 1][4].ToString();
-                                            if (int.TryParse(dtt.Rows[i + 1][5].ToString(), out int PM_GPIB_BoardNum))
-                                                vm.list_ChannelModels[i].PM_GPIB_BoardNum = PM_GPIB_BoardNum;
-                                            if (int.TryParse(dtt.Rows[i + 1][6].ToString(), out int PM_Addr))
-                                                vm.list_ChannelModels[i].PM_Address = PM_Addr;
-                                            if (int.TryParse(dtt.Rows[i + 1][7].ToString(), out int PM_Slot))
-                                                vm.list_ChannelModels[i].PM_Slot = PM_Slot;
-                                            if (int.TryParse(dtt.Rows[i + 1][8].ToString(), out int PM_AveTime))
-                                                vm.list_ChannelModels[i].PM_AveTime = PM_AveTime;
-                                            vm.list_ChannelModels[i].PM_Board_ID = dtt.Rows[i + 1][9].ToString();
-                                            vm.list_ChannelModels[i].PM_Board_Port = dtt.Rows[i + 1][10].ToString();
-                                            if (int.TryParse(dtt.Rows[i + 1][11].ToString(), out int PM_BautRate))
-                                                vm.list_ChannelModels[i].PM_BautRate = PM_BautRate;
-                                            vm.list_ChannelModels[i].PM_GetPower_CMD = dtt.Rows[i + 1][12].ToString();
-                                        }
+                                    int loopIndex = (vm.list_ChannelModels.Count >= dtt.Rows.Count - 1) ? dtt.Rows.Count - 1 : vm.list_ChannelModels.Count;
+                                    if (vm.list_ChannelModels.Count < dtt.Rows.Count - 1)
+                                    {
+                                        vm.Str_cmd_read = "Channel Counts < DataTable Rows";
+                                        vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = true });
+                                    }
+
+                                    for (int i = 0; i < loopIndex; i++)
+                                    {
+                                        vm.list_ChannelModels[i].channel = dtt.Rows[i + 1][0].ToString();
+                                        vm.list_ChannelModels[i].Board_ID = dtt.Rows[i + 1][1].ToString();
+                                        vm.list_ChannelModels[i].Board_Port = dtt.Rows[i + 1][2].ToString();
+                                        if (int.TryParse(dtt.Rows[i + 1][3].ToString(), out int brt))
+                                            vm.list_ChannelModels[i].BautRate = brt;
+                                        vm.list_ChannelModels[i].PM_Type = dtt.Rows[i + 1][4].ToString();
+                                        if (int.TryParse(dtt.Rows[i + 1][5].ToString(), out int PM_GPIB_BoardNum))
+                                            vm.list_ChannelModels[i].PM_GPIB_BoardNum = PM_GPIB_BoardNum;
+                                        if (int.TryParse(dtt.Rows[i + 1][6].ToString(), out int PM_Addr))
+                                            vm.list_ChannelModels[i].PM_Address = PM_Addr;
+                                        if (int.TryParse(dtt.Rows[i + 1][7].ToString(), out int PM_Slot))
+                                            vm.list_ChannelModels[i].PM_Slot = PM_Slot;
+                                        if (int.TryParse(dtt.Rows[i + 1][8].ToString(), out int PM_AveTime))
+                                            vm.list_ChannelModels[i].PM_AveTime = PM_AveTime;
+                                        vm.list_ChannelModels[i].PM_Board_ID = dtt.Rows[i + 1][9].ToString();
+                                        vm.list_ChannelModels[i].PM_Board_Port = dtt.Rows[i + 1][10].ToString();
+                                        if (int.TryParse(dtt.Rows[i + 1][11].ToString(), out int PM_BautRate))
+                                            vm.list_ChannelModels[i].PM_BautRate = PM_BautRate;
+                                        vm.list_ChannelModels[i].PM_GetPower_CMD = dtt.Rows[i + 1][12].ToString();
+                                    }
                                 }
                             }
                         }
                     }
-            string sss = vm.list_ChannelModels[0].PM_GetPower_CMD;
 
             if (vm.station_type.Equals("Hermetic_Test"))
             {
@@ -373,14 +378,10 @@ namespace PD
 
             #endregion
 
-            sss = vm.list_ChannelModels[0].PM_GetPower_CMD;
-
             #region Arduino Setting
             //if (vm.IsDistributedSystem)
             //    Arduino_Setting();
             #endregion
-
-            sss = vm.list_ChannelModels[0].PM_GetPower_CMD;
 
             #region Others Setting
             vm.List_D0_value = new ObservableCollection<ObservableCollection<string>>();
@@ -395,8 +396,6 @@ namespace PD
             if (!string.IsNullOrEmpty(statId))
                 vm.Station_ID = statId;
             #endregion
-
-             sss = vm.list_ChannelModels[0].PM_GetPower_CMD;
         }
 
         public T Generic_GetINISetting<T>(T input, string region, string variable) where T : new()
@@ -768,7 +767,23 @@ namespace PD
             }
             else  //arduino on
             {
+                foreach (ChannelModel chM in vm.list_ChannelModels)
+                {
+                    switch (chM.PM_Type)
+                    {
+                        case "GPIB":
+                            vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "GETPOWER", Type = "PM", Channel = vm.switch_index.ToString() });
 
+                            break;
+
+                        case "RS232":
+                            vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Channel = chM.channel.Replace("ch ", ""), Comport = chM.PM_Board_Port, Command = "GETPOWER" });
+
+                            break;
+                    }
+
+                }
+                cmd.CommandListCycle();
             }
         }
 
@@ -3523,6 +3538,8 @@ namespace PD
                         myPorts[i] = string.Format("{0} {1}", portName, vm.Str_cmd_read);
                         vm.list_combox_comports[i] = (myPorts[i]);  //寫入所有取得的com
                     }
+
+                    await Task.Delay(100);
                 }
                 catch { }
             }
@@ -3636,6 +3653,7 @@ namespace PD
 
         private async void txtBox_comment_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+
             try
             {
                 if (e.Key.Equals(System.Windows.Input.Key.Enter))
@@ -3652,9 +3670,6 @@ namespace PD
                     {
                         if (vm.port_PD.IsOpen)
                         {
-                            //if (vm.station_type.Equals("UV_Curing"))
-                            //    vm.port_PD.Write(vm.Str_Command);    //因為UV_Curing controller不需要CLR結束字元
-                            //else
                             vm.port_PD.Write(vm.Str_Command + "\r");
 
                             await Task.Delay(vm.Int_Read_Delay);
@@ -3856,7 +3871,7 @@ namespace PD
             K_WL.IsEnabled = true;  //取消防呆
             btn_GO.IsEnabled = true;
 
-            if (pre_GO_status)
+            if (pre_GO_status && !vm.IsDistributedSystem)
                 action_go();
         }
 
@@ -4185,7 +4200,7 @@ namespace PD
 
                 setting.Set_Laser_WL(Math.Round(wl, 2));  //逐步切換TLS WL
                 vm.Str_cmd_read = wl.ToString();
-                await vm.AccessDelayAsync(vm.Int_Set_WL_Delay + 100);
+                await Task.Delay(vm.Int_Set_WL_Delay + 100);
 
                 if (!await cmd.Get_PD_Value())
                 {
@@ -5037,15 +5052,13 @@ namespace PD
                 vm.PM_GO();
         }
 
+        //bool isFastMode = true;
         private async Task<bool> WL_Scan()
         {
             try
             {
                 vm.Save_All_PD_Value = Analysis.ListDefine<DataPoint>(vm.Save_All_PD_Value, vm.ch_count, new List<DataPoint>());
-                for (int i = 0; i < vm.ch_count; i++)
-                {
-                    vm.ChartNowModel.list_dataPoints[i].Clear();
-                }
+                vm.IL_ALL = "";
                 vm.Double_Powers = new List<double>();
                 vm.Double_Powers.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
                 vm.Chart_title = "Power X Wavelength";
@@ -5058,25 +5071,31 @@ namespace PD
                 vm.Str_Status = "WL Scan";
 
                 #region Build scan wl list
-                List<double> wl_list = new List<double>();
+                vm.wl_list.Clear();
+                vm.wl_list_index = 0;
 
                 if (vm.float_WL_Scan_End >= vm.float_WL_Scan_Start)
                 {
                     for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
                     {
-                        wl_list.Add(wl);
+                        vm.wl_list.Add(Math.Round(wl, 2));
                     }
                 }
                 else
                 {
                     for (double wl = vm.float_WL_Scan_Start; wl >= vm.float_WL_Scan_End; wl = wl - vm.float_WL_Scan_Gap)
                     {
-                        wl_list.Add(wl);
+                        vm.wl_list.Add(Math.Round(wl, 2));
                     }
                 }
                 #endregion
 
-                foreach (double wl in wl_list)
+                for (int i = 0; i < vm.ch_count; i++)
+                {
+                    vm.ChartNowModel.list_dataPoints[i].Clear();
+                }
+
+                foreach (double wl in vm.wl_list)
                 {
                     if (vm.isStop) return false;
 
@@ -5084,17 +5103,11 @@ namespace PD
 
                     cmd.Set_WL(wl, false);
 
-                    //vm.tls.SetWL(WL);  //切換TLS WL 
-                    //vm.pm.SetWL(WL);   //切換PowerMeter WL 
-
                     if (wl == vm.float_WL_Scan_Start)
                         await Task.Delay(vm.Int_Set_WL_Delay + 80);
                     else await Task.Delay(vm.Int_Set_WL_Delay);
 
                     vm.Double_Laser_Wavelength = wl;
-
-                    //if (vm.is_TLS_Filter)
-                    //    await cmd.Set_TLS_Filter(wl);
 
                     for (int ch = 0; ch < vm.ch_count; ch++)
                     {
@@ -5107,7 +5120,7 @@ namespace PD
 
                         #region switch re-open && Switch write Cmd
 
-                        if (vm.station_type.Equals("Hermetic_Test"))
+                        if (vm.station_type.Equals("Hermetic_Test") && vm.Is_switch_mode)
                         {
                             vm.switch_index = ch + 1;
                             try
@@ -5133,11 +5146,33 @@ namespace PD
                         }
                         #endregion
 
-                        await cmd.Get_Power(ch);
+                        if (vm.Is_FastScan_Mode && vm.list_ChannelModels.Count == 1)
+                        {
+                            if (wl == vm.wl_list.Last())
+                            {
+                                List<List<double>> listDD = await cmd.Get_Power(ch, true);
+                            }
+                            else
+                            {
+                                if (wl == vm.wl_list.First())
+                                {
+                                    vm.ChartNowModel.list_dataPoints[ch].Clear();
+                                    vm.Save_All_PD_Value[ch].Clear();
+                                }
 
-                        DataPoint dp = new DataPoint(wl, vm.Double_Powers[ch]);
-                        vm.ChartNowModel.list_dataPoints[ch].Add(dp);
-                        vm.Save_All_PD_Value[ch].Add(dp);
+                                await cmd.Get_Power(ch, false);
+                            }
+                        }
+                        else
+                        {
+                            if (wl == vm.wl_list.First())
+                            {
+                                vm.ChartNowModel.list_dataPoints[ch].Clear();
+                                vm.Save_All_PD_Value[ch].Clear();
+                            }
+
+                            await cmd.Get_Power(ch, true);          
+                        }
                     }
 
                     cmd.Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);
@@ -5162,6 +5197,9 @@ namespace PD
                     {
                         double maxIL_WL = vm.Save_All_PD_Value[ch].Where(point => point.Y == vm.Save_All_PD_Value[ch].Max(x => x.Y)).ToList().First().X;
 
+                        vm.Double_Laser_Wavelength = maxIL_WL; 
+                        cmd.Set_WL(maxIL_WL, false);
+
                         vm.list_GaugeModels[ch].GaugeValue = vm.Save_All_PD_Value[ch].Max(x => x.Y).ToString();
 
                         vm.list_GaugeModels[ch].GaugeBearSay_1 = Math.Round(maxIL_WL, 2).ToString();
@@ -5169,15 +5207,18 @@ namespace PD
                     }
                 }
 
-
+                var elapsedMs = watch.ElapsedMilliseconds;
+                decimal scan_timespan = (elapsedMs / (decimal)1000);
+                vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
                 await cmd.Save_Chart();
 
-                var elapsedMs = watch.ElapsedMilliseconds;
+                //vm.Double_Laser_Wavelength = vm.tls.ReadWL();
 
-                vm.Double_Laser_Wavelength = vm.tls.ReadWL();
+                vm.msgModel.msg_3 = Math.Round(scan_timespan, 1).ToString() + " s";  //Update Main UI timespan
+                
+                vm.Show_Bear_Window("WL Scan 完成" + "  (" + Math.Round(scan_timespan, 1).ToString() + " s)", false, "String", false);
 
-                vm.msgModel.msg_3 = (elapsedMs / 1000).ToString() + " s";
-                vm.Show_Bear_Window("WL Scan 完成" + "  (" + (elapsedMs / 1000).ToString() + " s)", false, "String", false);
+                int a = vm.list_ChartModels.Count;
 
                 vm.Str_Status = "WL Scan Stop";
                 vm.Save_Log("WL Scan", "Stop", false);
@@ -5307,7 +5348,7 @@ namespace PD
                                 IL_Last = vm.Save_All_PD_Value[ch].Last().Y;
                             else IL_Last = 99;
 
-                            await cmd.Get_Power(vm.switch_index - 1);
+                            await cmd.Get_Power(vm.switch_index - 1, true);
 
                             vm.ChartNowModel.list_dataPoints[vm.switch_index - 1].Add(new DataPoint(wl, double.Parse(vm.list_GaugeModels[vm.switch_index - 1].GaugeValue)));
 

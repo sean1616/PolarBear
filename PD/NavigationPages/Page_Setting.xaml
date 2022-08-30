@@ -298,6 +298,12 @@
                                                  Background="White"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding Is_k_WL_manual_setting, Mode=TwoWay}" />
+                        <wpfuc:Text_ToggleButton txtbox_content="Fast Scan Mode"
+                                                 FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
+                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                 Ischecked="{Binding Is_FastScan_Mode, Mode=TwoWay}" />
 
                     </StackPanel>
                 </Grid>

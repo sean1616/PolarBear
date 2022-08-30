@@ -355,12 +355,6 @@ namespace PD.NavigationPages
             if (e.Key == Key.Enter)
             {
                 double wl = Convert.ToDouble(txt_WL.Text);
-                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                //{
-                //    vm.Str_cmd_read = "WL out of range";
-                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
-                //    return;
-                //}
 
                 if (!vm.IsGoOn) cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true);
                 else
@@ -530,43 +524,120 @@ namespace PD.NavigationPages
 
         private void btn_aft_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.bear_say_now < vm.bear_say_all)
+            //if (vm.bear_say_now < vm.bear_say_all)
+            //{
+            //    vm.bear_say_now++;
+
+            //    for (int ch = 0; ch < vm.ch_count; ch++)
+            //    {
+            //        vm.list_GaugeModels[ch].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_1;
+            //        vm.list_GaugeModels[ch].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_2;
+            //        vm.list_GaugeModels[ch].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_3;
+
+            //        vm.Save_All_PD_Value[ch] = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].DataPoints;
+            //        vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+            //        vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries                
+            //    }
+            //}
+
+            try
             {
-                vm.bear_say_now++;
+                if (vm.int_chart_now >= vm.int_chart_count)
+                    return;
 
-                for (int ch = 0; ch < vm.ch_count; ch++)
+                if (vm.Chart_All_Datapoints_History.Count <= vm.int_chart_now)
                 {
-                    vm.list_GaugeModels[ch].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_1;
-                    vm.list_GaugeModels[ch].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_2;
-                    vm.list_GaugeModels[ch].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_3;
-
-                    vm.Save_All_PD_Value[ch] = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].DataPoints;
-                    vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
-                    vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries                
+                    vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History.Last());
                 }
+                else
+                    vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now]);
+
+                if (vm.Chart_All_DataPoints.Count != 0)
+                    vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);  //Update Chart UI
+
+                vm.int_chart_now++;
+
+                vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
+
+                vm.Chart_x_title = vm.ChartNowModel.title_x;
+                vm.Chart_y_title = vm.ChartNowModel.title_y;
+
+                vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
+
+                for (int i = 0; i < vm.ch_count; i++)
+                {
+                    vm.list_GaugeModels[i].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_1;
+                    vm.list_GaugeModels[i].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_2;
+                    vm.list_GaugeModels[i].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_3;
+
+                    if (i < vm.list_ch_title.Count)
+                        if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
+                        {
+                            if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
+                                vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
+                        }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.StackTrace.ToString());
             }
 
         }
 
         private void btn_pre_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.bear_say_now > 1)
+            //if (vm.bear_say_now > 1)
+            //{
+            //    vm.bear_say_now--;
+
+            //    for (int ch = 0; ch < vm.ch_count; ch++)
+            //    {
+            //        vm.list_GaugeModels[ch].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_1;
+            //        vm.list_GaugeModels[ch].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_2;
+            //        vm.list_GaugeModels[ch].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_3;
+
+            //        vm.Save_All_PD_Value[ch] = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].DataPoints;
+            //        vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+            //        vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+            //    }
+            //}
+
+            try
             {
-                vm.bear_say_now--;
-
-                for (int ch = 0; ch < vm.ch_count; ch++)
+                if (vm.int_chart_now > 1)
                 {
-                    vm.list_GaugeModels[ch].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_1;
-                    vm.list_GaugeModels[ch].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_2;
-                    vm.list_GaugeModels[ch].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_3;
+                    vm.int_chart_now--;
+                    vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now - 1]);
+                    if (vm.Chart_All_DataPoints.Count == 0) return;
+                    vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);
 
-                    vm.Save_All_PD_Value[ch] = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].DataPoints;
-                    vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
-                    vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+                    vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
+
+                    vm.Chart_x_title = vm.ChartNowModel.title_x;
+                    vm.Chart_y_title = vm.ChartNowModel.title_y;
+
+                    vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
+
+                    for (int i = 0; i < vm.ch_count; i++)
+                    {
+                        vm.list_GaugeModels[i].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_1;
+                        vm.list_GaugeModels[i].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_2;
+                        vm.list_GaugeModels[i].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_3;
+
+                        if (i < vm.list_ch_title.Count)
+                            if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
+                            {
+                                if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
+                                    vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
+                            }
+                    }
                 }
             }
-
-
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.StackTrace.ToString());
+            }
         }
 
         List<List<string>> temp_list_bear_say = new List<List<string>>();
@@ -682,30 +753,61 @@ namespace PD.NavigationPages
         ICommunication icomm;
         DiCon.UCB.Communication.RS232.RS232 rs232;
         DiCon.UCB.MTF.IMTFCommand tf;
-
-        object send;
-        KeyEventArgs ke;
-        int V123 = 1;
-
-        private void txt_V1_DAC_PreviewKeyDown(object sender, KeyEventArgs e)
+               
+        private async void txt_V1_DAC_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            send = sender;
-            ke = e;
-            V123 = 1;
+            if (e.Key == Key.Enter)
+            {
+                TextBox obj = (TextBox)sender;
+                if (double.TryParse(obj.Text, out double volt))
+                {
+                    for (int i = 0; i < vm.list_GaugeModels.Count; i++)
+                    {
+                        vm.list_GaugeModels[i].GaugeD0_1 = obj.Text;
+                        vm.list_GaugeModels[i].GaugeD0_Select = "1";
+
+                        cmd.Set_Dac(vm.Selected_Comport, vm.list_GaugeModels[i]);
+
+                        await Task.Delay(vm.Int_Read_Delay);
+                    }
+                }
+            }
         }
 
-        private void txt_V2_DAC_PreviewKeyDown(object sender, KeyEventArgs e)
+        private async void txt_V2_DAC_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            send = sender;
-            ke = e;
-            V123 = 2;
+            if (e.Key == Key.Enter)
+            {
+                TextBox obj = (TextBox)sender;
+                if (double.TryParse(obj.Text, out double volt))
+                {
+                    for (int i = 0; i < vm.list_GaugeModels.Count; i++)
+                    {
+                        vm.list_GaugeModels[i].GaugeD0_2 = obj.Text;
+                        vm.list_GaugeModels[i].GaugeD0_Select = "2";
+                        cmd.Set_Dac(vm.Selected_Comport, vm.list_GaugeModels[i]);
+                        await Task.Delay(vm.Int_Read_Delay);
+                    }
+                }
+            }
         }
 
-        private void txt_V3_DAC_PreviewKeyDown(object sender, KeyEventArgs e)
+        private async void txt_V3_DAC_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            send = sender;
-            ke = e;
-            V123 = 3;
+            if (e.Key == Key.Enter)
+            {
+                TextBox obj = (TextBox)sender;
+                if (double.TryParse(obj.Text, out double volt))
+                {
+                    for (int i = 0; i < vm.list_GaugeModels.Count; i++)
+                    {
+                        vm.list_GaugeModels[i].GaugeD0_3 = obj.Text;
+                        vm.list_GaugeModels[i].GaugeD0_Select = "3";
+                        cmd.Set_Dac(vm.Selected_Comport, vm.list_GaugeModels[i]);
+                        await Task.Delay(vm.Int_Read_Delay);
+                    }
+                }
+            }
         }
 
         private async void Write_Dac_Volt(object sender, KeyEventArgs e, int v123)
