@@ -5193,7 +5193,12 @@ namespace PD
                                 vm.Save_All_PD_Value[ch].Clear();
                             }
 
-                            await cmd.Get_Power(ch, true);          
+                            await cmd.Get_Power(ch, true);
+
+                            DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], vm.Double_Powers[ch]);
+                            vm.ChartNowModel.list_dataPoints[ch].Add(dp);
+                            vm.Save_All_PD_Value[ch].Add(dp);
+                            vm.wl_list_index++;
                         }
                     }
 
