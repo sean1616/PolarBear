@@ -170,7 +170,22 @@
     <SolidColorBrush x:Key="LightColorBrush"
                      Color="#DDD" />
 
+    <Style x:Key="WinAll" TargetType="{x:Type Window}">
+        <Setter Property="FontFamily"
+        Value="Segoe Print" />
+        <!--<Setter Property="FontSize"
+        Value="18" />-->
+    </Style>
 
+    <Style x:Key="PageAll" TargetType="{x:Type Page}">
+        <Setter Property="FontFamily"
+        Value="Segoe Print" />
+    </Style>
+
+    <Style x:Key="UCAll" TargetType="{x:Type UserControl}">
+        <Setter Property="FontFamily"
+        Value="Segoe Print" />
+    </Style>
 
     <Style x:Key="style_Gauge_Background"
            TargetType="{x:Type ToggleButton}">
@@ -1820,7 +1835,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="style_BearBtn2"
+    <Style x:Key="style_BearBtn_FixFont"
            TargetType="{x:Type Button}">
         <Setter Property="FontFamily"
                 Value="Segoe Print" />
@@ -1838,7 +1853,7 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
-                            <RowDefinition Height="7*" />
+                            <RowDefinition Height="9*" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -1853,98 +1868,30 @@
                                 Grid.ColumnSpan="3"
                                 Background="Transparent"
                                 BorderBrush="Transparent"
-                                BorderThickness="0.5" />
-                        <Viewbox Grid.Row="1"
-                                 Grid.Column="1">
-                            <ContentPresenter x:Name="contentPresenter"
+                                BorderThickness="2"
+                                CornerRadius="4" />
+                        <ContentPresenter x:Name="contentPresenter"
                                               HorizontalAlignment="Center"
                                               VerticalAlignment="Center"
                                               Focusable="False"
-                                              SnapsToDevicePixels="True" />
-                        </Viewbox>
+                                              SnapsToDevicePixels="True"
+                                              Grid.Row="1"
+                                              Grid.Column="1"/>
                     </Grid>
-                    <!--<ControlTemplate.Triggers>
+                    <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver"
                                  Value="True">
                             <Setter TargetName="border"
-                                    Property="Background"
-                                    Value="#FF1EB1B8" />
-                            <Setter TargetName="border"
                                     Property="BorderBrush"
-                                    Value="#FF252525" />
+                                    Value="#FF47DADA" />
                         </Trigger>
                         <Trigger Property="Button.IsPressed"
                                  Value="True">
                             <Setter TargetName="border"
                                     Property="Background"
-                                    Value="#FF7EFBD9" />
+                                    Value="#FFDADADA" />
                         </Trigger>
-                    </ControlTemplate.Triggers>-->
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="style_BearBtn3"
-           TargetType="{x:Type Button}">
-        <Setter Property="FontFamily"
-                Value="Segoe Print" />
-        <Setter Property="FontSize"
-                Value="{Binding Int_Fontsize}" />
-        <Setter Property="Tag"
-                Value="" />
-        <Setter Property="MaxHeight"
-                Value="50" />
-        <Setter Property="Foreground"
-                Value="DarkBlue" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="8*" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="6*" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Border x:Name="border"
-                                Grid.Row="0"
-                                Grid.RowSpan="3"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="3"
-                                Background="Transparent"
-                                BorderBrush="Transparent"
-                                BorderThickness="0.5" />
-                        <Viewbox Grid.Row="1"
-                                 Grid.Column="1">
-                            <ContentPresenter x:Name="contentPresenter"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              Focusable="False"
-                                              SnapsToDevicePixels="True" />
-                        </Viewbox>
-                    </Grid>
-                    <!--<ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver"
-                                 Value="True">
-                            <Setter TargetName="border"
-                                    Property="Background"
-                                    Value="#FF1EB1B8" />
-                            <Setter TargetName="border"
-                                    Property="BorderBrush"
-                                    Value="#FF252525" />
-                        </Trigger>
-                        <Trigger Property="Button.IsPressed"
-                                 Value="True">
-                            <Setter TargetName="border"
-                                    Property="Background"
-                                    Value="#FF7EFBD9" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>-->
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -3164,6 +3111,52 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="style_SN_txtbox_v2"
+           TargetType="TextBox">
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="#FFDADADA"
+                            BorderThickness="2"
+                            CornerRadius="4"
+                            SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      VerticalAlignment="Center"
+                                      VerticalContentAlignment="Center"
+                                      Focusable="false"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled"
+                                 Value="false">
+                            <Setter TargetName="border"
+                                    Property="Opacity"
+                                    Value="0.6" />
+                        </Trigger>
+                        <Trigger Property="IsFocused"
+                                 Value="true">
+                            <Setter TargetName="border"
+                                    Property="BorderBrush"
+                                    Value="#FF47DADA" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
     <Style x:Key="style_board_window"
            TargetType="TextBox">

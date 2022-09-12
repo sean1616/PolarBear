@@ -388,6 +388,16 @@
                                                 txtbox_content="PM Address"
                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                 txtbox_value="{Binding pm_Addr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <cusTxtBox:UserControl1 Grid.Row="3"
+                                                Grid.Column="3"
+                                                txtbox_content="PDL BoardNum"
+                                                Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                txtbox_value="{Binding pdl_BoardNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <cusTxtBox:UserControl1 Grid.Row="4"
+                                                Grid.Column="3"
+                                                txtbox_content="PDL Address"
+                                                Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                txtbox_value="{Binding pdl_Addr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <cusTxtBox:UserControl1 Grid.Row="4"
                                                 Grid.Column="3"
                                                 txtbox_content="MultiMeter Address"

@@ -387,7 +387,7 @@ namespace PD.Functions
             try
             {
                 string folder = System.Reflection.Assembly.GetEntryAssembly().Location;
-                string FileName = fileName + "_" + DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00") + ".csv";
+                string FileName = $"{fileName}_{DateTime.Today.Year}{DateTime.Today.Month.ToString("00")}{DateTime.Today.Day.ToString("00")}.csv";
 
                 for (int i = 1; i <= 1000; i++)
                 {
@@ -407,7 +407,8 @@ namespace PD.Functions
                 saveFileDialog.FileName = FileName;
                 saveFileDialog.Filter = "CSV (*.csv)|*.csv|TXT (*.txt)|*.txt|All files (*.*)|*.*";
 
-                string BoardData_filePath = @"D:\" + fileName + @"_001.csv";
+                //string BoardData_filePath = @"D:\" + fileName + @"_001.csv";
+                string BoardData_filePath = $@"D:\{fileName}_001.csv";
                 if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     BoardData_filePath = saveFileDialog.FileName;
@@ -476,6 +477,70 @@ namespace PD.Functions
 
             }
         }
+
+        public static string Creat_New_CSV(string folder_path, string fileName, List<string> list_column_titles, bool isDate, bool isOverWrite)
+        {
+            try
+            {
+                string str_date = isDate ? "_" + DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00") : "";
+                //string folder = System.Reflection.Assembly.GetEntryAssembly().Location;
+                string FileName = $"{fileName}{str_date}.csv";
+
+                if (!isOverWrite)
+                    for (int i = 1; i <= 1000; i++)
+                    {
+                        if (File.Exists(Path.Combine(folder_path, FileName)))
+                                FileName = $"{fileName}{str_date}_{i.ToString()}.csv";
+                        else break;
+                    }
+
+                string filepath = Path.Combine(folder_path, FileName);
+
+                #region String Builder
+                StringBuilder _stringBuilder = new StringBuilder();
+
+                //Header Title
+                for (int i = 0; i < list_column_titles.Count; i++)
+                {
+                    _stringBuilder.Append(list_column_titles[i]);
+
+                    if (i != list_column_titles.Count - 1)
+                        _stringBuilder.Append(",");
+                }
+
+                _stringBuilder.AppendLine();  //換行                                                         
+                #endregion
+
+                #region Save as csv
+
+                if (!File.Exists(filepath))
+                {
+                    File.AppendAllText(filepath, "");  //Creat a csv file
+                }
+                else
+                {
+                    MessageBoxResult msgR = MessageBox.Show("File is exist, overwrite ?", "File" , MessageBoxButton.YesNo);
+                    if (msgR == MessageBoxResult.No) return "";
+                }
+
+                //Clear file content and lock the file
+                FileStream fileStream = File.Open(filepath, FileMode.Open);
+                fileStream.SetLength(0);
+                fileStream.Close();
+
+                File.AppendAllText(filepath, _stringBuilder.ToString());  //Save string builder to csv
+                #endregion
+
+                return filepath;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.StackTrace.ToString());
+                return "Creat CSV Failed";
+
+            }
+        }
+
 
         public static void Write_a_row_in_CSV(int columns, string filepath, List<string> list_a_row_datas)
         {

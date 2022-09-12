@@ -486,6 +486,7 @@
                 <Button Name="K_WL"
                         Grid.Row="7"
                         Grid.ColumnSpan="2"
+                        PreviewMouseLeftButtonDown="K_WL_PreviewMouseLeftButtonDown"
                         Click="K_WL_Click"
                         Content="K WL"
                         Property:UI_DependencyProperty.Image="Resources/Search.png"

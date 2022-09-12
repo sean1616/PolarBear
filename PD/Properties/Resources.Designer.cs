@@ -353,6 +353,36 @@ namespace PD.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap output_onlinepngtools__13_ {
+            get {
+                object obj = ResourceManager.GetObject("output_onlinepngtools__13_", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap output_onlinepngtools__15_ {
+            get {
+                object obj = ResourceManager.GetObject("output_onlinepngtools__15_", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap output_onlinepngtools__7_ {
+            get {
+                object obj = ResourceManager.GetObject("output_onlinepngtools__7_", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap paste_gray {
             get {
                 object obj = ResourceManager.GetObject("paste_gray", resourceCulture);
@@ -446,6 +476,16 @@ namespace PD.Properties {
         internal static System.Drawing.Bitmap r_arrow {
             get {
                 object obj = ResourceManager.GetObject("r_arrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rec_white {
+            get {
+                object obj = ResourceManager.GetObject("rec_white", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

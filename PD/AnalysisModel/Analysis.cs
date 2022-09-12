@@ -312,6 +312,7 @@ namespace PD.AnalysisModel
                         }
                     }
 
+                    //Get bandwidth (cwl) by wl_L and wl_R
                     if (wl_R == 0 || wl_L == 0)
                     {
                         bw = 0;
@@ -324,6 +325,11 @@ namespace PD.AnalysisModel
                         bw_cwl = Math.Abs(Math.Round((wl_R + wl_L) / 2, 2));
                     }
 
+                    //if (bw != 0)
+                    //{
+                    //    vm.opModel_1.WL_1_BW_1 = bw;
+                    //    vm.opModel_1.WL_1_CWL = bw_cwl;
+                    //}
                     #endregion
 
                     switch (b)
@@ -351,6 +357,105 @@ namespace PD.AnalysisModel
                 }
             }
         }
+
+        public double BandWidth_Calculation(int WL_No)
+        {
+            double bwSetting = 0;
+            double bw = 0;
+            double bw_cwl = 0;
+
+            if (vm.Chart_DataPoints.Count != 0)
+            {
+                var orderedSeries = vm.Chart_DataPoints.OrderBy(o => o.Y).ToList();
+
+                int index_max = vm.Chart_DataPoints.IndexOf(orderedSeries.Last());
+                OxyPlot.DataPoint dp_IL_Max = orderedSeries.Last();
+                double IL_Max = dp_IL_Max.Y;
+
+                for (int b = 1; b <= 3; b++)
+                {
+                    foreach (var item in vm.props_opModel)
+                    {
+                        if (item.Name == ($"BW_Setting_{b}"))
+                        {
+                            bwSetting = (double)item.GetValue(vm.opModel_1, null);
+                        }
+                    }
+
+                    #region Cal. BW_1 dB Bandwidth
+
+                    //Find over-threshold point from center to right side
+                    int index_R = 0; double wl_R = 0;
+                    for (int i = index_max; i < vm.Chart_DataPoints.Count; i++)
+                    {
+                        if (Math.Abs(IL_Max - vm.Chart_DataPoints[i].Y) >= bwSetting)
+                        {
+                            index_R = i;
+
+                            if (i > 0)
+                            {
+                                wl_R = ((IL_Max - bwSetting) - vm.Chart_DataPoints[i - 1].Y) * (vm.Chart_DataPoints[i].X - vm.Chart_DataPoints[i - 1].X)
+                                    / (vm.Chart_DataPoints[i].Y - vm.Chart_DataPoints[i - 1].Y) + vm.Chart_DataPoints[i - 1].X;
+                            }
+                            else
+                                wl_R = vm.Chart_DataPoints[i].X;
+
+                            break;
+                        }
+                    }
+
+                    //Find over-threshold point from center to left side
+                    int index_L = 0; double wl_L = 0;
+                    for (int i = index_max; i >= 0; i--)
+                    {
+                        if (Math.Abs(IL_Max - vm.Chart_DataPoints[i].Y) >= bwSetting)
+                        {
+                            index_L = i;
+
+                            if (i > 0)
+                            {
+                                wl_L = ((IL_Max - bwSetting) - vm.Chart_DataPoints[i].Y) * (vm.Chart_DataPoints[i - 1].X - vm.Chart_DataPoints[i].X)
+                                    / (vm.Chart_DataPoints[i - 1].Y - vm.Chart_DataPoints[i].Y) + vm.Chart_DataPoints[i].X;
+                            }
+                            else
+                                wl_L = vm.Chart_DataPoints[i].X;
+
+                            break;
+                        }
+                    }
+
+                    //Get bandwidth (cwl) by wl_L and wl_R
+                    if (wl_R == 0 || wl_L == 0)
+                    {
+                        bw = 0;
+                        bw_cwl = 0;
+                    }
+                    else
+                    {
+                        double BW = Math.Abs(wl_R - wl_L);
+                        bw = Math.Round(BW, 2);
+
+                        if (b == 2)
+                            bw_cwl = Math.Abs(Math.Round((wl_R + wl_L) / 2, 2));                   
+                    }
+
+                    #endregion
+
+                    foreach (var item in vm.props_opModel)
+                    {
+                        if (item.Name == ($"WL_{WL_No}_BW_{b}"))
+                            item.SetValue(vm.opModel_1, bw);
+
+                        //Only 3dB bw will update cwl
+                        if (b == 2 && item.Name == $"WL_{WL_No}_CWL")
+                            item.SetValue(vm.opModel_1, bw_cwl);
+                    }
+                }
+            }
+
+            return bw_cwl;
+        }
+
 
         public void JudgeAllBoolGauge()
         {

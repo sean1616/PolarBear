@@ -471,7 +471,6 @@ namespace PD.NavigationPages
 
             if (pdl != null)
                 pdl.startPolarizationScan();
-
         }
 
         private void btn_PDL_Stop_Click(object sender, RoutedEventArgs e)

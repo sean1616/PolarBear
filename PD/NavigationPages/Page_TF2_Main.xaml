@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="PD.NavigationPages.Page_PD_Gauges"
+﻿<UserControl x:Class="PD.NavigationPages.Page_TF2_Main"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,10 +14,12 @@
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              d:DesignHeight="1080"
              d:DesignWidth="1920"             
-             Background="Transparent"     
+             Background="Transparent"   
+             Style="{StaticResource UCAll}"
+             Loaded="UserControl_Loaded"
              mc:Ignorable="d">
+    
     <UserControl.Resources>
-
         <Style x:Key="BorderStyle1"
                TargetType="{x:Type Border}">
             <Style.Resources>
@@ -61,10 +63,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="3.6*" />
             <RowDefinition Name="grid_second_rowdefinition" Height="*"/>
-        </Grid.RowDefinitions>                
-      
+        </Grid.RowDefinitions>
+
         <Grid Grid.Row="0" >
             <Grid.ColumnDefinitions>
+                <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -76,70 +79,22 @@
             </Grid.RowDefinitions>
             <Border x:Name="border_Standard" />
         </Grid>
-       
-        <ScrollViewer x:Name="viewer" 
-                      Background="White">
-            <ItemsControl x:Name="itms_gauges"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Top"
-                          AllowDrop="True"
-                          FocusManager.IsFocusScope="True"
-                          ItemsSource="{Binding list_GaugeModels}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="4" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <ug:UserControl1 Btn_Voltage_Click="Btn_Voltage_Click"
-                                         Btn_WL_Click="Btn_WL_Click"
-                                         Btn_update="Btn_update_Click"
-                                         TxtBox_GotFocus="TextBox_GotFocus"
-                                         TxtBox_KeyDown="TextBox_Dac_KeyDown"
-                                         TxtBox_SN_PreviewKeyDown="UserControl1_TxtBox_SN_PreviewKeyDown"
-                                         TBtn_PreviewMouseLeftButtonDown="gauge_PreviewMouseLeftButtonDown"
-                                         TBtn_PreviewMouseRightButtonDown="gauge_PreviewMouseRightButtonDown"
-                                         TBtn_PreviewMouseRightButtonUp="gauge_PreviewMouseRightButtonUp"
-                                         MouseEnter="UserControl1_MouseEnter"
-                                         SN_Row="{Binding SN_Row, FallbackValue=2}"
-                                         SN_number="{Binding GaugeSN,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Gauge_channel="{Binding GaugeChannel}"
-                                         Gauge_value="{Binding GaugeValue}"
-                                         Gauge_Unit="{Binding GaugeUnit}"
-                                         Gauge_Color="{Binding GaugeColor}"
-                                         Bool_Gauge="{Binding boolGauge, Mode=TwoWay}"
-                                         Gauge_EndAngle="{Binding GaugeEndAngle}"
-                                         GaugeD0_Select="{Binding GaugeD0_Select, Mode=TwoWay}"
-                                         D0_value_1="{Binding GaugeD0_1, Mode=TwoWay}"
-                                         D0_value_2="{Binding GaugeD0_2, Mode=TwoWay}"
-                                         D0_value_3="{Binding GaugeD0_3, Mode=TwoWay}"
-                                         List_bear_say_1="{Binding GaugeBearSay_1}"
-                                         List_bear_say_2="{Binding GaugeBearSay_2}"
-                                         List_bear_say_3="{Binding GaugeBearSay_3}"
-                                         Gauge_Mode="{Binding GaugeMode}"
-                                         bool_Gauge_ContinueSelect="{Binding GaugeContinueSelect}"
-                                         Width="{Binding ActualWidth, ElementName=border_Standard, Mode=OneWay}"
-                                         Height="{Binding ActualHeight, ElementName=border_Standard, Mode=OneWay}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
 
         <!--Chart for Testing Mode-->
-        <Grid Grid.Row="0">
+        <Grid Background="White">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
+                <ColumnDefinition Width="0.5*"/>
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <oxy:Plot x:Name="Plot_Chart"
                       Title="Power"
-                      Grid.Column="1"
+                      Grid.Column="2"
                       Grid.ColumnSpan="3"      
                       Margin="5,5,25,5"
-                      Visibility="{Binding GaugeChart_visible}"
+                      Visibility="Visible"
                       FontFamily="Segoe Print">
                 <oxy:Plot.Axes>
                     <oxy:LinearAxis Title="{Binding Chart_x_title, FallbackValue=1}"
@@ -194,183 +149,272 @@
 
         <!--GaugeChart_visible-->
         <!--Optical Result for Testing Mode-->
-        <Grid Visibility="{Binding GaugeChart_visible}">
+        <Grid Visibility="Visible">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
+                <ColumnDefinition Width="0.5*"/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Row="1" Margin="40,20,40,30">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
+
+            <Grid Grid.ColumnSpan="2" Grid.RowSpan="2" >
                 <Grid.RowDefinitions>
                     <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>                    
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>               
-                <Border Grid.ColumnSpan="3" Grid.RowSpan="7" BorderBrush="#FFD6D6D6" BorderThickness="1" CornerRadius="12"/>
-                <Border Grid.ColumnSpan="3" CornerRadius="12,12,0,0" x:Name="border_GridTitle"
-                    Background="#FF1FCCD4"
-                     />
-                <TextBlock Text="BW"
-                        FontFamily="Segoe Print"
-                           Foreground="White"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
-                <TextBlock Text="Value"
-                       Grid.Column="1"
-                       FontFamily="Segoe Print"
-                            Foreground="White"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Grid.Row="0" />
-                <TextBlock Text="CWL"
-                       Grid.Column="2"
-                       FontFamily="Segoe Print"
-                            Foreground="White"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Grid.Row="0" />
-                                
-                <Grid Grid.Row="1">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Text="{Binding ChartNowModel.BW_Setting_1, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
-                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print"/>
-                    </StackPanel>
-                </Grid>                
-                <TextBlock x:Name="txt_BW_1"
-                       Grid.Row="1"
-                       FontFamily="Segoe Print"
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_1, Mode=TwoWay}" />
-                <TextBlock x:Name="txt_BW_CWL_1"
-                       Grid.Row="1"
-                       FontFamily="Segoe Print"
-                       Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_1, Mode=TwoWay}" />
+                    <RowDefinition Height="7*"/>
+                </Grid.RowDefinitions>
 
-                <Grid Grid.Row="2">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Text="{Binding ChartNowModel.BW_Setting_2, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
-                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print"/>
-                    </StackPanel>
+                <TextBox Text="{Binding opModel_1.SN, FallbackValue=SN}" BorderBrush="#FF6A6A6A" Margin="20,40,20,0"  Style="{StaticResource style_SN_txtbox_v2}"
+                        FontSize="25" FontFamily="Segoe Print"/>
+
+
+                <Grid Grid.Column="0"   Margin="20,20,20,20" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition />
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.ColumnSpan="5" Grid.RowSpan="10" BorderBrush="#FFD6D6D6" BorderThickness="1" CornerRadius="12"/>
+                    <Border Grid.ColumnSpan="5" CornerRadius="12,12,0,0" Background="#FF1FCCD4"/>
+                    <Border Grid.ColumnSpan="5" Background="#FF1FCCD4" Grid.Row="5"  CornerRadius="12,12,0,0"/>
+
+                    <TextBlock Text="WL T"
+                            FontFamily="Segoe Print"
+                               Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                    <TextBlock Text="CWL"
+                           Grid.Column="1"
+                                Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Grid.Row="0" />
+                    <TextBlock Text="IL"
+                           Grid.Column="2"
+                           FontFamily="Segoe Print"
+                                Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Grid.Row="0" />
+                    <TextBlock Text="PDL"
+                           Grid.Column="3"
+                           FontFamily="Segoe Print"
+                                Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Grid.Row="0" />
+                    <TextBlock Text="Mic."
+                           Grid.Column="4"
+                           FontFamily="Segoe Print"
+                                Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Grid.Row="0" />
+
+                    <Button Style="{DynamicResource style_BearBtn}" Tag="1" Margin="7" Grid.Row="1"
+                            Content="{Binding opModel_1.WL_Setting_1}"  Click="Button_WL_Click"/>
+                    <Button Style="{DynamicResource style_BearBtn}" Tag="2" Margin="7"
+                            Content="{Binding opModel_1.WL_Setting_2}" Grid.Row="2" Click="Button_WL_Click"/>
+                    <Button Style="{DynamicResource style_BearBtn}" Tag="3" Margin="7"
+                            Content="{Binding opModel_1.WL_Setting_3}" Grid.Row="3" Click="Button_WL_Click"/>
+                    <Button Style="{DynamicResource style_BearBtn}" Tag="4" Margin="7"
+                            Content="   ?   nm" Grid.Row="4" Click="Button_WL_Click"/>
+
+                    <!--#region WL 1 OP-->
+                    <TextBlock 
+                           Grid.Row="1"
+                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_CWL, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="1"
+                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_IL, Mode=TwoWay}" />
+                    <!--<TextBlock 
+                           Grid.Row="1"
+                           Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_PDL, Mode=TwoWay}" />-->
+                    <Button Style="{DynamicResource style_BearBtn_FixFont}" Tag="1" Margin="7" 
+                            Content="{Binding opModel_1.WL_1_PDL, Mode=TwoWay}" Grid.Row="1" Grid.Column="3" Click="Button_PDL_Click"/>
+                    <TextBox Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Segoe Print"
+                               Text="{Binding opModel_1.WL_1_Mic,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <!--#endregion-->
+
+                    <!--#region WL 2 OP-->
+                    <TextBlock 
+                           Grid.Row="2"
+                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_CWL, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="2"
+                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_IL, Mode=TwoWay}" />
+                    <Button Style="{DynamicResource style_BearBtn_FixFont}" Tag="2" Margin="7" 
+                            Content="{Binding opModel_1.WL_2_PDL, Mode=TwoWay}" Grid.Row="2" Grid.Column="3" Click="Button_PDL_Click"/>
+                    <TextBox Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Segoe Print"
+                               Text="{Binding opModel_1.WL_2_Mic,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <!--#endregion-->
+
+                    <!--#region WL 3 OP-->
+                    <TextBlock 
+                           Grid.Row="3"
+                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_CWL, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="3"
+                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_IL, Mode=TwoWay}" />
+                    <Button Style="{DynamicResource style_BearBtn_FixFont}" Tag="3" Margin="7" 
+                            Content="{Binding opModel_1.WL_3_PDL, Mode=TwoWay}" Grid.Row="3" Grid.Column="3" Click="Button_PDL_Click"/>
+
+                    <TextBox Grid.Row="3" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Segoe Print"
+                               Text="{Binding opModel_1.WL_3_Mic,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <!--#endregion-->
+
+                    <!--#region WL 4 OP-->
+                    <TextBlock 
+                           Grid.Row="4"
+                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_CWL, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="4"
+                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_IL, Mode=TwoWay}" />
+                    <Button Style="{DynamicResource style_BearBtn_FixFont}" Tag="4" Margin="7" 
+                            Content="{Binding opModel_1.WL_4_PDL, Mode=TwoWay}" Grid.Row="4" Grid.Column="3" Click="Button_PDL_Click"/>
+
+                    <TextBox Grid.Row="4" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe Print"
+                               Text="{Binding opModel_1.WL_4_Mic,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <!--#endregion-->
+
+
+                    <!--Title-->
+                    <TextBlock Text="WL T"
+                            FontFamily="Segoe Print"
+                               Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" Grid.Row="5"/>
+                    <TextBlock Text="CWL"
+                           Grid.Column="1"
+                           FontFamily="Segoe Print"
+                                Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Grid.Row="5" />
+                    <Grid Grid.Row="5" Grid.Column="2">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox Text="{Binding opModel_1.BW_Setting_1, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print" Background="#FF1FCCD4" Foreground="White"/>
+                            <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" Foreground="White"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Row="5" Grid.Column="3">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox Text="{Binding opModel_1.BW_Setting_2, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print" Background="#FF1FCCD4" Foreground="White"/>
+                            <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" Foreground="White"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Row="5" Grid.Column="4">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox Text="{Binding opModel_1.BW_Setting_3, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print" Background="#FF1FCCD4" Foreground="White"/>
+                            <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" Foreground="White"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!--WL button-->
+                    <Button Style="{DynamicResource style_BearBtn}" Tag="1" Margin="7"
+                            Content="{Binding opModel_1.WL_Setting_1}" Grid.Row="6" Click="Button_WL_Click"/>
+                    <Button Style="{DynamicResource style_BearBtn}" Tag="2" Margin="7"
+                            Content="{Binding opModel_1.WL_Setting_2}" Grid.Row="7" Click="Button_WL_Click"/>
+                    <Button Style="{DynamicResource style_BearBtn}" Tag="3" Margin="7"
+                            Content="{Binding opModel_1.WL_Setting_3}" Grid.Row="8" Click="Button_WL_Click"/>
+                    <Button Style="{DynamicResource style_BearBtn}" Tag="4" Margin="7"
+                            Content="   ?   nm" Grid.Row="9" Click="Button_WL_Click"/>
+
+                    <!--#region WL 1 BW-->
+                    <TextBlock 
+                           Grid.Row="6"
+                           FontFamily="Segoe Print"
+                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_CWL, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="6"
+                           FontFamily="Segoe Print"
+                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_BW_1, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="6"
+                           FontFamily="Segoe Print"
+                           Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_BW_2, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="6"
+                           FontFamily="Segoe Print"
+                           Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_BW_3, Mode=TwoWay}" />
+                    <!--#endregion-->
+
+                    <!--#region WL 2 BW-->
+                    <TextBlock 
+                           Grid.Row="7"
+                           FontFamily="Segoe Print"
+                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_CWL, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="7"
+                           FontFamily="Segoe Print"
+                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_BW_1, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="7"
+                           FontFamily="Segoe Print"
+                           Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_BW_2, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="7"
+                           FontFamily="Segoe Print"
+                           Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_BW_3, Mode=TwoWay}" />
+                    <!--#endregion-->
+
+                    <!--#region WL 3 BW-->
+                    <TextBlock 
+                           Grid.Row="8"
+                           FontFamily="Segoe Print"
+                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_CWL, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="8"
+                           FontFamily="Segoe Print"
+                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_BW_1, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="8"
+                           FontFamily="Segoe Print"
+                           Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_BW_2, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="8"
+                           FontFamily="Segoe Print"
+                           Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_BW_3, Mode=TwoWay}" />
+                    <!--#endregion-->
+
+                    <!--#region WL 4 BW-->
+                    <TextBlock 
+                           Grid.Row="9"
+                           FontFamily="Segoe Print"
+                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_CWL, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="9"
+                           FontFamily="Segoe Print"
+                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_BW_1, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="9"
+                           FontFamily="Segoe Print"
+                           Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_BW_2, Mode=TwoWay}" />
+                    <TextBlock 
+                           Grid.Row="9"
+                           FontFamily="Segoe Print"
+                           Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_BW_3, Mode=TwoWay}" />
+                    <!--#endregion-->
                 </Grid>
-                <TextBlock x:Name="txt_BW_2"
-                       Grid.Row="2"
-                       FontFamily="Segoe Print"
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_2, Mode=TwoWay}" />
-                <TextBlock x:Name="txt_BW_CWL_2"
-                       Grid.Row="2"
-                       FontFamily="Segoe Print"
-                       Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_2, Mode=TwoWay}" />
 
-                <Grid Grid.Row="3">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Text="{Binding ChartNowModel.BW_Setting_3, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
-                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print"/>
-                    </StackPanel>
-                </Grid>
-                <TextBlock x:Name="txt_BW_3"
-                       Grid.Row="3"
-                       FontFamily="Segoe Print"
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_3, Mode=TwoWay}" />
-                <TextBlock x:Name="txt_BW_CWL_3"
-                       Grid.Row="3"
-                       FontFamily="Segoe Print"
-                       Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_3, Mode=TwoWay}" />
-
-                <Grid Grid.Row="4">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Text="{Binding ChartNowModel.BW_Setting_4, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
-                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print"/>
-                    </StackPanel>
-                </Grid>
-                <TextBlock x:Name="txt_BW_4"
-                       Grid.Row="4"
-                       FontFamily="Segoe Print"
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_4, Mode=TwoWay}" />
-                <TextBlock x:Name="txt_BW_CWL_4"
-                       Grid.Row="4"
-                       FontFamily="Segoe Print"
-                       Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_4, Mode=TwoWay}" />
-
-                <TextBlock Grid.Row="5" FontFamily="Segoe Print"
-                       Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Set CWL"/>
-                <TextBox Grid.Row="5" FontFamily="Segoe Print" x:Name="txt_CWL"
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="0"/>
-                <ToggleButton x:Name="btn_cal" Grid.Row="6" Grid.ColumnSpan="3" Style="{DynamicResource style_btn_Cal}" Click="Btn_cal_Click">
-                    <ToggleButton.Resources>
-                        <Style x:Key="FocusVisual">
-                            <Setter Property="Control.Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
-                        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
-                        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
-                        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
-                        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
-                        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
-                        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
-                        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
-                        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
-                        <Style x:Key="style_btn_Cal" TargetType="{x:Type ToggleButton}">
-                            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-                            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
-                            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                            <Setter Property="FontFamily" Value="Segoe Print"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            <Setter Property="Padding" Value="1"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                        <Border x:Name="border" CornerRadius="0,0,12,12" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
-                                            <Grid>
-                                                <ContentPresenter x:Name="contentPresenter" Content="Cal." Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                                <Border/>
-                                            </Grid>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="Button.IsDefaulted" Value="true">
-                                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="true">
-                                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
-                                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsPressed" Value="true">
-                                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
-                                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="false">
-                                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
-                                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
-                                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ToggleButton.Resources>
-                </ToggleButton>
             </Grid>
         </Grid>
 
@@ -386,9 +430,9 @@
                 <RowDefinition Height="0.01*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="0.1*" />
+                <ColumnDefinition Width="0.7*" />
+                <ColumnDefinition Width="0.7*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -406,10 +450,9 @@
             <Viewbox Grid.Row="0"
                      Grid.RowSpan="3"
                      Grid.Column="1"
+                     Visibility="Collapsed"
                      Margin="10">
-                <Border Grid.Row="1"
-                        Grid.RowSpan="2"
-                        CornerRadius="200"
+                <Border 
                         Background="Transparent"
                         MouseEnter="image_MouseEnter"
                         MouseLeave="grid_sector_btns_MouseLeave"
@@ -420,18 +463,18 @@
                             <RowDefinition  Height="0.5*" />
                             <RowDefinition Height="1*" />
                         </Grid.RowDefinitions>
+                        <!--Bear image-->
                         <Image x:Name="image"
                                Grid.Row="0"
                                Grid.RowSpan="3"
                                MouseEnter="image_MouseEnter"
                                Visibility="Hidden"
                                Source="../Resources/polar-bear.png" />
+                        
+                        <!--Text in circle-->
                         <Viewbox Grid.Row="1"
                                  Margin="0,261,0,261">
                             <TextBlock Visibility="{Binding Visibility, ElementName=grid_sector_btns}">        
-                             <!--<Run Text="{Binding bear_say_now}" />
-                             <Run Text="/" />
-                             <Run Text="{Binding bear_say_all}" />-->
                                 <Run Text="{Binding int_chart_now}"
                                      FontFamily="Segoe Print" />
                              <Run Text="/"
@@ -441,7 +484,7 @@
                             </TextBlock>
                         </Viewbox>
 
-
+                        <!--Buttons-->
                         <Grid Grid.Row="0"
                               Name="grid_sector_btns"
                               Visibility="Visible"
@@ -507,6 +550,99 @@
                     </Grid>
                 </Border>
             </Viewbox>
+
+            <Viewbox Grid.Column="1"
+                     Margin="10" Grid.RowSpan="3">
+                <Border 
+                        Background="Transparent"
+                        MouseEnter="image_MouseEnter"
+                        MouseLeave="grid_sector_btns_MouseLeave"
+                        Grid.Column="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition  Height="0.5*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+                        <!--Bear image-->
+                        <!--<Image 
+                               Grid.Row="0"
+                               Grid.RowSpan="3"
+                               MouseEnter="image_MouseEnter"
+                               Visibility="Hidden"
+                               Source="../Resources/polar-bear.png" />-->
+
+                        <!--Text in circle-->
+                        <!--Text in circle-->
+                        <Viewbox Grid.Row="1">
+                            <TextBlock Visibility="{Binding Visibility, ElementName=grid_sector_btns}" Text="PDL" Margin="15"/>
+                        </Viewbox>
+
+                        <!--Buttons-->
+                        <Grid Grid.Row="0"
+                             
+                              Visibility="Visible"
+                              Grid.RowSpan="3"
+                              Grid.Column="1">
+                            <!--Right-->
+                            <Viewbox>
+                                <sector_btn:Sector_BTN Arc_StartAngle="45"
+                                                       Arc_EndAngle="135"
+                                                       Grid.ColumnSpan="2"
+                                                       grid_column="2"
+                                                       grid_row="1"
+                                                       Margin="10,10,0,10"
+                                                       img_height="40"
+                                                       img_width="40"
+                                                       Tag="../Resources/rec_white.png"
+                                                       ButtonBase.Click="Sector_BTN_PDL_Stop_Click" />
+                            </Viewbox>
+                            <!--Left-->
+                            <Viewbox>
+                                <sector_btn:Sector_BTN  
+                                                        grid_column="0"
+                                                        grid_row="1"                                                        
+                                                        Margin="0,10,10,10"
+                                                        img_height="26"
+                                                        img_width="26"
+                                                        rotate_angle="90"
+                                                        ButtonBase.Click="Sector_BTN_PDL_Start_Click"
+                                                        Tag="../Resources/output-onlinepngtools (13).png"
+                                                        Arc_StartAngle="225"
+                                                        Arc_EndAngle="315" />
+                            </Viewbox>
+                            <!--Up-->
+                            <Viewbox>
+                                <sector_btn:Sector_BTN 
+                                                       grid_column="1"
+                                                       grid_row="0"
+                                                       img_height="28"
+                                                       img_width="28"
+                                                       Margin="10,0,10,10"
+                                                       ButtonBase.Click="Sector_BTN_PDL_Connect_Click"
+                                                       Tag="../Resources/output-onlinepngtools (15).png"
+                                                       Arc_StartAngle="315"
+                                                       Arc_EndAngle="45" />
+                            </Viewbox>
+                            <!--Down-->
+                            <Viewbox>
+                                <sector_btn:Sector_BTN 
+                                                       grid_column="1"
+                                                       grid_row="2"
+                                                       img_height="28"
+                                                       img_width="28"
+                                                       Margin="10,10,10,0"
+                                                       Tag="../Resources/output-onlinepngtools (7).png"
+                                                       rotate_angle="0"
+                                                       ButtonBase.Click="Sector_BTN_PDL_IsAutoCal_Click"
+                                                       Arc_StartAngle="135"
+                                                       Arc_EndAngle="225" />
+                            </Viewbox>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Viewbox>
+
 
             <Button Name="btn_bearsay_visual" HorizontalAlignment="Left"
                     VerticalAlignment="Top"
@@ -664,7 +800,7 @@
             </Grid>
 
             <Border x:Name="border_background_1"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Grid.RowSpan="3"
                     Margin="5,10,5,10"
                     BorderThickness="0"
@@ -689,7 +825,7 @@
                             <ColumnDefinition Width="1.5*" />
                             <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="V1"
+                        <TextBlock Text="WL"
                                    Grid.Column="1"
                                    Grid.Row="1"
                                    FontSize="20"
@@ -697,7 +833,7 @@
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Left"
                                    Grid.ColumnSpan="2" />
-                        <TextBlock Text="{Binding DacType, FallbackValue=Dac}"
+                        <TextBlock Text="Start"
                                    Grid.Column="2"
                                    Grid.Row="1"
                                    FontSize="20"
@@ -708,7 +844,7 @@
                     <Grid Grid.Row="1"
                           Margin="3">
                         <Viewbox MaxHeight="80">
-                            <TextBox Name="txt_V1_DAC"
+                            <TextBox Tag="Start"
                                      Grid.Column="1"
                                      Margin="4,0,4,0"
                                      IsTabStop="False"
@@ -717,8 +853,8 @@
                                      HorizontalContentAlignment="Center"
                                      FontFamily="Segoe Print"
                                      BorderBrush="Transparent"
-                                     Keyboard.PreviewKeyDown="txt_V1_DAC_PreviewKeyDown"
-                                     Text="{Binding Value, ElementName=slider_V1_DAC}"
+                                KeyDown="TextBox_WL_Scan_KeyDown"
+                                     Text="{Binding float_WL_Scan_Start}"
                                      MinWidth="50" />
                         </Viewbox>
                         <TextBlock Grid.Column="2"
@@ -730,223 +866,16 @@
                     </Grid>
                     <Grid Grid.Row="2"
                           Margin="5,0,5,0">
-                        <Slider Name="slider_V1_DAC"
+                        <Slider 
                                 IsSnapToTickEnabled="True"
-                                Maximum="{Binding int_Dac_max}"
-                                Minimum="{Binding int_Dac_min}"
+                                Maximum="{Binding float_TLS_WL_Range[1]}"
+                                Minimum="{Binding float_TLS_WL_Range[0]}"
                                 Mouse.PreviewMouseDown="slider_PreviewMouseDown"
                                 PreviewMouseLeftButtonUp="slider_WL_MouseLeftButtonUp"
                                 Style="{DynamicResource Horizontal_Slider}"
                                 TickFrequency="1"
                                 TickPlacement="BottomRight"
-                                Value="{Binding int_V1_Dac_cmd, Mode=TwoWay}"
-                                VerticalAlignment="Center">
-                            <Slider.Resources>
-                                <Style x:Key="Horizontal_Slider"
-                                       TargetType="{x:Type Slider}">
-                                    <Setter Property="Focusable"
-                                            Value="False" />
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Style.Triggers>
-                                        <Trigger Property="Orientation"
-                                                 Value="Horizontal">
-                                            <Setter Property="MinHeight"
-                                                    Value="5" />
-                                            <Setter Property="MinWidth"
-                                                    Value="104" />
-                                            <Setter Property="Template"
-                                                    Value="{DynamicResource Slider}" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                                <ControlTemplate x:Key="Slider"
-                                                 TargetType="{x:Type Slider}">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto"
-                                                           MinHeight="{TemplateBinding MinHeight}" />
-                                        </Grid.RowDefinitions>
-                                        <Track x:Name="PART_Track"
-                                               Grid.Row="2">
-                                            <Track.DecreaseRepeatButton>
-                                                <RepeatButton Style="{DynamicResource SliderRepeatButton1}" />
-                                            </Track.DecreaseRepeatButton>
-                                            <Track.Thumb>
-                                                <Thumb Style="{DynamicResource SliderThumb}" />
-                                            </Track.Thumb>
-                                            <Track.IncreaseRepeatButton>
-                                                <RepeatButton Style="{DynamicResource SliderRepeatButton}" />
-                                            </Track.IncreaseRepeatButton>
-                                        </Track>
-                                    </Grid>
-                                </ControlTemplate>
-                                <!--  SliderThumb  -->
-                                <Style x:Key="SliderThumb"
-                                       TargetType="{x:Type Thumb}">
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type Thumb}">
-                                                <Ellipse Width="20"
-                                                         Height="20"
-                                                         Fill="Transparent"
-                                                         Stroke="{Binding Main_Color, FallbackValue=#FF33D3C4}"
-                                                         StrokeThickness="2" />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                                <!--  Future Bar  -->
-                                <Style x:Key="SliderRepeatButton"
-                                       TargetType="{x:Type RepeatButton}">
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Setter Property="IsTabStop"
-                                            Value="false" />
-                                    <Setter Property="Focusable"
-                                            Value="false" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                    </Grid.RowDefinitions>
-                                                    <Border Grid.Row="0"
-                                                            Grid.RowSpan="3"
-                                                            Background="Transparent" />
-                                                    <Border Grid.Row="1"
-                                                            Height="3"
-                                                            Background="DarkGray" />
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                                <Style x:Key="SliderRepeatButton1"
-                                       TargetType="{x:Type RepeatButton}">
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Setter Property="IsTabStop"
-                                            Value="false" />
-                                    <Setter Property="Focusable"
-                                            Value="false" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                    </Grid.RowDefinitions>
-                                                    <Border Grid.Row="0"
-                                                            Grid.RowSpan="3"
-                                                            Background="Transparent" />
-                                                    <Border Grid.Row="1"
-                                                            Height="3"
-                                                            Background="{Binding Main_Color, FallbackValue=#FF33D3C4}"
-                                                            SnapsToDevicePixels="True" />
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Slider.Resources>
-                        </Slider>
-                    </Grid>
-                </Grid>
-            </Border>
-
-            <Border Grid.Column="3"
-                    Grid.RowSpan="3"
-                    Margin="5,10,5,10"
-                    BorderThickness="0"
-                    CornerRadius="15"
-                    Style="{DynamicResource BorderStyle1}">
-                <Grid Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="2*" />
-                        <RowDefinition Height="3.8*" />
-                        <RowDefinition Height="1.5*" />
-                    </Grid.RowDefinitions>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="5*" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.1*" />
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="1.5*" />
-                            <ColumnDefinition Width="1.5*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="V2"
-                                   Grid.Column="1"
-                                   Grid.Row="1"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left"
-                                   Grid.ColumnSpan="2" />
-                        <TextBlock Text="{Binding DacType, FallbackValue=Dac}"
-                                   Grid.Column="2"
-                                   Grid.Row="1"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left" />
-                    </Grid>
-                    <Grid Grid.Row="1"
-                          Margin="3">
-                        <Viewbox MaxHeight="80">
-                            <TextBox Name="txt_V2_DAC"
-                                     Grid.Column="1"
-                                     Margin="4,0,4,0"
-                                     IsTabStop="False"
-                                     Background="Transparent"
-                                     VerticalAlignment="Center"
-                                     HorizontalContentAlignment="Center"
-                                     FontFamily="Segoe Print"
-                                     BorderBrush="Transparent"
-                                     Keyboard.PreviewKeyDown="txt_V2_DAC_PreviewKeyDown"
-                                     Text="{Binding Value, ElementName=slider_V2_DAC}"
-                                     MinWidth="50" />
-                        </Viewbox>
-                        <TextBlock Grid.Column="2"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   Text=" " />
-                    </Grid>
-                    <Grid Grid.Row="2"
-                          Margin="5,0,5,0">
-                        <Slider Name="slider_V2_DAC"
-                                IsSnapToTickEnabled="True"
-                                Maximum="{Binding int_Dac_max}"
-                                Minimum="{Binding int_Dac_min}"
-                                Mouse.PreviewMouseDown="slider_PreviewMouseDown"
-                                PreviewMouseLeftButtonUp="slider_WL_MouseLeftButtonUp"
-                                Style="{DynamicResource Horizontal_Slider}"
-                                TickFrequency="1"
-                                TickPlacement="BottomRight"
-                                Value="{Binding int_V2_Dac_cmd, Mode=TwoWay}"
+                                Value="{Binding float_WL_Scan_Start, Mode=TwoWay}"
                                 VerticalAlignment="Center">
                             <Slider.Resources>
                                 <Style x:Key="Horizontal_Slider"
@@ -1103,7 +1032,7 @@
                             <ColumnDefinition Width="1.5*" />
                             <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="V3"
+                        <TextBlock Text="WL"
                                    Grid.Column="1"
                                    Grid.Row="1"
                                    FontSize="20"
@@ -1111,41 +1040,18 @@
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Left"
                                    Grid.ColumnSpan="2" />
-                        <TextBlock Text="{Binding DacType, FallbackValue=Dac}"
+                        <TextBlock Text="End"
                                    Grid.Column="2"
                                    Grid.Row="1"
                                    FontSize="20"
                                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Left" />
-                        <ToggleButton Name="ToggleBtn_Dac_or_Volt"
-                                      Grid.Column="3"
-                                      Grid.Row="1"
-                                      HorizontalAlignment="Right"
-                                      MaxWidth="48"
-                                      MinWidth="45"
-                                      MaxHeight="30"
-                                      IsChecked="{Binding isDACorVolt, Mode=TwoWay}"
-                                      Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">
-                            <ToggleButton.Background>
-                                <LinearGradientBrush StartPoint="0,0"
-                                                     EndPoint="0,1">
-                                    <GradientStop Offset="0"
-                                                  Color="#FFF3F3F3" />
-                                    <GradientStop Offset="0.5"
-                                                  Color="#FFEBEBEB" />
-                                    <GradientStop Offset="0.5"
-                                                  Color="#FFDDDDDD" />
-                                    <GradientStop Offset="1"
-                                                  Color="#FF33D3C4" />
-                                </LinearGradientBrush>
-                            </ToggleButton.Background>
-                        </ToggleButton>
                     </Grid>
                     <Grid Grid.Row="1"
                           Margin="3">
                         <Viewbox MaxHeight="80">
-                            <TextBox Name="txt_V3_DAC"
+                            <TextBox Tag="End"
                                      Grid.Column="1"
                                      Margin="4,0,4,0"
                                      IsTabStop="False"
@@ -1153,9 +1059,9 @@
                                      VerticalAlignment="Center"
                                      HorizontalContentAlignment="Center"
                                      FontFamily="Segoe Print"
+                                     KeyDown="TextBox_WL_Scan_KeyDown"
                                      BorderBrush="Transparent"
-                                     Keyboard.PreviewKeyDown="txt_V3_DAC_PreviewKeyDown"
-                                     Text="{Binding Value, ElementName=slider_V3_DAC}"
+                                     Text="{Binding float_WL_Scan_End}"
                                      MinWidth="50" />
                         </Viewbox>
                         <TextBlock Grid.Column="2"
@@ -1167,16 +1073,16 @@
                     </Grid>
                     <Grid Grid.Row="2"
                           Margin="5,0,5,0">
-                        <Slider Name="slider_V3_DAC"
+                        <Slider 
                                 IsSnapToTickEnabled="True"
-                                Maximum="{Binding int_Dac_max}"
-                                Minimum="{Binding int_Dac_min}"
+                                Maximum="{Binding float_TLS_WL_Range[1]}"
+                                Minimum="{Binding float_TLS_WL_Range[0]}"
                                 Mouse.PreviewMouseDown="slider_PreviewMouseDown"
                                 PreviewMouseLeftButtonUp="slider_WL_MouseLeftButtonUp"
                                 Style="{DynamicResource Horizontal_Slider}"
                                 TickFrequency="1"
                                 TickPlacement="BottomRight"
-                                Value="{Binding int_V3_Dac_cmd, Mode=TwoWay}"
+                                Value="{Binding float_WL_Scan_End, Mode=TwoWay}"
                                 VerticalAlignment="Center">
                             <Slider.Resources>
                                 <Style x:Key="Horizontal_Slider"
@@ -1309,8 +1215,6 @@
                 </Grid>
             </Border>
 
-            
-
             <Border Grid.Column="5"
                     Grid.RowSpan="3"
                     Margin="5,10,5,10"
@@ -1323,8 +1227,7 @@
                         <RowDefinition Height="3.8*" />
                         <RowDefinition Height="1.5*" />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0"
-                          Grid.Column="5">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition Height="5*" />
@@ -1333,182 +1236,62 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.1*" />
                             <ColumnDefinition />
-                            <ColumnDefinition />
+                            <ColumnDefinition Width="1.5*" />
+                            <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Power"
+                        <TextBlock Text="WL"
                                    Grid.Column="1"
-                                   Grid.ColumnSpan="2"
+                                   Grid.Row="1"
+                                   FontSize="20"
+                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Grid.ColumnSpan="2" />
+                        <TextBlock Text="Gap"
+                                   Grid.Column="2"
                                    Grid.Row="1"
                                    FontSize="20"
                                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Left" />
-                        <!--<ToggleButton Name="ToggleBtn_LaserConnect_PowerOn"
-                              Grid.Column="2"
-                              Grid.Row="1"
-                              HorizontalAlignment="Right"
-                              MaxWidth="48"
-                              MinWidth="40"
-                              MaxHeight="30"
-                              IsChecked="{Binding isConnected, Mode=TwoWay}"
-                              Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">                  
-                </ToggleButton>-->
-                    </Grid>
-                    <Grid Grid.Row="2"
-                          Grid.Column="5"
-                          Visibility="Visible">
-                        <Slider Name="slider_Power"
-                                VerticalAlignment="Center"
-                                IsSnapToTickEnabled="True"
-                                Maximum="7"
-                                Minimum="-10"
-                                Mouse.PreviewMouseDown="slider_PreviewMouseDown"
-                                PreviewMouseLeftButtonUp="slider_Power_PreviewMouseLeftButtonUp"
-                                Style="{DynamicResource Horizontal_Slider}"
-                                TickFrequency="0.01"
-                                Value="{Binding Double_Laser_Power, Mode=TwoWay}">
-                            <Slider.Resources>
-                                <Style x:Key="Horizontal_Slider"
-                                       TargetType="{x:Type Slider}">
-                                    <Setter Property="Focusable"
-                                            Value="False" />
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Style.Triggers>
-                                        <Trigger Property="Orientation"
-                                                 Value="Horizontal">
-                                            <Setter Property="MinHeight"
-                                                    Value="5" />
-                                            <Setter Property="MinWidth"
-                                                    Value="104" />
-                                            <Setter Property="Template"
-                                                    Value="{DynamicResource Slider}" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                                <ControlTemplate x:Key="Slider"
-                                                 TargetType="{x:Type Slider}">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto"
-                                                           MinHeight="{TemplateBinding MinHeight}" />
-                                        </Grid.RowDefinitions>
-                                        <Track x:Name="PART_Track"
-                                               Grid.Row="2">
-                                            <Track.DecreaseRepeatButton>
-                                                <RepeatButton Style="{DynamicResource SliderRepeatButton1}" />
-                                            </Track.DecreaseRepeatButton>
-                                            <Track.Thumb>
-                                                <Thumb Style="{DynamicResource SliderThumb}" />
-                                            </Track.Thumb>
-                                            <Track.IncreaseRepeatButton>
-                                                <RepeatButton Style="{DynamicResource SliderRepeatButton}" />
-                                            </Track.IncreaseRepeatButton>
-                                        </Track>
-                                    </Grid>
-                                </ControlTemplate>
-                                <!--  SliderThumb  -->
-                                <Style x:Key="SliderThumb"
-                                       TargetType="{x:Type Thumb}">
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type Thumb}">
-                                                <Ellipse Width="20"
-                                                         Height="20"
-                                                         Fill="Transparent"
-                                                         Stroke="{Binding Main_Color, FallbackValue=#FF33D3C4}"
-                                                         StrokeThickness="2" />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                                <!--  Future Bar  -->
-                                <Style x:Key="SliderRepeatButton"
-                                       TargetType="{x:Type RepeatButton}">
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Setter Property="IsTabStop"
-                                            Value="false" />
-                                    <Setter Property="Focusable"
-                                            Value="false" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                    </Grid.RowDefinitions>
-                                                    <Border Grid.Row="0"
-                                                            Grid.RowSpan="3"
-                                                            Background="Transparent" />
-                                                    <Border Grid.Row="1"
-                                                            Height="3"
-                                                            Background="DarkGray" />
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                                <Style x:Key="SliderRepeatButton1"
-                                       TargetType="{x:Type RepeatButton}">
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Setter Property="IsTabStop"
-                                            Value="false" />
-                                    <Setter Property="Focusable"
-                                            Value="false" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                    </Grid.RowDefinitions>
-                                                    <Border Grid.Row="0"
-                                                            Grid.RowSpan="3"
-                                                            Background="Transparent" />
-                                                    <Border Grid.Row="1"
-                                                            Height="3"
-                                                            Background="{Binding Main_Color, FallbackValue=#FF33D3C4}"
-                                                            SnapsToDevicePixels="True" />
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Slider.Resources>
-                        </Slider>
+                        <ToggleButton Name="ToggleBtn_Dac_or_Volt"
+                                      Grid.Column="3"
+                                      Grid.Row="1"
+                                      HorizontalAlignment="Right"
+                                      MaxWidth="48"
+                                      MinWidth="45"
+                                      MaxHeight="30"
+                                      IsChecked="{Binding isDACorVolt, Mode=TwoWay}"
+                                      Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">
+                            <ToggleButton.Background>
+                                <LinearGradientBrush StartPoint="0,0"
+                                                     EndPoint="0,1">
+                                    <GradientStop Offset="0"
+                                                  Color="#FFF3F3F3" />
+                                    <GradientStop Offset="0.5"
+                                                  Color="#FFEBEBEB" />
+                                    <GradientStop Offset="0.5"
+                                                  Color="#FFDDDDDD" />
+                                    <GradientStop Offset="1"
+                                                  Color="#FF33D3C4" />
+                                </LinearGradientBrush>
+                            </ToggleButton.Background>
+                        </ToggleButton>
                     </Grid>
                     <Grid Grid.Row="1"
-                          Grid.Column="5"
-                          Visibility="Visible"
                           Margin="3">
-                        <Viewbox Height="{Binding ActualHeight, ElementName=viewbox8, Mode=OneWay}">
-                            <TextBox x:Name="txt_power"
-                                     Background="Transparent"
+                        <Viewbox MaxHeight="80">
+                            <TextBox Tag="End"
+                                     Grid.Column="1"
+                                     Margin="4,0,4,0"
                                      IsTabStop="False"
+                                     Background="Transparent"
                                      VerticalAlignment="Center"
                                      HorizontalContentAlignment="Center"
-                                     Keyboard.PreviewKeyDown="txt_power_PreviewKeyDown"
                                      FontFamily="Segoe Print"
+                                     KeyDown="TextBox_WL_Scan_KeyDown"
                                      BorderBrush="Transparent"
-                                     Text="{Binding Value, ElementName=slider_Power}"
+                                     Text="{Binding float_WL_Scan_Gap}"
                                      MinWidth="50" />
                         </Viewbox>
                         <TextBlock Grid.Column="2"
@@ -1516,10 +1299,14 @@
                                    VerticalAlignment="Bottom"
                                    FontSize="20"
                                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   Text=" dBm" />
+                                   Text=" " />
                     </Grid>
+                   
                 </Grid>
             </Border>
+
+
+
 
             <Border Grid.Column="6"
                     Grid.RowSpan="3"
@@ -1851,7 +1638,9 @@
                                 </Track>
                             </Grid>
                         </ControlTemplate>
-                        --><!--  SliderThumb  --><!--
+                        -->
+            <!--  SliderThumb  -->
+            <!--
                         <Style x:Key="SliderThumb"
                                TargetType="{x:Type Thumb}">
                             <Setter Property="SnapsToDevicePixels"
@@ -1870,7 +1659,9 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                        --><!--  Future Bar  --><!--
+                        -->
+            <!--  Future Bar  -->
+            <!--
                         <Style x:Key="SliderRepeatButton"
                                TargetType="{x:Type RepeatButton}">
                             <Setter Property="SnapsToDevicePixels"
@@ -1980,7 +1771,8 @@
                            FontFamily="{Binding FontFamily, ElementName=txt_WL}"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left" />
-                --><!--<ToggleButton Name="ToggleBtn_LaserConnect_PowerOn"
+                -->
+            <!--<ToggleButton Name="ToggleBtn_LaserConnect_PowerOn"
                               Grid.Column="2"
                               Grid.Row="1"
                               HorizontalAlignment="Right"
@@ -1989,7 +1781,8 @@
                               MaxHeight="30"               
                               IsChecked="{Binding isLaserActive, Mode=TwoWay}"
                               Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">                  
-                </ToggleButton>--><!--
+                </ToggleButton>-->
+            <!--
             </Grid>
             <Grid Grid.Row="2"
                   Grid.Column="5"
@@ -2049,7 +1842,9 @@
                                 </Track>
                             </Grid>
                         </ControlTemplate>
-                        --><!--  SliderThumb  --><!--
+                        -->
+            <!--  SliderThumb  -->
+            <!--
                         <Style x:Key="SliderThumb"
                                TargetType="{x:Type Thumb}">
                             <Setter Property="SnapsToDevicePixels"
@@ -2068,7 +1863,9 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                        --><!--  Future Bar  --><!--
+                        -->
+            <!--  Future Bar  -->
+            <!--
                         <Style x:Key="SliderRepeatButton"
                                TargetType="{x:Type RepeatButton}">
                             <Setter Property="SnapsToDevicePixels"
@@ -2155,7 +1952,7 @@
                            FontFamily="{Binding FontFamily, ElementName=txt_WL}"
                            Text=" dBm" />
             </Grid>-->
-        </Grid>      
+        </Grid>
     </Grid>
 
 

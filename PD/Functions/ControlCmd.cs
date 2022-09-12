@@ -2378,6 +2378,73 @@ namespace PD.Functions
             }
         }
 
+        HPPDL pdl;
+
+        public void PDL_Connect()
+        {
+            pdl = new HPPDL();
+            pdl.BoardNumber = vm.pdl_BoardNumber;
+            pdl.Addr = vm.pdl_Addr;
+            pdl.Open();
+            pdl.init();
+            pdl.scanRate(8);
+        }
+
+        public void PDL_Start()
+        {
+            pdl = new HPPDL();
+            pdl.BoardNumber = vm.pdl_BoardNumber;
+            pdl.Addr = vm.pdl_Addr;
+            pdl.Open();
+            pdl.init();
+            pdl.scanRate(8);
+
+            if (pdl != null)
+                pdl.startPolarizationScan();
+        }
+
+        public void PDL_Stop()
+        {
+            if (pdl != null)
+            {
+                pdl.stopPolarizationScan();
+                pdl.Close();
+            }
+        }
+
+        public async Task<double> PDL_Cal(int TimeSpan_Second)
+        {
+            PDL_Connect();
+            PDL_Start();
+
+            await Get_Power(0, true);
+            await Task.Delay(100);
+
+            DateTime dateTime_start = DateTime.Now;
+            List<double> list_PDL_IL = new List<double>();
+            while (true)
+            {
+                if (vm.isStop) break;
+
+                await Get_Power(0, true);
+                list_PDL_IL.Add(vm.Double_Powers[0]);
+
+                TimeSpan dt = DateTime.Now - dateTime_start;
+                if (dt.TotalSeconds > TimeSpan_Second) break;
+
+                vm.Str_cmd_read = $"PDL Scan Timespan : {Math.Round(dt.TotalSeconds, 1)} s";
+            }
+
+            PDL_Stop();
+
+            double Delta_IL = 0;
+
+            if (list_PDL_IL.Count > 0)
+                Delta_IL = Math.Round(list_PDL_IL.Max() - list_PDL_IL.Min(), 2);
+
+            return Delta_IL;
+        }
+
         private string WL_Range_Analyze(double wl)
         {
             if (wl >= 1523 && wl <= 1620)
@@ -2408,12 +2475,10 @@ namespace PD.Functions
                 {
                     vm.Str_cmd_read = "WL out of range";
                     vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = false });
-                    //return;
                 }
                 else
                     vm.selected_band = band;
 
-                //if (!vm.isConnected)
                 Connect_TLS();
 
                 switch (vm.Laser_type)
@@ -2434,7 +2499,7 @@ namespace PD.Functions
                             if (vm.pm != null) vm.pm.SetWL(wl);
                 }
 
-                Set_TLS_Filter(wl);
+                Set_TLS_Filter(wl, false);
 
                 await Task.Delay(vm.Int_Read_Delay);
 
@@ -2521,7 +2586,7 @@ namespace PD.Functions
 
                             await Task.Delay(100);
 
-                            vm.port_TLS_Filter.Write(string.Format("WL {0}", wl) + "\r");
+                            vm.port_TLS_Filter.Write($"WL {wl}\r");
 
                             await Task.Delay(vm.Int_Read_Delay);
 
@@ -2538,9 +2603,48 @@ namespace PD.Functions
             catch
             {
                 vm.Str_cmd_read = "Set TLS Filter Error";
-                vm.Save_Log("Set TLS WL", "Set TLS Filter Error", false);
+                vm.Save_Log(new LogMember() { isShowMSG = false, Status = "Set TLS WL", Result = "Set TLS Filter Failed", Message = $"WL : {wl}" }) ;
             }
         }
+
+        public async void Set_TLS_Filter(double wl, bool isClosePort)
+        {
+            try
+            {
+                if (vm.is_TLS_Filter)
+                {
+                    if (vm.port_TLS_Filter != null)
+                        if (!string.IsNullOrEmpty(vm.port_TLS_Filter.PortName))
+                        {
+                            if (!vm.port_TLS_Filter.IsOpen)
+                                vm.port_TLS_Filter.Open();
+
+                            await Task.Delay(100);
+
+                            vm.port_TLS_Filter.Write($"WL {wl}\r");
+
+                            if (isClosePort)
+                            {
+                                await Task.Delay(vm.Int_Read_Delay);
+
+                                if (vm.port_TLS_Filter.IsOpen)
+                                {
+                                    vm.port_TLS_Filter.DiscardInBuffer();
+                                    vm.port_TLS_Filter.DiscardOutBuffer();
+
+                                    vm.port_TLS_Filter.Close();
+                                }
+                            }
+                        }
+                }
+            }
+            catch
+            {
+                vm.Str_cmd_read = "Set TLS Filter Error";
+                vm.Save_Log(new LogMember() { isShowMSG = false, Status = "Set TLS WL", Result = "Set TLS Filter Failed", Message = $"WL : {wl}" });
+            }
+        }
+
 
         public void Set_TLS_Lambda_Scan()
         {
@@ -2874,7 +2978,6 @@ namespace PD.Functions
                             if (vm.BoolAllGauge || vm.list_GaugeModels[i].boolGauge)
                             {
                                 vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
-
                             }
                         }
                         break;
@@ -2954,11 +3057,14 @@ namespace PD.Functions
                                 {
                                     vm.list_GaugeModels[ch - 1].GaugeValue = IL.ToString();
 
-                                    DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], IL);
-                                    vm.ChartNowModel.list_dataPoints[ch - 1].Add(dp);
-                                    vm.Save_All_PD_Value[ch - 1].Add(dp);
+                                    if(vm.wl_list.Count > vm.wl_list_index)
+                                    {
+                                        DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], IL);
+                                        vm.ChartNowModel.list_dataPoints[ch - 1].Add(dp);
+                                        vm.Save_All_PD_Value[ch - 1].Add(dp);
 
-                                    vm.wl_list_index++;
+                                        vm.wl_list_index++;
+                                    }
                                 }
                             }
                         }
@@ -3212,46 +3318,6 @@ namespace PD.Functions
             }
 
             return listDD;
-
-            //List<string> msgList = msg.Split('-').ToList();
-
-            //if (msgList.Count > 2)
-            //{
-            //    List<double> list_D = new List<double>();
-
-            //    msgList.RemoveAt(0);
-
-            //    for (int i = 0; i < msgList.Count; i++)
-            //    {
-            //        if (double.TryParse(msgList[i], out double d))
-            //            list_D.Add(d * -1);
-            //    }
-
-            //    return list_D;
-            //}
-            //else  //Only one IL return
-            //{
-            //    double power = double.Parse(msg);
-            //    try
-            //    {
-            //        if (vm.dB_or_dBm)  //dB
-            //        {
-            //            if (vm.float_WL_Ref.Count > 0)
-            //                power = Math.Round(power - vm.float_WL_Ref[0], 4);
-
-            //            vm.Double_Powers[ch - 1] = power;
-            //        }
-            //        else  //dBm
-            //        {
-            //            vm.Double_Powers[ch - 1] = power;
-            //        }
-
-            //        await Task.Delay(vm.Int_Set_WL_Delay);
-            //    }
-            //    catch (Exception ex) { MessageBox.Show(ex.StackTrace.ToString()); }
-            //}
-
-
         }
 
         public async Task<List<double>> Get_PD_Value(string comport)

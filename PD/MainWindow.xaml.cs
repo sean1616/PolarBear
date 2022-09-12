@@ -48,6 +48,7 @@ namespace PD
         //int v12_maxpower_index_PM;
         List<int> maxPowder_dac = new List<int>();
         Page_PD_Gauges _Page_PD_Gauges;
+        Page_TF2_Main _Page_TF2_Main;
         Page_Chart _Page_Chart;
         Page_DataGrid _Page_DataGrid;
         Page_Laser _Page_Laser;
@@ -58,6 +59,8 @@ namespace PD
         int int_saved_combox_index;
 
         private SerialPort port_arduino = null;
+
+        
 
         public MainWindow()
         {
@@ -104,6 +107,8 @@ namespace PD
             if (File.Exists(ini_path))
             {
                 combox_comport.SelectedItem = vm.Ini_Read("Connection", "Comport");
+                vm.Comport_TLS_Filter = vm.Ini_Read("Connection", "Comport_TLS_Filter");
+                vm.Comport_Switch = vm.Ini_Read("Connection", "Comport_Switch");
                 vm.station_type = vm.Ini_Read("Connection", "Station");
                 if (string.IsNullOrEmpty(vm.station_type)) vm.station_type = "Testing";
 
@@ -241,6 +246,7 @@ namespace PD
 
             #region Page Navigation Setting
             _Page_PD_Gauges = new Page_PD_Gauges(vm);
+            _Page_TF2_Main = new Page_TF2_Main(vm);
             _Page_Chart = new Page_Chart(vm);
             _Page_DataGrid = new Page_DataGrid(vm);
             _Page_Laser = new Page_Laser(vm);
@@ -395,6 +401,10 @@ namespace PD
             string statId = vm.Ini_Read("Connection", "Station_ID");
             if (!string.IsNullOrEmpty(statId))
                 vm.Station_ID = statId;
+            #endregion
+
+            #region Event Setting
+            _Page_TF2_Main.K_WL_Event += new RoutedEventHandler(K_WL_Click);  //Set mainwindow event to page event
             #endregion
         }
 
@@ -3562,13 +3572,25 @@ namespace PD
 
         private void RBtn_Gauge_Page_Checked(object sender, RoutedEventArgs e)
         {
-            if (_Page_PD_Gauges == null)
-                _Page_PD_Gauges = new Page_PD_Gauges(vm);
+            if(vm.station_type != "TF2")
+            {
+                if (_Page_PD_Gauges == null)
+                    _Page_PD_Gauges = new Page_PD_Gauges(vm);
 
-            pageTransitionControl.Visibility = Visibility.Hidden;
-            Frame_Navigation.Visibility = Visibility.Visible;
-            //pageTransitionControl.ShowPage(_Page_PD_Gauges);
-            Frame_Navigation.Navigate(_Page_PD_Gauges);
+                pageTransitionControl.Visibility = Visibility.Hidden;
+                Frame_Navigation.Visibility = Visibility.Visible;
+                //pageTransitionControl.ShowPage(_Page_PD_Gauges);
+                Frame_Navigation.Navigate(_Page_PD_Gauges);
+            }
+            else if(vm.station_type == "TF2")
+            {
+                if (_Page_TF2_Main == null)
+                    _Page_TF2_Main = new Page_TF2_Main(vm);
+
+                pageTransitionControl.Visibility = Visibility.Hidden;
+                Frame_Navigation.Visibility = Visibility.Visible;
+                Frame_Navigation.Navigate(_Page_TF2_Main);
+            }
 
             GC.Collect();
         }
@@ -3643,13 +3665,6 @@ namespace PD
             catch { }
         }
 
-        //private void btn_show_function_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (vm.Mainfunction_visibility == Visibility.Hidden)
-        //        vm.Mainfunction_visibility = Visibility.Visible;
-        //    else
-        //        vm.Mainfunction_visibility = Visibility.Hidden;
-        //}
 
         private async void txtBox_comment_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -3784,8 +3799,13 @@ namespace PD
             vm.Ini_Write("Productions", "Unit", vm.str_Unit);
         }
 
-        private async void K_WL_Click(object sender, RoutedEventArgs e)
+        private void K_WL_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            vm.opModel_1.WL_No = 4;
+        }
+
+        public async void K_WL_Click(object sender, RoutedEventArgs e)
+        { 
             #region initial setting
             bool pre_GO_status = vm.IsGoOn;
             vm.IsGoOn = false;
@@ -3807,6 +3827,7 @@ namespace PD
             }
 
             anly.JudgeAllBoolGauge();
+
             #endregion
 
             List<string> list_finalVoltage = new List<string>();
@@ -3866,8 +3887,7 @@ namespace PD
 
             vm.bear_say_all++;
             vm.bear_say_now = vm.bear_say_all;
-
-            //ComBox_Calibration.IsEditable = true;
+                        
             K_WL.IsEnabled = true;  //取消防呆
             btn_GO.IsEnabled = true;
 
@@ -5053,7 +5073,7 @@ namespace PD
         }
 
         //bool isFastMode = true;
-        private async Task<bool> WL_Scan()
+        public async Task<bool> WL_Scan()
         {
             try
             {
@@ -5063,6 +5083,8 @@ namespace PD
                 vm.Double_Powers.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
                 vm.Chart_title = "Power X Wavelength";
                 vm.Chart_x_title = "Wavelength (nm)";
+
+                double cwl = 0;
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -5104,7 +5126,7 @@ namespace PD
                     cmd.Set_WL(wl, false);
 
                     if (wl == vm.float_WL_Scan_Start)
-                        await Task.Delay(vm.Int_Set_WL_Delay + 80);
+                        await Task.Delay(vm.Int_Set_WL_Delay + 200);
                     else await Task.Delay(vm.Int_Set_WL_Delay);
 
                     vm.Double_Laser_Wavelength = wl;
@@ -5187,44 +5209,89 @@ namespace PD
                     catch { }
                     #endregion
 
-                    anly.BandWidth_Calculation();
+                    if (vm.station_type == "TF2")
+                        anly.BandWidth_Calculation(vm.opModel_1.WL_No);                       
+                    else
+                        anly.BandWidth_Calculation();
                 }
-
-                //Calculate the position with maximum IL and show data in UI
-                for (int ch = 0; ch < vm.ch_count; ch++)
+               
+                if (vm.station_type == "TF2")
                 {
-                    if (vm.Save_All_PD_Value[ch].Count > 0)
+                    if (!vm.isStop)
                     {
-                        double maxIL_WL = vm.Save_All_PD_Value[ch].Where(point => point.Y == vm.Save_All_PD_Value[ch].Max(x => x.Y)).ToList().First().X;
+                        foreach (var item in vm.props_opModel)
+                        {
+                            if (item.Name == $"WL_{vm.opModel_1.WL_No}_CWL")
+                                cwl = (double)item.GetValue(vm.opModel_1, null);
+                        }
 
-                        vm.Double_Laser_Wavelength = maxIL_WL; 
-                        cmd.Set_WL(maxIL_WL, false);
+                        //Get IL at CWL postion
+                        if (cwl != 0)
+                        {
+                            vm.Str_Status = "Getting IL";
+                            bool FS_Setting = vm.Is_FastScan_Mode;
 
-                        vm.list_GaugeModels[ch].GaugeValue = vm.Save_All_PD_Value[ch].Max(x => x.Y).ToString();
+                            cmd.Set_WL(cwl, true);
+                            await Task.Delay(1000);
+                       
+                            vm.Is_FastScan_Mode = false;
+                            await cmd.Get_Power(0, true);
+                            vm.Is_FastScan_Mode = FS_Setting;
+                            await Task.Delay(200);
 
-                        vm.list_GaugeModels[ch].GaugeBearSay_1 = Math.Round(maxIL_WL, 2).ToString();
-                        vm.list_GaugeModels[ch].GaugeBearSay_2 = vm.list_GaugeModels[ch].GaugeValue;
+                            //Set IL value to TF2 gridview
+                            foreach(var item in vm.props_opModel)
+                            {
+                                if (item.Name == $"WL_{vm.opModel_1.WL_No}_IL")
+                                    item.SetValue(vm.opModel_1, vm.list_GaugeModels[0].GaugeValue);
+                            }
+                        }
+
+                        //PDL Scan
+                        await _Page_TF2_Main.Cal_PDL_Show();
                     }
                 }
+                else 
+                    for (int ch = 0; ch < vm.ch_count; ch++)  //Calculate the position with maximum IL and show data in UI
+                    {
+                        if (vm.Save_All_PD_Value[ch].Count > 0)
+                        {
+                            double maxIL_WL = vm.Save_All_PD_Value[ch].Where(point => point.Y == vm.Save_All_PD_Value[ch].Max(x => x.Y)).First().X;
+
+                            vm.Double_Laser_Wavelength = maxIL_WL; 
+                            cmd.Set_WL(maxIL_WL, false);
+
+                            vm.list_GaugeModels[ch].GaugeValue = vm.Save_All_PD_Value[ch].Max(x => x.Y).ToString();
+
+                            vm.list_GaugeModels[ch].GaugeBearSay_1 = Math.Round(maxIL_WL, 2).ToString();
+                            vm.list_GaugeModels[ch].GaugeBearSay_2 = vm.list_GaugeModels[ch].GaugeValue;
+                        }
+                    }
 
                 var elapsedMs = watch.ElapsedMilliseconds;
                 decimal scan_timespan = (elapsedMs / (decimal)1000);
                 vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
                 await cmd.Save_Chart();
 
-                //vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-
                 vm.msgModel.msg_3 = Math.Round(scan_timespan, 1).ToString() + " s";  //Update Main UI timespan
                 
-                vm.Show_Bear_Window("WL Scan 完成" + "  (" + Math.Round(scan_timespan, 1).ToString() + " s)", false, "String", false);
+                vm.Show_Bear_Window($"WL Scan 完成  ({ Math.Round(scan_timespan, 1) } s)", false, "String", false);
 
                 int a = vm.list_ChartModels.Count;
 
                 vm.Str_Status = "WL Scan Stop";
                 vm.Save_Log("WL Scan", "Stop", false);
 
-                //K_WL.IsEnabled = true;
                 vm.IsGoOn = false;
+
+                //Close TLS filter port for other control action
+                if (vm.port_TLS_Filter.IsOpen)
+                {
+                    vm.port_TLS_Filter.DiscardInBuffer();
+                    vm.port_TLS_Filter.DiscardOutBuffer();
+
+                    vm.port_TLS_Filter.Close();
+                }
 
                 return true;
             }
@@ -5808,6 +5875,76 @@ namespace PD
         {
             if (vm.station_type.Equals("Hermetic_Test"))
                 vm.Show_Bear_Window("Before or After ?", false, "String", true);
+            else if (vm.station_type.Equals("TF2"))
+            {
+                #region CSV
+
+                List<string> list_titles = new List<string>(){ "WL","CWL", "IL", "PDL", "Mic",
+                    $"{vm.opModel_1.BW_Setting_1}dB",
+                    $"{vm.opModel_1.BW_Setting_2}dB",
+                    $"{vm.opModel_1.BW_Setting_3}dB"};
+                string filePath = CSVFunctions.Creat_New_CSV(@"D:\", vm.opModel_1.SN, list_titles, false, true);
+
+                CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                {
+                    vm.opModel_1.WL_Setting_1,
+                    vm.opModel_1.WL_1_CWL.ToString(),
+                    vm.opModel_1.WL_1_IL.ToString(),
+                    vm.opModel_1.WL_1_PDL.ToString(),
+                    vm.opModel_1.WL_1_Mic.ToString(),
+                    vm.opModel_1.WL_1_BW_1.ToString(),
+                    vm.opModel_1.WL_1_BW_2.ToString(),
+                    vm.opModel_1.WL_1_BW_3.ToString()
+                });
+
+                CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                {
+                    vm.opModel_1.WL_Setting_2.ToString(),
+                    vm.opModel_1.WL_2_CWL.ToString(),
+                    vm.opModel_1.WL_2_IL.ToString(),
+                    vm.opModel_1.WL_2_PDL.ToString(),
+                    vm.opModel_1.WL_2_Mic.ToString(),
+                    vm.opModel_1.WL_2_BW_1.ToString(),
+                    vm.opModel_1.WL_2_BW_2.ToString(),
+                    vm.opModel_1.WL_2_BW_3.ToString()
+                });
+
+                CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                {
+                    vm.opModel_1.WL_Setting_3.ToString(),
+                    vm.opModel_1.WL_3_CWL.ToString(),
+                    vm.opModel_1.WL_3_IL.ToString(),
+                    vm.opModel_1.WL_3_PDL.ToString(),
+                    vm.opModel_1.WL_3_Mic.ToString(),
+                    vm.opModel_1.WL_3_BW_1.ToString(),
+                    vm.opModel_1.WL_3_BW_2.ToString(),
+                    vm.opModel_1.WL_3_BW_3.ToString()
+                });
+                #endregion
+
+                //string file_path = @"D:\";
+                //string fileName = $"{file_path}{vm.opModel_1.SN}.txt";
+                //string data_title = "CWL, IL, PDL, Mic, 0.3dB, 3dB, 20dB";
+                //string data_1 = 
+                //    $"{vm.opModel_1.WL_1_CWL},{vm.opModel_1.WL_1_IL},{vm.opModel_1.WL_1_PDL},{vm.opModel_1.WL_1_Mic}" +
+                //    $",{vm.opModel_1.WL_1_BW_1},{vm.opModel_1.WL_1_BW_2},{vm.opModel_1.WL_1_BW_3}";
+
+                //string data_2 =
+                //   $"{vm.opModel_1.WL_2_CWL},{vm.opModel_1.WL_2_IL},{vm.opModel_1.WL_2_PDL},{vm.opModel_1.WL_2_Mic}" +
+                //   $",{vm.opModel_1.WL_2_BW_1},{vm.opModel_1.WL_2_BW_2},{vm.opModel_1.WL_2_BW_3}";
+
+                //string data_3 =
+                //   $"{vm.opModel_1.WL_3_CWL},{vm.opModel_1.WL_3_IL},{vm.opModel_1.WL_3_PDL},{vm.opModel_1.WL_3_Mic}" +
+                //   $",{vm.opModel_1.WL_3_BW_1},{vm.opModel_1.WL_3_BW_2},{vm.opModel_1.WL_3_BW_3}";
+
+                //string[] listStr = new string[4] {data_title, data_1, data_2, data_3 };
+
+                //if (File.Exists(fileName)) File.Delete(fileName);
+                //File.WriteAllLines(fileName, listStr);
+
+                vm.Str_Status = "Save Data to Csv";
+                vm.Str_cmd_read = vm.opModel_1.SN;
+            }
             else
             {
                 string file_path = @"D:\";
@@ -6173,5 +6310,7 @@ namespace PD
 
             MessageBox.Show("Best Dac: " + curveFittingResultModel.Best_X.ToString());
         }
+
+       
     }
 }

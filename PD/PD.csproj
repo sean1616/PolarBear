@@ -7,7 +7,7 @@
     <ProjectGuid>{3F1E0450-202F-4E7B-ACDA-4856A829360E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>PD</RootNamespace>
-    <AssemblyName>PD-v5.5.13</AssemblyName>
+    <AssemblyName>PD-v5.5.14</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -205,6 +205,9 @@
     <Compile Include="NavigationPages\Page_Chart.xaml.cs">
       <DependentUpon>Page_Chart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NavigationPages\Page_TF2_Main.xaml.cs">
+      <DependentUpon>Page_TF2_Main.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NavigationPages\Page_StringList.xaml.cs">
       <DependentUpon>Page_StringList.xaml</DependentUpon>
     </Compile>
@@ -317,6 +320,10 @@
     <Page Include="NavigationPages\Page_Chart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_TF2_Main.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="NavigationPages\Page_StringList.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -623,6 +630,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\folder_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\output-onlinepngtools %287%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\output-onlinepngtools %2813%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\output-onlinepngtools %2815%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\rec_white.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

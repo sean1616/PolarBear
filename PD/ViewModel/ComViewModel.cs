@@ -14,6 +14,7 @@ using System.Data.SqlClient;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using System.Reflection;
 
 using OxyPlot;
 
@@ -268,6 +269,10 @@ namespace PD.ViewModel
                 OnPropertyChanged_Normal("ChartNowModel");
             }
         }
+
+        public OpticalPropertyModel opModel_1 { get; set; } = new OpticalPropertyModel();
+        public PropertyInfo[] props_opModel;
+
         public KModel kModel { get; set; } = new KModel();
         public GetPowerSettingModel GetPWSettingModel = new GetPowerSettingModel();
         #endregion
@@ -283,6 +288,7 @@ namespace PD.ViewModel
 
         //ICommand
         #region ICommand
+
         public ICommand BearTestCommand { get { return new Delegatecommand(BearTest); } }
 
         public ICommand Cmd_Test { get { return new Delegatecommand(cmd_test); } }
@@ -441,7 +447,7 @@ namespace PD.ViewModel
 
                 is_update_chart = false;
             }
-            else if (station_type.Equals("Testing"))
+            else if (station_type.Equals("Testing") || station_type.Equals("TF2"))
             {
                 PD_or_PM = true;
                 BoudRate = 115200;
@@ -1708,6 +1714,17 @@ namespace PD.ViewModel
             }
         }
 
+        private string _csv_product_TF2_wl_setting_path = @"D:\Product_TF2_WL";
+        public string csv_product_TF2_wl_setting_path
+        {
+            get { return _csv_product_TF2_wl_setting_path; }
+            set
+            {
+                _csv_product_TF2_wl_setting_path = value;
+                OnPropertyChanged("csv_product_TF2_wl_setting_path");
+            }
+        }
+
         private string _txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
         public string txt_board_table_path
         {
@@ -2578,7 +2595,7 @@ namespace PD.ViewModel
 
 
         private List<string> _list_combox_Working_Table_Type_items =
-            new List<string>() { "Testing", "Hermetic_Test", "Chamber_S", "Chamber_S_16ch", "BR", "UV_Curing", "Fast_Calibration" };
+            new List<string>() { "Testing", "Hermetic_Test", "Chamber_S", "Chamber_S_16ch", "BR", "UV_Curing", "Fast_Calibration", "TF2" };
         public List<string> list_combox_Working_Table_Type_items
         {
             get { return _list_combox_Working_Table_Type_items; }
@@ -3923,6 +3940,29 @@ namespace PD.ViewModel
             }
         }
 
+        private int _pdl_BoardNumber = 0;
+        public int pdl_BoardNumber
+        {
+            get { return _pdl_BoardNumber; }
+            set
+            {
+                _pdl_BoardNumber = value;
+                OnPropertyChanged("pdl_BoardNumber");
+            }
+        }
+
+        private int _pdl_Addr = 11;
+        public int pdl_Addr
+        {
+            get { return _pdl_Addr; }
+            set
+            {
+                _pdl_Addr = value;
+                Ini_Write("Connection", "pdl_Addr", value.ToString());
+                OnPropertyChanged("pdl_Addr");
+            }
+        }
+
         private int _multiMeter_Addr = 22;
         public int multiMeter_Addr
         {
@@ -4528,5 +4568,6 @@ namespace PD.ViewModel
         public string BR;
         public string UV_Curing;
         public string Fast_Calibration;
+        public string TF2;
     }
 }

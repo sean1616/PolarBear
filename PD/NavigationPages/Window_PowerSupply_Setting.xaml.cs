@@ -188,24 +188,17 @@ namespace PD.NavigationPages
             {
                 vm.list_ChannelModels[i].Board_Port = vm.list_Board_Setting[i][1];
                 vm.list_ChannelModels[i].Board_ID = vm.list_Board_Setting[i][0];
-                //vm.list_GaugeModels[i].Board_ID = vm.list_ChannelModels[i].Board_ID;
             }
-
-            vm.Comport_Switch = vm.Ini_Read("Connection", "Comport_Switch");
-            vm.Comport_TLS_Filter = vm.Ini_Read("Connection", "Comport_TLS_Filter");
         }
 
         private void btn_load_boardtable_Click(object sender, RoutedEventArgs e)
         {
             string folder = System.Reflection.Assembly.GetEntryAssembly().Location;
-            //string FileName = "ControlBoard_Table_" + DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00") + ".csv";
 
             var dialog = new Microsoft.Win32.OpenFileDialog();
-            //System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             dialog.Title = "Load equipment setting table";
             dialog.InitialDirectory = folder;
             dialog.FileName = vm.txt_Equip_Setting_Path;
-            //saveFileDialog.FileName = FileName;
             dialog.Filter = "CSV (*.csv)|*.csv|TXT (*.txt)|*.txt|All files (*.*)|*.*";
 
             bool? result = dialog.ShowDialog();
