@@ -18,7 +18,7 @@
              Style="{StaticResource UCAll}"
              Loaded="UserControl_Loaded"
              mc:Ignorable="d">
-    
+
     <UserControl.Resources>
         <Style x:Key="BorderStyle1"
                TargetType="{x:Type Border}">
@@ -433,10 +433,10 @@
                 <ColumnDefinition Width="0.1*" />
                 <ColumnDefinition Width="0.7*" />
                 <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="0.95*" />
+                <ColumnDefinition Width="0.95*" />
+                <ColumnDefinition Width="0.95*" />
+                <ColumnDefinition Width="0.95*" />
                 <ColumnDefinition Width="0.05*" />
             </Grid.ColumnDefinitions>
             <Border Grid.Row="0"
@@ -470,7 +470,7 @@
                                MouseEnter="image_MouseEnter"
                                Visibility="Hidden"
                                Source="../Resources/polar-bear.png" />
-                        
+
                         <!--Text in circle-->
                         <Viewbox Grid.Row="1"
                                  Margin="0,261,0,261">
@@ -584,8 +584,12 @@
                               Visibility="Visible"
                               Grid.RowSpan="3"
                               Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="46*"/>
+                                <ColumnDefinition Width="9*"/>
+                            </Grid.ColumnDefinitions>
                             <!--Right-->
-                            <Viewbox>
+                            <Viewbox Grid.ColumnSpan="2">
                                 <sector_btn:Sector_BTN Arc_StartAngle="45"
                                                        Arc_EndAngle="135"
                                                        Grid.ColumnSpan="2"
@@ -599,7 +603,7 @@
                                                        ButtonBase.Click="Sector_BTN_PDL_Stop_Click" />
                             </Viewbox>
                             <!--Left-->
-                            <Viewbox>
+                            <Viewbox Grid.ColumnSpan="2">
                                 <sector_btn:Sector_BTN  
                                                         grid_column="0"
                                                         grid_row="1"                                                        
@@ -614,7 +618,7 @@
                                                         Arc_EndAngle="315" />
                             </Viewbox>
                             <!--Up-->
-                            <Viewbox>
+                            <Viewbox Grid.ColumnSpan="2">
                                 <sector_btn:Sector_BTN 
                                                        grid_column="1"
                                                        grid_row="0"
@@ -628,7 +632,7 @@
                                                        Arc_EndAngle="45" />
                             </Viewbox>
                             <!--Down-->
-                            <Viewbox>
+                            <Viewbox Grid.ColumnSpan="2">
                                 <sector_btn:Sector_BTN 
                                                        grid_column="1"
                                                        grid_row="2"
@@ -809,22 +813,37 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
-                <wpfuc:Text_ToggleButton Grid.Row="0"
+                <wpfuc:Text_ToggleButton Grid.Row="3"
                                                  txtbox_content="Auto PDL"
                                                  border_Background="#FF98DEB5"
                                                  Background="#FFE6E6E6"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding opModel_1.Is_PDL_Auto_Scan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" />
-                <wpfuc:Text_TextBox Grid.Row="1"
+                <wpfuc:Text_TextBox Grid.Row="2"
                                                 txtbox_content="PDL Scan Time"
                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                 txtbox_value="{Binding opModel_1.PDL_Scan_Time, FallbackValue=15, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" />
                 <uc:UC_Setting_Button x:Name="btn_Open_Location"
-                                              Grid.Row="2"
+                                              Grid.Row="1"
                                      txtbox_content="Save Location"
                                               ButtonBase.Click="btn_Open_Location_Click"
                                               Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}" />
+
+                <ComboBox Name="ComBox_TF2_Station"
+                                  Grid.Row="0"
+                          SelectedIndex="0"
+                          Loaded="ComBox_TF2_Station_Loaded"
+                          DropDownClosed="ComBox_TF2_Station_DropDownClosed"
+                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                  Style="{StaticResource style_combobox_black}" >
+                    <ComboBoxItem Content="Alignment"/>
+                    <ComboBoxItem Content="PreTest"/>
+                    <ComboBoxItem Content="Test"/>
+                    <ComboBoxItem Content="FinalTest"/>
+                </ComboBox>
+
             </Grid>
 
             <Border x:Name="border_background_1"
@@ -1306,7 +1325,7 @@
                                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
                                    Text=" " />
                     </Grid>
-                   
+
                 </Grid>
             </Border>
 

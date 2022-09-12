@@ -1749,6 +1749,8 @@ namespace PD.ViewModel
             }
         }
 
+        public string TF2_station_type { get; set; } = "";
+
         private string _txt_save_TF2_wl_data_path = @"\\192.168.2.4\OptiComm\tff\Data\TF2\data\";
         public string txt_save_TF2_wl_data_path
         {

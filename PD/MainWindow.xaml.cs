@@ -5888,7 +5888,7 @@ namespace PD
                     $"{vm.opModel_1.BW_Setting_1}dB",
                     $"{vm.opModel_1.BW_Setting_2}dB",
                     $"{vm.opModel_1.BW_Setting_3}dB"};
-                string filePath = CSVFunctions.Creat_New_CSV(vm.txt_save_TF2_wl_data_path, vm.opModel_1.SN, list_titles, false, true);
+                string filePath = CSVFunctions.Creat_New_CSV(Path.Combine(vm.txt_save_TF2_wl_data_path, vm.TF2_station_type), vm.opModel_1.SN, list_titles, false, true);
 
                 if (!string.IsNullOrEmpty(filePath))
                 {
