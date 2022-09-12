@@ -8,9 +8,9 @@
              xmlns:vm="clr-namespace:PD.ViewModel"
              xmlns:sector_btn="clr-namespace:PD.UI"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ui="clr-namespace:PD.UI"
+             xmlns:uc="clr-namespace:PD.UI"
              xmlns:ug="clr-namespace:Circle_Gauge;assembly=Circle_Gauge"
-             xmlns:uc="clr-namespace:Wpf_Control_Library;assembly=Wpf_Control_Library"
+             xmlns:wpfuc="clr-namespace:Wpf_Control_Library;assembly=Wpf_Control_Library"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              d:DesignHeight="1080"
              d:DesignWidth="1920"             
@@ -168,7 +168,7 @@
                     <RowDefinition Height="7*"/>
                 </Grid.RowDefinitions>
 
-                <TextBox Text="{Binding opModel_1.SN, FallbackValue=SN}" BorderBrush="#FF6A6A6A" Margin="20,40,20,0"  Style="{StaticResource style_SN_txtbox_v2}"
+                <TextBox Text="{Binding opModel_1.SN, FallbackValue=SN, UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FF6A6A6A" Margin="20,40,20,0"  Style="{StaticResource style_SN_txtbox_v2}"
                         FontSize="25" FontFamily="Segoe Print"/>
 
 
@@ -432,7 +432,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.1*" />
                 <ColumnDefinition Width="0.7*" />
-                <ColumnDefinition Width="0.7*" />
+                <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -801,6 +801,30 @@
                         </ToggleButton.Background>
                     </ToggleButton>
                 </Grid>
+            </Grid>
+
+            <Grid  Grid.Column="2"
+                    Grid.RowSpan="3" Margin="5,10,5,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <wpfuc:Text_ToggleButton Grid.Row="0"
+                                                 txtbox_content="Auto PDL"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="#FFE6E6E6"
+                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                 Ischecked="{Binding opModel_1.Is_PDL_Auto_Scan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" />
+                <wpfuc:Text_TextBox Grid.Row="1"
+                                                txtbox_content="PDL Scan Time"
+                                                Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                txtbox_value="{Binding opModel_1.PDL_Scan_Time, FallbackValue=15, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" />
+                <uc:UC_Setting_Button x:Name="btn_Open_Location"
+                                              Grid.Row="2"
+                                     txtbox_content="Save Location"
+                                              ButtonBase.Click="btn_Open_Location_Click"
+                                              Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}" />
             </Grid>
 
             <Border x:Name="border_background_1"
@@ -1258,34 +1282,11 @@
                                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Left" />
-                        <ToggleButton Name="ToggleBtn_Dac_or_Volt"
-                                      Grid.Column="3"
-                                      Grid.Row="1"
-                                      HorizontalAlignment="Right"
-                                      MaxWidth="48"
-                                      MinWidth="45"
-                                      MaxHeight="30"
-                                      IsChecked="{Binding isDACorVolt, Mode=TwoWay}"
-                                      Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">
-                            <ToggleButton.Background>
-                                <LinearGradientBrush StartPoint="0,0"
-                                                     EndPoint="0,1">
-                                    <GradientStop Offset="0"
-                                                  Color="#FFF3F3F3" />
-                                    <GradientStop Offset="0.5"
-                                                  Color="#FFEBEBEB" />
-                                    <GradientStop Offset="0.5"
-                                                  Color="#FFDDDDDD" />
-                                    <GradientStop Offset="1"
-                                                  Color="#FF33D3C4" />
-                                </LinearGradientBrush>
-                            </ToggleButton.Background>
-                        </ToggleButton>
                     </Grid>
                     <Grid Grid.Row="1"
                           Margin="3">
                         <Viewbox MaxHeight="80">
-                            <TextBox Tag="End"
+                            <TextBox Tag="Gap"
                                      Grid.Column="1"
                                      Margin="4,0,4,0"
                                      IsTabStop="False"

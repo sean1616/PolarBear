@@ -1749,6 +1749,18 @@ namespace PD.ViewModel
             }
         }
 
+        private string _txt_save_TF2_wl_data_path = @"\\192.168.2.4\OptiComm\tff\Data\TF2\data\";
+        public string txt_save_TF2_wl_data_path
+        {
+            get { return _txt_save_TF2_wl_data_path; }
+            set
+            {
+                _txt_save_TF2_wl_data_path = value;
+                ini.IniWriteValue("Connection", "Save_TF2_Data_Path", value.ToString(), ini_path);
+                OnPropertyChanged("txt_save_TF2_wl_data_path");
+            }
+        }
+
         private string _txt_Auto_Update_Path = @"\\192.168.2.3\shared\SeanWu\PB";
         public string txt_Auto_Update_Path
         {

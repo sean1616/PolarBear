@@ -367,6 +367,28 @@ namespace PD.Models
         #endregion
 
         #region PDL
+        private bool _Is_PDL_Auto_Scan = true;
+        public bool Is_PDL_Auto_Scan
+        {
+            get { return _Is_PDL_Auto_Scan; }
+            set
+            {
+                _Is_PDL_Auto_Scan = value;
+                OnPropertyChanged_Normal("Is_PDL_Auto_Scan");
+            }
+        }
+
+        private int _PDL_Scan_Time = 15;
+        public int PDL_Scan_Time
+        {
+            get { return _PDL_Scan_Time; }
+            set
+            {
+                _PDL_Scan_Time = value;
+                OnPropertyChanged_Normal("PDL_Scan_Time");
+            }
+        }
+
         private double _WL_1_PDL = 0;
         public double WL_1_PDL
         {

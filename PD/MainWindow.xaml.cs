@@ -124,6 +124,7 @@ namespace PD
                 vm.txt_Auto_Update_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Auto_Update_Path")) ? vm.txt_Auto_Update_Path : vm.Ini_Read("Connection", "Auto_Update_Path");
                 vm.Server_IP = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Server_IP")) ? vm.Server_IP : vm.Ini_Read("Connection", "Server_IP");
                 vm.txt_save_wl_data_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Save_Hermetic_Data_Path")) ? vm.txt_save_wl_data_path : vm.Ini_Read("Connection", "Save_Hermetic_Data_Path");
+                vm.txt_save_TF2_wl_data_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Save_TF2_Data_Path")) ? vm.txt_save_TF2_wl_data_path : vm.Ini_Read("Connection", "Save_TF2_Data_Path");
                 vm.txt_board_table_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Table_Path")) ? vm.txt_board_table_path : vm.Ini_Read("Connection", "Control_Board_Table_Path");
                 //vm.txt_now_version = vm.Ini_Read("Connection", "Latest_Version");
 
@@ -5290,13 +5291,14 @@ namespace PD
                 vm.IsGoOn = false;
 
                 //Close TLS filter port for other control action
-                if (vm.port_TLS_Filter.IsOpen)
-                {
-                    vm.port_TLS_Filter.DiscardInBuffer();
-                    vm.port_TLS_Filter.DiscardOutBuffer();
+                if (vm.is_TLS_Filter && vm.port_TLS_Filter!=null)
+                    if (vm.port_TLS_Filter.IsOpen)
+                    {
+                        vm.port_TLS_Filter.DiscardInBuffer();
+                        vm.port_TLS_Filter.DiscardOutBuffer();
 
-                    vm.port_TLS_Filter.Close();
-                }
+                        vm.port_TLS_Filter.Close();
+                    }
 
                 return true;
             }
@@ -5882,73 +5884,53 @@ namespace PD
                 vm.Show_Bear_Window("Before or After ?", false, "String", true);
             else if (vm.station_type.Equals("TF2"))
             {
-                #region CSV
-
                 List<string> list_titles = new List<string>(){ "WL","CWL", "IL", "PDL", "Mic",
                     $"{vm.opModel_1.BW_Setting_1}dB",
                     $"{vm.opModel_1.BW_Setting_2}dB",
                     $"{vm.opModel_1.BW_Setting_3}dB"};
-                string filePath = CSVFunctions.Creat_New_CSV(@"D:\", vm.opModel_1.SN, list_titles, false, true);
+                string filePath = CSVFunctions.Creat_New_CSV(vm.txt_save_TF2_wl_data_path, vm.opModel_1.SN, list_titles, false, true);
 
-                CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                if (!string.IsNullOrEmpty(filePath))
                 {
-                    vm.opModel_1.WL_Setting_1,
-                    vm.opModel_1.WL_1_CWL.ToString(),
-                    vm.opModel_1.WL_1_IL.ToString(),
-                    vm.opModel_1.WL_1_PDL.ToString(),
-                    vm.opModel_1.WL_1_Mic.ToString(),
-                    vm.opModel_1.WL_1_BW_1.ToString(),
-                    vm.opModel_1.WL_1_BW_2.ToString(),
-                    vm.opModel_1.WL_1_BW_3.ToString()
-                });
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    {
+                        vm.opModel_1.WL_Setting_1,
+                        vm.opModel_1.WL_1_CWL.ToString(),
+                        vm.opModel_1.WL_1_IL.ToString(),
+                        vm.opModel_1.WL_1_PDL.ToString(),
+                        vm.opModel_1.WL_1_Mic.ToString(),
+                        vm.opModel_1.WL_1_BW_1.ToString(),
+                        vm.opModel_1.WL_1_BW_2.ToString(),
+                        vm.opModel_1.WL_1_BW_3.ToString()
+                    });
 
-                CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
-                {
-                    vm.opModel_1.WL_Setting_2.ToString(),
-                    vm.opModel_1.WL_2_CWL.ToString(),
-                    vm.opModel_1.WL_2_IL.ToString(),
-                    vm.opModel_1.WL_2_PDL.ToString(),
-                    vm.opModel_1.WL_2_Mic.ToString(),
-                    vm.opModel_1.WL_2_BW_1.ToString(),
-                    vm.opModel_1.WL_2_BW_2.ToString(),
-                    vm.opModel_1.WL_2_BW_3.ToString()
-                });
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    {
+                        vm.opModel_1.WL_Setting_2.ToString(),
+                        vm.opModel_1.WL_2_CWL.ToString(),
+                        vm.opModel_1.WL_2_IL.ToString(),
+                        vm.opModel_1.WL_2_PDL.ToString(),
+                        vm.opModel_1.WL_2_Mic.ToString(),
+                        vm.opModel_1.WL_2_BW_1.ToString(),
+                        vm.opModel_1.WL_2_BW_2.ToString(),
+                        vm.opModel_1.WL_2_BW_3.ToString()
+                    });
 
-                CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
-                {
-                    vm.opModel_1.WL_Setting_3.ToString(),
-                    vm.opModel_1.WL_3_CWL.ToString(),
-                    vm.opModel_1.WL_3_IL.ToString(),
-                    vm.opModel_1.WL_3_PDL.ToString(),
-                    vm.opModel_1.WL_3_Mic.ToString(),
-                    vm.opModel_1.WL_3_BW_1.ToString(),
-                    vm.opModel_1.WL_3_BW_2.ToString(),
-                    vm.opModel_1.WL_3_BW_3.ToString()
-                });
-                #endregion
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    {
+                        vm.opModel_1.WL_Setting_3.ToString(),
+                        vm.opModel_1.WL_3_CWL.ToString(),
+                        vm.opModel_1.WL_3_IL.ToString(),
+                        vm.opModel_1.WL_3_PDL.ToString(),
+                        vm.opModel_1.WL_3_Mic.ToString(),
+                        vm.opModel_1.WL_3_BW_1.ToString(),
+                        vm.opModel_1.WL_3_BW_2.ToString(),
+                        vm.opModel_1.WL_3_BW_3.ToString()
+                    });
 
-                //string file_path = @"D:\";
-                //string fileName = $"{file_path}{vm.opModel_1.SN}.txt";
-                //string data_title = "CWL, IL, PDL, Mic, 0.3dB, 3dB, 20dB";
-                //string data_1 = 
-                //    $"{vm.opModel_1.WL_1_CWL},{vm.opModel_1.WL_1_IL},{vm.opModel_1.WL_1_PDL},{vm.opModel_1.WL_1_Mic}" +
-                //    $",{vm.opModel_1.WL_1_BW_1},{vm.opModel_1.WL_1_BW_2},{vm.opModel_1.WL_1_BW_3}";
-
-                //string data_2 =
-                //   $"{vm.opModel_1.WL_2_CWL},{vm.opModel_1.WL_2_IL},{vm.opModel_1.WL_2_PDL},{vm.opModel_1.WL_2_Mic}" +
-                //   $",{vm.opModel_1.WL_2_BW_1},{vm.opModel_1.WL_2_BW_2},{vm.opModel_1.WL_2_BW_3}";
-
-                //string data_3 =
-                //   $"{vm.opModel_1.WL_3_CWL},{vm.opModel_1.WL_3_IL},{vm.opModel_1.WL_3_PDL},{vm.opModel_1.WL_3_Mic}" +
-                //   $",{vm.opModel_1.WL_3_BW_1},{vm.opModel_1.WL_3_BW_2},{vm.opModel_1.WL_3_BW_3}";
-
-                //string[] listStr = new string[4] {data_title, data_1, data_2, data_3 };
-
-                //if (File.Exists(fileName)) File.Delete(fileName);
-                //File.WriteAllLines(fileName, listStr);
-
-                vm.Str_Status = "Save Data to Csv";
-                vm.Str_cmd_read = vm.opModel_1.SN;
+                    vm.Str_Status = "Save Data to CSV";
+                    vm.Str_cmd_read = vm.opModel_1.SN;
+                }
             }
             else
             {

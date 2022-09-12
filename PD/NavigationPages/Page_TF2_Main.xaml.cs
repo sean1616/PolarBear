@@ -1187,7 +1187,14 @@ namespace PD.NavigationPages
 
             #endregion
 
-            Read_TF2_WL_Setting(vm.csv_product_TF2_wl_setting_path, no);
+            if(!string.IsNullOrEmpty(vm.opModel_1.SN))
+                if(vm.opModel_1.SN.Length > 5)
+                {
+                    if (vm.opModel_1.SN[6] == 'A')
+                        Read_TF2_WL_Setting(vm.csv_product_TF2_wl_setting_path, no+3);
+                    else if(vm.opModel_1.SN[6] == 'B')
+                        Read_TF2_WL_Setting(vm.csv_product_TF2_wl_setting_path, no);
+                }
 
             await Task.Delay(200);
 
@@ -1199,14 +1206,13 @@ namespace PD.NavigationPages
             }
         }
 
-        bool isPDLAutoCal = true;
         public async Task<bool> Cal_PDL_Show()
         {
-            if (!isPDLAutoCal) return false;
+            if (!vm.opModel_1.Is_PDL_Auto_Scan) return false;
 
             vm.Str_Status = "Scan PDL";
 
-            double Delta_IL = await cmd.PDL_Cal(8);
+            double Delta_IL = await cmd.PDL_Cal(vm.opModel_1.PDL_Scan_Time);
             int wl_no = vm.opModel_1.WL_No;
 
             if (wl_no == 1)
@@ -1232,13 +1238,13 @@ namespace PD.NavigationPages
                     {
                         if (dtt.Rows.Count > 0 && dtt.Rows.Count > WL_No)
                         {
-                            if (dtt.Columns.Count == 5)
-                                if (true)
+                            if (dtt.Columns.Count >= 5)
+                                if (dtt.Rows.Count > WL_No)
                                 {
                                     string str_wl = dtt.Rows[WL_No][1].ToString();
                                     string str_start = dtt.Rows[WL_No][2].ToString();
                                     string str_end = dtt.Rows[WL_No][3].ToString();
-                                    string str_gap = dtt.Rows[WL_No][4].ToString();
+                                    //string str_gap = dtt.Rows[WL_No][4].ToString();
 
                                     if (WL_No == 1)
                                         vm.opModel_1.WL_Setting_1 = str_wl + "_nm";
@@ -1253,8 +1259,8 @@ namespace PD.NavigationPages
                                     if (double.TryParse(str_end, out double end))
                                         vm.float_WL_Scan_End = end;
 
-                                    if (double.TryParse(str_gap, out double gap))
-                                        vm.float_WL_Scan_Gap = gap;
+                                    //if (double.TryParse(str_gap, out double gap))
+                                    //    vm.float_WL_Scan_Gap = gap;
                                 }
                         }
                     }
@@ -1326,7 +1332,7 @@ namespace PD.NavigationPages
         }
         private void Sector_BTN_PDL_IsAutoCal_Click(object sender, RoutedEventArgs e)
         {
-            isPDLAutoCal = !isPDLAutoCal;
+            vm.opModel_1.Is_PDL_Auto_Scan = !vm.opModel_1.Is_PDL_Auto_Scan;
         }
         private void Sector_BTN_PDL_Connect_Click(object sender, RoutedEventArgs e)
         {
@@ -1341,6 +1347,13 @@ namespace PD.NavigationPages
         private void Sector_BTN_PDL_Start_Click(object sender, RoutedEventArgs e)
         {
             cmd.PDL_Start();
+        }
+
+        private void btn_Open_Location_Click(object sender, RoutedEventArgs e)
+        {
+            if (Directory.Exists(vm.txt_save_TF2_wl_data_path))
+                System.Diagnostics.Process.Start(vm.txt_save_TF2_wl_data_path);
+            //txt_save_TF2_wl_data_path
         }
     }
 }

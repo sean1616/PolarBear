@@ -525,6 +525,17 @@
                                  controls:TextBoxHelper.Watermark="Board table path"
                                  FontFamily="Segoe Print" />
 
+                        <TextBox Name="txt_save_TF2_wl_data_path"
+                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                 Text="{Binding txt_save_TF2_wl_data_path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalContentAlignment="Center"
+                                 ToolTip="TF2 Data Path"
+                                 controls:TextBoxHelper.ClearTextButton="True"
+                                 controls:TextBoxHelper.Watermark="Board table path"
+                                 FontFamily="Segoe Print" />
+
+
                         <TextBox Name="txt_Auto_Update_Path"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                  Text="{Binding txt_Auto_Update_Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
