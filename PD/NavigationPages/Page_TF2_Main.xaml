@@ -251,7 +251,7 @@
                     <Button Style="{DynamicResource style_BearBtn_FixFont}" Tag="1" Margin="7" 
                             Content="{Binding opModel_1.WL_1_PDL, Mode=TwoWay}" Grid.Row="1" Grid.Column="3" Click="Button_PDL_Click"/>
                     <TextBox Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Segoe Print"
-                               Text="{Binding opModel_1.WL_1_Mic,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                               Text="{Binding opModel_1.WL_1_Mic,Mode=TwoWay}" />
                     <!--#endregion-->
 
                     <!--#region WL 2 OP-->
@@ -264,7 +264,7 @@
                     <Button Style="{DynamicResource style_BearBtn_FixFont}" Tag="2" Margin="7" 
                             Content="{Binding opModel_1.WL_2_PDL, Mode=TwoWay}" Grid.Row="2" Grid.Column="3" Click="Button_PDL_Click"/>
                     <TextBox Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Segoe Print"
-                               Text="{Binding opModel_1.WL_2_Mic,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                               Text="{Binding opModel_1.WL_2_Mic,Mode=TwoWay}" />
                     <!--#endregion-->
 
                     <!--#region WL 3 OP-->
@@ -278,7 +278,7 @@
                             Content="{Binding opModel_1.WL_3_PDL, Mode=TwoWay}" Grid.Row="3" Grid.Column="3" Click="Button_PDL_Click"/>
 
                     <TextBox Grid.Row="3" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Segoe Print"
-                               Text="{Binding opModel_1.WL_3_Mic,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                               Text="{Binding opModel_1.WL_3_Mic,Mode=TwoWay}" />
                     <!--#endregion-->
 
                     <!--#region WL 4 OP-->

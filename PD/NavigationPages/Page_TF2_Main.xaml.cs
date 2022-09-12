@@ -1285,7 +1285,7 @@ namespace PD.NavigationPages
 
                 vm.isStop = false;
 
-                double Delta_IL = await cmd.PDL_Cal(8);
+                double Delta_IL = await cmd.PDL_Cal(vm.opModel_1.PDL_Scan_Time);
 
                 foreach (var item in vm.props_opModel)
                 {
