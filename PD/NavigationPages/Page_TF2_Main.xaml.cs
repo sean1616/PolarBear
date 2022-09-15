@@ -1213,6 +1213,7 @@ namespace PD.NavigationPages
             vm.Str_Status = "Scan PDL";
 
             double Delta_IL = await cmd.PDL_Cal(vm.opModel_1.PDL_Scan_Time);
+
             int wl_no = vm.opModel_1.WL_No;
 
             if (wl_no == 1)

@@ -34,7 +34,10 @@ namespace PD.NavigationPages
                 dictionaries.Add(new Dictionary<double, double>());  //Initialize dictionaries for all ref file
             }
 
-            Read_Ref(path);
+            if (System.IO.Directory.Exists(path))
+                Read_Ref(path);
+            else
+                vm.Str_cmd_read = "Ref folder is not exist or different name";
 
             //Auto add DataGrid Column by vm.Ref_Dictionaries.Count
             if (vm.Ref_Dictionaries.Count > 8)
@@ -96,7 +99,8 @@ namespace PD.NavigationPages
 
         private void Read_Ref_Analyze(string path, int ch)
         {
-            bool _isfileExis = System.IO.File.Exists(path + @"\Ref" + ch.ToString() + ".txt");
+            string filepath = $@"{path}\Ref{ch}.txt";
+            bool _isfileExis = System.IO.File.Exists(filepath);
 
             if (_isfileExis)  //判斷Ref.txt是否存在
             {
@@ -107,7 +111,7 @@ namespace PD.NavigationPages
 
 
                 // Read the file and display it line by line.  
-                System.IO.StreamReader file = new System.IO.StreamReader(path + @"\Ref" + ch.ToString() + ".txt");
+                System.IO.StreamReader file = new System.IO.StreamReader(filepath);
 
                 //讀取Ref 並分析
                 try

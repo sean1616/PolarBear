@@ -2229,68 +2229,77 @@ namespace PD.Functions
                     case "Agilent":
 
                         #region Tunable Laser setting
-                        vm.tls = new HPTLS();
-                        vm.tls.BoardNumber = vm.tls_BoardNumber;
-                        vm.tls.Addr = vm.tls_Addr;
-
-                        try
+                        if (!vm.isConnected)
                         {
-                            if (!vm.tls.Open())
+                            vm.tls = new HPTLS();
+                            vm.tls.BoardNumber = vm.tls_BoardNumber;
+                            vm.tls.Addr = vm.tls_Addr;
+
+                            try
                             {
-                                vm.Str_cmd_read = "GPIB Setting Error, Check Address.";
-                                vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
-                                return;
-                            }
-                            else
-                            {
-                                double d = vm.tls.ReadWL();
-                                if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
+                                if (!vm.tls.Open())
                                 {
-                                    vm.Str_cmd_read = "Laser Connection Failed";
+                                    vm.Str_cmd_read = "GPIB Setting Error, Check Address.";
                                     vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
                                     return;
                                 }
+                                else
+                                {
+                                    double d = vm.tls.ReadWL();
+                                    if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
+                                    {
+                                        vm.Str_cmd_read = "Laser Connection Failed";
+                                        vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                        return;
+                                    }
+                                }
+                                vm.tls.init();
+
+                                vm.Double_Laser_Wavelength = vm.tls.ReadWL();
+
+                                
                             }
-                            vm.tls.init();
-
-                            vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-
-                            vm.isConnected = true;
+                            catch (Exception ex)
+                            {
+                                vm.Str_cmd_read = "TLS GPIB Setting Error";
+                                vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            vm.Str_cmd_read = "TLS GPIB Setting Error";
-                            vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
-                            MessageBox.Show(ex.StackTrace.ToString());
-                        }
+
                         #endregion
 
                         #region PowerMeter Setting
                         //Power Meter setting
-                        vm.pm = new HPPM();
-                        vm.pm.Addr = vm.pm_Addr;
-                        vm.pm.Slot = vm.PM_slot;
-                        vm.pm.BoardNumber = vm.tls_BoardNumber;
-                        if (vm.pm.Open() == false)
+                        if(!vm.isConnected)
                         {
-                            vm.Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
-                            vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
-                            return;
-                        }
-                        vm.pm.init();
-                        vm.pm.setUnit(1);
-                        vm.pm.AutoRange(true);
-                        vm.pm.aveTime(vm.PM_AveTime);
+                            vm.pm = new HPPM();
+                            vm.pm.Addr = vm.pm_Addr;
+                            vm.pm.Slot = vm.PM_slot;
+                            vm.pm.BoardNumber = vm.tls_BoardNumber;
+                            if (vm.pm.Open() == false)
+                            {
+                                vm.Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
+                                vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                return;
+                            }
+                            vm.pm.init();
+                            vm.pm.setUnit(1);
+                            vm.pm.AutoRange(true);
+                            vm.pm.aveTime(vm.PM_AveTime);
 
-                        try
-                        {
-                            if (vm.pm.Open())
-                                vm.Double_PM_Wavelength = vm.pm.ReadWL();
+                            try
+                            {
+                                if (vm.pm.Open())
+                                    vm.Double_PM_Wavelength = vm.pm.ReadWL();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.StackTrace.ToString());
-                        }
+
+                        vm.isConnected = true;
                         #endregion                      
 
                         break;
@@ -2345,7 +2354,7 @@ namespace PD.Functions
                         break;
                 }
 
-                vm.Ini_Write("Connection", "Laser_type", vm.Laser_type);
+                //vm.Ini_Write("Connection", "Laser_type", vm.Laser_type);
             }
             catch (Exception ex)
             {
@@ -2638,10 +2647,11 @@ namespace PD.Functions
                         }
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 vm.Str_cmd_read = "Set TLS Filter Error";
                 vm.Save_Log(new LogMember() { isShowMSG = false, Status = "Set TLS WL", Result = "Set TLS Filter Failed", Message = $"WL : {wl}" });
+                throw ex;
             }
         }
 
@@ -2961,53 +2971,83 @@ namespace PD.Functions
         {
             List<List<double>> listDD = new List<List<double>>();
 
-            if (!vm.IsDistributedSystem)
+            try
             {
-                switch (vm.GetPWSettingModel.TypeName)
+                if (!vm.IsDistributedSystem)
                 {
-                    case "PM":
-                        double p = await Get_PM_Value((ch));  //Y axis value
-                       
-                        break;
+                    switch (vm.GetPWSettingModel.TypeName)
+                    {
+                        case "PM":
+                            double p = await Get_PM_Value((ch));  //Y axis value
+                            
+                            break;
 
-                    case "PD":
-                        string comport = vm.GetPWSettingModel.Comport;
-                        await Get_PD_Value(comport);  //Y axis value
+                        case "PD":
+                            string comport = vm.GetPWSettingModel.Comport;
+                            await Get_PD_Value(comport);  //Y axis value
 
-                        for (int i = 0; i < vm.ch_count; i++)
-                        {
-                            if (vm.BoolAllGauge || vm.list_GaugeModels[i].boolGauge)
+                            for (int i = 0; i < vm.ch_count; i++)
                             {
-                                vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                if (vm.BoolAllGauge || vm.list_GaugeModels[i].boolGauge)
+                                {
+                                    vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                }
                             }
-                        }
-                        break;
+                            break;
 
-                    case "Tablet":
+                        case "Tablet":
 
-                        break;
+                            break;
+                    }
                 }
-            }
-            else
-            {
-                ch++;
-                string rs232_cmd = vm.list_ChannelModels[ch - 1].PM_GetPower_CMD;
-
-                switch (vm.list_ChannelModels[ch - 1].PM_Type)
+                else
                 {
-                    case "GPIB":
-                        break;
+                    ch++;
+                    string rs232_cmd = vm.list_ChannelModels[ch - 1].PM_GetPower_CMD;
 
-                    case "RS232":
+                    switch (vm.list_ChannelModels[ch - 1].PM_Type)
+                    {
+                        case "GPIB":
+                            break;
 
-                        #region RS232
-                        string comport = vm.list_ChannelModels[ch - 1].PM_Board_Port;
+                        case "RS232":
 
-                        listDD = await Get_IL_rs232(ch, comport, rs232_cmd, isRead);  //Y axis value
-                        if (!isRead)
-                        {
-                            if (vm.list_ChannelModels.Count == 1 && listDD.Count > 1)
-                                return listDD;
+                            #region RS232
+                            string comport = vm.list_ChannelModels[ch - 1].PM_Board_Port;
+
+                            listDD = await Get_IL_rs232(ch, comport, rs232_cmd, isRead);  //Y axis value
+                            if (!isRead)
+                            {
+                                if (vm.list_ChannelModels.Count == 1 && listDD.Count > 1)
+                                    return listDD;
+                                else
+                                {
+                                    if (ch == 0)
+                                    {
+                                        for (int i = 0; i < vm.ch_count; i++)
+                                        {
+                                            vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        double p = vm.Double_Powers[ch - 1];
+                                        vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
+                                    }
+
+                                    if (listDD.Count > 0)
+                                        if (listDD[0].Count > 0)
+                                        {
+                                            foreach (double IL in listDD[0])
+                                            {
+                                                DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], IL);
+                                                vm.ChartNowModel.list_dataPoints[ch - 1].Add(dp);
+                                                vm.Save_All_PD_Value[ch - 1].Add(dp);
+                                                vm.wl_list_index++;
+                                            }
+                                        }
+                                }
+                            }
                             else
                             {
                                 if (ch == 0)
@@ -3023,57 +3063,31 @@ namespace PD.Functions
                                     vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
                                 }
 
+                                //Get the rest of IL
                                 if (listDD.Count > 0)
-                                    if (listDD[0].Count > 0)
+                                {
+                                    foreach (double IL in listDD[0])
                                     {
-                                        foreach (double IL in listDD[0])
+                                        vm.list_GaugeModels[ch - 1].GaugeValue = IL.ToString();
+
+                                        if (vm.wl_list.Count > vm.wl_list_index)
                                         {
                                             DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], IL);
                                             vm.ChartNowModel.list_dataPoints[ch - 1].Add(dp);
                                             vm.Save_All_PD_Value[ch - 1].Add(dp);
+
                                             vm.wl_list_index++;
                                         }
                                     }
-                            }
-                        }
-                        else
-                        {
-                            if (ch == 0)
-                            {
-                                for (int i = 0; i < vm.ch_count; i++)
-                                {
-                                    vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
                                 }
                             }
-                            else
-                            {
-                                double p = vm.Double_Powers[ch - 1];
-                                vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
-                            }
+                            #endregion
 
-                            //Get the rest of IL
-                            if (listDD.Count > 0)
-                            {
-                                foreach (double IL in listDD[0])
-                                {
-                                    vm.list_GaugeModels[ch - 1].GaugeValue = IL.ToString();
-
-                                    if(vm.wl_list.Count > vm.wl_list_index)
-                                    {
-                                        DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], IL);
-                                        vm.ChartNowModel.list_dataPoints[ch - 1].Add(dp);
-                                        vm.Save_All_PD_Value[ch - 1].Add(dp);
-
-                                        vm.wl_list_index++;
-                                    }
-                                }
-                            }
-                        }
-                        #endregion
-
-                        break;
+                            break;
+                    }
                 }
             }
+            catch (Exception ex) { throw ex; }
 
             return listDD;
         }
@@ -3725,9 +3739,6 @@ namespace PD.Functions
                             vm.ChartNowModel.list_delta_IL.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
 
                         vm.ChartNowModel.list_delta_IL[i] = deltaIL;
-
-                        //if (vm.list_ChartModels.Count > vm.int_chart_count - 1 && vm.int_chart_count != 0)
-                        //    vm.list_ChartModels[vm.int_chart_count - 1].delta_IL = deltaIL;
                     }
                 }
             }

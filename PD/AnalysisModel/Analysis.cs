@@ -358,11 +358,13 @@ namespace PD.AnalysisModel
             }
         }
 
-        public double BandWidth_Calculation(int WL_No)
+        public int[,] BandWidth_Calculation(int WL_No)
         {
             double bwSetting = 0;
             double bw = 0;
             double bw_cwl = 0;
+
+            int[,] List_BW_WL_Pos = new int[3,2];
 
             if (vm.Chart_DataPoints.Count != 0)
             {
@@ -372,19 +374,20 @@ namespace PD.AnalysisModel
                 OxyPlot.DataPoint dp_IL_Max = orderedSeries.Last();
                 double IL_Max = dp_IL_Max.Y;
 
+                //Cal. 3 types of BW Setting 
                 for (int b = 1; b <= 3; b++)
                 {
                     foreach (var item in vm.props_opModel)
                     {
-                        if (item.Name == ($"BW_Setting_{b}"))
+                        if (item.Name == $"BW_Setting_{b}")
                         {
                             bwSetting = (double)item.GetValue(vm.opModel_1, null);
                         }
                     }
 
-                    #region Cal. BW_1 dB Bandwidth
+                    #region Cal. Bandwidth
 
-                    //Find over-threshold point from center to right side
+                    //Find over-threshold point from max IL to right side
                     int index_R = 0; double wl_R = 0;
                     for (int i = index_max; i < vm.Chart_DataPoints.Count; i++)
                     {
@@ -435,27 +438,29 @@ namespace PD.AnalysisModel
                         double BW = Math.Abs(wl_R - wl_L);
                         bw = Math.Round(BW, 2);
 
+                        List_BW_WL_Pos[b - 1, 0] = index_L;
+                        List_BW_WL_Pos[b - 1, 1] = index_R;
+
                         if (b == 2)
                             bw_cwl = Math.Abs(Math.Round((wl_R + wl_L) / 2, 2));                   
                     }
 
                     #endregion
 
+                    //Only 3dB bw will update cwl
                     foreach (var item in vm.props_opModel)
                     {
                         if (item.Name == ($"WL_{WL_No}_BW_{b}"))
                             item.SetValue(vm.opModel_1, bw);
 
-                        //Only 3dB bw will update cwl
                         if (b == 2 && item.Name == $"WL_{WL_No}_CWL")
                             item.SetValue(vm.opModel_1, bw_cwl);
                     }
                 }
             }
 
-            return bw_cwl;
+            return List_BW_WL_Pos;
         }
-
 
         public void JudgeAllBoolGauge()
         {

@@ -1025,7 +1025,6 @@ namespace PD.NavigationPages
 
         private async void Btn_Get_Ref_Click(object sender, RoutedEventArgs e)
         {
-            //string folder = @"D:\Ref";
             vm.isStop = false;
             string RefName = string.Format("Ref{0}.txt", 1);
             string RefPath = Path.Combine(@"D:\Ref\", RefName);
@@ -1080,15 +1079,14 @@ namespace PD.NavigationPages
                         }
                     }
 
+                    bool tempBool = vm.Is_FastScan_Mode;
+                    vm.Is_FastScan_Mode = false;
+
                     foreach (double wl in list_wl)
                     {
                         if (vm.isStop) break;
 
                         cmd.Set_WL(wl, false);
-
-                        //vm.tls.SetWL(wl);  //切換TLS WL 
-                        //vm.pm.SetWL(wl);   //切換PowerMeter WL 
-
 
                         vm.Double_Laser_Wavelength = Math.Round(wl, 2);
 
@@ -1098,69 +1096,111 @@ namespace PD.NavigationPages
 
                         double IL = 0;
 
-                        if (vm.PD_or_PM)
+                        if (!vm.IsDistributedSystem)
+                        {
+                            if (vm.PD_or_PM)
+                            {
+                                for (int ch = 0; ch < vm.ch_count; ch++)
+                                {
+                                    if (vm.BoolAllGauge || vm.list_GaugeModels[ch].boolGauge)
+                                    {
+                                        vm.switch_index = ch + 1;
+                                        if (vm.station_type.Equals("Hermetic_Test"))
+                                        {
+                                            RefName = string.Format("Ref{0}.txt", vm.switch_index);
+                                            RefPath = Path.Combine(@"D:\Ref\", RefName);
+
+                                            await vm.Port_Switch_ReOpen();
+                                            vm.port_Switch.Write(string.Format("SW0 {0}", vm.switch_index));
+                                        }
+                                        IL = await cmd.Get_PM_Value((vm.switch_index - 1));
+
+                                        string msg = string.Format("{0},{1}", Math.Round(wl, 2).ToString(), IL.ToString());
+
+                                        File.AppendAllText(RefPath, msg + "\r");
+
+                                        vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+
+                                        vm.Ref_memberDatas.Add(new RefModel()
+                                        {
+                                            Wavelength = Math.Round(wl, 2),
+                                            Ch_1 = vm.Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
+                                            Ch_2 = vm.Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
+                                            Ch_3 = vm.Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
+                                            Ch_4 = vm.Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
+                                            Ch_5 = vm.Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
+                                            Ch_6 = vm.Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
+                                            Ch_7 = vm.Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
+                                            Ch_8 = vm.Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
+                                            Ch_9 = vm.Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
+                                            Ch_10 = vm.Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
+                                            Ch_11 = vm.Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
+                                            Ch_12 = vm.Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
+                                            Ch_13 = vm.Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
+                                            Ch_14 = vm.Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
+                                            Ch_15 = vm.Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
+                                            Ch_16 = vm.Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
+                                        });
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                await cmd.Get_PD_Value(vm.Selected_Comport);
+
+                                string msg = string.Format("{0},{1}", wl.ToString(), IL.ToString());
+
+                                File.AppendAllText(RefPath, msg + "\r");
+                            }
+                        }
+                        //Distribution system
+                        else
                         {
                             for (int ch = 0; ch < vm.ch_count; ch++)
                             {
-                                if (vm.BoolAllGauge || vm.list_GaugeModels[ch].boolGauge)
+                                await cmd.Get_Power(ch, true);
+                                IL = vm.Double_Powers[ch];
+                                File.AppendAllText(RefPath, $"{wl},{IL}\r");
+
+                                vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+
+                                vm.Ref_memberDatas.Add(new RefModel()
                                 {
-                                    vm.switch_index = ch + 1;
-                                    if (vm.station_type.Equals("Hermetic_Test"))
-                                    {
-                                        RefName = string.Format("Ref{0}.txt", vm.switch_index);
-                                        RefPath = Path.Combine(@"D:\Ref\", RefName);
-
-                                        await vm.Port_Switch_ReOpen();
-                                        vm.port_Switch.Write(string.Format("SW0 {0}", vm.switch_index));
-                                    }
-                                    IL = await cmd.Get_PM_Value((vm.switch_index - 1));
-
-                                    string msg = string.Format("{0},{1}", Math.Round(wl, 2).ToString(), IL.ToString());
-
-                                    File.AppendAllText(RefPath, msg + "\r");
-
-                                    vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
-
-                                    vm.Ref_memberDatas.Add(new RefModel()
-                                    {
-                                        Wavelength = Math.Round(wl, 2),
-                                        Ch_1 = vm.Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
-                                        Ch_2 = vm.Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
-                                        Ch_3 = vm.Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
-                                        Ch_4 = vm.Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
-                                        Ch_5 = vm.Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
-                                        Ch_6 = vm.Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
-                                        Ch_7 = vm.Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
-                                        Ch_8 = vm.Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
-                                        Ch_9 = vm.Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
-                                        Ch_10 = vm.Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
-                                        Ch_11 = vm.Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
-                                        Ch_12 = vm.Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
-                                        Ch_13 = vm.Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
-                                        Ch_14 = vm.Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
-                                        Ch_15 = vm.Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
-                                        Ch_16 = vm.Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
-                                    });
-                                }
+                                    Wavelength = Math.Round(wl, 2),
+                                    Ch_1 = vm.Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
+                                    Ch_2 = vm.Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
+                                    Ch_3 = vm.Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
+                                    Ch_4 = vm.Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
+                                    Ch_5 = vm.Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
+                                    Ch_6 = vm.Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
+                                    Ch_7 = vm.Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
+                                    Ch_8 = vm.Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
+                                    Ch_9 = vm.Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
+                                    Ch_10 = vm.Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
+                                    Ch_11 = vm.Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
+                                    Ch_12 = vm.Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
+                                    Ch_13 = vm.Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
+                                    Ch_14 = vm.Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
+                                    Ch_15 = vm.Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
+                                    Ch_16 = vm.Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
+                                });
                             }
                         }
-                        else
-                        {
-                            await cmd.Get_PD_Value(vm.Selected_Comport);
-
-                            string msg = string.Format("{0},{1}", wl.ToString(), IL.ToString());
-
-                            File.AppendAllText(RefPath, msg + "\r");
-                        }
-
-
                     }
 
-                    if (!vm.PD_or_PM)
+                    vm.Is_FastScan_Mode = tempBool;
+
+                    if (!vm.PD_or_PM && !vm.IsDistributedSystem)
                     {
-                        vm.port_PD.DiscardInBuffer();
-                        vm.port_PD.DiscardOutBuffer();
-                        vm.port_PD.Close();
+                        if (vm.port_PD != null)
+                        {
+                            if (vm.port_PD.IsOpen)
+                            {
+                                vm.port_PD.DiscardInBuffer();
+                                vm.port_PD.DiscardOutBuffer();
+                                vm.port_PD.Close();
+                            }
+                        }
                     }
 
                     vm.Str_Status = "Get Ref End";

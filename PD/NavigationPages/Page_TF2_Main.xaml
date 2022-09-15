@@ -165,10 +165,10 @@
             <Grid Grid.ColumnSpan="2" Grid.RowSpan="2" >
                 <Grid.RowDefinitions>
                     <RowDefinition/>
-                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="11*"/>
                 </Grid.RowDefinitions>
 
-                <TextBox Text="{Binding opModel_1.SN, FallbackValue=SN, UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FF6A6A6A" Margin="20,40,20,0"  Style="{StaticResource style_SN_txtbox_v2}"
+                <TextBox Text="{Binding opModel_1.SN, FallbackValue=SN, UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FF6A6A6A" Margin="20,25,20,0"  Style="{StaticResource style_SN_txtbox_v2}"
                         FontSize="25" FontFamily="Segoe Print"/>
 
 
@@ -190,6 +190,8 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition Height="0.3*"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Border Grid.ColumnSpan="5" Grid.RowSpan="10" BorderBrush="#FFD6D6D6" BorderThickness="1" CornerRadius="12"/>
@@ -297,6 +299,7 @@
 
 
                     <!--Title-->
+                    <!--#region Title-->
                     <TextBlock Text="WL T"
                             FontFamily="Segoe Print"
                                Foreground="White"
@@ -327,8 +330,9 @@
                             <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" Foreground="White"/>
                         </StackPanel>
                     </Grid>
+                    <!--#endregion-->
 
-                    <!--WL button-->
+                    <!--#region WL button-->
                     <Button Style="{DynamicResource style_BearBtn}" Tag="1" Margin="7"
                             Content="{Binding opModel_1.WL_Setting_1}" Grid.Row="6" Click="Button_WL_Click"/>
                     <Button Style="{DynamicResource style_BearBtn}" Tag="2" Margin="7"
@@ -337,6 +341,7 @@
                             Content="{Binding opModel_1.WL_Setting_3}" Grid.Row="8" Click="Button_WL_Click"/>
                     <Button Style="{DynamicResource style_BearBtn}" Tag="4" Margin="7"
                             Content="   ?   nm" Grid.Row="9" Click="Button_WL_Click"/>
+                    <!--#endregion-->
 
                     <!--#region WL 1 BW-->
                     <TextBlock 
@@ -412,6 +417,15 @@
                            Grid.Row="9"
                            FontFamily="Segoe Print"
                            Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_BW_3, Mode=TwoWay}" />
+                    <!--#endregion-->
+                    
+                    <!--#region Mic. Limit-->
+                    <Border Background="#FF1FCCD4" Grid.Row="11"  CornerRadius="12,0,0,12"/>
+                    <TextBlock Text="Mic.&#x0A;Range"
+                               
+                               Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" Grid.Row="11"/>
                     <!--#endregion-->
                 </Grid>
 
@@ -808,14 +822,14 @@
             </Grid>
 
             <Grid  Grid.Column="2"
-                    Grid.RowSpan="3" Margin="5,10,5,10">
+                    Grid.RowSpan="3" >
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <wpfuc:Text_ToggleButton Grid.Row="3"
+                <wpfuc:Text_ToggleButton Grid.Row="3" 
                                                  txtbox_content="Auto PDL"
                                                  border_Background="#FF98DEB5"
                                                  Background="#FFE6E6E6"
