@@ -1919,67 +1919,8 @@ namespace PD.Functions
             return result;
         }
 
-        public void Set_WL()
-        {
-            try
-            {
-                if (vm.station_type.Equals("Hermetic_Test"))
-                {
-                    if (vm.selected_band.Equals("C Band"))
-                    {
-                        switch (vm.product_type)
-                        {
-                            case "UFA":
-                                Set_WL(1548.5, false);
-                                break;
+       
 
-                            case "UFA(H)":
-                                Set_WL(1548.5, false);
-                                break;
-
-                            case "UTF":
-                                Set_WL(1527.5, false);
-                                break;
-
-                            case "CTF":
-                                Set_WL(1527.5, false);
-                                break;
-
-                            case "MTF":
-                                //cmd.Set_WL(1548.5);
-                                break;
-                        }
-
-                    }
-                    else if (vm.selected_band == "L Band")
-                    {
-                        switch (vm.product_type)
-                        {
-                            case "UFA":
-                                Set_WL(1591, false);
-                                break;
-
-                            case "UFA(H)":
-                                Set_WL(1591, false);
-                                break;
-
-                            case "UTF":
-                                Set_WL(1568, false);
-                                break;
-
-                            case "CTF":
-                                //cmd.Set_WL(1527.5);
-                                break;
-
-                            case "MTF":
-                                //cmd.Set_WL(1548.5);
-                                break;
-                        }
-                    }
-                }
-            }
-            catch { }
-        }
 
         public async Task D0_show()
         {
@@ -2386,7 +2327,7 @@ namespace PD.Functions
                 MessageBox.Show(ex.StackTrace.ToString());
             }
         }
-
+             
         HPPDL pdl;
 
         public void PDL_Connect()
@@ -2474,6 +2415,122 @@ namespace PD.Functions
             else return "";  //Out of range
         }
 
+        DiCon.Instrument.HP816x hp816x = new DiCon.Instrument.HP816x();
+        DiCon.Instrument.LambdaScan lambda_scan = new DiCon.Instrument.LambdaScan();
+        private double m_StartWL = 1520.0;
+        private double m_StopWL = 1570.0;
+        private bool m_HiSpeed = true;    // 40 nm/s
+        public bool isLambdaInit = false;
+
+        public bool Init_Lambda_Scan()
+        {
+            try
+            {
+                // 初始化            
+                lambda_scan.Initial(hp816x, vm.tls_Addr, (int)vm.Double_Laser_Power);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public void Lambda_Scan_Setting(double Start_WL, double End_WL)
+        {
+            if (vm.Laser_type == "Agilent")
+            {
+                double StepWL = 0.16;   //nm, wavelength sweep step 要改為 0.16nm 這是固定值. 因為韌體在移動Mirror時, 就是以 0.16nm/4ms
+                               
+                lambda_scan.LambdaScan_STF_Mode_Setting(hp816x, vm.tls_Addr, Start_WL, End_WL, StepWL, m_HiSpeed, (int)vm.Double_Laser_Power);
+                
+            }
+        }
+
+        public void MTF_Scan(decimal m_WL_Start, decimal m_WL_End)
+        {
+            try
+            {
+                string cmd = string.Empty;
+
+                m_WL_Start = Math.Round(m_WL_Start, 2, MidpointRounding.AwayFromZero);
+                m_WL_End = Math.Round(m_WL_End, 2, MidpointRounding.AwayFromZero);
+
+                cmd = $"SW {m_WL_Start},{m_WL_End}";
+
+                vm.port_TLS_Filter.Write(cmd + "\r");
+            }
+            catch { }
+        }
+
+        public void TLS_Agilent_Sweep()
+        {
+            lambda_scan.LambdaScan_Sweep_Start(hp816x);
+        }
+
+        public void Set_WL()
+        {
+            try
+            {
+                if (vm.station_type.Equals("Hermetic_Test"))
+                {
+                    if (vm.selected_band.Equals("C Band"))
+                    {
+                        switch (vm.product_type)
+                        {
+                            case "UFA":
+                                Set_WL(1548.5, false);
+                                break;
+
+                            case "UFA(H)":
+                                Set_WL(1548.5, false);
+                                break;
+
+                            case "UTF":
+                                Set_WL(1527.5, false);
+                                break;
+
+                            case "CTF":
+                                Set_WL(1527.5, false);
+                                break;
+
+                            case "MTF":
+                                //cmd.Set_WL(1548.5);
+                                break;
+                        }
+
+                    }
+                    else if (vm.selected_band == "L Band")
+                    {
+                        switch (vm.product_type)
+                        {
+                            case "UFA":
+                                Set_WL(1591, false, true);
+                                break;
+
+                            case "UFA(H)":
+                                Set_WL(1591, false, true);
+                                break;
+
+                            case "UTF":
+                                Set_WL(1568, false, true);
+                                break;
+
+                            case "CTF":
+                                //cmd.Set_WL(1527.5);
+                                break;
+
+                            case "MTF":
+                                //cmd.Set_WL(1548.5);
+                                break;
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
         public async void Set_WL(double wl, bool readback)
         {
             try
@@ -2553,6 +2610,85 @@ namespace PD.Functions
             catch { vm.Save_Log("Set WL", "Set WL Error", false); }
         }
 
+        public async void Set_WL(double wl, bool readback, bool isCloseTLS_Filter)
+        {
+            try
+            {
+                wl = Math.Round(wl, 2);
+                string band = WL_Range_Analyze(wl);
+                if (string.IsNullOrEmpty(band))
+                {
+                    vm.Str_cmd_read = "WL out of range";
+                    vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = false });
+                }
+                else
+                    vm.selected_band = band;
+
+                Connect_TLS();
+
+                switch (vm.Laser_type)
+                {
+                    case "Agilent":
+                        vm.tls.SetWL(wl);
+                        break;
+
+                    case "Golight":
+                        vm.tls_GL.SetWL((float)wl);
+                        break;
+                }
+
+                if (!vm.IsDistributedSystem)
+                {
+                    if (vm.PD_or_PM)
+                        if (vm.PM_sync)
+                            if (vm.pm != null) vm.pm.SetWL(wl);
+                }
+
+                Set_TLS_Filter(wl, isCloseTLS_Filter);
+
+                await Task.Delay(vm.Int_Read_Delay);
+
+                if (readback)
+                {
+                    double wl_read = 0;
+                    switch (vm.Laser_type)
+                    {
+                        case "Agilent":
+                            wl_read = vm.tls.ReadWL();
+                            if (wl_read > 0)
+                                vm.Double_Laser_Wavelength = wl_read;
+                            else
+                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
+                            break;
+
+                        case "Golight":
+
+                            wl_read = vm.tls_GL.ReadWL();
+
+                            if (wl_read > 0)
+                                vm.Double_Laser_Wavelength = wl_read;
+
+                            if (wl_read != wl)
+                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "SetWL failed" });
+
+                            break;
+                    }
+
+                    if (vm.PD_or_PM)
+                        if (vm.PM_sync)
+                            if (vm.pm != null)
+                                vm.Double_PM_Wavelength = vm.pm.ReadWL();
+                }
+
+                if (vm.station_type.Equals("Testing"))
+                {
+                    if (vm.float_WL_Ref.Count != 0)
+                        vm.Double_PM_Ref = vm.float_WL_Ref[0];
+                }
+            }
+            catch { vm.Save_Log("Set WL", "Set WL Error", false); }
+        }
+
         public async void Set_TLS_Power(double power, bool readback)
         {
             try
@@ -2580,6 +2716,45 @@ namespace PD.Functions
             }
             catch { vm.Save_Log("Set TLS Power", "Set Power Error", true); }
         }
+
+        public bool Init_TLS_Filter()
+        {
+            try
+            {
+                if (vm.is_TLS_Filter)
+                {
+                    if (vm.port_TLS_Filter != null)
+                        if (!string.IsNullOrEmpty(vm.port_TLS_Filter.PortName))
+                        {
+                            if (!vm.port_TLS_Filter.IsOpen)
+                                vm.port_TLS_Filter.Open();
+                        }
+                }
+
+                if (vm.port_TLS_Filter != null)
+                {
+                    return vm.port_TLS_Filter.IsOpen;
+                }
+                else return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public void Close_TLS_Filter()
+        {
+            if (vm.is_TLS_Filter && vm.port_TLS_Filter != null)
+                if (vm.port_TLS_Filter.IsOpen)
+                {
+                    vm.port_TLS_Filter.DiscardInBuffer();
+                    vm.port_TLS_Filter.DiscardOutBuffer();
+
+                    vm.port_TLS_Filter.Close();
+                }
+        }
+
 
         public async void Set_TLS_Filter(double wl)
         {
@@ -2654,7 +2829,6 @@ namespace PD.Functions
                 throw ex;
             }
         }
-
 
         public void Set_TLS_Lambda_Scan()
         {

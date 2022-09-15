@@ -356,57 +356,41 @@ namespace PD.NavigationPages
             {
                 double wl = Convert.ToDouble(txt_WL.Text);
 
-                if (!vm.IsGoOn) cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true);
+                if (!vm.IsGoOn) cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true, true);
                 else
                     vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = txt_WL.Text });
             }
             if (e.Key == Key.Up)
             {
                 double wl = Convert.ToDouble(txt_WL.Text) + 0.01;
-                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                //{
-                //    vm.Str_cmd_read = "WL out of range";
-                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
-                //    return;
-                //}
-
+             
                 if (!vm.IsGoOn)
                     try
                     {
                         txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(wl, true);
+                        cmd.Set_WL(wl, true, true);
                     }
                     catch { }
                 else
                     vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
 
                 vm.Double_Laser_Wavelength = wl;
-
-                //await cmd.Set_TLS_Filter(wl);
             }
             if (e.Key == Key.Down)
             {
                 double wl = Convert.ToDouble(txt_WL.Text) - 0.01;
-                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                //{
-                //    vm.Str_cmd_read = "WL out of range";
-                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
-                //    return;
-                //}
 
                 if (!vm.IsGoOn)
                     try
                     {
                         txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(wl, true);
+                        cmd.Set_WL(wl, true, true);
                     }
                     catch { }
                 else
                     vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
 
                 vm.Double_Laser_Wavelength = wl;
-
-                //await cmd.Set_TLS_Filter(wl);
             }
 
             _is_txtWL_already_click = false;
@@ -1714,6 +1698,52 @@ namespace PD.NavigationPages
         private void ToggleBtn_LaserActive_Checked(object sender, RoutedEventArgs e)
         {
             cmd.Set_TLS_Active(vm.isLaserActive);
+        }
+
+        private void TextBox_WL_Scan_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+
+            var txtbox = sender as TextBox;
+
+            if (txtbox.Tag.ToString() == "Start")
+            {
+                if (double.TryParse(txtbox.Text, out double wl))
+                    vm.float_WL_Scan_Start = wl;
+            }
+            else if (txtbox.Tag.ToString() == "End")
+            {
+                if (double.TryParse(txtbox.Text, out double wl))
+                    vm.float_WL_Scan_End = wl;
+            }
+            else if (txtbox.Tag.ToString() == "Gap")
+            {
+                if (double.TryParse(txtbox.Text, out double wl))
+                    vm.float_WL_Scan_Gap = wl;
+            }
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (!cmd.isLambdaInit)
+                cmd.isLambdaInit = cmd.Init_Lambda_Scan();
+
+            cmd.Lambda_Scan_Setting(vm.float_WL_Scan_Start, vm.float_WL_Scan_End);
+
+            cmd.Init_TLS_Filter();
+
+            await Task.Delay(125);
+
+            cmd.Set_WL(vm.float_WL_Scan_Start, false);
+
+            await Task.Delay(3050);
+
+            cmd.MTF_Scan((decimal)vm.float_WL_Scan_Start, (decimal)vm.float_WL_Scan_End);
+            cmd.TLS_Agilent_Sweep();
+
+            await Task.Delay(1250);
+
+            cmd.Close_TLS_Filter();
         }
     }
 }

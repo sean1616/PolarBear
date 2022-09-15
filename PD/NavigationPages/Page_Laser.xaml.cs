@@ -175,7 +175,7 @@ namespace PD.NavigationPages
                 try
                 {
                     txt_WL.Text = (wl).ToString();
-                    cmd.Set_WL(wl, false);
+                    cmd.Set_WL(wl, false, true);
                     await Task.Delay(vm.Int_Set_WL_Delay / 2);
                 }
                 catch { }
@@ -183,8 +183,6 @@ namespace PD.NavigationPages
                 vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
 
             vm.Double_Laser_Wavelength = wl;
-
-            //await cmd.Set_TLS_Filter(wl);
         }
 
         private async void slider_PM_WL_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -296,62 +294,36 @@ namespace PD.NavigationPages
             if (e.Key == Key.Enter)
             {
                 double wl = Convert.ToDouble(txt_WL.Text);
-                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                //{
-                //    vm.Str_cmd_read = "WL out of range";
-                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
-                //    return;
-                //}
 
-                if (!vm.IsGoOn) cmd.Set_WL(wl, false);
+                if (!vm.IsGoOn) cmd.Set_WL(wl, false, true);
                 else
                     vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = txt_WL.Text });
-
-                //await cmd.Set_TLS_Filter(wl);
             }
             else if (e.Key == Key.Up)
             {
                 double wl = Convert.ToDouble(txt_WL.Text) + 0.01;
-                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                //{
-                //    vm.Str_cmd_read = "WL out of range";
-                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
-                //    return;
-                //}
 
                 if (!vm.IsGoOn)
                     try
                     {
                         txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(wl, false);
-                        //vm.tls.SetWL(wl);
-                        //await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
-                        //vm.pm.SetWL(Convert.ToDouble(txt_WL.Text));
-                        //await vm.AccessDelayAsync(vm.Int_Set_WL_Delay / 2);
+                        cmd.Set_WL(wl, false, true);
                     }
                     catch { }
                 else
                     vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
 
                 vm.Double_Laser_Wavelength = wl;
-
-                //await cmd.Set_TLS_Filter(wl);
             }
             else if (e.Key == Key.Down)
             {
                 double wl = Convert.ToDouble(txt_WL.Text) - 0.01;
-                //if (wl > vm.float_TLS_WL_Range[1] || wl < vm.float_TLS_WL_Range[0])
-                //{
-                //    vm.Str_cmd_read = "WL out of range";
-                //    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
-                //    return;
-                //}
 
                 if (!vm.IsGoOn)
                     try
                     {
                         txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(wl, false);
+                        cmd.Set_WL(wl, false, true);
                     }
                     catch { }
                 else
@@ -360,42 +332,6 @@ namespace PD.NavigationPages
                 vm.Double_Laser_Wavelength = wl;
             }
         }
-
-        //private async void Set_WL(double wl)
-        //{
-        //    try
-        //    {
-        //        if (vm.isConnected)
-        //        {                    
-        //            vm.tls.SetWL(wl);
-
-        //            if (vm.PM_sync)
-        //                if (vm.pm != null)
-        //                {
-        //                    vm.pm.SetWL(wl);
-        //                }
-
-        //            await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
-
-        //            try
-        //            {
-        //                vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-
-        //                if (vm.PM_sync)
-        //                    if (vm.pm != null)
-        //                        vm.Double_PM_Wavelength = vm.pm.ReadWL();
-
-        //                if (vm.station_type == "Testing")
-        //                {
-        //                    if (vm.float_WL_Ref.Count != 0)
-        //                        vm.Double_PM_Ref = vm.float_WL_Ref[0];
-        //                }
-        //            }
-        //            catch { }
-        //        }
-        //    }
-        //    catch { }
-        //}
 
         private void txt_PM_WL_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {

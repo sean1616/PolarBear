@@ -1203,6 +1203,9 @@ namespace PD.NavigationPages
                         }
                     }
 
+                    //Close TLS filter port for other control action
+                    cmd.Close_TLS_Filter();
+
                     vm.Str_Status = "Get Ref End";
 
                     #region Get data from txt file and show

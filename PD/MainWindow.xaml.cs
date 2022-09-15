@@ -538,7 +538,7 @@ namespace PD
                     vm.watch.Start();
                     cmd.Clean_Chart();
 
-                    if (!vm.IsDistributedSystem)  //
+                    if (!vm.IsDistributedSystem) 
                     {
                         if (!vm.isConnected && vm.PD_or_PM)  //檢查TLS是否連線，若無，則進行連線並取續TLS狀態
                         {
@@ -624,7 +624,9 @@ namespace PD
                             cmd.CommandListCycle();
                         }
                     }
-                    else  //Distributed System on
+
+                    //Distributed System on
+                    else
                     {
                         foreach (ChannelModel chM in vm.list_ChannelModels)
                         {
@@ -645,6 +647,8 @@ namespace PD
                         cmd.CommandListCycle();
                     }
                 }
+
+                //Stop
                 else
                 {
                     if (!vm.IsDistributedSystem)
@@ -663,14 +667,18 @@ namespace PD
                             //vm.list_GaugeModels[1].GaugeValue = "-8";
                         }
                     }
+
+                    //Distributed System on
                     else
                     {
                         vm.Str_Status = "Stop";
-                        //vm.timer_arduino_AdRead.Stop();
                         vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                         await cmd.Save_Chart();
                     }
                 }
+
+                //Close TLS filter port for other control action
+                cmd.Close_TLS_Filter();
             }
             catch (Exception ex)
             {
@@ -5456,14 +5464,7 @@ namespace PD
                 vm.IsGoOn = false;
 
                 //Close TLS filter port for other control action
-                if (vm.is_TLS_Filter && vm.port_TLS_Filter!=null)
-                    if (vm.port_TLS_Filter.IsOpen)
-                    {
-                        vm.port_TLS_Filter.DiscardInBuffer();
-                        vm.port_TLS_Filter.DiscardOutBuffer();
-
-                        vm.port_TLS_Filter.Close();
-                    }
+                cmd.Close_TLS_Filter();
 
                 return true;
             }
@@ -5731,6 +5732,9 @@ namespace PD
 
             vm.Str_Status = "WL Scan Stop";
             vm.Save_Log("WL Scan", "Stop", false);
+
+            //Close TLS filter port for other control action
+            cmd.Close_TLS_Filter();
 
             K_WL.IsEnabled = true;
             vm.IsGoOn = false;

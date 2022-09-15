@@ -67,6 +67,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\Customized_TxtBox.dll</HintPath>
     </Reference>
+    <Reference Include="DiCon.Instrument, Version=1.9.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\TF_Alignment_for_SpotWelding - Ver. 1.5\DiCon.Instrument.dll</HintPath>
+    </Reference>
     <Reference Include="DiCon.Instrument.HP, Version=1.6.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\DiCon.Instrument.HP.dll</HintPath>
