@@ -3723,6 +3723,19 @@ namespace PD.ViewModel
             }
         }
 
+        private int _int_Lambda_Scan_Delay = 2500;
+        public int Int_Lambda_Scan_Delay
+        {
+            get { return _int_Lambda_Scan_Delay; }
+            set
+            {
+                _int_Lambda_Scan_Delay = value;
+                OnPropertyChanged("Int_Lambda_Scan_Delay");
+
+                Ini_Write("Connection", "Int_Lambda_Scan_Delay", value.ToString());
+            }
+        }
+
         private string _chart_title = "Power X Time";
         public string Chart_title
         {

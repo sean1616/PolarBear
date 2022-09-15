@@ -1736,7 +1736,7 @@ namespace PD.NavigationPages
 
             cmd.Set_WL(vm.float_WL_Scan_Start, false);
 
-            await Task.Delay(3050);
+            await Task.Delay(vm.Int_Lambda_Scan_Delay);
 
             cmd.MTF_Scan((decimal)vm.float_WL_Scan_Start, (decimal)vm.float_WL_Scan_End);
             cmd.TLS_Agilent_Sweep();

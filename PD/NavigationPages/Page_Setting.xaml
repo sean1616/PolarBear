@@ -172,6 +172,12 @@
                                             border_Background="#FF98DEB5"
                                             Background="White"
                                                 txtbox_value="{Binding Int_Set_WL_Delay, Mode=TwoWay}" />
+                        <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                txtbox_content="Lambda Scan Delay"
+                                            FontFamily="Segoe Print"
+                                            border_Background="#FF98DEB5"
+                                            Background="White"
+                                                txtbox_value="{Binding Int_Lambda_Scan_Delay, Mode=TwoWay}" />
                         <wpfuc:Text_ToggleButton Grid.Row="9"
                                                  Grid.Column="1"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"

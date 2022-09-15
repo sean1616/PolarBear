@@ -247,7 +247,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 423 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 424 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Image image;
         
@@ -255,7 +255,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 446 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 447 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Grid grid_sector_btns;
         
@@ -263,7 +263,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 454 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 455 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal PD.UI.Sector_BTN btn_aft;
         
@@ -271,7 +271,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 466 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 467 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal PD.UI.Sector_BTN btn_page2;
         
@@ -279,7 +279,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 480 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 481 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal PD.UI.Sector_BTN btn_pre;
         
@@ -287,7 +287,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 494 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 495 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal PD.UI.Sector_BTN btn_page1;
         
@@ -295,7 +295,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 511 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 512 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Button btn_bearsay_visual;
         
@@ -303,7 +303,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 547 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 548 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.TextBlock txt_PDL;
         
@@ -311,7 +311,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 555 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 556 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Primitives.ToggleButton ToggleBtn_Star_Stop;
         
@@ -319,7 +319,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 667 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 668 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Border border_background_1;
         
@@ -327,7 +327,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 1197 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 1198 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Slider slider_Power;
         
@@ -335,7 +335,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 1340 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 1341 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.TextBox txt_power;
         
@@ -343,7 +343,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 1394 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 1395 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Primitives.ToggleButton ToggleBtn_LaserActive;
         
@@ -351,7 +351,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 1422 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 1423 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Viewbox viewbox8;
         
@@ -359,7 +359,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 1424 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 1425 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.TextBox txt_WL;
         
@@ -367,7 +367,7 @@ namespace PD.NavigationPages {
         #line hidden
         
         
-        #line 1446 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+        #line 1447 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Slider slider_WL;
         
@@ -494,7 +494,7 @@ namespace PD.NavigationPages {
             return;
             case 27:
             
-            #line 404 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 405 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             ((System.Windows.Controls.Border)(target)).PreviewMouseLeftButtonDown += new System.Windows.Input.MouseButtonEventHandler(this.Border_PreviewMouseLeftButtonDown);
             
             #line default
@@ -502,13 +502,13 @@ namespace PD.NavigationPages {
             return;
             case 28:
             
-            #line 414 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 415 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             ((System.Windows.Controls.Border)(target)).MouseEnter += new System.Windows.Input.MouseEventHandler(this.image_MouseEnter);
             
             #line default
             #line hidden
             
-            #line 415 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 416 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             ((System.Windows.Controls.Border)(target)).MouseLeave += new System.Windows.Input.MouseEventHandler(this.grid_sector_btns_MouseLeave);
             
             #line default
@@ -517,7 +517,7 @@ namespace PD.NavigationPages {
             case 29:
             this.image = ((System.Windows.Controls.Image)(target));
             
-            #line 426 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 427 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.image.MouseEnter += new System.Windows.Input.MouseEventHandler(this.image_MouseEnter);
             
             #line default
@@ -529,7 +529,7 @@ namespace PD.NavigationPages {
             case 31:
             this.btn_aft = ((PD.UI.Sector_BTN)(target));
             
-            #line 462 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 463 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.btn_aft.AddHandler(System.Windows.Controls.Primitives.ButtonBase.ClickEvent, new System.Windows.RoutedEventHandler(this.btn_aft_Click));
             
             #line default
@@ -538,7 +538,7 @@ namespace PD.NavigationPages {
             case 32:
             this.btn_page2 = ((PD.UI.Sector_BTN)(target));
             
-            #line 474 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 475 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.btn_page2.AddHandler(System.Windows.Controls.Primitives.ButtonBase.ClickEvent, new System.Windows.RoutedEventHandler(this.Btn_page2_Click));
             
             #line default
@@ -547,7 +547,7 @@ namespace PD.NavigationPages {
             case 33:
             this.btn_pre = ((PD.UI.Sector_BTN)(target));
             
-            #line 487 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 488 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.btn_pre.AddHandler(System.Windows.Controls.Primitives.ButtonBase.ClickEvent, new System.Windows.RoutedEventHandler(this.btn_pre_Click));
             
             #line default
@@ -556,7 +556,7 @@ namespace PD.NavigationPages {
             case 34:
             this.btn_page1 = ((PD.UI.Sector_BTN)(target));
             
-            #line 501 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 502 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.btn_page1.AddHandler(System.Windows.Controls.Primitives.ButtonBase.ClickEvent, new System.Windows.RoutedEventHandler(this.Btn_page1_Click));
             
             #line default
@@ -565,7 +565,7 @@ namespace PD.NavigationPages {
             case 35:
             this.btn_bearsay_visual = ((System.Windows.Controls.Button)(target));
             
-            #line 517 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 518 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.btn_bearsay_visual.Click += new System.Windows.RoutedEventHandler(this.btn_bearsay_visual_Click);
             
             #line default
@@ -582,7 +582,7 @@ namespace PD.NavigationPages {
             return;
             case 39:
             
-            #line 721 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 722 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             ((System.Windows.Controls.TextBox)(target)).KeyDown += new System.Windows.Input.KeyEventHandler(this.TextBox_WL_Scan_KeyDown);
             
             #line default
@@ -590,7 +590,7 @@ namespace PD.NavigationPages {
             return;
             case 40:
             
-            #line 738 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 739 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             ((System.Windows.Controls.Slider)(target)).AddHandler(System.Windows.Input.Mouse.PreviewMouseDownEvent, new System.Windows.Input.MouseButtonEventHandler(this.slider_PreviewMouseDown));
             
             #line default
@@ -598,7 +598,7 @@ namespace PD.NavigationPages {
             return;
             case 41:
             
-            #line 926 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 927 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             ((System.Windows.Controls.TextBox)(target)).KeyDown += new System.Windows.Input.KeyEventHandler(this.TextBox_WL_Scan_KeyDown);
             
             #line default
@@ -606,7 +606,7 @@ namespace PD.NavigationPages {
             return;
             case 42:
             
-            #line 944 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 945 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             ((System.Windows.Controls.Slider)(target)).AddHandler(System.Windows.Input.Mouse.PreviewMouseDownEvent, new System.Windows.Input.MouseButtonEventHandler(this.slider_PreviewMouseDown));
             
             #line default
@@ -614,7 +614,7 @@ namespace PD.NavigationPages {
             return;
             case 43:
             
-            #line 1120 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 1121 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             ((System.Windows.Controls.Button)(target)).Click += new System.Windows.RoutedEventHandler(this.Button_Click);
             
             #line default
@@ -622,7 +622,7 @@ namespace PD.NavigationPages {
             return;
             case 44:
             
-            #line 1133 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 1134 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             ((System.Windows.Controls.TextBox)(target)).KeyDown += new System.Windows.Input.KeyEventHandler(this.TextBox_WL_Scan_KeyDown);
             
             #line default
@@ -631,13 +631,13 @@ namespace PD.NavigationPages {
             case 45:
             this.slider_Power = ((System.Windows.Controls.Slider)(target));
             
-            #line 1202 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 1203 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.slider_Power.AddHandler(System.Windows.Input.Mouse.PreviewMouseDownEvent, new System.Windows.Input.MouseButtonEventHandler(this.slider_PreviewMouseDown));
             
             #line default
             #line hidden
             
-            #line 1203 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 1204 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.slider_Power.PreviewMouseLeftButtonUp += new System.Windows.Input.MouseButtonEventHandler(this.slider_Power_PreviewMouseLeftButtonUp);
             
             #line default
@@ -646,7 +646,7 @@ namespace PD.NavigationPages {
             case 46:
             this.txt_power = ((System.Windows.Controls.TextBox)(target));
             
-            #line 1345 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 1346 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.txt_power.AddHandler(System.Windows.Input.Keyboard.PreviewKeyDownEvent, new System.Windows.Input.KeyEventHandler(this.txt_power_PreviewKeyDown));
             
             #line default
@@ -655,7 +655,7 @@ namespace PD.NavigationPages {
             case 47:
             this.ToggleBtn_LaserActive = ((System.Windows.Controls.Primitives.ToggleButton)(target));
             
-            #line 1401 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 1402 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.ToggleBtn_LaserActive.Click += new System.Windows.RoutedEventHandler(this.ToggleBtn_LaserActive_Checked);
             
             #line default
@@ -667,7 +667,7 @@ namespace PD.NavigationPages {
             case 49:
             this.txt_WL = ((System.Windows.Controls.TextBox)(target));
             
-            #line 1433 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 1434 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.txt_WL.AddHandler(System.Windows.Input.Keyboard.PreviewKeyDownEvent, new System.Windows.Input.KeyEventHandler(this.txt_WL_KeyDown));
             
             #line default
@@ -676,13 +676,13 @@ namespace PD.NavigationPages {
             case 50:
             this.slider_WL = ((System.Windows.Controls.Slider)(target));
             
-            #line 1451 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 1452 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.slider_WL.AddHandler(System.Windows.Input.Mouse.PreviewMouseDownEvent, new System.Windows.Input.MouseButtonEventHandler(this.slider_PreviewMouseDown));
             
             #line default
             #line hidden
             
-            #line 1452 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
+            #line 1453 "..\..\..\NavigationPages\Page_PD_Gauges.xaml"
             this.slider_WL.PreviewMouseLeftButtonUp += new System.Windows.Input.MouseButtonEventHandler(this.slider_WL_MouseLeftButtonUp);
             
             #line default

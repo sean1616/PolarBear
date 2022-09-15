@@ -144,6 +144,8 @@ namespace PD
 
                 vm.Int_Set_WL_Delay = Generic_GetINISetting(vm.Int_Set_WL_Delay, "Connection", "GPIB_Write_WL_DelayTime");
 
+                vm.Int_Lambda_Scan_Delay = Generic_GetINISetting(vm.Int_Lambda_Scan_Delay, "Connection", "Int_Lambda_Scan_Delay");
+                
                 vm.int_V3_scan_start = Generic_GetINISetting(vm.int_V3_scan_start, "Scan", "V3_Scan_Start");
 
                 vm.int_V3_scan_end = Generic_GetINISetting(vm.int_V3_scan_end, "Scan", "V3_Scan_End");
