@@ -1160,7 +1160,7 @@ namespace PD.NavigationPages
                             {
                                 await cmd.Get_Power(ch, true);
                                 IL = vm.Double_Powers[ch];
-                                File.AppendAllText(RefPath, $"{wl},{IL}\r");
+                                File.AppendAllText(RefPath, $"{Math.Round(wl, 2)},{IL}\r");
 
                                 vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
 

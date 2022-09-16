@@ -228,7 +228,7 @@ namespace PD.Models
     {
         public int WL_No { get; set; } = 1;
 
-        private string _SN = "SN";
+        private string _SN = "27A0KPAGXXXX";
         public string SN
         {
             get { return _SN; }
@@ -435,6 +435,28 @@ namespace PD.Models
         #endregion
 
         #region Micrometer
+        private double _Mic_Upper_Limit = 0;
+        public double Mic_Upper_Limit
+        {
+            get { return _Mic_Upper_Limit; }
+            set
+            {
+                _Mic_Upper_Limit = value;
+                OnPropertyChanged_Normal("Mic_Upper_Limit");
+            }
+        }
+
+        private double _Mic_Lower_Limit = 0;
+        public double Mic_Lower_Limit
+        {
+            get { return _Mic_Lower_Limit; }
+            set
+            {
+                _Mic_Lower_Limit = value;
+                OnPropertyChanged_Normal("Mic_Lower_Limit");
+            }
+        }
+
         private double _WL_1_Mic = 0;
         public double WL_1_Mic
         {

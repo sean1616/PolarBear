@@ -106,9 +106,6 @@ namespace PD.NavigationPages
             {
                 int counter = 0;
                 string line;
-                //List<string> list_line = new List<string>();
-                //System.Collections.Concurrent.ConcurrentStack<string> Collection_line = new System.Collections.Concurrent.ConcurrentStack<string>();
-
 
                 // Read the file and display it line by line.  
                 System.IO.StreamReader file = new System.IO.StreamReader(filepath);
@@ -128,7 +125,7 @@ namespace PD.NavigationPages
                             if (!vm.list_wl.Contains(data_WL))
                                 vm.list_wl.Add(data_WL);  //新增波長
 
-                            dictionaries[ch - 1].Add(data_WL, data_IL);          //Add ref to dictionary                   
+                            dictionaries[ch - 1].Add(Math.Round(data_WL,2), data_IL);          //Add ref to dictionary                   
                         }
                         else
                             vm.Save_Log("Gef ref", "Ref format is wrong", false);

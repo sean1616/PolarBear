@@ -5255,6 +5255,7 @@ namespace PD
                         {
                             vm.Str_Status = "WL Fine Scan";
 
+                            double MaxIL =  vm.Chart_DataPoints.OrderBy(o => o.Y).ToList().Last().Y;
                             List<DataPoint> FinalDataPoints = new List<DataPoint>(vm.Chart_DataPoints);
                             int[,] list_BW_WL_Pos = anly.BandWidth_Calculation(vm.opModel_1.WL_No);
                             for (int i = 0; i < 3; i++)
@@ -5295,16 +5296,38 @@ namespace PD
                                     #endregion
 
                                     #region Scan WL
+
+                                    double target_IL = 0;
+                                    double target_dB = 0;
+                                    if (i == 0)
+                                        target_dB = vm.opModel_1.BW_Setting_1;
+                                    else if (i == 1)
+                                        target_dB = vm.opModel_1.BW_Setting_2;
+                                    else if (i == 3)
+                                        target_dB = vm.opModel_1.BW_Setting_3;
+                                    else
+                                        continue;
+
+                                    target_IL = MaxIL - target_dB;
+
+                                    if (j == 0)
+                                        vm.Str_Status = $"Fine Scan, L, dB:{target_dB}, Target IL:{target_IL}";
+                                    else if (j==1)
+                                        vm.Str_Status = $"Fine Scan, R, dB:{target_dB}, Target IL:{target_IL}";
+
+                                    bool isbreak = false;
                                     foreach (double wl in vm.wl_list)
                                     {
                                         if (vm.isStop) return false;
+
+                                        if (isbreak) break;
 
                                         double WL = Math.Round(wl, 2);
 
                                         cmd.Set_WL(wl, false);
 
                                         if (wl == vm.wl_list.First())
-                                            await Task.Delay(vm.Int_Set_WL_Delay + 200);
+                                            await Task.Delay(vm.Int_Set_WL_Delay + 800);
                                         else
                                             await Task.Delay(vm.Int_Set_WL_Delay);
 
@@ -5377,6 +5400,16 @@ namespace PD
                                                     vm.Save_All_PD_Value[ch].Add(dp);
                                                     vm.wl_list_index++;
                                                 }
+
+                                                if (vm.ch_count == 1)
+                                                {
+                                                    //Left side
+                                                    if (j == 0 && vm.Double_Powers[ch] > target_IL)
+                                                        isbreak = true;
+                                                    //Right side
+                                                    else if (j == 1 && vm.Double_Powers[ch] < target_IL)
+                                                        isbreak = true;
+                                                }
                                             }
                                         }
 
@@ -5384,6 +5417,7 @@ namespace PD
                                         #region Set Chart data points   
                                         vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                                         FinalDataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
+                                        vm.Chart_DataPoints = new List<DataPoint>(FinalDataPoints.OrderBy(o => o.X).ToList());  //A lineseries  
 
                                         scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
                                         vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
@@ -5393,10 +5427,13 @@ namespace PD
                                     #endregion
                                 }
                             }
-
-                            //vm.Chart_DataPoints.AddRange(FinalDataPoints);
+                            string str_pre_bw = $"{vm.opModel_1.WL_1_CWL},{vm.opModel_1.WL_1_BW_1},{vm.opModel_1.WL_1_BW_2},{vm.opModel_1.WL_1_BW_3}";
                             vm.Chart_DataPoints = FinalDataPoints.OrderBy(o => o.X).ToList();
                             anly.BandWidth_Calculation(vm.opModel_1.WL_No);
+
+
+                            string str_aft_bw = $"{vm.opModel_1.WL_1_CWL},{vm.opModel_1.WL_1_BW_1},{vm.opModel_1.WL_1_BW_2},{vm.opModel_1.WL_1_BW_3}";
+                            Console.WriteLine(str_pre_bw + "\r\r" + str_aft_bw);
                         }
 
                         #endregion
@@ -6087,6 +6124,17 @@ namespace PD
                         vm.opModel_1.WL_3_BW_1.ToString(),
                         vm.opModel_1.WL_3_BW_2.ToString(),
                         vm.opModel_1.WL_3_BW_3.ToString()
+                    });
+
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    {
+                        "Mic. Upper", "Mic. Lower"
+                    });
+
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    {
+                        vm.opModel_1.Mic_Upper_Limit.ToString(),
+                        vm.opModel_1.Mic_Lower_Limit.ToString()
                     });
 
                     vm.Str_Status = "Save Data to CSV";

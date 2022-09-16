@@ -549,6 +549,8 @@ namespace PD.Functions
                 #region String Builder
                 StringBuilder _stringBuilder = new StringBuilder();
 
+                columns = list_a_row_datas.Count;
+
                 //資料內容
                 for (int i = 0; i < columns; i++)
                 {

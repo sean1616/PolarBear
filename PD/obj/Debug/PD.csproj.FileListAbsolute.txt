@@ -622,3 +622,6 @@ C:\Users\User\source\repos\PolarBear\PD\obj\Debug\PD-v5.5.14.pdb
 C:\Users\User\source\repos\PolarBear\PD\bin\Debug\Ivi.Visa.Interop.dll
 C:\Users\User\source\repos\PolarBear\PD\bin\Debug\DiCon.Instrument.dll
 C:\Users\User\source\repos\PolarBear\PD\bin\Debug\NationalInstruments.VisaNS.dll
+D:\PolarBear\PD\bin\Debug\DiCon.Instrument.dll
+D:\PolarBear\PD\bin\Debug\NationalInstruments.VisaNS.dll
+D:\PolarBear\PD\bin\Debug\Ivi.Visa.Interop.dll
