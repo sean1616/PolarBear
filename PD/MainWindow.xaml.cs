@@ -5478,7 +5478,7 @@ namespace PD
                             double maxIL_WL = vm.Save_All_PD_Value[ch].Where(point => point.Y == vm.Save_All_PD_Value[ch].Max(x => x.Y)).First().X;
 
                             vm.Double_Laser_Wavelength = maxIL_WL; 
-                            cmd.Set_WL(maxIL_WL, false);
+                            await cmd.Set_WL(maxIL_WL, false);
 
                             vm.list_GaugeModels[ch].GaugeValue = vm.Save_All_PD_Value[ch].Max(x => x.Y).ToString();
 

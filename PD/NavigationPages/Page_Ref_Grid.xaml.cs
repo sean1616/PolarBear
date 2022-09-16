@@ -119,7 +119,7 @@ namespace PD.NavigationPages
 
                         if (line_array.Length == 2)
                         {
-                            double data_WL = Convert.ToDouble(line_array[0]);
+                            double data_WL = Math.Round(Convert.ToDouble(line_array[0]),2);
                             double data_IL = Convert.ToDouble(line_array[1]);
 
                             if (!vm.list_wl.Contains(data_WL))

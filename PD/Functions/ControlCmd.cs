@@ -2531,7 +2531,7 @@ namespace PD.Functions
             catch { }
         }
 
-        public async void Set_WL(double wl, bool readback)
+        public async Task<bool> Set_WL(double wl, bool readback)
         {
             try
             {
@@ -2608,6 +2608,8 @@ namespace PD.Functions
                 }
             }
             catch { vm.Save_Log("Set WL", "Set WL Error", false); }
+
+            return true;
         }
 
         public async void Set_WL(double wl, bool readback, bool isCloseTLS_Filter)
@@ -2822,11 +2824,10 @@ namespace PD.Functions
                         }
                 }
             }
-            catch(Exception ex)
+            catch
             {
                 vm.Str_cmd_read = "Set TLS Filter Error";
                 vm.Save_Log(new LogMember() { isShowMSG = false, Status = "Set TLS WL", Result = "Set TLS Filter Failed", Message = $"WL : {wl}" });
-                throw ex;
             }
         }
 
@@ -3490,7 +3491,10 @@ namespace PD.Functions
                         if (vm.dB_or_dBm)  //dB
                         {
                             if (vm.float_WL_Ref.Count > 0)
+                            {
+                                vm.Save_Log(new LogMember() { isShowMSG = false, Status = "WL Scan", Channel = "1", Message = $"WL:{vm.Double_Laser_Wavelength}", Result = $"dBm:{power}, Ref:{vm.float_WL_Ref[0]}" });
                                 power = Math.Round(power - vm.float_WL_Ref[0], 4);
+                            }
 
                             vm.Double_Powers[ch - 1] = power;
                         }
@@ -3518,9 +3522,6 @@ namespace PD.Functions
             }
 
             vm.port_PD.Write("P0?\r");
-
-            //if (cm.Channel == "16")   //Write Cmd to port_B
-            //    vm.port_PD_B.Write("P0?\r");
 
             await Task.Delay(vm.Int_Read_Delay);
 

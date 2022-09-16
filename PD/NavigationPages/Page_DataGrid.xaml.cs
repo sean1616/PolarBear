@@ -1086,7 +1086,7 @@ namespace PD.NavigationPages
                     {
                         if (vm.isStop) break;
 
-                        cmd.Set_WL(wl, false);
+                        await cmd.Set_WL(wl, false);
 
                         vm.Double_Laser_Wavelength = Math.Round(wl, 2);
 
