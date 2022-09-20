@@ -5136,7 +5136,7 @@ namespace PD
 
                     double WL = Math.Round(wl, 2);
 
-                    cmd.Set_WL(wl, false);
+                    await cmd.Set_WL(wl, false);
 
                     if (wl == vm.wl_list.First())
                         await Task.Delay(vm.Int_Set_WL_Delay + 200);
@@ -5257,7 +5257,8 @@ namespace PD
 
                             double MaxIL =  vm.Chart_DataPoints.OrderBy(o => o.Y).ToList().Last().Y;
                             List<DataPoint> FinalDataPoints = new List<DataPoint>(vm.Chart_DataPoints);
-                            int[,] list_BW_WL_Pos = anly.BandWidth_Calculation(vm.opModel_1.WL_No);
+                            double[,] list_BW_WL_Pos = anly.BandWidth_Calculation(vm.opModel_1.WL_No);
+
                             for (int i = 0; i < 3; i++)
                             {
                                 for (int j = 0; j < 2; j++)
@@ -5269,14 +5270,14 @@ namespace PD
                                     if(j == 0)
                                     {
                                         //Left
-                                        vm.float_WL_Scan_Start = vm.Chart_DataPoints[list_BW_WL_Pos[i, j]].X;
-                                        vm.float_WL_Scan_End = vm.Chart_DataPoints[list_BW_WL_Pos[i, j]].X + vm.float_WL_Scan_Gap;
+                                        vm.float_WL_Scan_Start = list_BW_WL_Pos[i, j];
+                                        vm.float_WL_Scan_End = list_BW_WL_Pos[i, j] + vm.float_WL_Scan_Gap;
                                     }
                                     else
                                     {
                                         //Right
-                                        vm.float_WL_Scan_Start = vm.Chart_DataPoints[list_BW_WL_Pos[i, j]].X - vm.float_WL_Scan_Gap;
-                                        vm.float_WL_Scan_End = vm.Chart_DataPoints[list_BW_WL_Pos[i, j]].X;
+                                        vm.float_WL_Scan_Start = list_BW_WL_Pos[i, j] - vm.float_WL_Scan_Gap;
+                                        vm.float_WL_Scan_End = list_BW_WL_Pos[i, j];
                                     }
 
                                     if (vm.float_WL_Scan_End >= vm.float_WL_Scan_Start)
@@ -5324,7 +5325,10 @@ namespace PD
 
                                         double WL = Math.Round(wl, 2);
 
-                                        cmd.Set_WL(wl, false);
+                                        //if (vm.Chart_All_DataPoints[0].Any(o => o.X == wl))
+                                        //    continue;
+
+                                        await cmd.Set_WL(wl, false);
 
                                         if (wl == vm.wl_list.First())
                                             await Task.Delay(vm.Int_Set_WL_Delay + 800);
@@ -5367,6 +5371,11 @@ namespace PD
                                                 }
                                             }
                                             #endregion
+
+                                            if (vm.Chart_All_DataPoints[0].Any(o => o.X == wl))
+                                            {
+                                                vm.Chart_All_DataPoints[0].RemoveAll(p => p.X == wl);
+                                            }
 
                                             if (vm.Is_FastScan_Mode && vm.list_ChannelModels.Count == 1)
                                             {
@@ -6128,13 +6137,13 @@ namespace PD
 
                     CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
                     {
-                        "Mic. Upper", "Mic. Lower"
+                        "Mic. Lower", "Mic. Upper"
                     });
 
                     CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
                     {
-                        vm.opModel_1.Mic_Upper_Limit.ToString(),
-                        vm.opModel_1.Mic_Lower_Limit.ToString()
+                        vm.opModel_1.Mic_Lower_Limit.ToString(),
+                        vm.opModel_1.Mic_Upper_Limit.ToString()
                     });
 
                     vm.Str_Status = "Save Data to CSV";

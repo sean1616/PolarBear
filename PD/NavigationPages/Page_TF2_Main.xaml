@@ -432,7 +432,7 @@
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center" Grid.Row="11"/>
                     <Border Background="#FFBAF6F9" Grid.Row="11" Grid.Column="1"/>
-                    <TextBlock Text="Upper"
+                    <TextBlock Text="Lower"
                                Foreground="Black"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center" Grid.Row="11" Grid.Column="1"/>
@@ -441,10 +441,10 @@
                            Grid.Row="11"
                              VerticalContentAlignment="Center"
                              HorizontalContentAlignment="Center"
-                           Grid.Column="2" Text="{Binding opModel_1.Mic_Upper_Limit, Mode=TwoWay}" />
+                           Grid.Column="2" Text="{Binding opModel_1.Mic_Lower_Limit, Mode=TwoWay}" />
 
                     <Border Background="#FFBAF6F9" Grid.Row="11" Grid.Column="3"/>
-                    <TextBlock Text="Lower"
+                    <TextBlock Text="Upper"
                                Foreground="Black"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center" Grid.Row="11" Grid.Column="3"/>
@@ -453,7 +453,7 @@
                            Grid.Row="11"
                               VerticalContentAlignment="Center"
                              HorizontalContentAlignment="Center"
-                           Grid.Column="4" Text="{Binding opModel_1.Mic_Lower_Limit, Mode=TwoWay}" />
+                           Grid.Column="4" Text="{Binding opModel_1.Mic_Upper_Limit, Mode=TwoWay}" />
                     <!--#endregion-->
                 </Grid>
 

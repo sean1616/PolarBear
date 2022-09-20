@@ -358,13 +358,13 @@ namespace PD.AnalysisModel
             }
         }
 
-        public int[,] BandWidth_Calculation(int WL_No)
+        public double[,] BandWidth_Calculation(int WL_No)
         {
             double bwSetting = 0;
             double bw = 0;
             double bw_cwl = 0;
 
-            int[,] List_BW_WL_Pos = new int[3,2];
+            double[,] List_BW_WL_Pos = new double[3,2];
 
             if (vm.Chart_DataPoints.Count != 0)
             {
@@ -438,8 +438,8 @@ namespace PD.AnalysisModel
                         double BW = Math.Abs(wl_R - wl_L);
                         bw = Math.Round(BW, 2);
 
-                        List_BW_WL_Pos[b - 1, 0] = index_L;
-                        List_BW_WL_Pos[b - 1, 1] = index_R;
+                        List_BW_WL_Pos[b - 1, 0] = Math.Round(wl_L,2);
+                        List_BW_WL_Pos[b - 1, 1] = Math.Round(wl_R, 2);
 
                         if (b == 2)
                             bw_cwl = Math.Abs(Math.Round((wl_R + wl_L) / 2, 2));                   
