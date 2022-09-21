@@ -36,6 +36,12 @@ namespace PD.NavigationPages
 
             try
             {
+                if (int.TryParse(vm.Ini_Read("Connection", "tls_BoardNumber"), out int _tls_BoardNumber))
+                    vm.tls_BoardNumber = _tls_BoardNumber;
+
+                if (int.TryParse(vm.Ini_Read("Connection", "pm_BoardNumber"), out int _pm_BoardNumber))
+                    vm.pm_BoardNumber = _pm_BoardNumber;
+
                 int _tls_Addr = 24;
                 int.TryParse(vm.Ini_Read("Connection", "tls_Addr"), out _tls_Addr);
                 if (_tls_Addr == 0) vm.tls_Addr = 24;
@@ -113,9 +119,9 @@ namespace PD.NavigationPages
                     #region PowerMeter Setting
                     //Power Meter setting
                     vm.pm = new HPPM();
-                    vm.pm.Addr = vm.tls_Addr;
+                    vm.pm.Addr = vm.pm_Addr;
                     vm.pm.Slot = vm.PM_slot;
-                    vm.pm.BoardNumber = vm.tls_BoardNumber;
+                    vm.pm.BoardNumber = vm.pm_BoardNumber;
                     if (vm.pm.Open() == false)
                     {
                         vm.Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
@@ -136,8 +142,8 @@ namespace PD.NavigationPages
 
                     #region PDL controller setting
                     pdl = new HPPDL();
-                    pdl.BoardNumber = Convert.ToInt32("0");
-                    pdl.Addr = 11;
+                    pdl.BoardNumber = vm.pdl_BoardNumber;
+                    pdl.Addr = vm.pdl_Addr;
                     pdl.Open();
                     pdl.init();
                     pdl.scanRate(8);
@@ -187,29 +193,24 @@ namespace PD.NavigationPages
 
         private async void slider_PM_WL_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (vm.isConnected)
+            try
             {
-                if (vm.PD_or_PM == true && vm.IsGoOn == true)
-                    await vm.PM_Stop();
-
-                vm.pm.SetWL(slider_PM_WL.Value);
-
-                await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
-
-                try
+                if (vm.isConnected)
                 {
+                    if (vm.PD_or_PM == true && vm.IsGoOn == true)
+                        await vm.PM_Stop();
+
+                    vm.pm.SetWL(slider_PM_WL.Value);
+
+                    await Task.Delay(vm.Int_Set_WL_Delay);
+
                     vm.Double_PM_Wavelength = vm.pm.ReadWL();
+
+                    if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
                 }
-                catch { }
-
-                if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
             }
-        }
-
-        private void btn_Laser_Status_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+            catch { }
+        }               
 
         int unit = 0;
         private void btn_Set_Unit_Click(object sender, RoutedEventArgs e)
@@ -234,16 +235,8 @@ namespace PD.NavigationPages
                             unit = 0; //uW
                         break;
                 }
-
-
-
-
-
-
-
             }
             catch { };
-
         }
 
         private void slider_Power_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -260,17 +253,11 @@ namespace PD.NavigationPages
                     }
 
                     if (!vm.IsGoOn)
-                    {
                         cmd.Set_TLS_Power(pwr, true);
-                        //vm.tls.SetPower(pwr);
-                    }
                     else
                         vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETPOWER", Type = "Agilent", Value_1 = pwr.ToString() });
                 }
-                catch
-                {
-
-                }
+                catch { }
             }
         }
 
@@ -386,8 +373,8 @@ namespace PD.NavigationPages
         {
             #region PDL controller setting
             pdl = new HPPDL();
-            pdl.BoardNumber = Convert.ToInt32("0");
-            pdl.Addr = 11;
+            pdl.BoardNumber = vm.pdl_BoardNumber;
+            pdl.Addr = vm.pdl_Addr;
             pdl.Open();
             pdl.init();
             pdl.scanRate(8);

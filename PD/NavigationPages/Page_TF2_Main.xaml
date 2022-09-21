@@ -165,7 +165,7 @@
             <Grid Grid.ColumnSpan="2" Grid.RowSpan="2" >
                 <Grid.RowDefinitions>
                     <RowDefinition/>
-                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="9*"/>
                 </Grid.RowDefinitions>
 
                 <TextBox Text="{Binding opModel_1.SN, FallbackValue=SN, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
@@ -191,6 +191,8 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition Height="0.3*"/>
                         <RowDefinition/>
                         <RowDefinition Height="0.3*"/>
                         <RowDefinition/>
@@ -455,6 +457,23 @@
                              HorizontalContentAlignment="Center"
                            Grid.Column="4" Text="{Binding opModel_1.Mic_Upper_Limit, Mode=TwoWay}" />
                     <!--#endregion-->
+
+                    <!--#region Temp.-->
+                    <Border Grid.ColumnSpan="6" BorderBrush="#FFD6D6D6" BorderThickness="1" CornerRadius="12" Grid.Row="13" />
+                    <Border Background="#FF1FCCD4" Grid.Row="13"  CornerRadius="12,0,0,12"/>
+                    <TextBlock Text="Temp."
+                               Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" Grid.Row="13"/>
+
+                    <TextBox FontFamily="Segoe Print"
+                           Grid.Row="13"
+                             VerticalContentAlignment="Center"
+                             HorizontalContentAlignment="Center"
+                           Grid.Column="1" Text="{Binding opModel_1.HighPower_Temp, Mode=TwoWay}" />
+
+                    <!--#endregion-->
+
                 </Grid>
 
             </Grid>
@@ -875,15 +894,14 @@
 
                 <ComboBox Name="ComBox_TF2_Station"
                                   Grid.Row="0"
-                          SelectedIndex="0"
-                          Loaded="ComBox_TF2_Station_Loaded"
-                          DropDownClosed="ComBox_TF2_Station_DropDownClosed"
+                          SelectedItem="{Binding TF2_station_type}"
+                          ItemsSource="{Binding list_TF2_station_type}"
                                   Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                   Style="{StaticResource style_combobox_black}" >
-                    <ComboBoxItem Content="Alignment"/>
+                    <!--<ComboBoxItem Content="Alignment"/>
                     <ComboBoxItem Content="PreTest"/>
                     <ComboBoxItem Content="Test"/>
-                    <ComboBoxItem Content="FinalTest"/>
+                    <ComboBoxItem Content="FinalTest"/>-->
                 </ComboBox>
 
             </Grid>

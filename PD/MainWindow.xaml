@@ -101,7 +101,7 @@
                                  Foreground="Wheat"
                                  GotFocus="Txt_ID_GotFocus"
                                  LostFocus="Txt_ID_LostFocus"
-                                 Text="{Binding UserID, UpdateSourceTrigger=PropertyChanged}"
+                                 Text="{Binding UserID}"
                                  Style="{DynamicResource style_UserID_txtbox}"
                                  Tag="../Resources/polar-bear-small.png"
                                  Width="{Binding ActualWidth, ElementName=grid_UserID, Mode=OneWay}"

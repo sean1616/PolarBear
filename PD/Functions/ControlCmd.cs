@@ -2211,13 +2211,12 @@ namespace PD.Functions
                         #endregion
 
                         #region PowerMeter Setting
-                        //Power Meter setting
                         if(!vm.isConnected)
                         {
                             vm.pm = new HPPM();
                             vm.pm.Addr = vm.pm_Addr;
                             vm.pm.Slot = vm.PM_slot;
-                            vm.pm.BoardNumber = vm.tls_BoardNumber;
+                            vm.pm.BoardNumber = vm.pm_BoardNumber;
                             if (vm.pm.Open() == false)
                             {
                                 vm.Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";

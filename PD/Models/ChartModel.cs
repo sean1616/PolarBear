@@ -502,6 +502,19 @@ namespace PD.Models
         }
         #endregion
 
+        #region Temp.
+        private double _HighPower_Temp = 0;
+        public double HighPower_Temp
+        {
+            get { return _HighPower_Temp; }
+            set
+            {
+                _HighPower_Temp = value;
+                OnPropertyChanged_Normal("HighPower_Temp");
+            }
+        }
+        #endregion
+
         #region BW
 
         private double _BW_Setting_1 = 0.5;

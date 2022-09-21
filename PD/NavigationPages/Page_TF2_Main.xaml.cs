@@ -66,9 +66,9 @@ namespace PD.NavigationPages
 
             anly = new Analysis(vm);
 
+            vm.TF2_station_type = string.IsNullOrEmpty(vm.Ini_Read("Connection", "TF2_station_type")) ? "Alignment" : vm.Ini_Read("Connection", "TF2_station_type");
+            //vm.TF2_station_selected = anly.Generic_GetINISetting(vm.TF2_station_selected, "Connection", "TF2_station_selected");
         }
-
-      
 
         private async void TextBox_Dac_KeyDown(object sender, RoutedEventArgs e)
         {
@@ -1335,25 +1335,10 @@ namespace PD.NavigationPages
 
         private void btn_Open_Location_Click(object sender, RoutedEventArgs e)
         {
-            string path = Path.Combine(vm.txt_save_TF2_wl_data_path, vm.TF2_station_type);
+            string path = Path.Combine(vm.txt_save_TF2_wl_data_path);
             if (Directory.Exists(path))
                 System.Diagnostics.Process.Start(path);
         }
 
-        private void ComBox_TF2_Station_DropDownClosed(object sender, EventArgs e)
-        {
-            var obj = sender as ComboBox;
-            if (obj.SelectedIndex >= 0)
-            {
-                string str = obj.SelectionBoxItem.ToString();
-                vm.TF2_station_type = str;
-            }
-        }
-
-        private void ComBox_TF2_Station_Loaded(object sender, RoutedEventArgs e)
-        {
-            var obj = sender as ComboBox;
-            vm.TF2_station_type = obj.SelectionBoxItem.ToString();
-        }
     }
 }

@@ -13,7 +13,8 @@
              xmlns:uc="clr-namespace:Wpf_Control_Library;assembly=Wpf_Control_Library"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              d:DesignHeight="1080"
-             d:DesignWidth="1920"             
+             d:DesignWidth="1920"       
+             Style="{StaticResource UCAll}"
              Background="Transparent"     
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -690,25 +691,24 @@
                             <ColumnDefinition Width="1.5*" />
                             <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="WL"
-                                   Grid.Column="1"
-                                   Grid.Row="1"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left"
-                                   Grid.ColumnSpan="2" />
-                        <TextBlock Text="Start"
-                                   Grid.Column="2"
-                                   Grid.Row="1"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left" />
+                        <Viewbox Grid.Column="1"
+                                   Grid.Row="1" HorizontalAlignment="Left">
+                            <TextBlock Text="WL"
+                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                        </Viewbox>
+                        <Viewbox Grid.Column="2"
+                                   Grid.Row="1">
+                            <TextBlock Text="Start"
+                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                        </Viewbox>
                     </Grid>
                     <Grid Grid.Row="1"
                           Margin="3">
-                        <Viewbox MaxHeight="80">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Viewbox MaxHeight="80" Grid.RowSpan="2">
                             <TextBox Tag="Start"
                                      Grid.Column="1"
                                      Margin="4,0,4,0"
@@ -722,12 +722,9 @@
                                      Text="{Binding float_WL_Scan_Start}"
                                      MinWidth="50" />
                         </Viewbox>
-                        <TextBlock Grid.Column="2"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   Text=" " />
+                        <Viewbox Grid.Row="1" HorizontalAlignment="Right" >
+                            <TextBlock Text=" nm" />
+                        </Viewbox>
                     </Grid>
                     <Grid Grid.Row="2"
                           Margin="5,0,5,0">
@@ -896,25 +893,24 @@
                             <ColumnDefinition Width="1.5*" />
                             <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="WL"
-                                   Grid.Column="1"
-                                   Grid.Row="1"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left"
-                                   Grid.ColumnSpan="2" />
-                        <TextBlock Text="End"
-                                   Grid.Column="2"
-                                   Grid.Row="1"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left" />
+                        <Viewbox Grid.Column="1"
+                                   Grid.Row="1" HorizontalAlignment="Left">
+                            <TextBlock Text="WL"
+                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                        </Viewbox>
+                        <Viewbox Grid.Column="2"
+                                   Grid.Row="1">
+                            <TextBlock Text="End"
+                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                        </Viewbox>
                     </Grid>
                     <Grid Grid.Row="1"
                           Margin="3">
-                        <Viewbox MaxHeight="80">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Viewbox MaxHeight="80" Grid.RowSpan="2">
                             <TextBox Tag="End"
                                      Grid.Column="1"
                                      Margin="4,0,4,0"
@@ -928,12 +924,9 @@
                                      Text="{Binding float_WL_Scan_End}"
                                      MinWidth="50" />
                         </Viewbox>
-                        <TextBlock Grid.Column="2"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   Text=" " />
+                        <Viewbox Grid.Row="1" HorizontalAlignment="Right" >
+                            <TextBlock Text=" nm" />
+                        </Viewbox>
                     </Grid>
                     <Grid Grid.Row="2"
                           Margin="5,0,5,0">
@@ -1102,22 +1095,18 @@
                             <ColumnDefinition Width="1.5*" />
                             <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="WL"
-                                   Grid.Column="1"
-                                   Grid.Row="1"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left"
-                                   Grid.ColumnSpan="2" />
-                        <TextBlock Text="Gap"
-                                   Grid.Column="2"
-                                   Grid.Row="1"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left" />
-                        <Button Grid.Column="3" Grid.Row="1" Click="Button_Click"/>
+                        <Viewbox Grid.Column="1"
+                                   Grid.Row="1" HorizontalAlignment="Left">
+                            <TextBlock Text="WL"
+                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                        </Viewbox>
+                        <Viewbox Grid.Column="2"
+                                   Grid.Row="1" HorizontalAlignment="Center">
+                            <TextBlock Text="Gap"
+                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                        </Viewbox>
+                        
+                        <Button Grid.Column="3" Grid.Row="1" Click="Button_Click" HorizontalAlignment="Right"/>
                     </Grid>
                     <Grid Grid.Row="1"
                           Margin="3">
@@ -1146,217 +1135,103 @@
                 </Grid>
             </Border>
 
-
-
+            <!--#region power control box-->
             <Border Grid.Column="5"
                     Grid.RowSpan="3"
                     Margin="5,10,5,10"
                     BorderThickness="0"
-                    CornerRadius="15"
-                    Style="{DynamicResource BorderStyle1}">
+                    CornerRadius="15">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="2*" />
-                        <RowDefinition Height="3.8*" />
-                        <RowDefinition Height="1.5*" />
+                        <RowDefinition />
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition  />
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0"
-                          Grid.Column="5">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="5*" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
+
+                    <Border BorderThickness="1" CornerRadius="5" Style="{DynamicResource BorderStyle1}">
+                        <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.1*" />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
+                            <ColumnDefinition Width="1.6*"/>
+                            <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Power"
-                                   Grid.Column="1"
-                                   Grid.ColumnSpan="2"
-                                   Grid.Row="1"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left" />
-                        <!--<ToggleButton Name="ToggleBtn_LaserConnect_PowerOn"
-                              Grid.Column="2"
-                              Grid.Row="1"
-                              HorizontalAlignment="Right"
-                              MaxWidth="48"
-                              MinWidth="40"
-                              MaxHeight="30"
-                              IsChecked="{Binding isConnected, Mode=TwoWay}"
-                              Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">                  
-                </ToggleButton>-->
-                    </Grid>
-                    <Grid Grid.Row="2"
-                          Grid.Column="5"
-                          Visibility="Visible">
-                        <Slider Name="slider_Power"
-                                VerticalAlignment="Center"
-                                IsSnapToTickEnabled="True"
-                                Maximum="7"
-                                Minimum="-10"
-                                Mouse.PreviewMouseDown="slider_PreviewMouseDown"
-                                PreviewMouseLeftButtonUp="slider_Power_PreviewMouseLeftButtonUp"
-                                Style="{DynamicResource Horizontal_Slider}"
-                                TickFrequency="0.01"
-                                Value="{Binding Double_Laser_Power, Mode=TwoWay}">
-                            <Slider.Resources>
-                                <Style x:Key="Horizontal_Slider"
-                                       TargetType="{x:Type Slider}">
-                                    <Setter Property="Focusable"
-                                            Value="False" />
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Style.Triggers>
-                                        <Trigger Property="Orientation"
-                                                 Value="Horizontal">
-                                            <Setter Property="MinHeight"
-                                                    Value="5" />
-                                            <Setter Property="MinWidth"
-                                                    Value="104" />
-                                            <Setter Property="Template"
-                                                    Value="{DynamicResource Slider}" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                                <ControlTemplate x:Key="Slider"
-                                                 TargetType="{x:Type Slider}">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto"
-                                                           MinHeight="{TemplateBinding MinHeight}" />
-                                        </Grid.RowDefinitions>
-                                        <Track x:Name="PART_Track"
-                                               Grid.Row="2">
-                                            <Track.DecreaseRepeatButton>
-                                                <RepeatButton Style="{DynamicResource SliderRepeatButton1}" />
-                                            </Track.DecreaseRepeatButton>
-                                            <Track.Thumb>
-                                                <Thumb Style="{DynamicResource SliderThumb}" />
-                                            </Track.Thumb>
-                                            <Track.IncreaseRepeatButton>
-                                                <RepeatButton Style="{DynamicResource SliderRepeatButton}" />
-                                            </Track.IncreaseRepeatButton>
-                                        </Track>
-                                    </Grid>
-                                </ControlTemplate>
-                                <!--  SliderThumb  -->
-                                <Style x:Key="SliderThumb"
-                                       TargetType="{x:Type Thumb}">
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type Thumb}">
-                                                <Ellipse Width="20"
-                                                         Height="20"
-                                                         Fill="Transparent"
-                                                         Stroke="{Binding Main_Color, FallbackValue=#FF33D3C4}"
-                                                         StrokeThickness="2" />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                                <!--  Future Bar  -->
-                                <Style x:Key="SliderRepeatButton"
-                                       TargetType="{x:Type RepeatButton}">
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Setter Property="IsTabStop"
-                                            Value="false" />
-                                    <Setter Property="Focusable"
-                                            Value="false" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                    </Grid.RowDefinitions>
-                                                    <Border Grid.Row="0"
-                                                            Grid.RowSpan="3"
-                                                            Background="Transparent" />
-                                                    <Border Grid.Row="1"
-                                                            Height="3"
-                                                            Background="DarkGray" />
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                                <Style x:Key="SliderRepeatButton1"
-                                       TargetType="{x:Type RepeatButton}">
-                                    <Setter Property="SnapsToDevicePixels"
-                                            Value="true" />
-                                    <Setter Property="OverridesDefaultStyle"
-                                            Value="true" />
-                                    <Setter Property="IsTabStop"
-                                            Value="false" />
-                                    <Setter Property="Focusable"
-                                            Value="false" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                    </Grid.RowDefinitions>
-                                                    <Border Grid.Row="0"
-                                                            Grid.RowSpan="3"
-                                                            Background="Transparent" />
-                                                    <Border Grid.Row="1"
-                                                            Height="3"
-                                                            Background="{Binding Main_Color, FallbackValue=#FF33D3C4}"
-                                                            SnapsToDevicePixels="True" />
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Slider.Resources>
-                        </Slider>
-                    </Grid>
-                    <Grid Grid.Row="1"
-                          Grid.Column="5"
-                          Visibility="Visible"
-                          Margin="3">
-                        <Viewbox Height="{Binding ActualHeight, ElementName=viewbox8, Mode=OneWay}">
-                            <TextBox x:Name="txt_power"
-                                     Background="Transparent"
-                                     IsTabStop="False"
-                                     VerticalAlignment="Center"
-                                     HorizontalContentAlignment="Center"
-                                     Keyboard.PreviewKeyDown="txt_power_PreviewKeyDown"
-                                     FontFamily="Segoe Print"
-                                     BorderBrush="Transparent"
-                                     Text="{Binding Value, ElementName=slider_Power}"
-                                     MinWidth="50" />
+                        <Viewbox >
+                            <TextBox Background="Transparent"
+                                    IsTabStop="False"
+                                     Tag="1"
+                                    Keyboard.PreviewKeyDown="TextBox_SendWL_PreviewKeyDown"
+                                    FontFamily="Segoe Print"
+                                    BorderBrush="Transparent"
+                                    Text="{Binding List_Fix_WL[0]}"
+                                    MinWidth="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" />
                         </Viewbox>
-                        <TextBlock Grid.Column="2"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   Text=" dBm" />
+                            <Button Grid.Column="3" Click="Button_SendFixWL_Click" Content="Send" FontFamily="Segoe Print" Margin="3" Tag="1"/>
                     </Grid>
+                    </Border>
+
+                    <Border Style="{DynamicResource BorderStyle1}" BorderThickness="1" CornerRadius="5" Grid.Row="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.6*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Viewbox >
+                                <TextBox Background="Transparent"
+                                    IsTabStop="False"
+                                         Tag="2"
+                                    Keyboard.PreviewKeyDown="TextBox_SendWL_PreviewKeyDown"
+                                    FontFamily="Segoe Print"
+                                    BorderBrush="Transparent"
+                                    Text="{Binding List_Fix_WL[1]}"
+                                    MinWidth="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" />
+                            </Viewbox>
+                            <Button Grid.Column="3" Click="Button_SendFixWL_Click" Content="Send" FontFamily="Segoe Print" Margin="3" Tag="2"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{DynamicResource BorderStyle1}" BorderThickness="1" CornerRadius="5" Grid.Row="2">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.6*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Viewbox >
+                                <TextBox Background="Transparent"
+                                    IsTabStop="False"
+                                        Tag="3"
+                                    Keyboard.PreviewKeyDown="TextBox_SendWL_PreviewKeyDown"
+                                    FontFamily="Segoe Print"
+                                    BorderBrush="Transparent"
+                                    Text="{Binding List_Fix_WL[2]}"
+                                    MinWidth="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" />
+                            </Viewbox>
+                            <Button Grid.Column="3" Click="Button_SendFixWL_Click" Content="Send" FontFamily="Segoe Print" Margin="3" Tag="3"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{DynamicResource BorderStyle1}" BorderThickness="1" CornerRadius="5" Grid.Row="4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.6*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Viewbox >
+                                <TextBox Background="Transparent"
+                                    IsTabStop="False"
+                                         Tag="4"
+                                    Keyboard.PreviewKeyDown="TextBox_SendWL_PreviewKeyDown"
+                                    FontFamily="Segoe Print"
+                                    BorderBrush="Transparent"
+                                   Text="{Binding List_Fix_WL[3]}"
+                                    MinWidth="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" />
+                            </Viewbox>
+                            <Button Grid.Column="3" Click="Button_SendFixWL_Click" Content="Send" FontFamily="Segoe Print" Margin="3" Tag="4"/>
+                        </Grid>
+                    </Border>
+
                 </Grid>
             </Border>
+            <!--#endregion-->
 
             <Border Grid.Column="6"
                     Grid.RowSpan="3"
@@ -1383,14 +1258,12 @@
                             <ColumnDefinition Width="1.5*"/>
                             <ColumnDefinition Width="1.5*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Wavelength"
-                                   Grid.Column="1"
-                                   Grid.ColumnSpan="2"
-                                   Grid.Row="1"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Left" />
+                        <Viewbox  Grid.Column="1"
+                                  Grid.Row="1"
+                                   Grid.ColumnSpan="2" HorizontalAlignment="Left">
+                            <TextBlock Text="Wavelength"
+                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                        </Viewbox>
                         <ToggleButton Name="ToggleBtn_LaserActive"
                                       Grid.Column="3"
                                       Grid.Row="1"
@@ -1419,8 +1292,12 @@
                     <Grid Grid.Row="1"
                           Grid.Column="6"
                           Margin="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
                         <Viewbox x:Name="viewbox8"
-                                 MaxHeight="80">
+                                 MaxHeight="80" Grid.RowSpan="2">
                             <TextBox Name="txt_WL"
                                      Grid.Column="1"
                                      Margin="4,0,4,0"
@@ -1434,12 +1311,9 @@
                                      Text="{Binding Value, ElementName=slider_WL, Mode=TwoWay}"
                                      MinWidth="50" />
                         </Viewbox>
-                        <TextBlock Grid.Column="2"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom"
-                                   FontSize="20"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                                   Text=" nm" />
+                        <Viewbox Grid.Row="1" HorizontalAlignment="Right" >
+                            <TextBlock Text=" nm" />
+                        </Viewbox>
                     </Grid>
                     <Grid Grid.Row="2"
                           Grid.Column="6">

@@ -33,6 +33,61 @@ namespace PD.AnalysisModel
             //List<List<string>> ls = ListDefault<List<string>>(3);
         }
 
+        public T Generic_GetINISetting<T>(T input, string region, string variable) where T : new ()
+        {
+            if (input is int)
+            {
+                int value_int;
+                if (int.TryParse(vm.Ini_Read(region, variable), out value_int))
+                    return (T)(object)value_int;
+                else
+                    return input;
+            }
+            else if (input is double)
+            {
+                double value_int;
+                if (double.TryParse(vm.Ini_Read(region, variable), out value_int))
+                    return (T)(object)value_int;
+                else
+                    return input;
+            }
+            else if (input is float)
+            {
+                float value_int;
+                if (float.TryParse(vm.Ini_Read(region, variable), out value_int))
+                    return (T)(object)value_int;
+                else
+                    return input;
+            }
+            else if (input is long)
+            {
+                long value_int;
+                if (long.TryParse(vm.Ini_Read(region, variable), out value_int))
+                    return (T)(object)value_int;
+                else
+                    return input;
+            }
+            else if (input is byte)
+            {
+                byte value_int;
+                if (byte.TryParse(vm.Ini_Read(region, variable), out value_int))
+                    return (T)(object)value_int;
+                else
+                    return input;
+            }
+            else if (input is bool)
+            {
+                bool value_bool;
+                if (bool.TryParse(vm.Ini_Read(region, variable), out value_bool))
+                    return (T)(object)value_bool;
+                else
+                    return input;
+            }
+
+            return new T();
+        }
+
+
         public SN_Member Product_Info_Anly(string SN)
         {
             if (string.IsNullOrWhiteSpace(SN)) return new SN_Member();

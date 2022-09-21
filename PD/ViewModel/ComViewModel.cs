@@ -1590,23 +1590,8 @@ namespace PD.ViewModel
         }
 
         public string LastScript_Path { get; set; }
-        //private ComMember _CmdSelected_Item = new ComMember();
-        //public ComMember CmdSelected_Item
-        //{
-        //    get { return _CmdSelected_Item; }
-        //    set
-        //    {
-        //        _CmdSelected_Item = value;
-        //        OnPropertyChanged("CmdSelected_Item");
-        //    }
-        //}
-
+      
         public bool is_BearSay_History_Loaded { get; set; }
-
-        //public string COM_PD_A { get; set; }
-        //public string COM_PD_B { get; set; }
-
-        //public string COM_Golight { get; set; }
 
         public MsgModel msgModel = new MsgModel() { msg_1 = "", msg_2 = "", msg_3 = "" };
 
@@ -1646,17 +1631,6 @@ namespace PD.ViewModel
         public Dictionary<string, List<string>> Dictionary_Product_WL_Setting { get; set; } = new Dictionary<string, List<string>>();
 
         public string Station_ID { get; set; } = "S00";
-
-        //private string _ChamberStatus_FilePath = @"\\192.168.2.3\shared\SeanWu\ChamberStatus";
-        //public string ChamberStatus_FilePath
-        //{
-        //    get { return _ChamberStatus_FilePath; }
-        //    set
-        //    {
-        //        _ChamberStatus_FilePath = value;
-        //        OnPropertyChanged("ChamberStatus_FilePath");
-        //    }
-        //}
 
         private ObservableCollection<FastCalibrationStatusModel> _List_FastCalibration_Status =
             new ObservableCollection<FastCalibrationStatusModel>() { new FastCalibrationStatusModel() };
@@ -1749,7 +1723,7 @@ namespace PD.ViewModel
             }
         }
 
-        public string TF2_station_type { get; set; } = "";
+        
 
         private string _txt_save_TF2_wl_data_path = @"\\192.168.2.4\OptiComm\tff\Data\TF2\data\";
         public string txt_save_TF2_wl_data_path
@@ -1911,7 +1885,7 @@ namespace PD.ViewModel
             set
             {
                 comport_switch = value;
-                Ini_Write("Connection", "Comport_Switch", value.ToString());  //創建ini file並寫入基本設定
+                Ini_Write("Connection", "Comport_Switch", value.ToString()); 
                 OnPropertyChanged("Comport_Switch");
 
                 if (port_Switch != null)
@@ -2324,6 +2298,30 @@ namespace PD.ViewModel
             }
         }
 
+
+        private string _TF2_station_type = "Alignment";
+        public string TF2_station_type
+        {
+            get { return _TF2_station_type; }
+            set
+            {
+                _TF2_station_type = value;
+                ini.IniWriteValue("Connection", "TF2_station_type", value.ToString(), ini_path);
+                OnPropertyChanged("TF2_station_type");
+            }
+        }
+
+        private ObservableCollection<string> _list_TF2_station_type = new ObservableCollection<string>() { "Alignment", "PreTest", "Test", "FinalTest" };
+        public ObservableCollection<string> list_TF2_station_type
+        {
+            get { return _list_TF2_station_type; }
+            set
+            {
+                _list_TF2_station_type = value;
+                OnPropertyChanged("list_TF2_station_type");
+            }
+        }
+
         private string _waterPrint1 = "Command";
         public string waterPrint1
         {
@@ -2701,6 +2699,7 @@ namespace PD.ViewModel
                 OnPropertyChanged("list_combox_Product_items");
             }
         }
+       
 
         private List<string> _list_combox_PowerMeterType_items =
             new List<string>() { "GPIB", "RS232" };
@@ -3085,6 +3084,17 @@ namespace PD.ViewModel
             }
         }
 
+        private ObservableCollection<float> _List_Fix_WL = new ObservableCollection<float>() { 1530, 1548, 1565, 1550 };
+        public ObservableCollection<float> List_Fix_WL
+        {
+            get { return _List_Fix_WL; }
+            set
+            {
+                _List_Fix_WL = value;
+                OnPropertyChanged("List_Fix_WL");
+            }
+        }
+
         //int index = 0;
         private double _double_Laser_Wavelength;
         public double Double_Laser_Wavelength
@@ -3181,7 +3191,39 @@ namespace PD.ViewModel
             get { return _UserID; }
             set
             {
-                _UserID = value;
+                if (value.Length < 5 && value.Length > 0)
+                {
+                    char head = value[0];
+                    string str_Nums = value.Substring(1);
+
+                    string compensation = "";
+
+                    if (!int.TryParse(head.ToString(), out int h1) && int.TryParse(str_Nums, out int Nums1))
+                    {
+                        for (int i = value.Length; i < 5; i++)
+                            compensation += "0";
+                        _UserID = $"{head}{compensation}{str_Nums}".ToUpper();
+                    }
+                    else if (int.TryParse(head.ToString(), out int h2) && int.TryParse(str_Nums, out int Nums2))
+                    {
+                        for (int i = value.Length; i < 4; i++)
+                            compensation += "0";
+                        _UserID = $"P{compensation}{value}".ToUpper();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please check ID format");
+                        return;
+                    }
+                }
+                else if (value.Length == 5)
+                    _UserID = value;
+                else
+                {
+                    MessageBox.Show("Please check ID format");
+                    return;
+                }
+
                 OnPropertyChanged("UserID");
             }
         }
@@ -3928,7 +3970,11 @@ namespace PD.ViewModel
             set
             {
                 _tls_BoardNumber = value;
+                Ini_Write("Connection", "tls_BoardNumber", value.ToString());
                 OnPropertyChanged("tls_BoardNumber");
+
+                if (tls != null)
+                    tls.BoardNumber = value;
             }
         }
 
@@ -3941,6 +3987,9 @@ namespace PD.ViewModel
                 _tls_Addr = value;
                 Ini_Write("Connection", "tls_Addr", value.ToString());
                 OnPropertyChanged("tls_Addr");
+
+                if (tls != null)
+                    tls.Addr = value;
             }
         }
 
@@ -3951,7 +4000,11 @@ namespace PD.ViewModel
             set
             {
                 _pm_BoardNumber = value;
+                Ini_Write("Connection", "pm_BoardNumber", value.ToString());
                 OnPropertyChanged("pm_BoardNumber");
+
+                if (pm != null)
+                    pm.BoardNumber = value;
             }
         }
 
@@ -3964,6 +4017,9 @@ namespace PD.ViewModel
                 _pm_Addr = value;
                 Ini_Write("Connection", "pm_Addr", value.ToString());
                 OnPropertyChanged("pm_Addr");
+
+                if (pm != null)
+                    pm.Addr = value;
             }
         }
 

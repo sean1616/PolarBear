@@ -158,6 +158,11 @@ namespace PD
 
                 vm.float_WL_Scan_Gap = Generic_GetINISetting(vm.float_WL_Scan_Gap, "Scan", "WL_Scan_Gap");
 
+                vm.List_Fix_WL[0]= Generic_GetINISetting(vm.List_Fix_WL[0], "Scan", "Fix_WL_1");
+                vm.List_Fix_WL[1]= Generic_GetINISetting(vm.List_Fix_WL[1], "Scan", "Fix_WL_2");
+                vm.List_Fix_WL[2]= Generic_GetINISetting(vm.List_Fix_WL[2], "Scan", "Fix_WL_3");
+                vm.List_Fix_WL[3]= Generic_GetINISetting(vm.List_Fix_WL[3], "Scan", "Fix_WL_4");
+
                 vm.IsDistributedSystem = Generic_GetINISetting(vm.IsDistributedSystem, "Connection", "IsDistributedSystem");
 
                 if (vm.Ini_Read("Connection", "PD_or_PM") == "PM")
@@ -429,6 +434,14 @@ namespace PD
                 else
                     return input;
             }
+            else if (input is float)
+            {
+                float value_int;
+                if (float.TryParse(vm.Ini_Read(region, variable), out value_int))
+                    return (T)(object)value_int;
+                else
+                    return input;
+            }
             else if (input is long)
             {
                 long value_int;
@@ -539,52 +552,12 @@ namespace PD
                     vm.watch = new System.Diagnostics.Stopwatch();
                     vm.watch.Start();
                     cmd.Clean_Chart();
+                    vm.isConnected = false;
 
                     if (!vm.IsDistributedSystem) 
                     {
                         if (!vm.isConnected && vm.PD_or_PM)  //檢查TLS是否連線，若無，則進行連線並取續TLS狀態
-                        {
-                            #region Tunable Laser setting
-                            vm.tls = new HPTLS();
-                            vm.tls.BoardNumber = vm.tls_BoardNumber;
-                            vm.tls.Addr = vm.tls_Addr;
-
-                            try
-                            {
-                                if (vm.tls.Open() == false)
-                                {
-                                    vm.Str_cmd_read = "TLS GPIB Setting Error. Check Address.";
-                                    return;
-                                }
-                                vm.tls.init();
-
-                                vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-
-                                vm.isConnected = true;
-                            }
-                            catch
-                            {
-                                vm.Str_cmd_read = "GPIB Setting Error.";
-                            }
-                            #endregion
-
-                            #region PowerMeter Setting
-                            //Power Meter setting
-                            vm.pm = new HPPM();
-                            vm.pm.Addr = vm.tls_Addr;
-                            vm.pm.Slot = vm.PM_slot;
-                            vm.pm.BoardNumber = vm.tls_BoardNumber;
-                            if (vm.pm.Open() == false)
-                            {
-                                vm.Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
-                                return;
-                            }
-                            vm.pm.init();
-                            vm.pm.setUnit(1);
-                            vm.pm.AutoRange(true);
-                            vm.pm.aveTime(vm.PM_AveTime);
-                            #endregion
-                        }
+                            cmd.Connect_TLS();
 
                         if (!vm.PD_or_PM)   //PD mode
                         {
@@ -594,35 +567,17 @@ namespace PD
                             vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "P0?" });
 
                             cmd.CommandListCycle();
-
-                            //if (vm.station_type.Equals("Chamber_S_16ch"))
-                            //    vm.CommandListCycle_16ch();
-                            //else if (vm.station_type.Equals("Fast_Calibration"))
-                            //{
-                            //    vm.Chart_y_title = "Power (PD dac)";
-                            //    cmd.CommandListCycle();
-                            //}
-                            //else
-                            //    cmd.CommandListCycle();
                         }
-
-                        else  //PM mode
+                        //PM mode
+                        else
                         {
                             vm.timer3_count = 0;
                             vm.Cmd_Count = 0;
 
                             vm.ComMembers.Clear();
 
-                            //if (vm.station_type.Equals("Hermetic_Test"))
-                            //    vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "GETPOWER", Type = "PM", Channel = vm.switch_index.ToString() });
-                            //else
-                            //{
-                            //    vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "GETPOWER", Type = "PM", Channel = "1" });
-                            //}
                             vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "GETPOWER", Type = "PM", Channel = vm.switch_index.ToString() });
 
-
-                            //vm.Save_All_PD_Value = new List<List<DataPoint>>() { new List<DataPoint>() };
                             cmd.CommandListCycle();
                         }
                     }
@@ -636,7 +591,6 @@ namespace PD
                             {
                                 case "GPIB":
                                     vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "GETPOWER", Type = "PM", Channel = vm.switch_index.ToString() });
-
                                     break;
 
                                 case "RS232":
@@ -3839,6 +3793,8 @@ namespace PD
 
             anly.JudgeAllBoolGauge();
 
+            vm.isConnected = false; 
+
             #endregion
 
             List<string> list_finalVoltage = new List<string>();
@@ -5459,7 +5415,7 @@ namespace PD
                             vm.Str_Status = "Getting IL";
                             bool FS_Setting = vm.Is_FastScan_Mode;
 
-                            cmd.Set_WL(cwl, true);
+                            await cmd.Set_WL(cwl, true);
                             await Task.Delay(1000);
                        
                             vm.Is_FastScan_Mode = false;
@@ -6095,7 +6051,7 @@ namespace PD
                     $"{vm.opModel_1.BW_Setting_1}dB",
                     $"{vm.opModel_1.BW_Setting_2}dB",
                     $"{vm.opModel_1.BW_Setting_3}dB"};
-                string filePath = CSVFunctions.Creat_New_CSV(Path.Combine(vm.txt_save_TF2_wl_data_path, vm.TF2_station_type), vm.opModel_1.SN, list_titles, false, true);
+                string filePath = CSVFunctions.Creat_New_CSV(Path.Combine(vm.txt_save_TF2_wl_data_path), $"{vm.opModel_1.SN}_{vm.TF2_station_type}", list_titles, false, true);
 
                 if (!string.IsNullOrEmpty(filePath))
                 {
@@ -6144,6 +6100,21 @@ namespace PD
                     {
                         vm.opModel_1.Mic_Lower_Limit.ToString(),
                         vm.opModel_1.Mic_Upper_Limit.ToString()
+                    });
+
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    {
+                        "Temp.", vm.opModel_1.HighPower_Temp.ToString()
+                    });
+
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    {
+                        "Tech ID", vm.UserID
+                    });
+
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    {
+                        "Station", vm.TF2_station_type
                     });
 
                     vm.Str_Status = "Save Data to CSV";
@@ -6432,11 +6403,11 @@ namespace PD
             TextBox txtBox = (TextBox)sender;
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                if (string.Compare(vm.UserID, "candy666", true) == 0 || string.Compare(vm.UserID, "candy555", true) == 0 || string.Compare(vm.UserID, "QQ123", true) == 0 || string.Compare(vm.UserID, "1234", true) == 0)
+                if (string.Compare(txtBox.Text.ToUpper(), "Candy666", true) == 0 || string.Compare(txtBox.Text, "Candy555", true) == 0 || string.Compare(txtBox.Text, "QQ123", true) == 0 || string.Compare(txtBox.Text, "1234", true) == 0)
                 {
                     Engineer_Mode();
                 }
-                else User_Mode();
+                else { vm.UserID = txtBox.Text; User_Mode(); }
             }
         }
 

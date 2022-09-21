@@ -309,11 +309,11 @@ namespace PD.NavigationPages
                 obj.IsChecked = !obj.IsChecked;
         }
 
-        private void slider_WL_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void slider_WL_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (vm.isConnected)
             {
-                if (!vm.IsGoOn) cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true);
+                if (!vm.IsGoOn) await cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true);
                 else
                     vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = txt_WL.Text });
             }
@@ -321,13 +321,13 @@ namespace PD.NavigationPages
 
         private async void slider_Power_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (vm.isConnected)
-            {
-                if (vm.PD_or_PM == true && vm.IsGoOn == true)
-                    await vm.PM_Stop();
-                vm.tls.SetPower(slider_Power.Value);
-                if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
-            }
+            //if (vm.isConnected)
+            //{
+            //    if (vm.PD_or_PM == true && vm.IsGoOn == true)
+            //        await vm.PM_Stop();
+            //    vm.tls.SetPower(slider_Power.Value);
+            //    if (vm.PD_or_PM == true && vm.IsGoOn == true) vm.PM_GO();
+            //}
         }
 
         private void slider_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -1697,6 +1697,7 @@ namespace PD.NavigationPages
 
         private void ToggleBtn_LaserActive_Checked(object sender, RoutedEventArgs e)
         {
+            vm.isConnected = false;
             cmd.Set_TLS_Active(vm.isLaserActive);
         }
 
@@ -1734,7 +1735,7 @@ namespace PD.NavigationPages
 
             await Task.Delay(125);
 
-            cmd.Set_WL(vm.float_WL_Scan_Start, false);
+            await cmd.Set_WL(vm.float_WL_Scan_Start, false);
 
             await Task.Delay(vm.Int_Lambda_Scan_Delay);
 
@@ -1744,6 +1745,42 @@ namespace PD.NavigationPages
             await Task.Delay(1250);
 
             cmd.Close_TLS_Filter();
+        }
+
+        private void TextBox_SendWL_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var obj = sender as TextBox;
+                int index = int.Parse(obj.Tag.ToString());
+
+                if (double.TryParse(obj.Text, out double wl))
+                {
+                    if (!vm.IsGoOn) 
+                        cmd.Set_WL(wl, true, true);
+                    else
+                        vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
+
+                    vm.Ini_Write("Scan", $"Fix_WL_{index}", wl.ToString());
+                }
+            }
+        }
+
+        private void Button_SendFixWL_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var obj = sender as Button;
+                int index = int.Parse(obj.Tag.ToString());
+                               
+                if (!vm.IsGoOn)
+                    cmd.Set_WL(vm.List_Fix_WL[index - 1], true, true);
+                else
+                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = vm.List_Fix_WL[index - 1].ToString() });
+
+                vm.Ini_Write("Scan", $"Fix_WL_{index}", vm.List_Fix_WL[index - 1].ToString());
+            }
+            catch { }
         }
     }
 }
