@@ -253,7 +253,7 @@ namespace PD.NavigationPages
                     }
 
                     if (!vm.IsGoOn)
-                        cmd.Set_TLS_Power(pwr, true);
+                        cmd.Set_TLS_Power(pwr, false);
                     else
                         vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETPOWER", Type = "Agilent", Value_1 = pwr.ToString() });
                 }
@@ -343,6 +343,7 @@ namespace PD.NavigationPages
                     try
                     {
                         double pwr = double.Parse(txt_power.Text);
+                        vm.Double_Laser_Power = pwr;
                         if (pwr > 10 || pwr < -15)
                         {
                             vm.Str_cmd_read = "Power out of range";
@@ -350,16 +351,9 @@ namespace PD.NavigationPages
                         }
 
                         if (!vm.IsGoOn)
-                        {
-                            cmd.Set_TLS_Power(pwr, true);
-                            //vm.tls.SetPower(pwr);
-                        }
+                            cmd.Set_TLS_Power(pwr, false);
                         else
-                        {
                             vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETPOWER", Type = "Agilent", Value_1 = pwr.ToString() });
-
-                            //vm.Double_Laser_Power = pwr;
-                        }
                     }
                     catch
                     {

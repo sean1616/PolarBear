@@ -529,6 +529,7 @@ namespace PD
             foreach (string s in list_CalibrationItems) { obj.Items.Add(s); }
         }
 
+        bool commandCycleResult = false;
         private async void btn_GO_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -557,7 +558,7 @@ namespace PD
                     if (!vm.IsDistributedSystem) 
                     {
                         if (!vm.isConnected && vm.PD_or_PM)  //檢查TLS是否連線，若無，則進行連線並取續TLS狀態
-                            cmd.Connect_TLS();
+                            await cmd.Connect_TLS();
 
                         if (!vm.PD_or_PM)   //PD mode
                         {
@@ -566,7 +567,7 @@ namespace PD
                             vm.ComMembers.Clear();
                             vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "P0?" });
 
-                            cmd.CommandListCycle();
+                            commandCycleResult = await cmd.CommandListCycle();
                         }
                         //PM mode
                         else
@@ -578,7 +579,7 @@ namespace PD
 
                             vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "GETPOWER", Type = "PM", Channel = vm.switch_index.ToString() });
 
-                            cmd.CommandListCycle();
+                            commandCycleResult = await cmd.CommandListCycle();
                         }
                     }
 
@@ -600,7 +601,7 @@ namespace PD
                             }
 
                         }
-                        cmd.CommandListCycle();
+                        commandCycleResult = await cmd.CommandListCycle();
                     }
                 }
 
@@ -627,9 +628,31 @@ namespace PD
                     //Distributed System on
                     else
                     {
+                        //vm.Save_cmd(new ComMember() { YN = true, Type = "PD", No = vm.Cmd_Count++.ToString(), Command = "CLSPORT" });
+                      
                         vm.Str_Status = "Stop";
                         vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                         await cmd.Save_Chart();
+
+                        for (int i = 0; i < 5; i++)
+                        {
+                            await Task.Delay(200);
+
+                            if (commandCycleResult)
+                            {
+                                if (vm.port_PD != null)
+                                {
+                                    if (vm.port_PD.IsOpen)
+                                    {
+                                        vm.port_PD.DiscardInBuffer();
+                                        vm.port_PD.DiscardOutBuffer();
+                                        vm.port_PD.Close();
+                                    }
+                                }
+                            }
+                        }
+
+                        commandCycleResult = false;
                     }
                 }
 
@@ -736,7 +759,6 @@ namespace PD
 
                     vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "GETPOWER", Type = "PM", Channel = vm.switch_index.ToString() });
 
-                    //vm.Save_All_PD_Value = new List<List<DataPoint>>() { new List<DataPoint>() };
                     cmd.CommandListCycle();
                 }
             }
@@ -756,22 +778,11 @@ namespace PD
 
                             break;
                     }
-
                 }
                 cmd.CommandListCycle();
             }
         }
 
-        //private void Timer1_Elapsed(object sender, ElapsedEventArgs e)
-        //{
-        //    vm.dateTime.Clear();
-        //    vm.dateTime.Add(DateTime.Now.ToShortTimeString());
-        //    vm.dateTime.Add(DateTime.Now.ToShortDateString());
-        //    vm.dateTime = new List<string>(vm.dateTime);
-        //}
-
-        //List<double> maxIL = new List<double>();
-        //List<double> minIL = new List<double>();
         private async void Timer2_PD_GO_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
@@ -2012,7 +2023,6 @@ namespace PD
                                     await Task.Delay(vm.Int_Write_Delay + 50);  //first dac need more time for chip stable
                             }
                         }
-
                     }
                     catch
                     {
@@ -2026,7 +2036,6 @@ namespace PD
                     try
                     {
                         await cmd.Get_Power();
-                        //await anly.Cmd_Write_RecieveData("P0?", false);
 
                         for (int ch = 0; ch < vm.ch_count; ch++)
                         {
@@ -3633,7 +3642,6 @@ namespace PD
 
         private async void txtBox_comment_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-
             try
             {
                 if (e.Key.Equals(System.Windows.Input.Key.Enter))
@@ -3659,7 +3667,6 @@ namespace PD
                             int length = vm.port_PD.Read(dataBuffer, 0, size);
 
                             //Show read back message
-
                             vm.Str_cmd_read = anly.GetMessage(dataBuffer);
 
                             if (!string.IsNullOrWhiteSpace(vm.Str_Command))
@@ -3700,8 +3707,6 @@ namespace PD
                 obj.BorderBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF10E2C4"));
             else
                 obj.BorderBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0085CA"));
-
-            //txt_label.Opacity = 0;
         }
 
         private void txtBox_comment_LostFocus(object sender, RoutedEventArgs e)
@@ -3718,16 +3723,6 @@ namespace PD
         private void btn_Stop_Click(object sender, RoutedEventArgs e)
         {
             vm.IsGoOn = false;
-            //vm.isStop = true;
-
-            //if (!vm.PD_or_PM)
-            //{
-            //    await vm.PM_Stop();
-            //}
-            //else
-            //{
-            //    vm.IsGoOn = false;
-            //}
         }
 
         private void combox_product_DropDownClosed(object sender, EventArgs e)
@@ -3793,73 +3788,82 @@ namespace PD
 
             anly.JudgeAllBoolGauge();
 
-            vm.isConnected = false; 
+            vm.isConnected = false;
+
+            vm.isGetPowerWaitForReadBack = vm.Is_FastScan_Mode ? false : true;
 
             #endregion
 
-            List<string> list_finalVoltage = new List<string>();
-
-            if (vm.station_type.Equals("Hermetic_Test"))
+            try
             {
-                if (vm.SN_Judge)
+                List<string> list_finalVoltage = new List<string>();
+
+                //氣密站：掃圖前先判斷產品序號且設定波長
+                if (vm.station_type.Equals("Hermetic_Test"))
                 {
-                    #region Analyze Product Information
-                    vm.SNMembers = new ObservableCollection<SN_Member>();
-
-                    for (int i = 0; i < vm.ch_count; i++)
+                    if (vm.SN_Judge)
                     {
-                        string SN = vm.list_GaugeModels[i].GaugeSN;
-                        SN_Member snMem = anly.Product_Info_Anly(SN);
-                        vm.SNMembers.Add(snMem);  //Analyze product information and return a member of SN_Information_Group     
+                        #region Analyze Product Information
+                        vm.SNMembers = new ObservableCollection<SN_Member>();
 
-                        if (!string.IsNullOrEmpty(snMem.ProductType) && !string.IsNullOrEmpty(snMem.LaserBand))
-                            vm.Save_Log("WL Scan", (i + 1).ToString(), snMem.ProductType, snMem.LaserBand);
-                    }
-                    #endregion
+                        for (int i = 0; i < vm.ch_count; i++)
+                        {
+                            string SN = vm.list_GaugeModels[i].GaugeSN;
+                            SN_Member snMem = anly.Product_Info_Anly(SN);
+                            vm.SNMembers.Add(snMem);  //Analyze product information and return a member of SN_Information_Group     
 
-                    try
-                    {
+                            if (!string.IsNullOrEmpty(snMem.ProductType) && !string.IsNullOrEmpty(snMem.LaserBand))
+                                vm.Save_Log("WL Scan", (i + 1).ToString(), snMem.ProductType, snMem.LaserBand);
+                        }
+                        #endregion
+
                         list_finalVoltage = await K_V3();  //K V3 
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        MessageBox.Show(ex.StackTrace.ToString());
+                        cmd.Set_WL();  //Auto Set TLS Center Wavelength by station type and production type
+
+                        if (vm.product_type == "UFA" || vm.product_type == "UFA(H)")
+                            list_finalVoltage = await K_V3();   //K V3                
                     }
                 }
-                else
+                else vm.Is_switch_mode = false;
+
+                if (!vm.isStop)
                 {
-                    cmd.Set_WL();  //Auto Set TLS Center Wavelength by station type and production type
-
-                    if (vm.product_type == "UFA" || vm.product_type == "UFA(H)")
-                        list_finalVoltage = await K_V3();   //K V3                
+                    if (vm.selected_K_WL_Type.Equals("ALL Range"))
+                    {
+                        if(!vm.PD_or_PM && !vm.IsDistributedSystem)
+                            await WL_Scan_PDFC();  //Scan action for getting power from PD Fast Clibration
+                        else
+                            await WL_Scan();
+                    }
+                    else
+                        await WL_Scan_Iteration();
                 }
-            }
-            else vm.Is_switch_mode = false;
-
-            if (!vm.isStop)
-            {
-                if (vm.selected_K_WL_Type.Equals("ALL Range"))
-                    await WL_Scan();
                 else
-                    await WL_Scan_Iteration();
-            }
-            else
-                vm.Show_Bear_Window("Stop", false, "String", false);
+                    vm.Show_Bear_Window("Stop", false, "String", false);
 
-            vm.list_collection_GaugeModels.Add(new ObservableCollection<GaugeModel>());
-            for (int i = 0; i < vm.list_GaugeModels.Count; i++)
-            {
-                vm.list_collection_GaugeModels.Last().Add(new GaugeModel(vm.list_GaugeModels[i]));
-            }
+                vm.list_collection_GaugeModels.Add(new ObservableCollection<GaugeModel>());
+                for (int i = 0; i < vm.list_GaugeModels.Count; i++)
+                {
+                    vm.list_collection_GaugeModels.Last().Add(new GaugeModel(vm.list_GaugeModels[i]));
+                }
 
-            vm.bear_say_all++;
-            vm.bear_say_now = vm.bear_say_all;
+                vm.bear_say_all++;
+                vm.bear_say_now = vm.bear_say_all;
                         
-            K_WL.IsEnabled = true;  //取消防呆
-            btn_GO.IsEnabled = true;
+                K_WL.IsEnabled = true;  //取消防呆
+                btn_GO.IsEnabled = true;
 
-            if (pre_GO_status && !vm.IsDistributedSystem)
-                action_go();
+                if (pre_GO_status && !vm.IsDistributedSystem)
+                    action_go();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.StackTrace.ToString());
+            }
         }
 
         private async void K_WL_PD_HumanLike(List<string> list_finalVoltage)
@@ -3999,8 +4003,6 @@ namespace PD
                         setting.Set_Laser_WL(Math.Round(wl, 2));  //切換TLS WL         
 
                         double power = double.Parse(await cmd.Get_PD_Value_1ch(ch));
-                        //cmd.Get_PD_Value_1ch(ch);
-                        //double power = double.Parse(vm.msg);
 
                         vm.Convert_ReadPower_to_UIGauge(power, ch);
                         list_ch_power.Add(power);
@@ -4111,30 +4113,14 @@ namespace PD
 
                                     if (list_finalVoltage.Count != vm.ch_count - 1 && list_finalVoltage.Count > 0)   //if k V3 before
                                     {
-                                        //double Volt_first_time = double.Parse(list_finalVoltage[ch]);
-                                        ////Re-K V3
-                                        //setting.choose_product_setting(-65500, 65500, Convert.ToInt16(Volt_first_time - 1), Convert.ToInt16(Volt_first_time + 1), 3600);
-                                        //list_finalVoltage = await K_V3(false);
-                                        //setting.Product_Setting();
-
                                         _save_all_WL_and_IL.Add(new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString(), list_finalVoltage[ch] });
                                         vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
-
-                                        //if (vm.Gauge_Page_now == 2)
-                                        //{
-                                        //    _save_all_WL_and_IL[ch - 8] = new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString(), list_finalVoltage[ch] };
-                                        //}
                                     }
 
                                     else  //if no k v3 before
                                     {
                                         _save_all_WL_and_IL.Add(new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString() });
                                         vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
-
-                                        //if (vm.Gauge_Page_now == 2)
-                                        //{
-                                        //    _save_all_WL_and_IL[ch - 8] = new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString() };
-                                        //}
                                     }
 
                                     if (vm.station_type != "Hermetic_Test")
@@ -4701,7 +4687,6 @@ namespace PD
                     }
                 }
 
-
                 WL_Scan_Gap = 0.01;
                 wl_start = wl_next_start;
                 wl_end = wl_next_end;
@@ -4808,7 +4793,6 @@ namespace PD
             var elapsedMs = watch.ElapsedMilliseconds;
 
             vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String", false);
-            //vm.Collection_bear_say.Add(_save_all_WL_and_IL);   //Save data in history record
             vm.bear_say_all++;
             vm.bear_say_now = vm.bear_say_all;
 
@@ -4869,8 +4853,6 @@ namespace PD
                     vm.Save_All_PD_Value[ch].Add(dp);
                 }
                 _saved_power.Add(vm.Double_Powers);
-
-                //anly.Process_Schedule(process_step++, process_steps);
 
                 //更新圖表
                 #region Set Chart data points   
@@ -5025,7 +5007,6 @@ namespace PD
             await vm.AccessDelayAsync(50);
 
             vm.Show_Bear_Window("K WL 完成" + "  (" + elapsedMs.ToString() + " ms)", false, "String", false);
-            //vm.Collection_bear_say.Add(_save_all_WL_and_IL);
             vm.bear_say_all++;
             vm.bear_say_now = vm.bear_say_all;
 
@@ -5039,7 +5020,6 @@ namespace PD
                 vm.PM_GO();
         }
 
-        //bool isFastMode = true;
         public async Task<bool> WL_Scan()
         {
             try
@@ -5095,9 +5075,12 @@ namespace PD
                     await cmd.Set_WL(wl, false);
 
                     if (wl == vm.wl_list.First())
-                        await Task.Delay(vm.Int_Set_WL_Delay + 200);
-                    else
+                        await Task.Delay(600);
+
+                    if (!(!vm.IsDistributedSystem && !vm.PD_or_PM && vm.Is_FastScan_Mode))
+                    {
                         await Task.Delay(vm.Int_Set_WL_Delay);
+                    }
 
                     vm.Double_Laser_Wavelength = wl;
 
@@ -5108,7 +5091,7 @@ namespace PD
                         if (!vm.BoolAllGauge)
                             if (!vm.list_GaugeModels[ch].boolGauge) continue;
 
-                        vm.Str_cmd_read = "Ch " + (ch + 1).ToString() + " : " + WL.ToString();
+                        vm.Str_cmd_read = $"Ch {ch + 1} : {WL}";
 
                         #region switch re-open && Switch write Cmd
 
@@ -5138,14 +5121,16 @@ namespace PD
                         }
                         #endregion
 
-                        if (vm.Is_FastScan_Mode && vm.list_ChannelModels.Count == 1)
+                        if (vm.Is_FastScan_Mode)
                         {
                             if (wl == vm.wl_list.Last())
                             {
+                                vm.isGetPowerWaitForReadBack = true;
                                 List<List<double>> listDD = await cmd.Get_Power(ch, true);
                             }
                             else
                             {
+                                vm.isGetPowerWaitForReadBack = false;
                                 if (wl == vm.wl_list.First())
                                 {
                                     vm.ChartNowModel.list_dataPoints[ch].Clear();
@@ -5175,15 +5160,12 @@ namespace PD
                             //Only distributedSystem will auto update chart
                             if (!vm.IsDistributedSystem)
                             {
-                                DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], vm.Double_Powers[ch]);
+                                DataPoint dp = new DataPoint(vm.Double_Laser_Wavelength, vm.Double_Powers[ch]);
                                 vm.ChartNowModel.list_dataPoints[ch].Add(dp);
                                 vm.Save_All_PD_Value[ch].Add(dp);
-                                vm.wl_list_index++;
                             }
                         }
                     }
-
-                    cmd.Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);
 
                     //更新圖表
                     #region Set Chart data points   
@@ -5197,7 +5179,7 @@ namespace PD
 
                     if (vm.station_type == "TF2")
                         anly.BandWidth_Calculation(vm.opModel_1.WL_No);                       
-                    else
+                    else if(vm.station_type == "Testing")
                         anly.BandWidth_Calculation();
                 }
                
@@ -5406,7 +5388,7 @@ namespace PD
                         foreach (var item in vm.props_opModel)
                         {
                             if (item.Name == $"WL_{vm.opModel_1.WL_No}_CWL")
-                                cwl = (double)item.GetValue(vm.opModel_1, null);
+                                cwl = (double)item.GetValue(vm.opModel_1, null);  //Get value from property which the name is matched
                         }
 
                         //Get IL at CWL postion
@@ -5478,6 +5460,451 @@ namespace PD
                 return false;
             }
         }
+
+        public async Task<bool> WL_Scan_PDFC()
+        {
+            try
+            {
+                vm.Save_All_PD_Value = Analysis.ListDefine<DataPoint>(vm.Save_All_PD_Value, vm.ch_count, new List<DataPoint>());
+                vm.IL_ALL = "";
+                vm.Double_Powers = new List<double>();
+                vm.Double_Powers.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
+                vm.Chart_title = "Power X Wavelength";
+                vm.Chart_x_title = "Wavelength (nm)";
+
+                double cwl = 0;
+
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var elapsedMs = watch.ElapsedMilliseconds;
+                decimal scan_timespan = (elapsedMs / (decimal)1000);
+
+                vm.Save_Log("WL Scan", vm.ch_count.ToString(), vm.float_WL_Scan_Start.ToString(), vm.float_WL_Scan_End.ToString());
+
+                vm.Str_Status = "WL Scan";
+
+                #region Build scan wl list
+                vm.wl_list.Clear();
+                vm.wl_list_index = 0;
+
+                if (vm.float_WL_Scan_End >= vm.float_WL_Scan_Start)
+                {
+                    for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
+                        vm.wl_list.Add(Math.Round(wl, 2));
+                }
+                else
+                {
+                    for (double wl = vm.float_WL_Scan_Start; wl >= vm.float_WL_Scan_End; wl = wl - vm.float_WL_Scan_Gap)
+                        vm.wl_list.Add(Math.Round(wl, 2));
+                }
+                #endregion
+
+                for (int i = 0; i < vm.ch_count; i++)
+                    vm.ChartNowModel.list_dataPoints[i].Clear();
+
+                foreach (double wl in vm.wl_list)
+                {
+                    if (vm.isStop) return false;
+
+                    double WL = Math.Round(wl, 2);
+
+                    await cmd.Set_WL(wl, false);
+
+                    if (wl == vm.wl_list.First())
+                        await Task.Delay(1000);
+
+                    if (!(!vm.IsDistributedSystem && !vm.PD_or_PM && vm.Is_FastScan_Mode))
+                    {
+                        await Task.Delay(vm.Int_Set_WL_Delay);
+                    }
+                    else 
+                        await Task.Delay(5);
+
+                    vm.Double_Laser_Wavelength = wl;
+
+                    #region Get IL and set chart data points
+
+                    //vm.isGetPowerWaitForReadBack = true;
+
+                    if (wl == vm.wl_list.First())
+                    {
+                        for (int ch = 0; ch < vm.ch_count; ch++)
+                        {
+                            vm.ChartNowModel.list_dataPoints[ch].Clear();
+                            vm.Save_All_PD_Value[ch].Clear();
+                        }
+
+                        if (vm.port_PD != null)
+                            if (vm.port_PD.IsOpen)
+                            {
+                                vm.port_PD.DiscardInBuffer();
+                                vm.port_PD.DiscardOutBuffer();
+                            }
+
+                        //await Task.Delay(0);
+                    }
+
+                    if (vm.Is_FastScan_Mode && wl != vm.wl_list.First() && wl != vm.wl_list.Last())
+                        vm.isGetPowerWaitForReadBack = false;
+                    else
+                        vm.isGetPowerWaitForReadBack = true;
+
+                    vm.Str_cmd_read = $"WL : {WL}";
+                    string str = await cmd.Get_Power();
+
+                    //Only distributedSystem will auto update chart
+                    if (!vm.IsDistributedSystem && !string.IsNullOrEmpty(str))
+                    {
+                        for (int i = 0; i < vm.Double_Powers.Count / vm.ch_count; i++)
+                        {
+                            for (int ch = 0; ch < vm.ch_count; ch++)
+                            {
+                                DataPoint dp = new DataPoint(vm.wl_list[vm.Save_All_PD_Value[ch].Count], vm.Double_Powers[ch + (i * vm.ch_count)]);
+                                vm.ChartNowModel.list_dataPoints[ch].Add(dp);
+                                vm.Save_All_PD_Value[ch].Add(dp);
+                            }
+                        }
+                        
+                    }
+                    #endregion
+
+                    if(false)
+                        for (int ch = 0; ch < vm.ch_count; ch++)
+                    {
+                        if (vm.isStop) return false;
+
+                        if (!vm.BoolAllGauge)
+                            if (!vm.list_GaugeModels[ch].boolGauge) continue;
+
+                        vm.Str_cmd_read = $"Ch {ch + 1} : {WL}";
+
+                        if (vm.Is_FastScan_Mode)
+                        {
+                            if (wl == vm.wl_list.Last())
+                            {
+                                vm.isGetPowerWaitForReadBack = true;
+                                List<List<double>> listDD = await cmd.Get_Power(ch, true);
+                            }
+                            else
+                            {
+                                vm.isGetPowerWaitForReadBack = false;
+                                if (wl == vm.wl_list.First())
+                                {
+                                    vm.ChartNowModel.list_dataPoints[ch].Clear();
+                                    vm.Save_All_PD_Value[ch].Clear();
+
+                                    if (vm.port_PD != null)
+                                        if (vm.port_PD.IsOpen)
+                                        {
+                                            vm.port_PD.DiscardInBuffer();
+                                            vm.port_PD.DiscardOutBuffer();
+                                        }
+                                }
+
+                                await cmd.Get_Power(ch, false);
+                            }
+                        }
+                        else
+                        {
+                            
+                        }
+                    }
+
+                    //cmd.Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);
+
+                    //更新圖表
+                    #region Set Chart data points   
+                    vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                    vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries  
+
+                    scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
+                    vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
+                    vm.msgModel.msg_3 = Math.Round(scan_timespan, 1).ToString() + " s";  //Update Main UI timespan
+                    #endregion
+
+                    if (vm.station_type == "TF2")
+                        anly.BandWidth_Calculation(vm.opModel_1.WL_No);
+                    else if (vm.station_type == "Testing")
+                        anly.BandWidth_Calculation();
+                }
+
+                if (vm.station_type == "TF2")
+                {
+                    if (!vm.isStop)
+                    {
+                        #region Fine Scan if Gap is greater than 0.01
+
+                        if (vm.float_WL_Scan_Gap != 0.01)
+                        {
+                            vm.Str_Status = "WL Fine Scan";
+
+                            double MaxIL = vm.Chart_DataPoints.OrderBy(o => o.Y).ToList().Last().Y;
+                            List<DataPoint> FinalDataPoints = new List<DataPoint>(vm.Chart_DataPoints);
+                            double[,] list_BW_WL_Pos = anly.BandWidth_Calculation(vm.opModel_1.WL_No);
+
+                            for (int i = 0; i < 3; i++)
+                            {
+                                for (int j = 0; j < 2; j++)
+                                {
+                                    #region Build scan wl list
+                                    vm.wl_list.Clear();
+                                    vm.wl_list_index = 0;
+
+                                    if (j == 0)
+                                    {
+                                        //Left
+                                        vm.float_WL_Scan_Start = list_BW_WL_Pos[i, j];
+                                        vm.float_WL_Scan_End = list_BW_WL_Pos[i, j] + vm.float_WL_Scan_Gap;
+                                    }
+                                    else
+                                    {
+                                        //Right
+                                        vm.float_WL_Scan_Start = list_BW_WL_Pos[i, j] - vm.float_WL_Scan_Gap;
+                                        vm.float_WL_Scan_End = list_BW_WL_Pos[i, j];
+                                    }
+
+                                    if (vm.float_WL_Scan_End >= vm.float_WL_Scan_Start)
+                                    {
+                                        for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + 0.01)
+                                        {
+                                            vm.wl_list.Add(Math.Round(wl, 2));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (double wl = vm.float_WL_Scan_Start; wl >= vm.float_WL_Scan_End; wl = wl - 0.01)
+                                        {
+                                            vm.wl_list.Add(Math.Round(wl, 2));
+                                        }
+                                    }
+                                    #endregion
+
+                                    #region Scan WL
+
+                                    double target_IL = 0;
+                                    double target_dB = 0;
+                                    if (i == 0)
+                                        target_dB = vm.opModel_1.BW_Setting_1;
+                                    else if (i == 1)
+                                        target_dB = vm.opModel_1.BW_Setting_2;
+                                    else if (i == 3)
+                                        target_dB = vm.opModel_1.BW_Setting_3;
+                                    else
+                                        continue;
+
+                                    target_IL = MaxIL - target_dB;
+
+                                    if (j == 0)
+                                        vm.Str_Status = $"Fine Scan, L, dB:{target_dB}, Target IL:{target_IL}";
+                                    else if (j == 1)
+                                        vm.Str_Status = $"Fine Scan, R, dB:{target_dB}, Target IL:{target_IL}";
+
+                                    bool isbreak = false;
+                                    foreach (double wl in vm.wl_list)
+                                    {
+                                        if (vm.isStop) return false;
+
+                                        if (isbreak) break;
+
+                                        double WL = Math.Round(wl, 2);
+
+                                        //if (vm.Chart_All_DataPoints[0].Any(o => o.X == wl))
+                                        //    continue;
+
+                                        await cmd.Set_WL(wl, false);
+
+                                        if (wl == vm.wl_list.First())
+                                            await Task.Delay(vm.Int_Set_WL_Delay + 800);
+                                        else
+                                            await Task.Delay(vm.Int_Set_WL_Delay);
+
+                                        vm.Double_Laser_Wavelength = wl;
+
+                                        for (int ch = 0; ch < vm.ch_count; ch++)
+                                        {
+                                            if (vm.isStop) return false;
+
+                                            if (!vm.BoolAllGauge)
+                                                if (!vm.list_GaugeModels[ch].boolGauge) continue;
+
+                                            #region switch re-open && Switch write Cmd
+                                            if (vm.station_type.Equals("Hermetic_Test") && vm.Is_switch_mode)
+                                            {
+                                                vm.Str_cmd_read = "Ch " + (ch + 1).ToString() + " : " + WL.ToString();
+                                                vm.switch_index = ch + 1;
+                                                try
+                                                {
+                                                    await vm.Port_Switch_ReOpen();
+
+                                                    vm.Str_Command = "SW0 " + vm.switch_index.ToString();
+                                                    vm.port_Switch.Write(vm.Str_Command + "\r");
+                                                    await Task.Delay(vm.Int_Write_Delay);
+
+                                                    vm.port_Switch.DiscardInBuffer();       // RX
+                                                    vm.port_Switch.DiscardOutBuffer();      // TX
+
+                                                    vm.port_Switch.Close();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    vm.Str_cmd_read = "Set Switch Error";
+                                                    vm.Save_Log(vm.Str_Status, vm.switch_index.ToString(), vm.Str_cmd_read);
+                                                    MessageBox.Show(ex.StackTrace.ToString());
+                                                    return false;
+                                                }
+                                            }
+                                            #endregion
+
+                                            if (vm.Chart_All_DataPoints[0].Any(o => o.X == wl))
+                                            {
+                                                vm.Chart_All_DataPoints[0].RemoveAll(p => p.X == wl);
+                                            }
+
+                                            if (vm.Is_FastScan_Mode && vm.list_ChannelModels.Count == 1)
+                                            {
+                                                if (wl == vm.wl_list.Last())
+                                                {
+                                                    List<List<double>> listDD = await cmd.Get_Power(ch, true);
+                                                }
+                                                else
+                                                {
+                                                    if (wl == vm.wl_list.First())
+                                                    {
+                                                        if (vm.port_PD.IsOpen)
+                                                        {
+                                                            vm.port_PD.DiscardInBuffer();
+                                                            vm.port_PD.DiscardOutBuffer();
+                                                        }
+                                                    }
+
+                                                    await cmd.Get_Power(ch, false);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                await cmd.Get_Power(ch, true);
+
+                                                //Only distributedSystem will auto update chart
+                                                if (!vm.IsDistributedSystem)
+                                                {
+                                                    DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], vm.Double_Powers[ch]);
+                                                    vm.ChartNowModel.list_dataPoints[ch].Add(dp);
+                                                    vm.Save_All_PD_Value[ch].Add(dp);
+                                                    vm.wl_list_index++;
+                                                }
+
+                                                if (vm.ch_count == 1)
+                                                {
+                                                    //Left side
+                                                    if (j == 0 && vm.Double_Powers[ch] > target_IL)
+                                                        isbreak = true;
+                                                    //Right side
+                                                    else if (j == 1 && vm.Double_Powers[ch] < target_IL)
+                                                        isbreak = true;
+                                                }
+                                            }
+                                        }
+
+                                        //更新圖表
+                                        #region Set Chart data points   
+                                        vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                                        FinalDataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
+                                        vm.Chart_DataPoints = new List<DataPoint>(FinalDataPoints.OrderBy(o => o.X).ToList());  //A lineseries  
+
+                                        scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
+                                        vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
+                                        vm.msgModel.msg_3 = Math.Round(scan_timespan, 1).ToString() + " s";  //Update Main UI timespan
+                                        #endregion
+                                    }
+                                    #endregion
+                                }
+                            }
+                            string str_pre_bw = $"{vm.opModel_1.WL_1_CWL},{vm.opModel_1.WL_1_BW_1},{vm.opModel_1.WL_1_BW_2},{vm.opModel_1.WL_1_BW_3}";
+                            vm.Chart_DataPoints = FinalDataPoints.OrderBy(o => o.X).ToList();
+                            anly.BandWidth_Calculation(vm.opModel_1.WL_No);
+
+
+                            string str_aft_bw = $"{vm.opModel_1.WL_1_CWL},{vm.opModel_1.WL_1_BW_1},{vm.opModel_1.WL_1_BW_2},{vm.opModel_1.WL_1_BW_3}";
+                            Console.WriteLine(str_pre_bw + "\r\r" + str_aft_bw);
+                        }
+
+                        #endregion
+
+                        foreach (var item in vm.props_opModel)
+                        {
+                            if (item.Name == $"WL_{vm.opModel_1.WL_No}_CWL")
+                                cwl = (double)item.GetValue(vm.opModel_1, null);
+                        }
+
+                        //Get IL at CWL postion
+                        if (cwl != 0)
+                        {
+                            vm.Str_Status = "Getting IL";
+                            bool FS_Setting = vm.Is_FastScan_Mode;
+
+                            await cmd.Set_WL(cwl, true);
+                            await Task.Delay(1000);
+
+                            vm.Is_FastScan_Mode = false;
+                            await cmd.Get_Power(0, true);
+                            vm.Is_FastScan_Mode = FS_Setting;
+                            await Task.Delay(200);
+
+                            //Set IL value to TF2 gridview
+                            foreach (var item in vm.props_opModel)
+                            {
+                                if (item.Name == $"WL_{vm.opModel_1.WL_No}_IL")
+                                    item.SetValue(vm.opModel_1, vm.list_GaugeModels[0].GaugeValue);
+                            }
+                        }
+
+                        //PDL Scan
+                        await _Page_TF2_Main.Cal_PDL_Show();
+                    }
+                }
+                else
+                    for (int ch = 0; ch < vm.ch_count; ch++)  //Calculate the position with maximum IL and show data in UI
+                    {
+                        if (vm.Save_All_PD_Value[ch].Count > 0)
+                        {
+                            double maxIL_WL = vm.Save_All_PD_Value[ch].Where(point => point.Y == vm.Save_All_PD_Value[ch].Max(x => x.Y)).First().X;
+
+                            vm.Double_Laser_Wavelength = maxIL_WL;
+                            await cmd.Set_WL(maxIL_WL, false);
+
+                            vm.list_GaugeModels[ch].GaugeValue = vm.Save_All_PD_Value[ch].Max(x => x.Y).ToString();
+
+                            vm.list_GaugeModels[ch].GaugeBearSay_1 = Math.Round(maxIL_WL, 2).ToString();
+                            vm.list_GaugeModels[ch].GaugeBearSay_2 = vm.list_GaugeModels[ch].GaugeValue;
+                        }
+                    }
+
+                scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
+                vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
+                await cmd.Save_Chart();
+
+                vm.msgModel.msg_3 = Math.Round(scan_timespan, 1).ToString() + " s";  //Update Main UI timespan
+
+                vm.Show_Bear_Window($"WL Scan 完成  ({Math.Round(scan_timespan, 1)} s)", false, "String", false);
+
+                int a = vm.list_ChartModels.Count;
+
+                vm.Str_Status = "WL Scan Stop";
+                vm.Save_Log("WL Scan", "Stop", false);
+
+                vm.IsGoOn = false;
+
+                //Close TLS filter port for other control action
+                cmd.Close_TLS_Filter();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.StackTrace.ToString());
+                return false;
+            }
+        }
+
 
         private async Task<bool> WL_Scan_Iteration()
         {
@@ -5834,29 +6261,27 @@ namespace PD
 
         private void Image_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            List<List<string>> lls = new List<List<string>>();
-            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
-            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            vm.List_bear_say = new List<List<string>>(lls);
+            List<List<string>> list_bearSay_string = new List<List<string>>();
+            list_bearSay_string.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            list_bearSay_string.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            vm.List_bear_say = new List<List<string>>(list_bearSay_string);
 
-            //vm.Collection_bear_say.Add(lls);
             vm.bear_say_all++;
             vm.bear_say_now = vm.bear_say_all;
 
-            lls = new List<List<string>>();
-            lls.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
-            lls.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
-            vm.List_bear_say = new List<List<string>>(lls);
+            list_bearSay_string = new List<List<string>>();
+            list_bearSay_string.Add(new List<string>() { "1550.33", "-1.336", "27.9" });
+            list_bearSay_string.Add(new List<string>() { "1551.58", "-1.358", "28.3" });
+            vm.List_bear_say = new List<List<string>>(list_bearSay_string);
 
-            //vm.Collection_bear_say.Add(lls);
             vm.bear_say_all++;
             vm.bear_say_now = vm.bear_say_all;
 
-            if (lls.First().Count >= 3)
+            if (list_bearSay_string.First().Count >= 3)
             {
-                vm.GaugeTxtSize_Column[1] = new GridLength(lls.First()[0].Count(), GridUnitType.Star);
-                vm.GaugeTxtSize_Column[2] = new GridLength(lls.First()[1].Count(), GridUnitType.Star);
-                vm.GaugeTxtSize_Column[3] = new GridLength(lls.First()[2].Count(), GridUnitType.Star);
+                vm.GaugeTxtSize_Column[1] = new GridLength(list_bearSay_string.First()[0].Count(), GridUnitType.Star);
+                vm.GaugeTxtSize_Column[2] = new GridLength(list_bearSay_string.First()[1].Count(), GridUnitType.Star);
+                vm.GaugeTxtSize_Column[3] = new GridLength(list_bearSay_string.First()[2].Count(), GridUnitType.Star);
                 vm.GaugeTxtSize_Column = new List<GridLength>(vm.GaugeTxtSize_Column);
             }
         }
@@ -5868,25 +6293,23 @@ namespace PD
 
         private void ToggleBtn_ControlMode_Loaded(object sender, RoutedEventArgs e)
         {
-            if (vm.PD_or_PM == true)
+            if (!vm.PD_or_PM) return;
+          
+            #region PowerMeter Setting
+            vm.pm = new HPPM();
+            vm.pm.Addr = vm.tls_Addr;
+            vm.pm.Slot = vm.PM_slot;
+            vm.pm.BoardNumber = vm.tls_BoardNumber;
+            if (vm.pm.Open() == false)
             {
-                #region PowerMeter Setting
-                //Power Meter setting
-                vm.pm = new HPPM();
-                vm.pm.Addr = vm.tls_Addr;
-                vm.pm.Slot = vm.PM_slot;
-                vm.pm.BoardNumber = vm.tls_BoardNumber;
-                if (vm.pm.Open() == false)
-                {
-                    vm.Str_cmd_read = "The GPIB Setting Error.  Check  Address.";
-                    return;
-                }
-                vm.pm.init();
-                vm.pm.setUnit(1);
-                vm.pm.AutoRange(true);
-                vm.pm.aveTime(vm.PM_AveTime);
-                #endregion
+                vm.Str_cmd_read = "The GPIB Setting Error.  Check  Address.";
+                return;
             }
+            vm.pm.init();
+            vm.pm.setUnit(1);
+            vm.pm.AutoRange(true);
+            vm.pm.aveTime(vm.PM_AveTime);
+            #endregion
         }
 
         private void grid_Unit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -5923,7 +6346,6 @@ namespace PD
                 System.Windows.Point p = obj.PointToScreen(new System.Windows.Point(0, 0));
                 vm.WinSwitch = new Window_Switch_Box(vm, p, obj.ActualWidth);
                 vm.WinSwitch.Show();
-
             }
             else
                 vm.WinSwitch.Close();
@@ -5944,6 +6366,7 @@ namespace PD
         Window_PowerSupply_Setting window_PowerSupply_Setting;
         private void btn_port_setting_Click(object sender, RoutedEventArgs e)
         {
+            vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "CLSPORT" });
             if (window_PowerSupply_Setting != null)
             {
                 if (window_PowerSupply_Setting.IsActive)
@@ -5965,40 +6388,12 @@ namespace PD
 
         private void btn_help_Click(object sender, RoutedEventArgs e)
         {
-            vm.Selected_Comport = "COM1";
-
-            vm.list_GaugeModels[0].GaugeSN = "SN-XXXXXXXXX";
-            vm.list_GaugeModels[0].GaugeD0_1 = "15500";
-            vm.list_GaugeModels[0].GaugeD0_2 = "0";
-            vm.list_GaugeModels[0].GaugeD0_3 = "56300";
-
-            vm.Chart_All_DataPoints[0].Clear();
-            double Y = anly.GaussianCurve(0, -10, 10, 0.01, 2, 1, 1);
-            //anly.GaussianCurve(1, -10, 10, 0.01, 2, 0, 1);
-
-            //for (double X = -10; X < 10; X=X+0.01)
-            //{
-            //    double Y = 100;
-
-            //    //vm.Save_All_PD_Value[0].Add(new DataPoint(Math.Round(X, 2), Y));
-            //    //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
-            //    //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
-            //}
-
-
-
-            //vm.list_GaugeModels[0].GaugeBearSay_1 = 1548.ToString();
-            //vm.list_GaugeModels[1].GaugeBearSay_1 = "1549";
-
-            //vm.list_GaugeModels = new ObservableCollection<GaugeModel>();
-            //await cmd.Get_Power();
-            //vm.Show_Bear_Window("有 問 題 請 撥 5 1 7", false, "String_Step", false);
+            vm.Show_Bear_Window("有 問 題 請 撥 5 1 7", false, "String_Step", false);
         }
 
         private void Txt_ID_GotFocus(object sender, RoutedEventArgs e)
         {
             label_ID.Opacity = 0;
-            //txt_UserID_label.Visibility = Visibility.Hidden;
         }
 
         private void Txt_ID_LostFocus(object sender, RoutedEventArgs e)
@@ -6093,20 +6488,14 @@ namespace PD
 
                     CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
                     {
-                        "Mic. Lower", "Mic. Upper"
+                        "Mic. Lower", vm.opModel_1.Mic_Lower_Limit.ToString()
                     });
 
                     CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
                     {
-                        vm.opModel_1.Mic_Lower_Limit.ToString(),
-                        vm.opModel_1.Mic_Upper_Limit.ToString()
+                        "Mic. Upper", vm.opModel_1.Mic_Upper_Limit.ToString()
                     });
-
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
-                    {
-                        "Temp.", vm.opModel_1.HighPower_Temp.ToString()
-                    });
-
+                    
                     CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
                     {
                         "Tech ID", vm.UserID
@@ -6115,6 +6504,17 @@ namespace PD
                     CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
                     {
                         "Station", vm.TF2_station_type
+                    });
+
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    {
+                        "Temp.", vm.opModel_1.HighPower_Temp.ToString()
+                    });
+
+                    string dateTime = DateTime.Now.ToString("yyyy'/'MM'/'dd' 'HH':'mm':'ss");
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    {
+                        "DateTime", dateTime
                     });
 
                     vm.Str_Status = "Save Data to CSV";
@@ -6150,25 +6550,6 @@ namespace PD
                         vm.Show_Bear_Window("Data Saved", false, "String", false);
                     }
                 }
-
-
-
-                //System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-                //saveFileDialog.Title = "Save Data";
-                //saveFileDialog.InitialDirectory = @"D:\";
-                //saveFileDialog.FileName = "BoardData_" + DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00") + ".txt";
-                //saveFileDialog.Filter = "CSV (*.csv)|*.csv|TXT (*.txt)|*.txt|All files (*.*)|*.*";
-
-                //if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                //{
-                //    Dictionary<double, string> dic_keyPairs = new Dictionary<double, string>();
-                //    for (int i = 0; i < vm.list_GaugeModels.Count; i++)
-                //    {
-                //        dic_keyPairs.Clear();
-                //        dic_keyPairs.Add(vm.Double_Laser_Wavelength, $"{vm.list_GaugeModels[i].GaugeD0_1},{vm.list_GaugeModels[i].GaugeD0_2},{vm.list_GaugeModels[i].GaugeD0_3}");
-                //        cmd.Save_K_TF_Data(fldr, dic_keyPairs, vm.list_GaugeModels[i], vm.list_ChannelModels[i].Board_ID);
-                //    }
-                //}
             }
         }
 
@@ -6394,7 +6775,6 @@ namespace PD
 
         private void TextBlock_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            //if(vm.timer_command.)
             vm.timer_command.Start();
         }
 
@@ -6486,7 +6866,5 @@ namespace PD
 
             MessageBox.Show("Best Dac: " + curveFittingResultModel.Best_X.ToString());
         }
-
-       
     }
 }

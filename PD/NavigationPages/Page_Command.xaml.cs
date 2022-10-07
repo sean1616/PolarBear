@@ -45,7 +45,9 @@ namespace PD.NavigationPages
                     "DAC?", "Add", "SUB", "MULT", "DIV", "CMPGT", "CMPGE", "CMPLE", "CMPLT", "SETVAR", "SETBOOL",
                 "SETPOWER", "SETWL", "SETSWITCH", "FLAG", "JUMP", "CLRDP", "IFON", "IFOFF", "BSET", "BRST",
 
-                "UVSETPOW","UVSETTIMER","UVSTART","UVSTOP"
+                "UVSETPOW","UVSETTIMER","UVSTART","UVSTOP",
+
+                "CLSPORT"
                 };
 
 

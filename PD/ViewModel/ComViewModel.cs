@@ -640,16 +640,6 @@ namespace PD.ViewModel
             }
         }
 
-        private Task<string> testing = Task<string>.Factory.StartNew(() =>
-        {
-            return "AAA";
-        });
-
-        private void test()
-        {
-            MessageBox.Show(testing.Result);
-        }
-
         public void Save_Log<T>(T msg)
         {
             LogMembers.Add(new LogMember()
@@ -2248,6 +2238,20 @@ namespace PD.ViewModel
                 Set_StationType(value);
 
                 OnPropertyChanged("station_type");
+            }
+        }
+
+        private string _station_type_No = "Testing";
+        public string station_type_No
+        {
+            get { return _station_type_No; }
+            set
+            {
+                _station_type_No = value;
+
+                //Set_StationType(value);
+
+                OnPropertyChanged("station_type_No");
             }
         }
 
@@ -3879,6 +3883,8 @@ namespace PD.ViewModel
                 OnPropertyChanged("IsDistributedSystem");
             }
         }
+
+        public bool isGetPowerWaitForReadBack { get; set; } = true;
 
         private bool _pd_or_pm = false;  //False is PD, True is PM
         public bool PD_or_PM

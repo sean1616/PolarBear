@@ -21,7 +21,7 @@ namespace PD.AnalysisModel
         SN_Member SNMember = new SN_Member();
 
         //List<float> list_read_value_single = new List<float>();
-        string str_read_value;
+        StringBuilder str_read_value;
 
         ComViewModel vm;
         CurveFitting CurveFunctions = new CurveFitting();
@@ -672,6 +672,8 @@ namespace PD.AnalysisModel
             cmd = cmd == "PD_Read" ? "PD?" : cmd;
             cmd = cmd == "ID_Read" ? "ID?" : cmd;
 
+            StringBuilder sb = new StringBuilder();
+
             switch (cmd)
             {
                 case "ID?":
@@ -680,31 +682,28 @@ namespace PD.AnalysisModel
                     break;
 
                 case "P0?":
-                    str_read_value = "";
+                    str_read_value = new StringBuilder();
                     list_read_value = new List<string>();
                     list_databuffer = new List<byte>(dataBuffer); //Convert array to list
 
+                    char c = ' ';
+
                     foreach (byte data in list_databuffer)
                     {
-                        if (data != 10 && data != 44 && data != 13)
-                        {
-                            str_read_value = str_read_value + Convert.ToChar(data);
-                        }
+                        c = Convert.ToChar(data);
 
+                        sb.Append(c);
+
+                        if (data != 10 && data != 44 && data != 13)
+                            str_read_value.Append(c);
                         else
                         {
-                            list_read_value.Add(str_read_value);
-                            str_read_value = "";
+                            list_read_value.Add(str_read_value.ToString());
+                            str_read_value.Clear();
                         }
                     }
-
-                    //測試Gauge EndAngle用 - random value
-                    //vm.Value_PD.Clear();                   
-                    //for (int i = 0; i < 8; i++)
-                    //{
-                    //    vm.Value_PD.Add(rdm.Next(0,150));  //-150~150 degree, for gauge binding
-                    //}
-                    //vm.Value_PD = new List<float>(vm.Value_PD);
+                                
+                    if(list_read_value.Count <=0) return sb.ToString();
 
                     list_read_value.RemoveAt(0);  //list dBm in string type
 
@@ -724,7 +723,6 @@ namespace PD.AnalysisModel
                             }
                             ch++;
                         }
-
                     }
                     else  //dBm
                     {
@@ -747,13 +745,9 @@ namespace PD.AnalysisModel
                             vm.Double_Powers[i] = vm.Double_Powers[i] - s;
 
                             if (vm.Double_Powers[i] > vm.double_MaxIL_for_DeltaMode[i])
-                            {
                                 vm.double_MaxIL_for_DeltaMode[i] = vm.Double_Powers[i];
-                            }
                             else if (vm.Double_Powers[i] < vm.double_MinIL_for_DeltaMode[i])
-                            {
                                 vm.double_MinIL_for_DeltaMode[i] = vm.Double_Powers[i];
-                            }
 
                             vm.double_Maxdelta[i] = Math.Round((vm.double_MaxIL_for_DeltaMode[i] - vm.double_MinIL_for_DeltaMode[i]), 4);
 
@@ -761,27 +755,26 @@ namespace PD.AnalysisModel
                             i++;
                         }
                     }
+
+                    msg = sb.ToString();
+
                     break;
 
                 case "PD?":
-                    str_read_value = "";
+                    str_read_value = new StringBuilder();
                     list_read_value = new List<string>();
                     list_databuffer = new List<byte>(dataBuffer); //Convert array to list
 
                     foreach (byte data in list_databuffer)
                     {
                         if (data != 10 && data != 44 && data != 13)
-                        {
-                            str_read_value = str_read_value + Convert.ToChar(data);
-                        }
-
+                            str_read_value.Append(Convert.ToChar(data));
                         else
                         {
-                            list_read_value.Add(str_read_value);
-                            str_read_value = "";
+                            list_read_value.Add(str_read_value.ToString());
+                            str_read_value.Clear();
                         }
                     }
-
 
                     list_read_value.RemoveAt(0);  //list dBm in string type
 
@@ -841,7 +834,7 @@ namespace PD.AnalysisModel
                     break;
 
                 case "P0?":
-                    str_read_value = "";
+                    str_read_value = new StringBuilder();
                     list_read_value = new List<string>();
                     list_databuffer = new List<byte>(dataBuffer); //Convert array to list
 
@@ -849,12 +842,12 @@ namespace PD.AnalysisModel
                     {
                         if (data != 10 && data != 44 && data != 13)
                         {
-                            str_read_value = str_read_value + Convert.ToChar(data);
+                            str_read_value.Append(Convert.ToChar(data));
                         }
                         else
                         {
-                            list_read_value.Add(str_read_value);
-                            str_read_value = "";
+                            list_read_value.Add(str_read_value.ToString());
+                            str_read_value.Clear();
                         }
                     }
                     list_read_value.RemoveAt(0);  //list dBm in string type
@@ -945,7 +938,7 @@ namespace PD.AnalysisModel
 
         public ComViewModel _K_WL_analysis(byte[] dataBuffer)
         {
-            str_read_value = "";
+            str_read_value = new StringBuilder();
             list_read_value = new List<string>();
             list_databuffer = new List<byte>(dataBuffer); //Convert array to list
 
@@ -953,12 +946,12 @@ namespace PD.AnalysisModel
             {
                 if (data != 10 && data != 44 && data != 13)
                 {
-                    str_read_value = str_read_value + Convert.ToChar(data);  //dBm in string type
+                    str_read_value.Append(Convert.ToChar(data));  //dBm in string type
                 }
                 else
                 {
-                    list_read_value.Add(str_read_value);
-                    str_read_value = "";
+                    list_read_value.Add(str_read_value.ToString());
+                    str_read_value.Clear();
                 }
             }
             if (list_read_value.Count > 1)
@@ -986,7 +979,7 @@ namespace PD.AnalysisModel
 
         public ComViewModel _K_analysis(int dac, byte[] dataBuffer)
         {
-            str_read_value = "";
+            str_read_value = new StringBuilder();
             list_read_value = new List<string>();
             list_databuffer = new List<byte>(dataBuffer); //Convert array to list
 
@@ -994,12 +987,12 @@ namespace PD.AnalysisModel
             {
                 if (data != 10 && data != 44 && data != 13)
                 {
-                    str_read_value = str_read_value + Convert.ToChar(data);  //dBm in string type
+                    str_read_value.Append(Convert.ToChar(data)); //dBm in string type
                 }
                 else
                 {
-                    list_read_value.Add(str_read_value);
-                    str_read_value = "";
+                    list_read_value.Add(str_read_value.ToString());
+                    str_read_value.Clear();
                 }
             }
             if (list_read_value.Count > 1)
@@ -1066,7 +1059,7 @@ namespace PD.AnalysisModel
 
         public ComViewModel _K12_analysis(int dac, byte[] dataBuffer)
         {
-            str_read_value = "";
+            str_read_value = new StringBuilder();
             list_read_value = new List<string>();
             list_databuffer = new List<byte>(dataBuffer); //Convert array to list
 
@@ -1074,12 +1067,12 @@ namespace PD.AnalysisModel
             {
                 if (data != 10 && data != 44 && data != 13)
                 {
-                    str_read_value = str_read_value + Convert.ToChar(data);  //dBm in string type
+                    str_read_value.Append(Convert.ToChar(data)); //dBm in string type
                 }
                 else
                 {
-                    list_read_value.Add(str_read_value);
-                    str_read_value = "";
+                    list_read_value.Add(str_read_value.ToString());
+                    str_read_value.Clear();
                 }
             }
             if (list_read_value.Count > 1)
@@ -1117,7 +1110,7 @@ namespace PD.AnalysisModel
 
         public string GetMessage(byte[] dataBuffer)
         {
-            str_read_value = "";
+            str_read_value = new StringBuilder();
             list_read_value = new List<string>();
             //Delete "0A"                    
             //byte remove = Convert.ToByte("0A".Substring(0, 2), 16);

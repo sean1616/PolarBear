@@ -1310,6 +1310,7 @@ namespace PD.NavigationPages
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            //映射取去物件裡的所有屬性欄位
             Type typ1 = vm.opModel_1.GetType();
             vm.props_opModel = typ1.GetProperties(BindingFlags.Instance | BindingFlags.Public); // Get all properties in opModel
             vm.csv_product_TF2_wl_setting_path = System.IO.Path.Combine(vm.CurrentPath, "Product_TF2_WL.csv");
@@ -1340,5 +1341,46 @@ namespace PD.NavigationPages
                 System.Diagnostics.Process.Start(path);
         }
 
+        private void TextBox_SN_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (vm == null) return;
+            if (vm.opModel_1.SN.Length != 12) return;
+
+            int index = ComBox_TF2_Station.SelectedIndex;
+            if (index < 2) return;
+
+            //往前一站找資料
+            string path = Path.Combine(vm.txt_save_TF2_wl_data_path, $"{vm.opModel_1.SN}_{vm.list_TF2_station_type[index - 1]}.csv");
+            if (!File.Exists(path)) return;
+
+
+            var dataTable = CSVFunctions.Read_CSV(path);
+
+            if (dataTable.Rows[8][0].ToString().Equals("Temp."))
+            {
+                if (double.TryParse(dataTable.Rows[8][1].ToString(), out double value))
+                    if (value != 0)
+                        vm.opModel_1.HighPower_Temp = value;
+            }
+
+            if (index >= 3)  //FinalTest Station
+            {
+                if (dataTable.Rows[4][0].ToString().Equals("Mic. Lower"))
+                {
+                    if (double.TryParse(dataTable.Rows[4][1].ToString(), out double value))
+                    {
+                        if(value !=0)
+                            vm.opModel_1.Mic_Lower_Limit = value;
+                    }
+                }
+
+                if (dataTable.Rows[5][0].ToString().Equals("Mic. Upper"))
+                {
+                    if (double.TryParse(dataTable.Rows[5][1].ToString(), out double value))
+                        if (value != 0)
+                            vm.opModel_1.Mic_Upper_Limit = value;
+                }
+            }
+        }
     }
 }

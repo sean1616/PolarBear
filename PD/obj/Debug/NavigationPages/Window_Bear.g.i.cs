@@ -201,7 +201,7 @@ namespace PD.NavigationPages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.5.14;component/navigationpages/window_bear.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.5.15;component/navigationpages/window_bear.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NavigationPages\Window_Bear.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

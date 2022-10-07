@@ -23,10 +23,6 @@ namespace PD.Functions
         ComViewModel vm;
         Analysis anly;
 
-        //ICommunication icomm;
-        //DiCon.UCB.Communication.RS232.RS232 rs232;
-        //DiCon.UCB.MTF.IMTFCommand tf;
-
         public ControlCmd(ComViewModel vm)
         {
             this.vm = vm;
@@ -165,11 +161,6 @@ namespace PD.Functions
 
         async void _timer_Tick(object sender, EventArgs e)
         {
-            //while (vm.IsGoOn && !vm.isStop)
-            //{
-
-            //}
-
             if (vm.IsGoOn && !vm.isStop)
             {
                 #region Run Command
@@ -210,14 +201,12 @@ namespace PD.Functions
                             vm.timer3_count++;
                         }
                         else
-                            await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                            await Task.Delay(vm.Int_Read_Delay);
                     }
                 }
                 catch
                 {
                     vm.Str_cmd_read = "Run cmd error";
-                    //vm.Save_Log(ex.ToString());
-                    //MessageBox.Show(ex.ToString());
                     return;
                 }
                 #endregion
@@ -228,16 +217,8 @@ namespace PD.Functions
             }
         }
 
-        public async void CommandListCycle()
+        public async Task<bool> CommandListCycle()
         {
-            //設定呼叫間隔時間為100ms
-            //vm._timer.Interval = TimeSpan.FromMilliseconds(100);
-
-            //加入callback function
-            //vm._timer.Tick += _timer_Tick;
-
-            //vm._timer.Start();
-
             while (vm.IsGoOn && !vm.isStop)
             {
                 if (vm.IsGoOn && !vm.isStop)
@@ -265,7 +246,7 @@ namespace PD.Functions
                                         }
                                         else { vm.ComMembers.RemoveAt(i); }
                                 }
-                                else
+                                else  //No command which is P0?
                                 {
                                     if (!vm.IsDistributedSystem)
                                     {
@@ -275,28 +256,23 @@ namespace PD.Functions
                                                 await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "PD?", Type = "PD" });
                                             else
                                                 await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "P0?", Type = "PD" });
-
                                         }
                                         else
-                                        {
-                                            //if (vm.IsGoOn)
                                             await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "GETPOWER", Type = "PM", Channel = vm.switch_index.ToString() });
-                                            //else
-                                            //    await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "GETPOWER", Type = "PM", Channel = vm.switch_index.ToString() });
-
-                                        }
                                     }
                                     else  //distribution system
                                     {
-                                        await CommandSwitch(new ComMember()
+                                        for (int channel = 0; channel < vm.ch_count; channel++)
                                         {
-                                            YN = true,
-                                            No = vm.Cmd_Count.ToString(),
-                                            Channel = vm.list_ChannelModels[0].channel.Replace("ch ", "")
-                                            ,
-                                            Comport = vm.list_ChannelModels[0].PM_Board_Port,
-                                            Command = "GETPOWER"
-                                        });
+                                            await CommandSwitch(new ComMember()
+                                            {
+                                                YN = true,
+                                                No = vm.Cmd_Count.ToString(),
+                                                Channel = vm.list_ChannelModels[channel].channel.Replace("ch ", ""),
+                                                Comport = vm.list_ChannelModels[channel].PM_Board_Port,
+                                                Command = "GETPOWER"
+                                            });
+                                        }
 
                                     }
                                 }
@@ -305,17 +281,12 @@ namespace PD.Functions
                             else
                                 await Task.Delay(vm.Int_Read_Delay);
                         }
-                        //else
-                        //{
-                        //    MessageBox.Show(vm.list_GaugeModels[1].GaugeValue);
-                        //}
                     }
                     catch (Exception ex)
                     {
                         vm.Str_cmd_read = "Run cmd error";
-                        //vm.Save_Log(ex.ToString());
                         MessageBox.Show(ex.ToString());
-                        return;
+                        return true;
                     }
                     #endregion
                 }
@@ -325,10 +296,7 @@ namespace PD.Functions
                 }
             }
 
-            //if (!vm.IsGoOn)
-            //{
-            //    MessageBox.Show(vm.list_GaugeModels[1].GaugeValue);
-            //}
+            return true;
         }
 
         VariableModel varM = new VariableModel();
@@ -585,79 +553,7 @@ namespace PD.Functions
                             //    }
                             //}
                             #endregion
-                        }
-
-                        //if (string.IsNullOrEmpty(cm.Comport))
-                        //    await vm.Port_ReOpen(vm.Selected_Comport);
-                        //else await vm.Port_ReOpen(cm.Comport);
-
-                        //vm.port_PD.Write("P0?\r");
-
-                        //if (cm.Channel == "16")   //Write Cmd to port_B
-                        //    vm.port_PD_B.Write("P0?\r");
-
-                        //await Task.Delay(vm.Int_Read_Delay);
-
-                        //await Cmd_RecieveData("P0_Read", false);
-                        ////vm.Str_cmd_read = 
-
-                        //#region Set Chart data points                                           
-                        //if (vm.timer2_count > 30000)  //Default 28800 , two hours
-                        //    vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
-
-                        //double sec = (double)Math.Round((decimal)vm.timer2_count * vm.Int_Read_Delay / 1000, 2);
-
-                        //if (vm.isTimerOn)
-                        //{
-                        //    if (sec > vm.int_timer_timespan)
-                        //    {
-                        //        vm.IsGoOn = false;
-                        //        vm.isTimerOn = false;
-                        //    }
-
-                        //    // 更新Timer顯示的"剩餘時間"
-                        //    TimeSpan time = new TimeSpan(0, 0, vm.int_timer_timespan - (int)sec);
-                        //    vm.int_timer_hrs = time.Hours;
-                        //    vm.int_timer_min = time.Minutes;
-                        //    vm.int_timer_sec = time.Seconds;
-                        //}
-
-                        //for (int i = 0; i < vm.Double_Powers.Count; i++)
-                        //{
-                        //    vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();  //Update gauge value
-                        //    //vm.list_GaugeModels[i].GaugeEndAngle = anly.Read_PM_to_Gauge(vm.Double_Powers[i], (i + 1));
-                        //    vm.Save_All_PD_Value[i].Add(new DataPoint(sec, vm.Double_Powers[i]));
-                        //}
-
-
-                        //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
-                        //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
-                        //vm.timer2_count++;
-                        //#endregion
-
-                        //#region Cal. Delta IL  
-                        //Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);
-                        ////if (vm.Cmd_Count == 1)
-                        ////{
-                        ////    for (int i = 0; i < vm.ch_count; i++)
-                        ////    {
-                        ////        vm.maxIL[i] = vm.Double_Powers[i];
-                        ////        vm.minIL[i] = vm.Double_Powers[i];
-                        ////    }
-                        ////}
-                        ////else
-                        ////{
-                        ////    for (int i = 0; i < vm.ch_count; i++)
-                        ////    {
-                        ////        vm.maxIL[i] = vm.Double_Powers[i] > vm.maxIL[i] ? vm.Double_Powers[i] : vm.maxIL[i];
-                        ////        vm.minIL[i] = vm.Double_Powers[i] < vm.minIL[i] ? vm.Double_Powers[i] : vm.minIL[i];
-
-                        ////        double deltaIL = Math.Round(Math.Abs(vm.maxIL[i] - vm.minIL[i]), 4);
-                        ////        vm.list_ch_title[i] = string.Concat("ch1", " ,Delta IL : ", deltaIL.ToString());
-                        ////        vm.ChartNowModel.list_delta_IL[i] = deltaIL;
-                        ////    }
-                        ////}
-                        //#endregion
+                        }                      
                     }
                     else  //PM mode
                     {
@@ -807,8 +703,6 @@ namespace PD.Functions
                     break;
 
                 case "WHILEND":
-                    //vm.loop_end_index = int.Parse(cm.No);   //Save loop end position
-
                     if (!varM.VariableBool)
                         cmdMsg.isLoop = false;
                     break;
@@ -884,10 +778,6 @@ namespace PD.Functions
 
                         if (vm.PD_or_PM)
                             await Get_Dac("D1?");  //Ask dac and show in the gauge
-                        else
-                        {
-                            //await Get_Dac(string.Format("D{0}?", cm.Channel));
-                        }
                     }
 
                     break;
@@ -933,11 +823,6 @@ namespace PD.Functions
                         double var_TLSPower = 0;
                         if (!double.TryParse(cm.Value_1, out var_TLSPower)) break;
 
-                        //vm.tls.SetPower(var_TLSPower);
-                        //vm.Double_Laser_Power = Convert.ToDouble(var_TLSPower);
-
-                        //await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
-
                         Set_TLS_Power(var_TLSPower, false);
                         vm.Double_Laser_Power = Convert.ToDouble(var_TLSPower);
                     }
@@ -960,7 +845,6 @@ namespace PD.Functions
                             int ch = 1;
                             if (!int.TryParse(cm.Channel, out ch)) ch = 0;
                             await Get_PD_Value(comport);  //Y axis value
-
 
                             if (ch == 0)
                             {
@@ -1242,10 +1126,7 @@ namespace PD.Functions
                         if (!double.TryParse(cm.Value_1, out var_wl)) break;
 
                         double wl = var_wl;
-                        Set_WL(wl, false);
-                        //vm.tls.SetWL(wl);
-                        //vm.pm.SetWL(wl);
-                        //await vm.AccessDelayAsync(vm.Int_Set_WL_Delay / 5);
+                        await Set_WL(wl, false);
 
                         vm.Double_Laser_Wavelength = wl;
                     }
@@ -1291,30 +1172,7 @@ namespace PD.Functions
                         vm.pageName_LogCmd = "page_stringList";
                         CSVFunctions.Read_Ref_CSV(@cm.Value_1, vm.pageName_LogCmd, vm);
                     }
-                    break;
-
-                //case "SAVEPOWER":
-                //    if (cm.Type == "PM")
-                //    {
-                //        int var;
-                //        if (cm.Value_1.ToCharArray()[0] == '*')
-                //        {
-                //            if (!int.TryParse(vm.list_VariableModels[int.Parse(cm.Value_1.Remove(0, 1))].VariableContent.ToString(), out var)) break;
-
-                //        }
-                //            else
-                //                if (!int.TryParse(cm.Value_1, out var)) break;
-
-
-                //        vm.list_VariableModels[var].VariableContent = vm.pm.ReadPower();
-                //        await vm.AccessDelayAsync(vm.Int_Read_Delay);
-                //    }
-                //    else if (cm.Type == "PD")
-                //    {
-
-                //    }
-                //    else vm.Save_Log(cm.Command, "No Type Setting", false);
-                //    break;
+                    break;               
 
                 case "SAVEPOWER":
                     if (vm.PD_or_PM)  //PM mode
@@ -1334,8 +1192,6 @@ namespace PD.Functions
 
                 case "SAVECHART":
                     await Save_Chart();
-                    //vm.Save_All_PD_Value.Clear();
-                    //vm.Chart_DataPoints.Clear();
                     break;
 
                 case "SETVAR":
@@ -1361,8 +1217,6 @@ namespace PD.Functions
                         string s2 = cm.Value_2;
                         if (!s2.Contains("@"))
                             vm.list_VarBoolModels[int.Parse(s)].VariableBool = bool.Parse(s2);
-                        //vm.list_VariableModels[int.Parse(s)].VariableBool = true;
-                        //vm.list_VarBoolModels[var_CMPGT_3].VariableBool = true;
                         else
                             vm.list_VariableModels[int.Parse(s)].VariableBool = vm.list_VariableModels[int.Parse(s2.Remove(0, 1))].VariableBool;
                     }
@@ -1612,8 +1466,6 @@ namespace PD.Functions
                                 }
                             }
                     }
-
-
                     break;
 
                 case "IFON":
@@ -1834,6 +1686,18 @@ namespace PD.Functions
                     vm.list_VarBoolModels[anly.JudgeVariable(cm.Value_1, 1).VariableIndex].VariableBool = false;
                     break;
 
+                case "CLSPORT":
+                    if(vm.port_PD != null)
+                    {
+                        if (vm.port_PD.IsOpen)
+                        {
+                            vm.port_PD.DiscardInBuffer();
+                            vm.port_PD.DiscardOutBuffer();
+                            vm.port_PD.Close();
+                        }
+                    }
+                    break;
+
                 default:
                     if (string.Compare(vm.station_type, "UV_Curing") == 0)
                     {
@@ -1918,9 +1782,6 @@ namespace PD.Functions
 
             return result;
         }
-
-       
-
 
         public async Task D0_show()
         {
@@ -2161,7 +2022,65 @@ namespace PD.Functions
             return vm.IsGoOn;
         }
 
-        public void Connect_TLS()
+        //private void ConnectGoLightTLS()
+        //{
+        //    if (vm.tls_GL.Open(vm.Golight_ChannelModel.Board_Port))
+        //    {
+        //        vm.isConnected = true;
+
+        //        string ReadWLMinMax = vm.tls_GL.ReadWL_MinMax();
+        //        string[] wl_min_max = ReadWLMinMax.Split(',');
+
+        //        if (wl_min_max != null)
+        //        {
+        //            if (wl_min_max.Length == 2)
+        //            {
+        //                vm.float_TLS_WL_Range[0] = float.Parse(wl_min_max[0]);
+        //                vm.float_TLS_WL_Range[1] = float.Parse(wl_min_max[1]);
+        //            }
+        //        }
+
+        //        vm.Save_Log(new Models.LogMember()
+        //        {
+        //            isShowMSG = false,
+        //            Message = "Golight TLS connected",
+        //        });
+
+        //        vm.Save_Log(new Models.LogMember()
+        //        {
+        //            isShowMSG = false,
+        //            Message = "Get TLS WL Range",
+        //            Result = ReadWLMinMax
+        //        });
+        //    }
+        //    else
+        //        vm.Save_Log(new Models.LogMember()
+        //        {
+        //            isShowMSG = true,
+        //            Message = "Connect Golight TLS Fail"
+        //        });
+
+
+        //}
+
+        private async Task<bool> ConnectGolightTLS(DiCon.Instrument.HP.GLTLS port,  string portName)
+        {
+            try
+            {
+                //port.is
+                port.Open(portName);
+                await Task.Delay(1);
+            }
+            catch(Exception ex) 
+            { 
+                MessageBox.Show(ex.StackTrace.ToString());
+                return false; 
+            }
+
+            return true;
+        }
+
+        public async Task Connect_TLS()
         {
             try
             {
@@ -2246,55 +2165,112 @@ namespace PD.Functions
 
                     case "Golight":
 
-                        if (!string.IsNullOrEmpty(vm.Golight_ChannelModel.Board_Port))
+                        if(!vm.isConnected)
                         {
-                            if (vm.tls_GL.Open(vm.Golight_ChannelModel.Board_Port))
+                            if (!string.IsNullOrEmpty(vm.Golight_ChannelModel.Board_Port))
                             {
-                                vm.isConnected = true;
+                                //Task tcGLTLS = new Task(async () => await ConnectGolightTLS(vm.tls_GL, vm.Golight_ChannelModel.Board_Port));
+                                //Action<string> cGLTLS;
+                                //cGLTLS = new Action<string>(ConnectGolightTLS);
+                                //tcGLTLS.Start();
 
-                                string ReadWLMinMax = vm.tls_GL.ReadWL_MinMax();
-                                string[] wl_min_max = ReadWLMinMax.Split(',');
+                                //var obj = await Task.WhenAny(tcGLTLS, Task.Delay(1200));
+                                //if (obj == tcGLTLS)
+                                await Task.Delay(100);
 
-                                if (wl_min_max != null)
+                                if(vm.tls_GL.Open(vm.Golight_ChannelModel.Board_Port))
                                 {
-                                    if (wl_min_max.Length == 2)
+                                    //await Task.Run(async () => await ConnectGolightTLS(vm.tls_GL, vm.Golight_ChannelModel.Board_Port));
+
+                                    vm.isConnected = true;
+
+                                    await Task.Delay(250);
+
+                                    string ReadWLMinMax = vm.tls_GL.ReadWL_MinMax();
+                                    string[] wl_min_max = ReadWLMinMax.Split(',');
+
+                                    if (wl_min_max != null)
                                     {
-                                        vm.float_TLS_WL_Range[0] = float.Parse(wl_min_max[0]);
-                                        vm.float_TLS_WL_Range[1] = float.Parse(wl_min_max[1]);
+                                        if (wl_min_max.Length == 2)
+                                        {
+                                            vm.float_TLS_WL_Range[0] = float.Parse(wl_min_max[0]);
+                                            vm.float_TLS_WL_Range[1] = float.Parse(wl_min_max[1]);
+                                        }
                                     }
+
+                                    vm.Save_Log(new Models.LogMember()
+                                    {
+                                        isShowMSG = false,
+                                        Message = "Golight TLS connected",
+                                    });
+
+                                    vm.Save_Log(new Models.LogMember()
+                                    {
+                                        isShowMSG = false,
+                                        Message = "Get TLS WL Range",
+                                        Result = ReadWLMinMax
+                                    });
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Timeout");
+
+                                    vm.Save_Log(new Models.LogMember()
+                                    {
+                                        isShowMSG = false,
+                                        Message = "Connect Golight TLS Fail"
+                                    });
                                 }
 
-                                vm.Save_Log(new Models.LogMember()
-                                {
-                                    isShowMSG = false,
-                                    Message = "Golight TLS connected",
-                                });
+                                
+                                //if (false && vm.tls_GL.Open(vm.Golight_ChannelModel.Board_Port))
+                                //{
+                                //    vm.isConnected = true;
 
-                                vm.Save_Log(new Models.LogMember()
-                                {
-                                    isShowMSG = false,
-                                    Message = "Get TLS WL Range",
-                                    Result = ReadWLMinMax
-                                });
+                                //    string ReadWLMinMax = vm.tls_GL.ReadWL_MinMax();
+                                //    string[] wl_min_max = ReadWLMinMax.Split(',');
+
+                                //    if (wl_min_max != null)
+                                //    {
+                                //        if (wl_min_max.Length == 2)
+                                //        {
+                                //            vm.float_TLS_WL_Range[0] = float.Parse(wl_min_max[0]);
+                                //            vm.float_TLS_WL_Range[1] = float.Parse(wl_min_max[1]);
+                                //        }
+                                //    }
+
+                                //    vm.Save_Log(new Models.LogMember()
+                                //    {
+                                //        isShowMSG = false,
+                                //        Message = "Golight TLS connected",
+                                //    });
+
+                                //    vm.Save_Log(new Models.LogMember()
+                                //    {
+                                //        isShowMSG = false,
+                                //        Message = "Get TLS WL Range",
+                                //        Result = ReadWLMinMax
+                                //    });
+                                //}
+                                //else
+                                //{
+                                //    vm.Save_Log(new Models.LogMember()
+                                //    {
+                                //        isShowMSG = false,
+                                //        Message = "Connect Golight TLS Fail"
+                                //    });
+                                //}
                             }
                             else
                                 vm.Save_Log(new Models.LogMember()
                                 {
                                     isShowMSG = true,
-                                    Message = "Connect Golight TLS Fail"
+                                    Message = "Golight comport is null or empty"
                                 });
                         }
-                        else
-                            vm.Save_Log(new Models.LogMember()
-                            {
-                                isShowMSG = true,
-                                Message = "Golight comport is null or empty"
-                            });
 
                         break;
                 }
-
-                //vm.Ini_Write("Connection", "Laser_type", vm.Laser_type);
             }
             catch (Exception ex)
             {
@@ -2306,20 +2282,23 @@ namespace PD.Functions
         {
             try
             {
-                if (!vm.isConnected) Connect_TLS();
+                if (!vm.isConnected) await Connect_TLS();
 
-                switch (vm.Laser_type)
-                {
-                    case "Agilent":
-                        vm.tls.SetActive(_laserActive);
-                        break;
+                if (vm.isConnected) 
+                { 
+                    switch (vm.Laser_type)
+                    {
+                        case "Agilent":
+                            vm.tls.SetActive(_laserActive);
+                            break;
 
-                    case "Golight":
-                        vm.tls_GL.SetActive(_laserActive);
-                        break;
+                        case "Golight":
+                            vm.tls_GL.SetActive(_laserActive);
+                            break;
+                    }
+
+                    await Task.Delay(vm.Int_Set_WL_Delay + 100);
                 }
-
-                await Task.Delay(vm.Int_Set_WL_Delay + 100);
             }
             catch (Exception ex)
             {
@@ -2566,7 +2545,7 @@ namespace PD.Functions
 
                 Set_TLS_Filter(wl, false);
 
-                await Task.Delay(vm.Int_Read_Delay);
+                //await Task.Delay(vm.Int_Read_Delay);
 
                 if (readback)
                 {
@@ -2802,9 +2781,10 @@ namespace PD.Functions
                         if (!string.IsNullOrEmpty(vm.port_TLS_Filter.PortName))
                         {
                             if (!vm.port_TLS_Filter.IsOpen)
+                            {
                                 vm.port_TLS_Filter.Open();
-
-                            await Task.Delay(100);
+                                await Task.Delay(100);
+                            }
 
                             vm.port_TLS_Filter.Write($"WL {wl}\r");
 
@@ -3076,8 +3056,9 @@ namespace PD.Functions
             catch { }
         }
 
-        public async Task Get_Power()
+        public async Task<string> Get_Power()
         {
+            string str = "";
             if (!vm.IsDistributedSystem)
                 switch (vm.GetPWSettingModel.TypeName)
                 {
@@ -3086,13 +3067,14 @@ namespace PD.Functions
                         if (vm.station_type.Equals("Hermetic_Test")) ch = vm.switch_index;
 
                         double p = await Get_PM_Value((ch - 1));  //Y axis value
+                        str = p.ToString();
 
                         //vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
                         break;
 
                     case "PD":
                         string comport = vm.GetPWSettingModel.Comport;
-                        await Get_PD_Value(comport);  //Y axis value
+                        str = await Get_PD_Value(comport);  //Y axis value
 
                         for (int i = 0; i < vm.ch_count; i++)
                         {
@@ -3137,8 +3119,11 @@ namespace PD.Functions
                             vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
                         }
                     }
+                    str = vm.list_GaugeModels[0].GaugeValue;
                 }
             }
+
+            return str;
         }
 
         public async Task<List<List<double>>> Get_Power(int ch, bool isRead)
@@ -3158,15 +3143,71 @@ namespace PD.Functions
 
                         case "PD":
                             string comport = vm.GetPWSettingModel.Comport;
-                            await Get_PD_Value(comport);  //Y axis value
 
-                            for (int i = 0; i < vm.ch_count; i++)
+                            if (!vm.Is_FastScan_Mode)
                             {
-                                if (vm.BoolAllGauge || vm.list_GaugeModels[i].boolGauge)
+                                await Get_PD_Value(comport);  //Y axis value
+
+                                for (int i = 0; i < vm.ch_count; i++)
                                 {
-                                    vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                    if (vm.BoolAllGauge || vm.list_GaugeModels[i].boolGauge)
+                                    {
+                                        vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                    }
                                 }
                             }
+                            else
+                            {
+                                if (!string.IsNullOrEmpty(comport))
+                                {
+                                    if (!vm.port_PD.IsOpen)
+                                        await vm.Port_ReOpen(comport);
+
+                                    if (vm.port_PD.IsOpen)
+                                    {
+                                        vm.port_PD.Write("P0?\r");
+
+                                        if (vm.isGetPowerWaitForReadBack || (!vm.IsDistributedSystem && !vm.PD_or_PM && vm.Is_FastScan_Mode))
+                                            await Task.Delay(vm.Int_Read_Delay);
+
+                                        //for (int i = 0; i < 10; i++)
+                                        //{
+                                        //    int size1 = vm.port_PD.BytesToRead;
+                                        //    if (size1 > 0) 
+                                        //        break;
+                                        //}
+
+                                        int size = vm.port_PD.BytesToRead;
+                                        byte[] dataBuffer = new byte[size];
+                                        int length = vm.port_PD.Read(dataBuffer, 0, size);
+
+                                        //Show read back message
+                                        string msg = anly.Read_analysis("P0_Read", dataBuffer);
+
+                                        if (vm.Double_Powers[ch]!=0 && !string.IsNullOrEmpty(msg))
+                                        {
+                                            int loop = vm.Double_Powers.Count / vm.ch_count;
+                                            for (int i = 0; i < loop; i++)
+                                            {
+                                                vm.list_GaugeModels[ch].GaugeValue = vm.Double_Powers[ch + (8*i)].ToString();
+
+                                                //Only distributedSystem will auto update chart
+                                                if (!vm.IsDistributedSystem && vm.Is_FastScan_Mode)
+                                                {
+                                                    DataPoint dp = new DataPoint(vm.wl_list[vm.ChartNowModel.list_dataPoints[ch].Count], vm.Double_Powers[ch + (8 * i)]);
+                                                    vm.ChartNowModel.list_dataPoints[ch].Add(dp);
+                                                    vm.Save_All_PD_Value[ch].Add(dp);
+                                                    //vm.wl_list_index++;
+
+                                                    //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                                                    //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries  
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             break;
 
                         case "Tablet":
@@ -3190,6 +3231,8 @@ namespace PD.Functions
                             string comport = vm.list_ChannelModels[ch - 1].PM_Board_Port;
 
                             listDD = await Get_IL_rs232(ch, comport, rs232_cmd, isRead);  //Y axis value
+
+                            //Analyze feedback power in buffer
                             if (!isRead)
                             {
                                 if (vm.list_ChannelModels.Count == 1 && listDD.Count > 1)
@@ -3381,8 +3424,6 @@ namespace PD.Functions
                     await vm.Port_ReOpen(comport);
             }
 
-
-
             vm.port_PD.Write(cmd + "\r");
 
             await Task.Delay(vm.Int_Read_Delay);
@@ -3512,7 +3553,7 @@ namespace PD.Functions
             return listDD;
         }
 
-        public async Task<List<double>> Get_PD_Value(string comport)
+        public async Task<string> Get_PD_Value(string comport)
         {
             if (!string.IsNullOrEmpty(comport))
             {
@@ -3522,13 +3563,15 @@ namespace PD.Functions
 
             vm.port_PD.Write("P0?\r");
 
-            await Task.Delay(vm.Int_Read_Delay);
+            if (vm.isGetPowerWaitForReadBack)
+                await Task.Delay(vm.Int_Read_Delay);
+            else
+                await Task.Delay(vm.Int_Write_Delay);
 
-            await Cmd_RecieveData("P0_Read", false);
-
-            return vm.Double_Powers;
+            string str = await Cmd_RecieveData("P0_Read", false);
+            return str;
         }
-
+              
         public async Task<double> Get_PM_Value(int ch) //PM Value save in vm.Double_Powers
         {
             double power = 0;

@@ -169,7 +169,7 @@
                 </Grid.RowDefinitions>
 
                 <TextBox Text="{Binding opModel_1.SN, FallbackValue=SN, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                         BorderBrush="#FF6A6A6A" Margin="20,25,20,0"  Style="{StaticResource style_SN_txtbox_v2}"
+                         BorderBrush="#FF6A6A6A" Margin="20,25,20,0"  Style="{StaticResource style_SN_txtbox_v2}" TextChanged="TextBox_SN_TextChanged"
                         FontSize="18" FontFamily="Segoe Print"/>
 
 
@@ -897,11 +897,7 @@
                           SelectedItem="{Binding TF2_station_type}"
                           ItemsSource="{Binding list_TF2_station_type}"
                                   Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                  Style="{StaticResource style_combobox_black}" >
-                    <!--<ComboBoxItem Content="Alignment"/>
-                    <ComboBoxItem Content="PreTest"/>
-                    <ComboBoxItem Content="Test"/>
-                    <ComboBoxItem Content="FinalTest"/>-->
+                                  Style="{StaticResource style_combobox_black}" >                   
                 </ComboBox>
 
             </Grid>

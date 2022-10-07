@@ -29,12 +29,7 @@
                   Loaded="dataGrid_Loaded"
                   ItemsSource="{Binding}"
                   SelectionUnit="FullRow">
-            <!--<DataGrid.Resources>
-                <Style TargetType="DataGridCell">
-                    <EventSetter Event="PreviewMouseLeftButtonDown"
-                                 Handler="DataGridCell_PreviewMouseLeftButtonDown" />
-                </Style>
-            </DataGrid.Resources>-->
+          
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Header=""
                                         Binding="{Binding YN}"
