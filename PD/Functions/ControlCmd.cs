@@ -219,11 +219,11 @@ namespace PD.Functions
 
         public async Task<bool> CommandListCycle()
         {
+            #region Run Command
             while (vm.IsGoOn && !vm.isStop)
             {
                 if (vm.IsGoOn && !vm.isStop)
                 {
-                    #region Run Command
                     try
                     {
                         if (vm.IsGoOn)
@@ -246,10 +246,12 @@ namespace PD.Functions
                                         }
                                         else { vm.ComMembers.RemoveAt(i); }
                                 }
-                                else  //No command which is P0?
+                                //No command which is P0?
+                                else
                                 {
                                     if (!vm.IsDistributedSystem)
                                     {
+                                        //PD mode
                                         if (!vm.PD_or_PM)
                                         {
                                             if (vm.station_type.Equals("Fast_Calibration"))
@@ -257,10 +259,12 @@ namespace PD.Functions
                                             else
                                                 await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "P0?", Type = "PD" });
                                         }
+                                        //PM mode
                                         else
                                             await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "GETPOWER", Type = "PM", Channel = vm.switch_index.ToString() });
                                     }
-                                    else  //distribution system
+                                    //distribution system
+                                    else
                                     {
                                         for (int channel = 0; channel < vm.ch_count; channel++)
                                         {
@@ -288,13 +292,14 @@ namespace PD.Functions
                         MessageBox.Show(ex.ToString());
                         return true;
                     }
-                    #endregion
                 }
                 else
                 {
                     vm._timer.Stop();
                 }
             }
+            #endregion
+
 
             return true;
         }
@@ -487,7 +492,16 @@ namespace PD.Functions
                         else
                         {
                             if (string.IsNullOrEmpty(cm.Comport))
-                                await vm.Port_ReOpen(vm.Selected_Comport);
+                            {
+                                if(string.IsNullOrEmpty(vm.Selected_Comport))
+                                {
+                                    vm.isStop = true;
+                                    vm.Save_Log(new LogMember() { isShowMSG = true, Message = "Comport is empty" });
+                                    break;
+                                }
+                                else
+                                    await vm.Port_ReOpen(vm.Selected_Comport);
+                            }
                             else await vm.Port_ReOpen(cm.Comport);
 
                             vm.port_PD.Write("P0?\r");
@@ -531,34 +545,10 @@ namespace PD.Functions
                             #endregion
 
                             #region Cal. Delta IL  
-                            Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);
-                            //if (vm.Cmd_Count == 1)
-                            //{
-                            //    for (int i = 0; i < vm.ch_count; i++)
-                            //    {
-                            //        vm.maxIL[i] = vm.Double_Powers[i];
-                            //        vm.minIL[i] = vm.Double_Powers[i];
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    for (int i = 0; i < vm.ch_count; i++)
-                            //    {
-                            //        vm.maxIL[i] = vm.Double_Powers[i] > vm.maxIL[i] ? vm.Double_Powers[i] : vm.maxIL[i];
-                            //        vm.minIL[i] = vm.Double_Powers[i] < vm.minIL[i] ? vm.Double_Powers[i] : vm.minIL[i];
-
-                            //        double deltaIL = Math.Round(Math.Abs(vm.maxIL[i] - vm.minIL[i]), 4);
-                            //        vm.list_ch_title[i] = string.Concat("ch1", " ,Delta IL : ", deltaIL.ToString());
-                            //        vm.ChartNowModel.list_delta_IL[i] = deltaIL;
-                            //    }
-                            //}
+                            Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);                            
                             #endregion
                         }                      
-                    }
-                    else  //PM mode
-                    {
-
-                    }
+                    }                   
                     break;
                 case "PAUSE":
                     while (vm.lastCMD.YN)

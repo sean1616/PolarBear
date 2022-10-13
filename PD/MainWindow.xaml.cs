@@ -550,6 +550,7 @@ namespace PD
                     vm.Chart_x_title = "Time(s)"; //Set Chart x axis title
                     vm.Str_Status = "Get Power";
                     vm.int_timer_timespan = int.MaxValue;
+                    vm.timer2_count = 0;
                     vm.watch = new System.Diagnostics.Stopwatch();
                     vm.watch.Start();
                     cmd.Clean_Chart();
