@@ -6,8 +6,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              xmlns:ui="clr-namespace:PD.NavigationPages"
-             xmlns:wpfuc="clr-namespace:Wpf_Control_Library;assembly=Wpf_Control_Library"
              xmlns:fnc="clr-namespace:PD.Functions"
+             xmlns:wpfuc="clr-namespace:Wpf_Control_Library;assembly=Wpf_Control_Library"
              xmlns:vm="clr-namespace:PD.ViewModel"
              d:DesignHeight="1080"
              d:DesignWidth="1920"
@@ -119,64 +119,6 @@
                 </ItemsControl>
             </ScrollViewer>
 
-
-            <!--<CheckBox
-                    Grid.Row="4"
-                    Click="CheckBox_Checked"
-                    Content="Ch 2"
-                      Tag="../../Resources/right-arrow.png"
-                      Style="{DynamicResource style_Chart_CheckBox}"
-                    Foreground="Red"
-                    IsChecked="{Binding IsCheck[1]}" />
-            <CheckBox
-                    Grid.Row="5"
-                    Click="CheckBox_Checked"
-                    Content="Ch 3"
-                      Tag="../../Resources/right-arrow.png"
-                      Style="{DynamicResource style_Chart_CheckBox}"
-                    Foreground="Blue"
-                    IsChecked="{Binding IsCheck[2]}" />
-            <CheckBox
-                    Grid.Row="6"
-                    Click="CheckBox_Checked"
-                    Content="Ch 4"
-                      Tag="../../Resources/right-arrow.png"
-                      Style="{DynamicResource style_Chart_CheckBox}"
-                    Foreground="Orange"
-                    IsChecked="{Binding IsCheck[3]}" />
-            <CheckBox
-                    Grid.Row="7"
-                    Click="CheckBox_Checked"
-                    Content="Ch 5"
-                      Tag="../../Resources/right-arrow.png"
-                      Style="{DynamicResource style_Chart_CheckBox}"
-                    Foreground="GreenYellow"
-                    IsChecked="{Binding IsCheck[4]}" />
-            <CheckBox
-                    Grid.Row="8"
-                    Click="CheckBox_Checked"
-                    Content="Ch 6"
-                      Tag="../../Resources/right-arrow.png"
-                      Style="{DynamicResource style_Chart_CheckBox}"
-                    Foreground="Purple"
-                    IsChecked="{Binding IsCheck[5]}" />
-            <CheckBox
-                    Grid.Row="9"
-                    Click="CheckBox_Checked"
-                    Content="Ch 7"
-                      Tag="../../Resources/right-arrow.png"
-                      Style="{DynamicResource style_Chart_CheckBox}"
-                      Foreground="#FF858585"
-                      IsChecked="{Binding IsCheck[6]}" />
-            <CheckBox
-                    Grid.Row="10"
-                    Click="CheckBox_Checked"
-                    Content="Ch 8"
-                      Tag="../../Resources/right-arrow.png"
-                      Style="{DynamicResource style_Chart_CheckBox}"
-                    Foreground="Chocolate"
-                    IsChecked="{Binding IsCheck[7]}" />-->
-
             <Grid Grid.Row="11">
                 <Button Name="btn_Calculation"
                         Content="Calculation"
@@ -201,8 +143,7 @@
                   Title="{Binding Chart_title}"
                   Grid.Column="1"
                   Margin="20,0,20,10"
-                  FontFamily="Segoe Print"
-                  Loaded="Plot_Chart_Loaded">
+                  FontFamily="Segoe Print">
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Title="{Binding Chart_x_title, FallbackValue=1}"
                                 Position="Bottom" />

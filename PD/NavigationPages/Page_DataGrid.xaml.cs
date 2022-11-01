@@ -1031,9 +1031,9 @@ namespace PD.NavigationPages
 
             analysis.JudgeAllBoolGauge();
 
-            if (!System.IO.File.Exists(RefPath))
+            if (!File.Exists(RefPath))
             {
-                System.IO.File.AppendAllText(RefPath, "");
+                File.AppendAllText(RefPath, "");
             }
             else
             {

@@ -230,7 +230,7 @@ namespace PD.NavigationPages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.5.15;component/navigationpages/page_laser.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.5.17;component/navigationpages/page_laser.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NavigationPages\Page_Laser.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

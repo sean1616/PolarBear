@@ -354,8 +354,8 @@ namespace PD.Functions
                             await Cmd_RecieveData("PD_Read", false);
 
                             #region Set Chart data points                                           
-                            if (vm.timer2_count > 36000)  //Default 28800 , two hours
-                                vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
+                            //if (vm.timer2_count > 36000)  //Default 28800 , two hours
+                            //    vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
 
                             double sec = (double)Math.Round((decimal)vm.timer2_count * vm.Int_Read_Delay / 1000, 2);
 
@@ -414,8 +414,8 @@ namespace PD.Functions
                             await Cmd_RecieveData("P0_Read", false);
 
                             #region Set A Chart data points                                           
-                            if (vm.timer2_count > 30000)  //Default 28800 , two hours
-                                vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
+                            //if (vm.timer2_count > 30000)  //Default 28800 , two hours
+                            //    vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
 
                             double sec = (double)Math.Round((decimal)vm.timer2_count * vm.Int_Read_Delay / 1000, 2);
 
@@ -511,8 +511,8 @@ namespace PD.Functions
                             await Cmd_RecieveData("P0_Read", false);
 
                             #region Set Chart data points                                           
-                            if (vm.timer2_count > 30000)  //Default 28800 , two hours
-                                vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
+                            //if (vm.timer2_count > 30000)  //Default 28800 , two hours
+                            //    vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
 
                             double sec = (double)Math.Round((decimal)vm.timer2_count * vm.Int_Read_Delay / 1000, 2);
 

@@ -3,16 +3,89 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="clr-namespace:PD.NavigationPages"
+        xmlns:fnc="clr-namespace:PD.Functions"
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         xmlns:local="clr-namespace:PD.NavigationPages"
+        xmlns:vm="clr-namespace:PD.ViewModel"
         mc:Ignorable="d" Topmost="True"
-        Title="Window_Chart_Popup" Height="650" Width="900">
+        WindowStyle="None"
+        Title="Chart Plot" Height="650" Width="900">
+
+    <Window.Resources>
+        <fnc:Bool_To_Vis_ValueConverter x:Key="Bool_To_Vis_ValueConverter"/>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:ComViewModel />
+    </Window.DataContext>
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="8*" />
+        </Grid.RowDefinitions>
+
+        <Border Name="border_title"
+                Grid.Column="0"
+                Grid.ColumnSpan="4"
+                Background="#FF646464"
+                MouseLeftButtonUp="border_title_MouseLeftButtonUp"
+                MouseMove="border_title_MouseMove"
+                PreviewMouseLeftButtonDown="border_title_PreviewMouseLeftButtonDown" />
+        <Grid Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock FontFamily="Segoe Print"
+                       Text="Plot"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Foreground="Wheat"
+                       Grid.Column="1" />
+        </Grid>
+
+        <Grid Grid.Column="2"
+              Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="10" />
+            </Grid.ColumnDefinitions>
+
+            <Button Name="btn_min"
+                    MaxHeight="25"
+                    MinHeight="25"
+                    MinWidth="25"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Click="btn_min_Click"
+                    Style="{DynamicResource style_WindowFuncBtn}"
+                    Tag="../Resources/Min_white.png"
+                    Grid.Column="2" />
+
+            <Button Name="btn_close"
+                    Grid.Column="4"
+                    MaxHeight="25"
+                    MinHeight="25"
+                    MinWidth="25"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Click="btn_close_Click"
+                    Style="{DynamicResource style_WindowFuncBtn}"
+                    Tag="../Resources/close.png" />
+        </Grid>
+
+
         <oxy:Plot x:Name="Plot_Chart"
-                  Title="Power"
+                  Title="{Binding Chart_title}"
                   Grid.Column="1"
                   Margin="5,5,25,5"
-                  FontFamily="Segoe Print"
+                  FontFamily="Segoe Print" Grid.Row="1" Grid.RowSpan="2"
                   >
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Title="{Binding Chart_x_title, FallbackValue=1}"
@@ -24,43 +97,83 @@
                 <oxy:LineSeries Name="No1"
                                 Title="ch1"
                                 ItemsSource="{Binding Chart_DataPoints, Mode=OneWay}"
-                                Visibility="{Binding LineSeries_Visible[0]}"
+                                Visibility="{Binding list_Chart_UI_Models[0].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Green" />
                 <oxy:LineSeries Name="No2"
                                 Title="ch2"
                                 ItemsSource="{Binding Chart_All_DataPoints[1], Mode=OneWay}"
-                                Visibility="{Binding LineSeries_Visible[1]}"
+                                Visibility="{Binding list_Chart_UI_Models[1].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Red" />
                 <oxy:LineSeries Name="No3"
                                 Title="ch3"
                                 ItemsSource="{Binding Chart_All_DataPoints[2], Mode=OneWay}"
-                                Visibility="{Binding LineSeries_Visible[2]}"
+                                Visibility="{Binding list_Chart_UI_Models[2].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Blue" />
                 <oxy:LineSeries Name="No4"
                                 Title="ch4"
                                 ItemsSource="{Binding Chart_All_DataPoints[3], Mode=OneWay}"
-                                Visibility="{Binding LineSeries_Visible[3]}"
+                                Visibility="{Binding list_Chart_UI_Models[3].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Orange" />
                 <oxy:LineSeries Name="No5"
                                 Title="ch5"
                                 ItemsSource="{Binding Chart_All_DataPoints[4], Mode=OneWay}"
-                                Visibility="{Binding LineSeries_Visible[4]}"
+                                Visibility="{Binding list_Chart_UI_Models[4].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="GreenYellow" />
                 <oxy:LineSeries Name="No6"
                                 Title="ch6"
                                 ItemsSource="{Binding Chart_All_DataPoints[5], Mode=OneWay}"
-                                Visibility="{Binding LineSeries_Visible[5]}"
+                                Visibility="{Binding list_Chart_UI_Models[5].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Purple" />
                 <oxy:LineSeries Name="No7"
                                 Title="ch7"
                                 ItemsSource="{Binding Chart_All_DataPoints[6], Mode=OneWay}"
-                                Visibility="{Binding LineSeries_Visible[6]}"
+                                Visibility="{Binding list_Chart_UI_Models[6].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Gray" />
                 <oxy:LineSeries Name="No8"
                                 Title="ch8"
                                 ItemsSource="{Binding Chart_All_DataPoints[7], Mode=OneWay}"
-                                Visibility="{Binding LineSeries_Visible[7]}"
-                                Color="Chocolate" />               
+                                Visibility="{Binding list_Chart_UI_Models[7].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
+                                Color="Chocolate" />
+                <oxy:LineSeries Name="No9"
+                                Title="ch9"
+                                ItemsSource="{Binding Chart_All_DataPoints[8], Mode=OneWay}"
+                                Visibility="{Binding list_Chart_UI_Models[8].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
+                                Color="LightSeaGreen" />
+                <oxy:LineSeries Name="No10"
+                                Title="ch10"
+                                ItemsSource="{Binding Chart_All_DataPoints[9], Mode=OneWay}"
+                                Visibility="{Binding list_Chart_UI_Models[9].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
+                                Color="MediumVioletRed" />
+                <oxy:LineSeries Name="No11"
+                                Title="ch11"
+                                ItemsSource="{Binding Chart_All_DataPoints[10], Mode=OneWay}"
+                                Visibility="{Binding list_Chart_UI_Models[10].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
+                                Color="Coral" />
+                <oxy:LineSeries Name="No12"
+                                Title="ch12"
+                                ItemsSource="{Binding Chart_All_DataPoints[11], Mode=OneWay}"
+                                Visibility="{Binding list_Chart_UI_Models[11].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
+                                Color="BurlyWood" />
+                <oxy:LineSeries Name="No13"
+                                Title="ch13"
+                                ItemsSource="{Binding Chart_All_DataPoints[12], Mode=OneWay}"
+                                Visibility="{Binding list_Chart_UI_Models[12].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
+                                Color="DarkKhaki" />
+                <oxy:LineSeries Name="No14"
+                                Title="ch14"
+                                ItemsSource="{Binding Chart_All_DataPoints[13], Mode=OneWay}"
+                                Visibility="{Binding list_Chart_UI_Models[13].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
+                                Color="DarkCyan" />
+                <oxy:LineSeries Name="No15"
+                                Title="ch15"
+                                ItemsSource="{Binding Chart_All_DataPoints[14], Mode=OneWay}"
+                                Visibility="{Binding list_Chart_UI_Models[14].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
+                                Color="MediumPurple" />
+                <oxy:LineSeries Name="No16"
+                                Title="ch16"
+                                ItemsSource="{Binding Chart_All_DataPoints[15], Mode=OneWay}"
+                                Visibility="{Binding list_Chart_UI_Models[15].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
+                                Color="OrangeRed" />
             </oxy:Plot.Series>
         </oxy:Plot>
     </Grid>

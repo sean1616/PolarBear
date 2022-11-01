@@ -66,12 +66,7 @@ namespace PD.NavigationPages
             //    vm.LineSeries_Visible[i] = Visibility.Hidden;
             //}
         }
-
-        private void Plot_Chart_Loaded(object sender, RoutedEventArgs e)
-        {
-
-
-        }
+              
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
