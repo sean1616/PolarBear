@@ -300,7 +300,6 @@ namespace PD.Functions
             }
             #endregion
 
-
             return true;
         }
 
@@ -514,6 +513,12 @@ namespace PD.Functions
                             //if (vm.timer2_count > 30000)  //Default 28800 , two hours
                             //    vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
 
+                            if (vm.timer2_count == 0)
+                            {
+                                vm.maxIL = new List<double>(vm.Double_Powers);
+                                vm.minIL = new List<double>(vm.Double_Powers);
+                            }
+
                             double sec = (double)Math.Round((decimal)vm.timer2_count * vm.Int_Read_Delay / 1000, 2);
 
                             if (vm.isTimerOn)
@@ -538,14 +543,14 @@ namespace PD.Functions
                                 vm.Save_All_PD_Value[i].Add(new DataPoint(sec, vm.Double_Powers[i]));
                             }
 
-
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
                             vm.timer2_count++;
                             #endregion
 
                             #region Cal. Delta IL  
-                            Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);                            
+                            //Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);
+                            Update_DeltaIL();
                             #endregion
                         }                      
                     }                   
@@ -3952,6 +3957,36 @@ namespace PD.Functions
             #endregion
         }
 
+        public void Update_DeltaIL()
+        {
+            #region Cal. Delta IL   
+
+            double power = 0;
+           
+            for (int i = 0; i < vm.ch_count; i++)
+            {
+                if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
+                {
+                    power = vm.Double_Powers[i];
+                    //power = vm.Chart_All_DataPoints[i].Last().Y;
+                    vm.maxIL[i] = power > vm.maxIL[i] ? power : vm.maxIL[i];
+                    vm.minIL[i] = power < vm.minIL[i] ? power : vm.minIL[i];
+
+                    double deltaIL = Math.Round(Math.Abs(vm.maxIL[i] - vm.minIL[i]), 4);
+
+                    if (vm.list_ch_title.Count <= i) break;
+
+                    if (vm.list_Chart_UI_Models[i].Button_IsChecked)
+                        vm.list_ch_title[i] = $"ch{i + 1}, Delta IL : {deltaIL}";
+
+                    //if (vm.ChartNowModel.list_delta_IL.Count == 0)
+                    //    vm.ChartNowModel.list_delta_IL.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
+
+                    //vm.ChartNowModel.list_delta_IL[i] = deltaIL;
+                }
+            }
+            #endregion
+        }
 
     }
 }

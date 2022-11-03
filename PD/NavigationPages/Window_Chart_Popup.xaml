@@ -95,42 +95,42 @@
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries Name="No1"
-                                Title="ch1"
+                                Title="{Binding list_ch_title[0], FallbackValue=ch1}"
                                 ItemsSource="{Binding Chart_DataPoints, Mode=OneWay}"
                                 Visibility="{Binding list_Chart_UI_Models[0].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Green" />
                 <oxy:LineSeries Name="No2"
-                                Title="ch2"
+                                Title="{Binding list_ch_title[1], FallbackValue=ch2}"
                                 ItemsSource="{Binding Chart_All_DataPoints[1], Mode=OneWay}"
                                 Visibility="{Binding list_Chart_UI_Models[1].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Red" />
                 <oxy:LineSeries Name="No3"
-                                Title="ch3"
+                                Title="{Binding list_ch_title[2], FallbackValue=ch3}"
                                 ItemsSource="{Binding Chart_All_DataPoints[2], Mode=OneWay}"
                                 Visibility="{Binding list_Chart_UI_Models[2].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Blue" />
                 <oxy:LineSeries Name="No4"
-                                Title="ch4"
+                                Title="{Binding list_ch_title[3], FallbackValue=ch4}"
                                 ItemsSource="{Binding Chart_All_DataPoints[3], Mode=OneWay}"
                                 Visibility="{Binding list_Chart_UI_Models[3].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Orange" />
                 <oxy:LineSeries Name="No5"
-                                Title="ch5"
+                                Title="{Binding list_ch_title[4], FallbackValue=ch5}"
                                 ItemsSource="{Binding Chart_All_DataPoints[4], Mode=OneWay}"
                                 Visibility="{Binding list_Chart_UI_Models[4].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="GreenYellow" />
                 <oxy:LineSeries Name="No6"
-                                Title="ch6"
+                                Title="{Binding list_ch_title[5], FallbackValue=ch6}"
                                 ItemsSource="{Binding Chart_All_DataPoints[5], Mode=OneWay}"
                                 Visibility="{Binding list_Chart_UI_Models[5].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Purple" />
                 <oxy:LineSeries Name="No7"
-                                Title="ch7"
+                                Title="{Binding list_ch_title[6], FallbackValue=ch7}"
                                 ItemsSource="{Binding Chart_All_DataPoints[6], Mode=OneWay}"
                                 Visibility="{Binding list_Chart_UI_Models[6].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Gray" />
                 <oxy:LineSeries Name="No8"
-                                Title="ch8"
+                                Title="{Binding list_ch_title[7], FallbackValue=ch8}"
                                 ItemsSource="{Binding Chart_All_DataPoints[7], Mode=OneWay}"
                                 Visibility="{Binding list_Chart_UI_Models[7].Button_IsChecked, Converter={StaticResource Bool_To_Vis_ValueConverter}}"
                                 Color="Chocolate" />

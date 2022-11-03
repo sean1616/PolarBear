@@ -613,24 +613,14 @@ namespace PD
                     {
                         vm.Str_Status = "Stop";
                         if (!vm.PD_or_PM)
-                        {
-                            //await vm.PD_Stop();
                             await cmd.Save_Chart();
-                        }
-                        else
-                        {
-                            //await vm.PM_Stop();
-                            if (!vm.station_type.Equals("Hermetic_Test"))
-                                await cmd.Save_Chart();
-                            //vm.list_GaugeModels[1].GaugeValue = "-8";
-                        }
+                        else if (vm.PD_or_PM && !vm.station_type.Equals("Hermetic_Test"))
+                            await cmd.Save_Chart();
                     }
 
                     //Distributed System on
                     else
                     {
-                        //vm.Save_cmd(new ComMember() { YN = true, Type = "PD", No = vm.Cmd_Count++.ToString(), Command = "CLSPORT" });
-                      
                         vm.Str_Status = "Stop";
                         vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                         await cmd.Save_Chart();
@@ -895,132 +885,7 @@ namespace PD
             {
                 vm.Str_cmd_read = "Timer elaspe error";
             }
-            //try
-            //{
-            //    if (vm.IsGoOn)
-            //    {
-            //        if (vm.dB_or_dBm)  //true is dB
-            //        {
-            //            if (vm.station_type == "Hermetic_Test")
-            //                power_PM = Math.Round(vm.pm.ReadPower() - vm.float_WL_Ref[vm.switch_selected_index], 4);
-            //            else
-            //                power_PM = Math.Round(vm.pm.ReadPower() - vm.float_WL_Ref[0], 4);
-            //        }
-            //        else
-            //            power_PM = Math.Round(vm.pm.ReadPower(), 4);
-            //    }
-
-            //    #region Set Gauge Value
-
-            //    vm.Value_PD.Clear();
-            //    vm.Double_Powers.Clear();
-
-            //    float y = Convert.ToSingle(power_PM);
-            //    float z = (y * 300 / -64 - 150) * -1;
-            //    z = z != 1350 ? z : 150;
-
-            //    if (z < -150)
-            //        z = -150;
-
-            //    if (vm.ch < 13) //Switch mode  1~12
-            //    {
-            //        vm.Value_PD = new List<float>() { -150, -150, -150, -150, -150, -150, -150, -150, -150, -150, -150, -150 };
-            //        vm.Double_Powers = Analysis.ListDefault<double>(vm.ch_count);
-
-            //        vm.Value_PD[vm.ch - 1] = z;
-            //        vm.Double_Powers[vm.ch - 1] = y;
-            //        vm.Value_PD = new List<float>(vm.Value_PD);
-
-            //        vm.Str_PD = Analysis.ListDefault<string>(vm.ch_count);
-            //        vm.Str_PD[vm.ch - 1] = power_PM.ToString();
-            //        vm.Str_PD = new List<string>(vm.Str_PD);
-            //    }
-
-            //    else  //Normal mode
-            //    {
-            //        vm.Value_PD.Add(z);  //-150~150 degree, for gauge binding
-            //        vm.Double_Powers.Add(y);  //list 0~-64dBm in float type
-
-            //        vm.Str_PD = new List<string>() { power_PM.ToString() };
-            //    }
-
-            //    vm.Value_PD = new List<float>(vm.Value_PD);
-            //    vm.Double_Powers = new List<double>(vm.Double_Powers);
-            //    #endregion
-
-            //    #region Set Chart data points   
-
-            //    if (vm.station_type == "Testing")
-            //    {
-            //        if (vm.timer3_count > 28800)  //Default 28800 , two hours
-            //            vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
-
-            //        double sec = (double)Math.Round((decimal)vm.timer3_count * vm.Int_Read_Delay / 1000, 2);
-
-            //        if (vm.isTimerOn)
-            //        {
-            //            if (sec > vm.int_timer_timespan)
-            //            {
-            //                vm.IsGoOn = false;
-            //                vm.isTimerOn = false;
-            //            }
-
-            //            // 更新Timer顯示的"剩餘時間"
-            //            TimeSpan time = new TimeSpan(0, 0, vm.int_timer_timespan - (int)sec);
-            //            vm.int_timer_hrs = time.Hours;
-            //            vm.int_timer_min = time.Minutes;
-            //            vm.int_timer_sec = time.Seconds;
-            //        }
-
-            //        vm.Save_All_PD_Value[0].Add(new DataPoint(sec, power_PM));
-
-            //        vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
-
-            //        vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
-            //        vm.timer3_count++;
-            //    }
-            //    #endregion
-
-            //    #region Cal. Delta IL                
-            //    if (vm.timer3_count == 1)
-            //    {
-            //        max = power_PM; min = power_PM;
-            //    }
-            //    else
-            //    {
-            //        max = power_PM > max ? power_PM : max;
-            //        min = power_PM < min ? power_PM : min;
-            //    }
-
-            //    double deltaIL = Math.Round(Math.Abs(max - min), 4);
-            //    vm.list_ch_title[0] = string.Concat("ch1", " ,Delta IL : ", deltaIL.ToString());
-            //    #endregion
-            //}
-            //catch { }
         }
-
-        //double delta_time_arduino_chart;
-        //private void Timer_Arduino_AdRead_Elapsed(object sender, ElapsedEventArgs e)
-        //{
-        //    try
-        //    {                
-        //        int val = 0;
-
-        //        if (!int.TryParse(arduino_ReadData, out val)) return;
-
-        //        double value = Math.Round((double)val * 5 / 1024, 4);  //5V, 2^10
-
-        //        double time = timer_arduino_adread_count * delta_time_arduino_chart;
-        //        timer_arduino_adread_count++;
-
-        //        vm.Save_All_PD_Value[0].Add(new DataPoint(time, value));
-
-        //        vm.Chart_DataPoints = new List<DataPoint>(vm.Save_All_PD_Value[0]);  //A lineseries
-        //    }
-        //    catch { }            
-        //}
-
-
 
         private async void btn_comment_Click(object sender, RoutedEventArgs e)
         {
@@ -1109,18 +974,10 @@ namespace PD
 
         private async void btn_D0_Click(object sender, RoutedEventArgs e)
         {
-            //if(vm.station_type=="Hermetic_Test")
-            //{
-            //    if(vm.GaugeText_visible == Visibility.Hidden)
-            //        vm.GaugeText_visible = Visibility.Visible;
-            //    else
-            //        vm.GaugeText_visible = Visibility.Hidden;
-            //}
             anly.JudgeAllBoolGauge();
             await D0_show();
         }
 
-        //bool _isDacReadBack = false;
 
         private async Task D0_show()
         {
