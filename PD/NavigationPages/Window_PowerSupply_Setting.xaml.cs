@@ -50,7 +50,8 @@ namespace PD.NavigationPages
                 return true;
             else
             {
-                vm.Save_Log(new LogMember() { isShowMSG = true, Message = "Folder is not exist", Result= "Timeout" });
+                vm.Save_Log(new LogMember() { isShowMSG = false, Message = "Folder is not exist", Result= "Timeout" });
+                vm.Str_cmd_read = "Folder is not exist";
                 return false;
             }
         }
@@ -155,21 +156,24 @@ namespace PD.NavigationPages
             #endregion
 
             #region Save equipment setting table
-            List<string> list_titles = new List<string>(){"Channel", "ID", "Comport", "BautRate",
+            try
+            {
+
+                List<string> list_titles = new List<string>(){"Channel", "ID", "Comport", "BautRate",
                     "PM_Type", "PM_GPIB_BoardName", "PM_Address", "PM_Slot", "PM_AverageTime", "PM_ID", "PM_Comport", "PM_BautRate", "PM_GetPower_Cmd" };
-            //string filePath = CSVFunctions.Creat_New_CSV("Control_Board_Setting", list_titles);
-            string filePath = CSVFunctions.Creat_New_CSV(Directory.GetCurrentDirectory(), "Control_Board_Setting", list_titles, true, true);
+                //string filePath = CSVFunctions.Creat_New_CSV("Control_Board_Setting", list_titles);
+                string filePath = CSVFunctions.Creat_New_CSV(Directory.GetCurrentDirectory(), "Control_Board_Setting", list_titles, true, true);
 
-            if (string.IsNullOrEmpty(filePath))
-            {
-                vm.Save_Log(new LogMember() { Message = "Creat CSV file failed." });
-                return;
-            }
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    vm.Save_Log(new LogMember() { Message = "Creat CSV file failed." });
+                    return;
+                }
 
-            for (int i = 0; i < vm.list_ChannelModels.Count; i++)
-            {
-                ChannelModel cm = vm.list_ChannelModels[i];
-                List<string> list_datas = new List<string>() {
+                for (int i = 0; i < vm.list_ChannelModels.Count; i++)
+                {
+                    ChannelModel cm = vm.list_ChannelModels[i];
+                    List<string> list_datas = new List<string>() {
                         cm.channel,
                         cm.Board_ID,
                         cm.Board_Port,
@@ -183,13 +187,15 @@ namespace PD.NavigationPages
                         cm.PM_Board_Port,
                         cm.PM_BautRate.ToString(),
                         cm.PM_GetPower_CMD};
-                CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, list_datas);
-            }
+                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, list_datas);
+                }
 
-            vm.txt_Equip_Setting_Path = filePath;
-            vm.Ini_Write("Connection", "Equip_Setting_Path", filePath);
-            vm.Str_cmd_read = "Board Table Saved";
-            vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = false });
+                vm.txt_Equip_Setting_Path = filePath;
+                vm.Ini_Write("Connection", "Equip_Setting_Path", filePath);
+                vm.Str_cmd_read = "Board Table Saved";
+                vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = false });
+            }
+            catch { }
             #endregion
         }
 

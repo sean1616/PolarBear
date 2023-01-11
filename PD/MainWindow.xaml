@@ -276,60 +276,6 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <!--<Grid Grid.Row="0"
-                      Grid.ColumnSpan="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition Height="1.5*" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.8*" />
-                        <ColumnDefinition Width="2*" />
-                    </Grid.ColumnDefinitions>
-                    <ToggleButton Name="ToggleBtn_ControlMode"
-                                  Grid.Column="0"
-                                  Grid.Row="1"
-                                  MaxWidth="48"
-                                  MinWidth="40"
-                                  MaxHeight="30"
-                                  Margin="10,0,18,0"
-                                  Click="ToggleBtn_ControlMode_Click"
-                                  IsChecked="{Binding PD_or_PM}"
-                                  Loaded="ToggleBtn_ControlMode_Loaded"
-                                  Style="{StaticResource SwitchTypeToggleButton}">
-                        <ToggleButton.Background>
-                            <LinearGradientBrush StartPoint="0,0"
-                                                 EndPoint="0,1">
-                                <GradientStop Offset="0"
-                                              Color="#FFF3F3F3" />
-                                <GradientStop Offset="0.5"
-                                              Color="#FFEBEBEB" />
-                                <GradientStop Offset="0.5"
-                                              Color="#FFDDDDDD" />
-                                <GradientStop Offset="1"
-                                              Color="#FF33D3C4" />
-                            </LinearGradientBrush>
-                        </ToggleButton.Background>
-                    </ToggleButton>
-                    <Viewbox  Grid.Column="1"
-                              Grid.Row="1"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Center">
-                        <TextBlock FontFamily="Segoe Print"
-                                   FontSize="{Binding Int_Fontsize}">
-                        <Run Name="run_PD"
-                             Foreground="White"
-                             Text="PD" />
-                        <Run Foreground="White"
-                             Text="/" />
-                        <Run Name="run_PM"
-                             Foreground="#FF878787"
-                             Text="PM" />
-                        </TextBlock>
-                    </Viewbox>
-                </Grid>-->
-
                 <ComboBox x:Name="combox_comport"
                           Grid.Row="0"
                           Grid.ColumnSpan="2"
@@ -555,7 +501,6 @@
                           Tag="../Resources/Change.png" />
 
                 <Grid Name="grid_Unit"
-                      PreviewMouseLeftButtonDown="grid_Unit_PreviewMouseLeftButtonDown"
                       Grid.Row="10"
                       Grid.ColumnSpan="2">
                     <Grid.RowDefinitions>
@@ -567,6 +512,7 @@
                         <ColumnDefinition Width="0.8*" />
                         <ColumnDefinition Width="2*" />
                     </Grid.ColumnDefinitions>
+                    <Border Grid.Column="2" Grid.RowSpan="3" Background="#FF6B6D78" PreviewMouseLeftButtonDown="grid_Unit_PreviewMouseLeftButtonDown"/>
                     <ToggleButton Name="TBtn_UnitMode"
                                   Grid.Column="0"
                                   Grid.Row="1"
@@ -582,8 +528,7 @@
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center">
                         <TextBlock FontFamily="Segoe Print"
-                                   FontSize="{Binding Int_Fontsize}"
-                                   MouseLeftButtonDown="grid_Unit_MouseLeftButtonDown">
+                                   FontSize="{Binding Int_Fontsize}">
                         <Run Name="run_dBm"
                              Foreground="#FFACACAC"
                              Text="dBm" />

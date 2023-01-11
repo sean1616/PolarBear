@@ -34,37 +34,13 @@ namespace PD.NavigationPages
         {
             InitializeComponent();
 
-            //System.Windows.Data.Binding LS_16_Title_Binding = new System.Windows.Data.Binding();
-            //LS_16_Title_Binding.Source = vm;
-            //LS_16_Title_Binding.Path = new PropertyPath("list_ch_title[15]");
-
-            //System.Windows.Data.Binding LS_16_ItemSource_Binding = new System.Windows.Data.Binding();
-            //LS_16_ItemSource_Binding.Source = vm;
-            //LS_16_ItemSource_Binding.Path = new PropertyPath("Chart_All_DataPoints[15]");
-
-            //LineSeries LS = new LineSeries();
-            //LS.Visibility = Visibility.Visible;
-            //LS.Color = Colors.Orange;
-
-            //BindingOperations.SetBinding(LS, LineSeries.TitleProperty, LS_16_Title_Binding);
-            //BindingOperations.SetBinding(LS, LineSeries.TitleProperty, LS_16_ItemSource_Binding);
-
-            //Plot_Chart.Series.Add(LS);
-
             this.DataContext = vm;
             this.vm = vm;
             viewer.DataContext = vm;  //將DataContext指給使用者控制項，必要!
 
-            //vm.IsCheck = new List<bool>() { true, false, false, false, false, false, false, false };
-
             cmd = new ControlCmd(vm);
 
             window_Bear_Grid = new Window_Bear_Grid(vm, "Delta IL");
-
-            //for (int i = 0; i < vm.LineSeries_Visible.Count; i++)
-            //{
-            //    vm.LineSeries_Visible[i] = Visibility.Hidden;
-            //}
         }
               
 
@@ -72,12 +48,6 @@ namespace PD.NavigationPages
         {
             System.Windows.Controls.CheckBox chbox = (System.Windows.Controls.CheckBox)sender;
             Chart_UI_Model uiModel = (Chart_UI_Model)chbox.DataContext;
-
-            //if (vm.IsCheck != null)
-            //    vm.IsCheck[uiModel.Button_Channel - 1] = (bool)chbox.IsChecked;
-
-            //List<bool> list_ischeck = vm.IsCheck;
-            //vm.IsCheck = new List<bool>(list_ischeck);
         }
 
         private void ALL_CheckBox_Click(object sender, RoutedEventArgs e)
@@ -93,12 +63,10 @@ namespace PD.NavigationPages
 
             if (judge)
             {
-                //vm.IsCheck = new List<bool>() { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
                 cbox_all.IsChecked = false;
             }
             else
             {
-                //vm.IsCheck = new List<bool>() { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
                 cbox_all.IsChecked = true;
             }
 
@@ -334,10 +302,11 @@ namespace PD.NavigationPages
             vm.Show_Bear_Window("Saved", false, "String", false);
         }
 
+        public Window_Bear_Timer window_Bear;
         private void btn_Timer_Click(object sender, RoutedEventArgs e)
         {
-            Window_Bear_Timer window = new Window_Bear_Timer(vm);
-            window.Show();
+            window_Bear = new Window_Bear_Timer(vm);
+            window_Bear.Show();
         }
 
         private void btn_PopupWindow_Click(object sender, RoutedEventArgs e)

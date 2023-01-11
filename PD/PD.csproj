@@ -103,7 +103,8 @@
       <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.2.4.3\lib\net46\MahApps.Metro.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\sean_wu\Desktop\PD\PolarBear\PD\bin\Debug\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing">
       <HintPath>..\..\..\..\..\Downloads\Microsoft.Expression.Drawing.dll</HintPath>
@@ -150,6 +151,9 @@
     </Reference>
     <Reference Include="TH300">
       <HintPath>\\192.168.2.3\shared\SeanWu\Software\UFAO_optimized_20190313_NoFunction\bin\Debug\TH300.dll</HintPath>
+    </Reference>
+    <Reference Include="ValueGetter, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ValueGetter.1.0.4\lib\net46\ValueGetter.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -208,6 +212,9 @@
     </Compile>
     <Compile Include="NavigationPages\Page_Chart.xaml.cs">
       <DependentUpon>Page_Chart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_UTF600_Main.xaml.cs">
+      <DependentUpon>Page_UTF600_Main.xaml</DependentUpon>
     </Compile>
     <Compile Include="NavigationPages\Page_TF2_Main.xaml.cs">
       <DependentUpon>Page_TF2_Main.xaml</DependentUpon>
@@ -324,6 +331,10 @@
     <Page Include="NavigationPages\Page_Chart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_UTF600_Main.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="NavigationPages\Page_TF2_Main.xaml">
       <Generator>MSBuild:Compile</Generator>

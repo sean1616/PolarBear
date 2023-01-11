@@ -23,8 +23,9 @@ namespace PD.NavigationPages
     /// </summary>
     public partial class Page_Setting : UserControl
     {
-        ComViewModel vm;
-        string ini_path = @"d:\PD\Instrument.ini";
+        readonly ComViewModel vm;
+        readonly string ini_path = @"d:\PD\Instrument.ini";
+        readonly static string CurrentDirectory = Directory.GetCurrentDirectory();
 
         public Page_Setting(ComViewModel vm)
         {
@@ -33,7 +34,10 @@ namespace PD.NavigationPages
             this.vm = vm;
             this.DataContext = this.vm;
 
-            try { if (File.Exists(ini_path)) vm.selected_band = vm.Ini_Read("Connection", "Band"); }
+            ini_path = Path.Combine(CurrentDirectory, "Instrument.ini");
+
+            try { if (File.Exists(ini_path)) 
+                    vm.selected_band = vm.Ini_Read("Connection", "Band"); }
             catch { }
 
             if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Laser_type")))
@@ -46,7 +50,7 @@ namespace PD.NavigationPages
 
             if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Type")))
             {
-                string a = vm.Ini_Read("Connection", "Control_Board_Type");
+                //string a = vm.Ini_Read("Connection", "Control_Board_Type");
                 ComBox_Control_Board_Type.SelectedItem = vm.Ini_Read("Connection", "Control_Board_Type");
 
                 try
@@ -93,6 +97,7 @@ namespace PD.NavigationPages
                         Message = "Golight comport is null or empty"
                     });
             }
+
         }
 
         int i, c = 1;
@@ -190,12 +195,12 @@ namespace PD.NavigationPages
         {
             _GIF_controller = ImageBehavior.GetAnimationController(Img_gif);
             i = _GIF_controller.FrameCount;
-            int b = _GIF_controller.CurrentFrame;
+            //_GIF_controller.CurrentFrame;
             _GIF_controller.GotoFrame(1);
             _GIF_controller.Pause();
         }
 
-        private void btn_ini_Click(object sender, RoutedEventArgs e)
+        private void BTN_INI_CLICK(object sender, RoutedEventArgs e)
         {
             Process process = new Process();
             process.StartInfo.FileName = ini_path;
@@ -252,8 +257,9 @@ namespace PD.NavigationPages
         }
 
         Window_PowerSupply_Setting window_PowerSupply_Setting;
-        private void btn_setting_window_Click(object sender, RoutedEventArgs e)
+        private void BTN_SETTING_WINDOW_CLICK(object sender, RoutedEventArgs e)
         {
+            //btn_setting_window_Click
             if (window_PowerSupply_Setting != null)
             {
                 if (window_PowerSupply_Setting.IsActive)
@@ -288,6 +294,13 @@ namespace PD.NavigationPages
             if (cbb.SelectedIndex < 0)
                 cbb.SelectedIndex = pre_combobox_index;
         }
+
+        //private void cxmItemPaste_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var obj = sender as TextBox;
+
+        //    Process.Start(obj.Text);
+        //}
 
         private void ComBox_Laser_Selection_DropDownClosed(object sender, EventArgs e)
         {

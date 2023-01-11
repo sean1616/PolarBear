@@ -2,79 +2,79 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
-                    xmlns:local="clr-namespace:PD.Models">
+                    xmlns:local="clr-namespace:PD.Models" xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
 
     <!--  Fill Brushes  -->
 
     <LinearGradientBrush x:Key="NormalBrush"
                          StartPoint="0,0"
                          EndPoint="0,1">
-        <GradientBrush.GradientStops>
+        <LinearGradientBrush.GradientStops>
             <GradientStopCollection>
                 <GradientStop Offset="0.0"
                               Color="#FFF" />
                 <GradientStop Offset="1.0"
                               Color="#CCC" />
             </GradientStopCollection>
-        </GradientBrush.GradientStops>
+        </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="HorizontalNormalBrush"
                          StartPoint="0,0"
                          EndPoint="1,0">
-        <GradientBrush.GradientStops>
+        <LinearGradientBrush.GradientStops>
             <GradientStopCollection>
                 <GradientStop Offset="0.0"
                               Color="#FFF" />
                 <GradientStop Offset="1.0"
                               Color="#CCC" />
             </GradientStopCollection>
-        </GradientBrush.GradientStops>
+        </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="LightBrush"
                          StartPoint="0,0"
                          EndPoint="0,1">
-        <GradientBrush.GradientStops>
+        <LinearGradientBrush.GradientStops>
             <GradientStopCollection>
                 <GradientStop Offset="0.0"
                               Color="#FFF" />
                 <GradientStop Offset="1.0"
                               Color="#EEE" />
             </GradientStopCollection>
-        </GradientBrush.GradientStops>
+        </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="HorizontalLightBrush"
                          StartPoint="0,0"
                          EndPoint="1,0">
-        <GradientBrush.GradientStops>
+        <LinearGradientBrush.GradientStops>
             <GradientStopCollection>
                 <GradientStop Offset="0.0"
                               Color="#FFF" />
                 <GradientStop Offset="1.0"
                               Color="#EEE" />
             </GradientStopCollection>
-        </GradientBrush.GradientStops>
+        </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="DarkBrush"
                          StartPoint="0,0"
                          EndPoint="0,1">
-        <GradientBrush.GradientStops>
+        <LinearGradientBrush.GradientStops>
             <GradientStopCollection>
                 <GradientStop Offset="0.0"
                               Color="#FFF" />
                 <GradientStop Offset="1.0"
                               Color="#AAA" />
             </GradientStopCollection>
-        </GradientBrush.GradientStops>
+        </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="PressedBrush"
                          StartPoint="0,0"
                          EndPoint="0,1">
-        <GradientBrush.GradientStops>
+        <LinearGradientBrush.GradientStops>
             <GradientStopCollection>
                 <GradientStop Offset="0.0"
                               Color="#BBB" />
@@ -85,7 +85,7 @@
                 <GradientStop Offset="1.0"
                               Color="#FFF" />
             </GradientStopCollection>
-        </GradientBrush.GradientStops>
+        </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
     <SolidColorBrush x:Key="DisabledForegroundBrush"
@@ -105,53 +105,53 @@
     <LinearGradientBrush x:Key="NormalBorderBrush"
                          StartPoint="0,0"
                          EndPoint="0,1">
-        <GradientBrush.GradientStops>
+        <LinearGradientBrush.GradientStops>
             <GradientStopCollection>
                 <GradientStop Offset="0.0"
                               Color="#CCC" />
                 <GradientStop Offset="1.0"
                               Color="#444" />
             </GradientStopCollection>
-        </GradientBrush.GradientStops>
+        </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="HorizontalNormalBorderBrush"
                          StartPoint="0,0"
                          EndPoint="1,0">
-        <GradientBrush.GradientStops>
+        <LinearGradientBrush.GradientStops>
             <GradientStopCollection>
                 <GradientStop Offset="0.0"
                               Color="#CCC" />
                 <GradientStop Offset="1.0"
                               Color="#444" />
             </GradientStopCollection>
-        </GradientBrush.GradientStops>
+        </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="DefaultedBorderBrush"
                          StartPoint="0,0"
                          EndPoint="0,1">
-        <GradientBrush.GradientStops>
+        <LinearGradientBrush.GradientStops>
             <GradientStopCollection>
                 <GradientStop Offset="0.0"
                               Color="#777" />
                 <GradientStop Offset="1.0"
                               Color="#000" />
             </GradientStopCollection>
-        </GradientBrush.GradientStops>
+        </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="PressedBorderBrush"
                          StartPoint="0,0"
                          EndPoint="0,1">
-        <GradientBrush.GradientStops>
+        <LinearGradientBrush.GradientStops>
             <GradientStopCollection>
                 <GradientStop Offset="0.0"
                               Color="#444" />
                 <GradientStop Offset="1.0"
                               Color="#888" />
             </GradientStopCollection>
-        </GradientBrush.GradientStops>
+        </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
     <SolidColorBrush x:Key="DisabledBorderBrush"
@@ -423,7 +423,7 @@
             <SolidColorBrush x:Key="ToggleButtonTrueForeground"
                              Color="{StaticResource Color.MedtronicBranding.MedtronicBlue}" />
             <Style x:Key="OnContentControl"
-                   TargetType="ContentControl">
+                   TargetType="{x:Type ContentControl}">
                 <Setter Property="HorizontalAlignment"
                         Value="Center" />
                 <Setter Property="HorizontalContentAlignment"
@@ -439,7 +439,7 @@
                         Value="Center" />
             </Style>
             <Style x:Key="OffContentControl"
-                   TargetType="ContentControl">
+                   TargetType="{x:Type ContentControl}">
                 <Setter Property="HorizontalAlignment"
                         Value="Center" />
                 <Setter Property="HorizontalContentAlignment"
@@ -466,9 +466,9 @@
                     <Grid x:Name="MainRow">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="{Binding ElementName=TopRow, Path=ActualHeight}" />
+                                <ColumnDefinition Width="{Binding ActualHeight, ElementName=TopRow}" />
                                 <ColumnDefinition />
-                                <ColumnDefinition Width="{Binding ElementName=TopRow, Path=ActualHeight}" />
+                                <ColumnDefinition Width="{Binding ActualHeight, ElementName=TopRow}" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition x:Name="TopRow" />
@@ -479,8 +479,8 @@
                                      Grid.RowSpan="2"
                                      Grid.Column="0"
                                      Grid.ColumnSpan="3"
-                                     Width="{Binding ElementName=MainRow, Path=ActualHeight}"
-                                     Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     Width="{Binding ActualHeight, ElementName=MainRow}"
+                                     Height="{Binding ActualHeight, ElementName=MainRow}"
                                      HorizontalAlignment="Left"
                                      Fill="{StaticResource ToggleButtonTrueBackground}" />
                             <Ellipse x:Name="BackgroundEllipse2"
@@ -488,8 +488,8 @@
                                      Grid.RowSpan="2"
                                      Grid.Column="0"
                                      Grid.ColumnSpan="3"
-                                     Width="{Binding ElementName=MainRow, Path=ActualHeight}"
-                                     Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     Width="{Binding ActualHeight, ElementName=MainRow}"
+                                     Height="{Binding ActualHeight, ElementName=MainRow}"
                                      HorizontalAlignment="Right"
                                      Fill="{StaticResource ToggleButtonFalseBackground}" />
                             <Border x:Name="BackgroundBorder"
@@ -501,7 +501,7 @@
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition x:Name="AnimationWidth" />
-                                <ColumnDefinition Width="{Binding ElementName=MainRow, Path=ActualHeight}" />
+                                <ColumnDefinition Width="{Binding ActualHeight, ElementName=MainRow}" />
                             </Grid.ColumnDefinitions>
                             <Border x:Name="AnimationSizeBorder"
                                     Grid.Column="0" />
@@ -510,7 +510,7 @@
                         </Grid>
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="{Binding ElementName=MainRow, Path=ActualHeight}" />
+                                <ColumnDefinition Width="{Binding ActualHeight, ElementName=MainRow}" />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
@@ -520,10 +520,10 @@
                         <Grid Background="Transparent">
                             <StackPanel HorizontalAlignment="Left"
                                         Orientation="Horizontal">
-                                <Border Width="{Binding ElementName=AnimationSizeBorder, Path=ActualWidth}" />
+                                <Border Width="{Binding ActualWidth, ElementName=AnimationSizeBorder}" />
                                 <Ellipse x:Name="ForegroundEllipse"
-                                         Width="{Binding ElementName=MainRow, Path=ActualHeight}"
-                                         Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                         Width="{Binding ActualHeight, ElementName=MainRow}"
+                                         Height="{Binding ActualHeight, ElementName=MainRow}"
                                          HorizontalAlignment="Right"
                                          Fill="{StaticResource ToggleButtonTrueForeground}" />
                             </StackPanel>
@@ -580,7 +580,7 @@
             <SolidColorBrush x:Key="ToggleButtonTrueForeground"
                              Color="{StaticResource Color.MedtronicBranding.MedtronicBlue}" />
             <Style x:Key="OnContentControl"
-                   TargetType="ContentControl">
+                   TargetType="{x:Type ContentControl}">
                 <Setter Property="HorizontalAlignment"
                         Value="Center" />
                 <Setter Property="HorizontalContentAlignment"
@@ -596,7 +596,7 @@
                         Value="Center" />
             </Style>
             <Style x:Key="OffContentControl"
-                   TargetType="ContentControl">
+                   TargetType="{x:Type ContentControl}">
                 <Setter Property="HorizontalAlignment"
                         Value="Center" />
                 <Setter Property="HorizontalContentAlignment"
@@ -623,9 +623,9 @@
                     <Grid x:Name="MainRow">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="{Binding ElementName=TopRow, Path=ActualHeight}" />
+                                <ColumnDefinition Width="{Binding ActualHeight, ElementName=TopRow}" />
                                 <ColumnDefinition />
-                                <ColumnDefinition Width="{Binding ElementName=TopRow, Path=ActualHeight}" />
+                                <ColumnDefinition Width="{Binding ActualHeight, ElementName=TopRow}" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition x:Name="TopRow" />
@@ -636,8 +636,8 @@
                                      Grid.RowSpan="2"
                                      Grid.Column="0"
                                      Grid.ColumnSpan="3"
-                                     Width="{Binding ElementName=MainRow, Path=ActualHeight}"
-                                     Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     Width="{Binding ActualHeight, ElementName=MainRow}"
+                                     Height="{Binding ActualHeight, ElementName=MainRow}"
                                      HorizontalAlignment="Left"
                                      Fill="{StaticResource ToggleButtonTrueBackground}" />
                             <Ellipse x:Name="BackgroundEllipse2"
@@ -645,8 +645,8 @@
                                      Grid.RowSpan="2"
                                      Grid.Column="0"
                                      Grid.ColumnSpan="3"
-                                     Width="{Binding ElementName=MainRow, Path=ActualHeight}"
-                                     Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                     Width="{Binding ActualHeight, ElementName=MainRow}"
+                                     Height="{Binding ActualHeight, ElementName=MainRow}"
                                      HorizontalAlignment="Right"
                                      Fill="{StaticResource ToggleButtonFalseBackground}" />
                             <Border x:Name="BackgroundBorder"
@@ -659,7 +659,7 @@
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition x:Name="AnimationWidth" />
-                                <ColumnDefinition Width="{Binding ElementName=MainRow, Path=ActualHeight}" />
+                                <ColumnDefinition Width="{Binding ActualHeight, ElementName=MainRow}" />
                             </Grid.ColumnDefinitions>
                             <Border x:Name="AnimationSizeBorder"
                                     Grid.Column="0" />
@@ -668,7 +668,7 @@
                         </Grid>
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="{Binding ElementName=MainRow, Path=ActualHeight}" />
+                                <ColumnDefinition Width="{Binding ActualHeight, ElementName=MainRow}" />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
@@ -678,10 +678,10 @@
                         <Grid Background="Transparent">
                             <StackPanel HorizontalAlignment="Left"
                                         Orientation="Horizontal">
-                                <Border Width="{Binding ElementName=AnimationSizeBorder, Path=ActualWidth}" />
+                                <Border Width="{Binding ActualWidth, ElementName=AnimationSizeBorder}" />
                                 <Ellipse x:Name="ForegroundEllipse"
-                                         Width="{Binding ElementName=MainRow, Path=ActualHeight}"
-                                         Height="{Binding ElementName=MainRow, Path=ActualHeight}"
+                                         Width="{Binding ActualHeight, ElementName=MainRow}"
+                                         Height="{Binding ActualHeight, ElementName=MainRow}"
                                          HorizontalAlignment="Right"
                                          Fill="{StaticResource ToggleButtonTrueForeground}" />
                             </StackPanel>
@@ -898,7 +898,7 @@
                         <Viewbox Grid.Row="1"
                                  Grid.Column="0"
                                  HorizontalAlignment="Left">
-                            <Image Name="image"
+                            <Image x:Name="image"
                                    HorizontalAlignment="Center"
                                    Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
                                    Visibility="Hidden" />
@@ -964,7 +964,7 @@
                 Value="16" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ToggleButton">
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -1026,13 +1026,13 @@
                 Value="13" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ToggleButton">
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition Height="4*" />
                             <RowDefinition />
-                        </Grid.RowDefinitions>                        
+                        </Grid.RowDefinitions>
                         <Border x:Name="border"
                                 Grid.Row="0"
                                 Grid.RowSpan="3"
@@ -1042,7 +1042,7 @@
                                           Focusable="False"
                                           SnapsToDevicePixels="True"
                                           HorizontalAlignment="Center"
-                                          VerticalAlignment="Center" />                    
+                                          VerticalAlignment="Center" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver"
@@ -1075,7 +1075,7 @@
                 Value="16" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ToggleButton">
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -1126,7 +1126,7 @@
     </Style>
 
 
-    
+
 
     <Style x:Key="style_FuncCombobox"
            TargetType="{x:Type ComboBox}">
@@ -1154,7 +1154,7 @@
                 Value="32" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ComboBox">
+                <ControlTemplate TargetType="{x:Type ComboBox}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -1165,7 +1165,7 @@
                             <ColumnDefinition Width="0.8*" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        <ToggleButton Name="ToggleButton"
+                        <ToggleButton x:Name="ToggleButton"
                                       Grid.Row="0"
                                       Grid.RowSpan="3"
                                       Grid.ColumnSpan="2"
@@ -1174,7 +1174,7 @@
                                       ClickMode="Press"
                                       Focusable="false"
                                       Foreground="White"
-                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       Style="{StaticResource style_FuncToggleBtn}" />
                         <Viewbox Grid.Row="1"
                                  Grid.Column="0">
@@ -1186,20 +1186,20 @@
                                  Grid.Column="1"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center">
-                            <ContentPresenter Name="ContentSite"
+                            <ContentPresenter x:Name="ContentSite"
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                               ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                               IsHitTestVisible="False"
                                               TextBlock.Foreground="White" />
                         </Viewbox>
-                        <Popup Name="Popup"
+                        <Popup x:Name="Popup"
                                AllowsTransparency="False"
                                Focusable="False"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                Placement="Right"
                                PopupAnimation="Slide">
-                            <Grid Name="DropDown"
+                            <Grid x:Name="DropDown"
                                   MinWidth="{TemplateBinding ActualWidth}"
                                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                   Background="White"
@@ -1228,7 +1228,7 @@
                                     Value="false" />
                         </Trigger>
                         <Trigger SourceName="Popup"
-                                 Property="Popup.AllowsTransparency"
+                                 Property="AllowsTransparency"
                                  Value="true">
                             <Setter TargetName="DropDownBorder"
                                     Property="CornerRadius"
@@ -1258,7 +1258,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers />
     </Style>
 
     <Style x:Key="style_WindowFuncBtn"
@@ -1405,7 +1404,7 @@
                                     Property="BorderBrush"
                                     Value="#FF47DADA" />
                         </Trigger>
-                        <Trigger Property="Button.IsPressed"
+                        <Trigger Property="IsPressed"
                                  Value="True">
                             <Setter TargetName="border"
                                     Property="Background"
@@ -1684,9 +1683,9 @@
                                     Property="Background"
                                     Value="#FF8D8D8D" />
                         </Trigger>
-                        <Trigger Property="Button.IsPressed"
+                        <Trigger Property="IsPressed"
                                  Value="True">
-                        <Setter TargetName="border"
+                            <Setter TargetName="border"
                                 Property="Background"
                                     Value="#FFC7C7C7" />
                         </Trigger>
@@ -1754,7 +1753,7 @@
                                     Property="BorderBrush"
                                     Value="#FF47DADA" />
                         </Trigger>
-                        <Trigger Property="Button.IsPressed"
+                        <Trigger Property="IsPressed"
                                  Value="True">
                             <Setter TargetName="border"
                                     Property="Background"
@@ -1823,7 +1822,7 @@
                                     Property="BorderBrush"
                                     Value="#FF47DADA" />
                         </Trigger>
-                        <Trigger Property="Button.IsPressed"
+                        <Trigger Property="IsPressed"
                                  Value="True">
                             <Setter TargetName="border"
                                     Property="Background"
@@ -1885,7 +1884,7 @@
                                     Property="BorderBrush"
                                     Value="#FF47DADA" />
                         </Trigger>
-                        <Trigger Property="Button.IsPressed"
+                        <Trigger Property="IsPressed"
                                  Value="True">
                             <Setter TargetName="border"
                                     Property="Background"
@@ -1988,7 +1987,7 @@
                                  Grid.Column="0"
                                  MaxHeight="27"
                                  HorizontalAlignment="Left">
-                            <Image Name="image"
+                            <Image x:Name="image"
                                    HorizontalAlignment="Center"
                                    Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Viewbox>
@@ -2094,7 +2093,7 @@
     </Style>
 
     <ControlTemplate x:Key="ComboBoxToggleButton"
-                     TargetType="ToggleButton">
+                     TargetType="{x:Type ToggleButton}">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -2120,13 +2119,13 @@
                   Fill="{StaticResource GlyphBrush}" />
         </Grid>
         <ControlTemplate.Triggers>
-            <Trigger Property="ToggleButton.IsMouseOver"
+            <Trigger Property="IsMouseOver"
                      Value="true">
                 <Setter TargetName="Border"
                         Property="Background"
                         Value="{StaticResource DarkBrush}" />
             </Trigger>
-            <Trigger Property="ToggleButton.IsChecked"
+            <Trigger Property="IsChecked"
                      Value="true">
                 <Setter TargetName="Border"
                         Property="Background"
@@ -2150,14 +2149,14 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="ComboBoxTextBox"
-                     TargetType="TextBox">
+                     TargetType="{x:Type TextBox}">
         <Border x:Name="PART_ContentHost"
                 Background="{TemplateBinding Background}"
                 Focusable="False" />
     </ControlTemplate>
 
     <Style x:Key="style_ComboBox_Editable"
-           TargetType="ComboBox">
+           TargetType="{x:Type ComboBox}">
         <Setter Property="SnapsToDevicePixels"
                 Value="true" />
         <Setter Property="OverridesDefaultStyle"
@@ -2174,19 +2173,19 @@
                 Value="20" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ComboBox">
+                <ControlTemplate TargetType="{x:Type ComboBox}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <ToggleButton Name="ToggleButton"
+                        <ToggleButton x:Name="ToggleButton"
                                       Grid.Column="0"
                                       ClickMode="Press"
                                       Focusable="false"
-                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       Template="{StaticResource ComboBoxToggleButton}" />
-                        <ContentPresenter Name="ContentSite"
+                        <ContentPresenter x:Name="ContentSite"
                                           Margin="3,3,23,3"
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Center"
@@ -2204,13 +2203,13 @@
                                  Style="{x:Null}"
                                  Template="{StaticResource ComboBoxTextBox}"
                                  Visibility="Hidden" />
-                        <Popup Name="Popup"
+                        <Popup x:Name="Popup"
                                AllowsTransparency="True"
                                Focusable="False"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                Placement="Bottom"
                                PopupAnimation="Slide">
-                            <Grid Name="DropDown"
+                            <Grid x:Name="DropDown"
                                   MinWidth="{TemplateBinding ActualWidth}"
                                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                   SnapsToDevicePixels="True">
@@ -2244,7 +2243,7 @@
                                     Value="false" />
                         </Trigger>
                         <Trigger SourceName="Popup"
-                                 Property="Popup.AllowsTransparency"
+                                 Property="AllowsTransparency"
                                  Value="true">
                             <Setter TargetName="DropDownBorder"
                                     Property="CornerRadius"
@@ -2268,19 +2267,18 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers />
     </Style>
 
     <Style x:Key="{x:Type ToolTip}"
-               TargetType="ToolTip">
+               TargetType="{x:Type ToolTip}">
         <Setter Property="OverridesDefaultStyle"
                     Value="true" />
         <Setter Property="HasDropShadow"
                     Value="True" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ToolTip">
-                    <Border Name="Border"
+                <ControlTemplate TargetType="{x:Type ToolTip}">
+                    <Border x:Name="Border"
                                 BorderThickness="1"
                                 Width="{TemplateBinding Width}"
                                 Height="{TemplateBinding Height}"
@@ -2337,7 +2335,7 @@
                 Value="32" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ComboBox">
+                <ControlTemplate TargetType="{x:Type ComboBox}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -2348,7 +2346,7 @@
                             <ColumnDefinition Width="0.8*" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        <ToggleButton Name="ToggleButton"
+                        <ToggleButton x:Name="ToggleButton"
                                       Grid.Row="0"
                                       Grid.RowSpan="3"
                                       Grid.ColumnSpan="2"
@@ -2357,7 +2355,7 @@
                                       ClickMode="Press"
                                       Focusable="false"
                                       Foreground="{TemplateBinding Foreground}"
-                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       Style="{StaticResource style_FuncToggleBtn}" />
                         <Viewbox Grid.Row="1"
                                  Grid.Column="0">
@@ -2368,7 +2366,7 @@
                                  Grid.Column="1"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center">
-                            <ContentPresenter Name="ContentSite"
+                            <ContentPresenter x:Name="ContentSite"
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                               ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
@@ -2391,13 +2389,13 @@
                                      Template="{StaticResource ComboBoxTextBox}"
                                      Visibility="Hidden" />
                         </Viewbox>
-                        <Popup Name="Popup"
+                        <Popup x:Name="Popup"
                                AllowsTransparency="True"
                                Focusable="False"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                Placement="Bottom"
                                PopupAnimation="Slide">
-                            <Grid Name="DropDown"
+                            <Grid x:Name="DropDown"
                                   MinWidth="{TemplateBinding ActualWidth}"
                                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                   SnapsToDevicePixels="True">
@@ -2426,7 +2424,7 @@
                                     Value="false" />
                         </Trigger>
                         <Trigger SourceName="Popup"
-                                 Property="Popup.AllowsTransparency"
+                                 Property="AllowsTransparency"
                                  Value="true">
                             <Setter TargetName="DropDownBorder"
                                     Property="CornerRadius"
@@ -2451,7 +2449,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers />
     </Style>
 
     <Style x:Key="style_refPath_combobox"
@@ -2480,7 +2477,7 @@
                 Value="32" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ComboBox">
+                <ControlTemplate TargetType="{x:Type ComboBox}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -2491,7 +2488,7 @@
                                  Grid.Column="1"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center">
-                            <ContentPresenter Name="ContentSite"
+                            <ContentPresenter x:Name="ContentSite"
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                               ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
@@ -2514,13 +2511,13 @@
                                      Template="{StaticResource ComboBoxTextBox}"
                                      Visibility="Hidden" />
                         </Viewbox>
-                        <Popup Name="Popup"
+                        <Popup x:Name="Popup"
                                AllowsTransparency="True"
                                Focusable="False"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                Placement="Bottom"
                                PopupAnimation="Slide">
-                            <Grid Name="DropDown"
+                            <Grid x:Name="DropDown"
                                   MinWidth="{TemplateBinding ActualWidth}"
                                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                   SnapsToDevicePixels="True">
@@ -2549,7 +2546,7 @@
                                     Value="false" />
                         </Trigger>
                         <Trigger SourceName="Popup"
-                                 Property="Popup.AllowsTransparency"
+                                 Property="AllowsTransparency"
                                  Value="true">
                             <Setter TargetName="DropDownBorder"
                                     Property="CornerRadius"
@@ -2574,7 +2571,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers />
     </Style>
 
     <Style x:Key="style_combobox_black"
@@ -2603,7 +2599,7 @@
                 Value="32" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ComboBox">
+                <ControlTemplate TargetType="{x:Type ComboBox}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -2616,7 +2612,7 @@
                             <ColumnDefinition Width="0.45*" />
                             <ColumnDefinition Width="0.04*" />
                         </Grid.ColumnDefinitions>
-                        <ToggleButton Name="ToggleButton"
+                        <ToggleButton x:Name="ToggleButton"
                                       Grid.Row="0"
                                       Grid.RowSpan="3"
                                       Grid.ColumnSpan="4"
@@ -2625,9 +2621,9 @@
                                       ClickMode="Press"
                                       Focusable="false"
                                       Foreground="{TemplateBinding Foreground}"
-                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       Style="{StaticResource style_FuncToggleBtn}" />
-                        <ContentPresenter Name="ContentSite"
+                        <ContentPresenter x:Name="ContentSite"
                                           Grid.Row="0"
                                           Grid.RowSpan="3"
                                           Grid.Column="1"
@@ -2639,13 +2635,13 @@
                                           IsHitTestVisible="False"
                                           TextBlock.FontSize="14"
                                           TextBlock.Foreground="Black" />
-                        <Popup Name="Popup"
+                        <Popup x:Name="Popup"
                                AllowsTransparency="True"
                                Focusable="False"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                Placement="Bottom"
                                PopupAnimation="Slide">
-                            <Grid Name="DropDown"
+                            <Grid x:Name="DropDown"
                                   MinWidth="{TemplateBinding ActualWidth}"
                                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                   SnapsToDevicePixels="True">
@@ -2674,7 +2670,7 @@
                                     Value="false" />
                         </Trigger>
                         <Trigger SourceName="Popup"
-                                 Property="Popup.AllowsTransparency"
+                                 Property="AllowsTransparency"
                                  Value="true">
                             <Setter TargetName="DropDownBorder"
                                     Property="CornerRadius"
@@ -2695,7 +2691,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers />
     </Style>
 
     <Style x:Key="style_combobox_setting"
@@ -2724,7 +2719,7 @@
                 Value="32" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ComboBox">
+                <ControlTemplate TargetType="{x:Type ComboBox}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -2735,7 +2730,7 @@
                             <ColumnDefinition Width="0.8*" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        <ToggleButton Name="ToggleButton"
+                        <ToggleButton x:Name="ToggleButton"
                                       Grid.Row="0"
                                       Grid.RowSpan="3"
                                       Grid.ColumnSpan="2"
@@ -2744,7 +2739,7 @@
                                       ClickMode="Press"
                                       Focusable="false"
                                       Foreground="{TemplateBinding Foreground}"
-                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       Style="{StaticResource style_FuncToggleBtn}" />
                         <Viewbox Grid.Row="1"
                                  Grid.Column="0"
@@ -2752,7 +2747,7 @@
                             <Image HorizontalAlignment="Center"
                                    Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Viewbox>
-                        <ContentPresenter Name="ContentSite"
+                        <ContentPresenter x:Name="ContentSite"
                                           Grid.Row="0"
                                           Grid.RowSpan="3"
                                           Grid.Column="1"
@@ -2770,13 +2765,13 @@
                                  Focusable="True"
                                  Visibility="Hidden"
                                  IsReadOnly="{TemplateBinding IsReadOnly}" />-->
-                        <Popup Name="Popup"
+                        <Popup x:Name="Popup"
                                AllowsTransparency="True"
                                Focusable="False"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                Placement="Bottom"
                                PopupAnimation="Slide">
-                            <Grid Name="DropDown"
+                            <Grid x:Name="DropDown"
                                   MinWidth="{TemplateBinding ActualWidth}"
                                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                   SnapsToDevicePixels="True">
@@ -2805,7 +2800,7 @@
                                     Value="false" />
                         </Trigger>
                         <Trigger SourceName="Popup"
-                                 Property="Popup.AllowsTransparency"
+                                 Property="AllowsTransparency"
                                  Value="true">
                             <Setter TargetName="DropDownBorder"
                                     Property="CornerRadius"
@@ -2829,7 +2824,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers />
     </Style>
 
     <!--<Style x:Key="style_label" TargetType="Label">
@@ -2843,7 +2837,7 @@
     </Style>-->
 
     <Style x:Key="style_txtbox"
-           TargetType="TextBox">
+           TargetType="{x:Type TextBox}">
         <Setter Property="FontFamily"
                 Value="Segoe Print" />
         <Setter Property="Template">
@@ -2894,7 +2888,7 @@
     </Style>
 
     <Style x:Key="style_txtbox_noWaterPrint"
-           TargetType="TextBox">
+           TargetType="{x:Type TextBox}">
         <Setter Property="FontFamily"
                 Value="Segoe Print" />
         <Setter Property="Template">
@@ -2910,30 +2904,13 @@
                                           VerticalScrollBarVisibility="Hidden" />
                         </Grid>
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <!--<Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="border" Property="Opacity" Value="0.6" />
-                        </Trigger>-->
-                        <!--<Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="Opacity" TargetName="txtblock" Value="0"/>
-                        </Trigger>-->
-                        <!--<Trigger Property="IsFocused" Value="true">
-                            <Setter TargetName="border" Property="BorderThickness" Value="3" />
-                        </Trigger>-->
-                        <!--<Trigger Property="IsFocused"
-                                 Value="true">
-                            <Setter TargetName="txt_label"
-                                    Property="Opacity"
-                                    Value="0" />
-                        </Trigger>-->
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
     <Style x:Key="style_Dac_txtbox"
-           TargetType="TextBox">
+           TargetType="{x:Type TextBox}">
         <Setter Property="Background"
                 Value="Transparent" />
         <Setter Property="Visibility"
@@ -2973,7 +2950,7 @@
     </Style>
 
     <Style x:Key="style_Gauge_txtbox"
-           TargetType="TextBox">
+           TargetType="{x:Type TextBox}">
         <Setter Property="Background"
                 Value="Transparent" />
         <Setter Property="FontFamily"
@@ -3024,7 +3001,7 @@
     </Style>
 
     <Style x:Key="style_UserID_txtbox"
-           TargetType="TextBox">
+           TargetType="{x:Type TextBox}">
         <Setter Property="FontFamily"
                 Value="Segoe Print" />
         <Setter Property="Background"
@@ -3106,7 +3083,7 @@
     </Style>
 
     <Style x:Key="style_SN_txtbox"
-           TargetType="TextBox">
+           TargetType="{x:Type TextBox}">
         <Setter Property="HorizontalContentAlignment"
                 Value="Center" />
         <Setter Property="VerticalContentAlignment"
@@ -3153,7 +3130,7 @@
     </Style>
 
     <Style x:Key="style_SN_txtbox_v2"
-           TargetType="TextBox">
+           TargetType="{x:Type TextBox}">
         <Setter Property="HorizontalContentAlignment"
                 Value="Center" />
         <Setter Property="VerticalContentAlignment"
@@ -3199,7 +3176,7 @@
 
 
     <Style x:Key="style_board_window"
-           TargetType="TextBox">
+           TargetType="{x:Type TextBox}">
         <Setter Property="FontFamily"
                 Value="Segoe Print" />
         <Setter Property="VerticalAlignment"
@@ -3209,7 +3186,7 @@
     </Style>
 
     <Style x:Key="style_label"
-           TargetType="Label">
+           TargetType="{x:Type Label}">
         <Setter Property="FontFamily"
                 Value="Segoe Print" />
         <Setter Property="VerticalAlignment"
@@ -3221,7 +3198,7 @@
     </Style>
 
     <Style x:Key="style_board_window_txtblock"
-           TargetType="TextBlock">
+           TargetType="{x:Type TextBlock}">
         <Setter Property="FontFamily"
                 Value="Segoe Print" />
         <Setter Property="Margin"
@@ -3235,7 +3212,7 @@
     </Style>
 
     <Style x:Key="style_board_window_label"
-           TargetType="Label">
+           TargetType="{x:Type Label}">
         <Setter Property="FontFamily"
                 Value="Segoe Print" />
         <Setter Property="Margin"
@@ -3247,6 +3224,8 @@
         <Setter Property="FontSize"
                 Value="{Binding Int_Fontsize}" />
     </Style>
+
+
 
 
 

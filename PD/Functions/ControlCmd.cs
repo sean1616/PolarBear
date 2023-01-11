@@ -2058,13 +2058,11 @@ namespace PD.Functions
 
         //}
 
-        private async Task<bool> ConnectGolightTLS(DiCon.Instrument.HP.GLTLS port,  string portName)
+        private bool ConnectGolightTLS(DiCon.Instrument.HP.GLTLS port,  string portName)
         {
             try
             {
-                //port.is
                 port.Open(portName);
-                await Task.Delay(1);
             }
             catch(Exception ex) 
             { 
@@ -2164,16 +2162,10 @@ namespace PD.Functions
                         {
                             if (!string.IsNullOrEmpty(vm.Golight_ChannelModel.Board_Port))
                             {
-                                //Task tcGLTLS = new Task(async () => await ConnectGolightTLS(vm.tls_GL, vm.Golight_ChannelModel.Board_Port));
-                                //Action<string> cGLTLS;
-                                //cGLTLS = new Action<string>(ConnectGolightTLS);
-                                //tcGLTLS.Start();
+                                var task = Task.Run(() => ConnectGolightTLS(vm.tls_GL, vm.Golight_ChannelModel.Board_Port));
+                                var result = (task.Wait(1500)) ? task.Result : false;
 
-                                //var obj = await Task.WhenAny(tcGLTLS, Task.Delay(1200));
-                                //if (obj == tcGLTLS)
-                                await Task.Delay(100);
-
-                                if(vm.tls_GL.Open(vm.Golight_ChannelModel.Board_Port))
+                                if (result)
                                 {
                                     //await Task.Run(async () => await ConnectGolightTLS(vm.tls_GL, vm.Golight_ChannelModel.Board_Port));
 
@@ -2216,45 +2208,6 @@ namespace PD.Functions
                                         Message = "Connect Golight TLS Fail"
                                     });
                                 }
-
-                                
-                                //if (false && vm.tls_GL.Open(vm.Golight_ChannelModel.Board_Port))
-                                //{
-                                //    vm.isConnected = true;
-
-                                //    string ReadWLMinMax = vm.tls_GL.ReadWL_MinMax();
-                                //    string[] wl_min_max = ReadWLMinMax.Split(',');
-
-                                //    if (wl_min_max != null)
-                                //    {
-                                //        if (wl_min_max.Length == 2)
-                                //        {
-                                //            vm.float_TLS_WL_Range[0] = float.Parse(wl_min_max[0]);
-                                //            vm.float_TLS_WL_Range[1] = float.Parse(wl_min_max[1]);
-                                //        }
-                                //    }
-
-                                //    vm.Save_Log(new Models.LogMember()
-                                //    {
-                                //        isShowMSG = false,
-                                //        Message = "Golight TLS connected",
-                                //    });
-
-                                //    vm.Save_Log(new Models.LogMember()
-                                //    {
-                                //        isShowMSG = false,
-                                //        Message = "Get TLS WL Range",
-                                //        Result = ReadWLMinMax
-                                //    });
-                                //}
-                                //else
-                                //{
-                                //    vm.Save_Log(new Models.LogMember()
-                                //    {
-                                //        isShowMSG = false,
-                                //        Message = "Connect Golight TLS Fail"
-                                //    });
-                                //}
                             }
                             else
                                 vm.Save_Log(new Models.LogMember()
@@ -2532,7 +2485,7 @@ namespace PD.Functions
                 else
                     vm.selected_band = band;
 
-                Connect_TLS();
+                await Connect_TLS();
 
                 switch (vm.Laser_type)
                 {
@@ -2613,7 +2566,7 @@ namespace PD.Functions
                 else
                     vm.selected_band = band;
 
-                Connect_TLS();
+                await Connect_TLS();
 
                 switch (vm.Laser_type)
                 {
@@ -2819,11 +2772,11 @@ namespace PD.Functions
             }
         }
 
-        public void Set_TLS_Lambda_Scan()
+        public async void Set_TLS_Lambda_Scan()
         {
             try
             {
-                if (!vm.isConnected) Connect_TLS();
+                if (!vm.isConnected) await Connect_TLS();
 
                 vm.tls_GL.LambdaScan(vm.float_TLS_WL_Range[0], vm.float_TLS_WL_Range[1], 0.02);
             }

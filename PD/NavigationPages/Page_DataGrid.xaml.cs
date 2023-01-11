@@ -25,6 +25,7 @@ using OxyPlot;
 using OxyPlot.Wpf;
 
 using ExcelDataReader;
+using ValueGetter;
 
 
 namespace PD.NavigationPages
@@ -85,11 +86,6 @@ namespace PD.NavigationPages
                     combox_path.Items.Add(s);
             }
             catch { }
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-
         }
 
         public class Member
@@ -257,7 +253,6 @@ namespace PD.NavigationPages
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-                //vm.memberBoardDatas.Clear();
                 vm.BoardTable_Dictionary.Clear();
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
@@ -388,8 +383,6 @@ namespace PD.NavigationPages
                 }
 
                 #endregion
-
-                //await vm.Port_ReOpen(vm.Selected_Comport);
 
                 for (int dac = initial_dac; dac <= 60000; dac += 10000)
                 {
@@ -725,15 +718,6 @@ namespace PD.NavigationPages
 
                 save_path = txt_path.Text;
             }
-
-            //System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            //openFileDialog.InitialDirectory = @"D:\Ref";
-            //openFileDialog.RestoreDirectory = true;
-
-            //if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-            //    vm.txt_ref_path = openFileDialog.FileName;
-            //}
         }
 
         private void btn_save_v_Click(object sender, RoutedEventArgs e)
@@ -1041,18 +1025,35 @@ namespace PD.NavigationPages
 
         private async void Btn_Get_Ref_Click(object sender, RoutedEventArgs e)
         {
-            vm.isStop = false;
-            string RefName = string.Format("Ref{0}.txt", 1);
-            string RefPath = Path.Combine(@"D:\Ref\", RefName);
-
-            analysis.JudgeAllBoolGauge();
-
-            if (!File.Exists(RefPath))
+            try
             {
-                File.AppendAllText(RefPath, "");
-            }
-            else
-            {
+                vm.isStop = false;
+
+                analysis.JudgeAllBoolGauge();
+
+                string RefName = String.Empty;
+                string RefPath = String.Empty;
+
+                for (int ch = 0; ch < vm.ch_count; ch++)
+                {
+                    RefName = $"Ref{ch + 1}.txt";
+                    RefPath = Path.Combine(@"D:\Ref\", RefName);
+
+                    if (!File.Exists(RefPath))
+                    {
+                        string s = Directory.GetParent(RefPath).ToString();
+                        if (!analysis.CheckDirectoryExist(s))
+                        {
+                            Directory.CreateDirectory(s);  //Creat ref folder
+                        }
+
+                        if (analysis.CheckDirectoryExist(s))
+                            File.AppendAllText(RefPath, "");  //Creat txt file
+                        else
+                            return;  //If Ref folder still not exist, return.
+                    }
+                }
+
                 MessageBoxResult msgBoxResult = MessageBox.Show("Cover old ref.txt ?", "Get Ref", MessageBoxButton.YesNoCancel);
 
                 if (msgBoxResult != MessageBoxResult.Cancel)
@@ -1060,13 +1061,24 @@ namespace PD.NavigationPages
                     vm.Str_Status = "Get Ref";
                     vm.dB_or_dBm = false;
 
+                    cmd.Clean_Chart();
+
                     List<double> list_wl = new List<double>();
 
                     if (msgBoxResult == MessageBoxResult.Yes)
                     {
-                        File.Delete(RefPath);
+                        for (int ch = 0; ch < vm.ch_count; ch++)
+                        {
+                            RefName = $"Ref{ch + 1}.txt";
+                            RefPath = Path.Combine(@"D:\Ref\", RefName);
 
-                        File.AppendAllText(RefPath, "");
+                            if (File.Exists(RefPath))
+                            {
+                                File.Delete(RefPath);
+                                File.AppendAllText(RefPath, "");
+
+                            }
+                        }
 
                         for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
                         {
@@ -1114,7 +1126,8 @@ namespace PD.NavigationPages
 
                         if (!vm.IsDistributedSystem)
                         {
-                            if (vm.PD_or_PM)
+                            //PM mode
+                            if (vm.PD_or_PM)  
                             {
                                 for (int ch = 0; ch < vm.ch_count; ch++)
                                 {
@@ -1160,13 +1173,49 @@ namespace PD.NavigationPages
                                     }
                                 }
                             }
+                            //PD mode
                             else
                             {
                                 await cmd.Get_PD_Value(vm.Selected_Comport);
 
-                                string msg = string.Format("{0},{1}", wl.ToString(), IL.ToString());
+                                vm.Ref_memberDatas.Add(new RefModel());
+                                vm.Ref_memberDatas.Last().Wavelength = Math.Round(wl, 2);
 
-                                File.AppendAllText(RefPath, msg + "\r");
+                                for (int ch = 0; ch < vm.ch_count; ch++)
+                                {
+                                    if (vm.BoolAllGauge || vm.list_GaugeModels[ch].boolGauge)
+                                    {
+                                        IL = vm.Double_Powers[ch];
+                                        vm.Save_All_PD_Value[ch].Add(new DataPoint(Math.Round(wl, 2), IL));
+                                        vm.list_GaugeModels[ch].GaugeValue = IL.ToString();
+
+                                        string msg = $"{wl},{IL}\r";
+
+                                        RefName = $"Ref{ch + 1}.txt";
+                                        RefPath = Path.Combine(@"D:\Ref\", RefName);
+
+                                        File.AppendAllText(RefPath, msg);  //Add new line to ref file
+
+                                        vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+
+                                        vm.Ref_memberDatas.Last().Wavelength = Math.Round(wl, 2);   //Add a new data to grid ref
+
+                                        //get all properties and it's values in the last of vm.Ref_memberDatas
+                                        var props = vm.Ref_memberDatas.Last().GetPropertiesFromCache(); 
+
+                                        foreach (var prop in props)
+                                        {
+                                            //Set value to which property name is match channel now
+                                            if (prop.Name == $"Ch_{ch + 1}")
+                                            {
+                                                prop.SetValue(vm.Ref_memberDatas.Last(), vm.Ref_Dictionaries[0][Math.Round(wl, 2)]);
+                                            }
+                                        }
+                                    }
+                                }
+                                vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+
+                                vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
                             }
                         }
                         //Distribution system
@@ -1237,6 +1286,7 @@ namespace PD.NavigationPages
                     #endregion
                 }
             }
+            catch { }
         }
 
         private void combox_chSelect_DropDownClosed(object sender, EventArgs e)

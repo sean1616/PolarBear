@@ -25,7 +25,7 @@ namespace PD.NavigationPages
     /// <summary>
     /// Page_PD_Gauges.xaml 的互動邏輯
     /// </summary>
-    public partial class Page_PD_Gauges : UserControl
+    public partial class Page_UTF600_Main : UserControl
     {
         ComViewModel vm;
         ControlCmd cmd;
@@ -34,7 +34,7 @@ namespace PD.NavigationPages
         bool _isDrag = false;
         Analysis anly;
 
-        public Page_PD_Gauges(ComViewModel vm)
+        public Page_UTF600_Main(ComViewModel vm)
         {
             InitializeComponent();
 

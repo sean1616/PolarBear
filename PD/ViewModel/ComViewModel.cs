@@ -341,7 +341,7 @@ namespace PD.ViewModel
                     {
                         Save_cmd(new ComMember() { Command = "P0?", No = (Cmd_Count + 1).ToString(), Comport = PD_A_ChannelModel.Board_Port, Type = "PD", Channel = "16" });
                         Save_cmd(new ComMember() { Command = "P0?", No = (Cmd_Count + 1).ToString(), Comport = PD_B_ChannelModel.Board_Port, Type = "PD", Channel = "16" });
-                        await AccessDelayAsync(Int_Read_Delay + 20);
+                        await Task.Delay(Int_Read_Delay + 20);
                     }
 
                     if (isDeleteCmd || ComMembers.Count >= 4)
@@ -1421,19 +1421,31 @@ namespace PD.ViewModel
 
                 if (!PD_or_PM)  //PD mode
                 {
-                    if(int.TryParse(DAC2, out int d2))
+                    if(DAC1 != "0" && DAC2 != "0")
                     {
-                        d2 = -1 * Math.Abs(d2);
-                        Str_Command = "D" + channel.ToString() + " " + d2.ToString();  //Write Dac
+                        Str_cmd_read = "Dac format error";
+                        Save_Log(new LogMember() { Status="Set PD Dac", Message = Str_cmd_read, Result = $"D1={DAC1}, D2={DAC2}" });
+                        return;
+                    }
+                    else if(DAC1 == "0")
+                    {
+                        if (int.TryParse(DAC2, out int d2))
+                        {
+                            d2 = -1 * Math.Abs(d2);
+                            Str_Command = $"D{channel} {d2}";  //Write Dac
+                            //Str_Command = "D" + channel.ToString() + " " + d2.ToString();  //Write Dac
+                        }
                     }
                     else if(!string.IsNullOrEmpty(DAC1))
                     {
-                        Str_Command = "D" + channel.ToString() + " " + DAC1;  //Write Dac
+                        //Str_Command = "D" + channel.ToString() + " " + DAC1;  //Write Dac
+                        Str_Command = $"D{channel} {DAC1}";  //Write Dac
                     }
 
                     if (DAC3 != null)
                     {
-                        string cd = "VOA" + channel.ToString() + " " + DAC3;  //Write Dac
+                        //string cd = "VOA" + channel.ToString() + " " + DAC3;  //Write Dac
+                        string cd = $"VOA{channel} {DAC3}";  //Write Dac
 
                         if (_station_type.Equals("Chamber_S_16ch"))
                         {
@@ -1456,7 +1468,8 @@ namespace PD.ViewModel
                 {
                     if (string.IsNullOrEmpty(DAC2)) DAC2 = "0";
                     if (string.IsNullOrEmpty(DAC3)) DAC3 = "0";
-                    Str_Command = string.Concat("D", ch, " ", DAC1, ",", DAC2, ",", DAC3);  //Write Dac. For PM, always D1 XXX  
+                    //Str_Command = string.Concat("D", ch, " ", DAC1, ",", DAC2, ",", DAC3);  //Write Dac. For PM, always D1 XXX  
+                    Str_Command = $"D{ch} {DAC1},{DAC2},{DAC3}"; //Write Dac. For PM, always D1 XXX  
                 }
 
                 try
@@ -1620,7 +1633,18 @@ namespace PD.ViewModel
         public Dictionary<string, List<string>> BoardTable_Dictionary { get; set; } = new Dictionary<string, List<string>>();
         public Dictionary<string, List<string>> Dictionary_Product_WL_Setting { get; set; } = new Dictionary<string, List<string>>();
 
-        public string Station_ID { get; set; } = "S00";
+        private string _Station_ID { get; set; } = "S00";
+        public string Station_ID
+        {
+            get { return _Station_ID;}
+            set
+            {
+                _Station_ID = value;
+                OnPropertyChanged("Station_ID");
+
+                Ini_Write("Connection", "Station_ID", value);
+            }
+        }
 
         private ObservableCollection<FastCalibrationStatusModel> _List_FastCalibration_Status =
             new ObservableCollection<FastCalibrationStatusModel>() { new FastCalibrationStatusModel() };
@@ -1760,6 +1784,18 @@ namespace PD.ViewModel
                 _txt_Equip_Setting_Path = value;
                 ini.IniWriteValue("Connection", "Equip_Setting_Path", value.ToString(), ini_path);
                 OnPropertyChanged("txt_Equip_Setting_Path");
+            }
+        }
+
+        private string _txt_Calibration_Csv_Path = @"\\192.168.2.4\temp\Sean\calibration.csv";
+        public string txt_Calibration_Csv_Path
+        {
+            get { return _txt_Calibration_Csv_Path; }
+            set
+            {
+                _txt_Calibration_Csv_Path = value;
+                ini.IniWriteValue("Connection", "Calibration_Csv_Path", value.ToString(), ini_path);
+                OnPropertyChanged("txt_Calibration_Csv_Path");
             }
         }
 
@@ -2945,6 +2981,11 @@ namespace PD.ViewModel
             {
                 _dB_or_dBm = value;
                 OnPropertyChanged("dB_or_dBm");
+
+                for (int ch = 0; ch < list_GaugeModels.Count; ch++)
+                {
+                    list_GaugeModels[ch].GaugeUnit = value ? "dB" : "dBm";
+                }
             }
         }
 
@@ -3910,6 +3951,9 @@ namespace PD.ViewModel
         public bool isGetPowerWaitForReadBack { get; set; } = true;
 
         private bool _pd_or_pm = false;  //False is PD, True is PM
+        /// <summary>
+        /// false = PD, true = PM
+        /// </summary>
         public bool PD_or_PM
         {
             get { return _pd_or_pm; }

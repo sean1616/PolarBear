@@ -646,7 +646,7 @@
                                      MinWidth="70"
                                      FontSize="{Binding Int_Fontsize}"
                                      Style="{StaticResource style_txtbox_noWaterPrint}" />
-                            <TextBox Text="{Binding PD_A_ChannelModel.Board_Port}"
+                            <TextBox Text="{Binding PD_A_ChannelModel.Board_Port, Mode=TwoWay}"
                                      HorizontalContentAlignment="Center"
                                      Grid.Column="2"
                                      MinWidth="70"
@@ -701,7 +701,7 @@
                                      MinWidth="70"
                                      FontSize="{Binding Int_Fontsize}"
                                      Style="{StaticResource style_txtbox_noWaterPrint}" />
-                            <TextBox Text="{Binding PD_B_ChannelModel.Board_Port}"
+                            <TextBox Text="{Binding PD_B_ChannelModel.Board_Port, Mode=TwoWay}"
                                      HorizontalContentAlignment="Center"
                                      Grid.Column="2"
                                      MinWidth="70"
@@ -754,7 +754,7 @@
                                      MinWidth="70"
                                      FontSize="{Binding Int_Fontsize}"
                                      Style="{StaticResource style_txtbox_noWaterPrint}" />
-                            <TextBox Text="{Binding Golight_ChannelModel.Board_Port}"
+                            <TextBox Text="{Binding Golight_ChannelModel.Board_Port, Mode=TwoWay}"
                                      HorizontalContentAlignment="Center"
                                      Grid.Column="2"
                                      MinWidth="70"

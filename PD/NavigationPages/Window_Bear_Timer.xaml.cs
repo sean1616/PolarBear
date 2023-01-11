@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using PD.ViewModel;
 using PD.Functions;
+using PD;
 
 using DiCon.Instrument.HP;
 
@@ -46,7 +47,8 @@ namespace PD.NavigationPages
             this.Close();
         }
 
-        private async void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //public event EventHandler CallMainGoFunction;
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             TimeSpan interval = new TimeSpan(vm.int_timer_hrs, vm.int_timer_min, vm.int_timer_sec);
             vm.int_timer_timespan = (int)interval.TotalSeconds;
@@ -56,85 +58,23 @@ namespace PD.NavigationPages
                 vm.isTimerOn = true;
                 vm.IsGoOn = true;
 
-                bear_msg.Text = "Stop";
+                //bear_msg.Text = "Stop";
 
-                if (vm.IsGoOn)
-                {
-                    if (vm.isConnected == false && vm.PD_or_PM == true)  //檢查TLS是否連線，若無，則進行連線並取續TLS狀態
-                    {
-                        #region Tunable Laser setting
-                        vm.tls = new HPTLS();
-                        vm.tls.BoardNumber = vm.tls_BoardNumber;
-                        vm.tls.Addr = vm.tls_Addr;
-
-                        try
-                        {
-                            if (vm.tls.Open() == false)
-                            {
-                                vm.Str_cmd_read = "TLS GPIB Setting Error. Check Address.";
-                                return;
-                            }
-                            vm.tls.init();
-
-                            vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-
-                            vm.isConnected = true;
-                        }
-                        catch
-                        {
-                            vm.Str_cmd_read = "GPIB Setting Error.";
-                        }
-                        #endregion
-
-                        #region PowerMeter Setting
-                        //Power Meter setting
-                        vm.pm = new HPPM();
-                        vm.pm.Addr = vm.tls_Addr;
-                        vm.pm.Slot = vm.PM_slot;
-                        vm.pm.BoardNumber = vm.tls_BoardNumber;
-                        if (vm.pm.Open() == false)
-                        {
-                            vm.Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
-                            return;
-                        }
-                        vm.pm.init();
-                        vm.pm.setUnit(1);
-                        vm.pm.AutoRange(true);
-                        vm.pm.aveTime(vm.PM_AveTime);
-                        #endregion
-                    }
-
-                    vm.Chart_x_title = "Time(s)"; //Set Chart x axis title
-                    vm.Str_Status = "Get Power";
-                    if (vm.PD_or_PM == false)
-                    {
-                        vm.Cmd_Count = 0;
-                        //vm.Cmd_excute_order = 0;
-
-                        //await vm.PD_GO();
-
-                        cmd.CommandListCycle();
-                    }
-                        
-                    else
-                        vm.PM_GO();
-                }
+                var mainWnd = Application.Current.MainWindow as MainWindow;
+                if (mainWnd != null)
+                    mainWnd.Main_Go();
             }
            else  //結束計時
             {
                 vm.isTimerOn = false;
                 vm.IsGoOn = false;
 
-                bear_msg.Text = "Go";
-                vm.Str_Status = "Stop";
+                //bear_msg.Text = "Go";
+                //vm.Str_Status = "Stop";
 
-                if (vm.PD_or_PM == false)
-                {
-                    await vm.PD_Stop();
-                    await cmd.Save_Chart();
-                }
-                else
-                    await vm.PM_Stop();
+                var mainWnd = Application.Current.MainWindow as MainWindow;
+                if (mainWnd != null)
+                    mainWnd.Main_Go();
             }
         }
 

@@ -9,7 +9,6 @@
              xmlns:pageTransitions="clr-namespace:WpfPageTransitions;assembly=WpfPageTransitions"
              d:DesignHeight="450"
              d:DesignWidth="1000"
-             Loaded="Page_Loaded"
              mc:Ignorable="d">
 
     <UserControl.DataContext>

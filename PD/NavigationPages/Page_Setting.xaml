@@ -13,7 +13,8 @@
              d:DesignHeight="450"
              d:DesignWidth="1000"
              Background="White"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+    xmlns:converters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro">
 
     <UserControl.Resources>
         <Storyboard x:Key="Setting_Border">
@@ -64,6 +65,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
     </UserControl.Resources>
 
@@ -497,7 +499,7 @@
                                               Grid.Row="1"
                                               txtbox_content="Open ini"
                                               Grid.Column="4"
-                                              ButtonBase.Click="btn_ini_Click"
+                                              ButtonBase.Click="BTN_INI_CLICK"
                                               Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}" />
                         <!--<uc:UC_Setting_Button x:Name="btn_board_comport"
                               Grid.Row="2"
@@ -507,7 +509,7 @@
                         <uc:UC_Setting_Button x:Name="btn_setting_window"
                                               Grid.Row="3"
                                               Grid.Column="4"
-                                              ButtonBase.Click="btn_setting_window_Click"
+                                              ButtonBase.Click="BTN_SETTING_WINDOW_CLICK"
                                               txtbox_content="Comport Setting"
                                               Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}" />
 
@@ -550,7 +552,8 @@
                                  ToolTip="Update Path"
                                  controls:TextBoxHelper.ClearTextButton="True"
                                  controls:TextBoxHelper.Watermark="Update Path"
-                                 FontFamily="Segoe Print" />
+                                 FontFamily="Segoe Print" >                         
+                        </TextBox>
 
                         <TextBox Name="txt_Chamber_Status_Path"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
@@ -560,7 +563,8 @@
                                  ToolTip="Chamber Status Path"
                                  controls:TextBoxHelper.ClearTextButton="True"
                                  controls:TextBoxHelper.Watermark="Chamber Status Path"
-                                 FontFamily="Segoe Print" />
+                                 FontFamily="Segoe Print" >                           
+                        </TextBox>
 
                         <TextBox Name="txt_equipment_setting_Path"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
@@ -572,15 +576,15 @@
                                  controls:TextBoxHelper.Watermark="Comport Setting Path"
                                  FontFamily="Segoe Print" />
 
-                        <!--<TextBox Name="txt_now_version"
+                        <TextBox Name="txt_calibration_csv_Path"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                 Text="{Binding txt_now_version, Mode=TwoWay}"
+                                 Text="{Binding txt_Calibration_Csv_Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  HorizontalAlignment="Stretch"
                                  VerticalContentAlignment="Center"
-                                 ToolTip="Version Now"
+                                 ToolTip="Calibration Csv Path"
                                  controls:TextBoxHelper.ClearTextButton="True"
-                                 controls:TextBoxHelper.Watermark="Now Version"
-                                 FontFamily="Segoe Print" />-->
+                                 controls:TextBoxHelper.Watermark="Calibration Csv Path"
+                                 FontFamily="Segoe Print" />
 
                         <TextBox Name="txt_Server_IP"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
@@ -590,6 +594,16 @@
                                  ToolTip="SQL Server IP"
                                  controls:TextBoxHelper.ClearTextButton="True"
                                  controls:TextBoxHelper.Watermark="Server IP"
+                                 FontFamily="Segoe Print" />
+
+                        <TextBox Name="txt_Station_ID"
+                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                 Text="{Binding Station_ID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalContentAlignment="Center"
+                                 ToolTip="Station ID"
+                                 controls:TextBoxHelper.ClearTextButton="True"
+                                 controls:TextBoxHelper.Watermark="Station ID"
                                  FontFamily="Segoe Print" />
 
                         <Image Name="Img_gif"
