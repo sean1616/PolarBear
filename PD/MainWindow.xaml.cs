@@ -60,7 +60,7 @@ namespace PD
 
         private SerialPort port_arduino = null;
 
-        
+        static string CurrentDirectory = Directory.GetCurrentDirectory();
 
         public MainWindow()
         {
@@ -75,6 +75,9 @@ namespace PD
             cmd = new ControlCmd(vm);
             anly = new Analysis(vm);
 
+            List<DateTime> listdateTime = new List<DateTime>();
+            listdateTime.Add(DateTime.Now);
+
             #region Version Setting
             string version = Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
 
@@ -85,6 +88,8 @@ namespace PD
             vm.txt_now_version = version.Replace("v", "");
             txt_version.Text = version;
             #endregion
+
+            listdateTime.Add(DateTime.Now);  //Event 1
 
             #region Product Combobox Setting
             //combox_product.Items.Clear();
@@ -101,11 +106,21 @@ namespace PD
             //combox_product.Items.Add("MTF");
             #endregion
 
+            listdateTime.Add(DateTime.Now);  //Event 2
+
             string ini_path = vm.ini_exist();
 
             #region Read ini file and setting   
             if (File.Exists(ini_path))
             {
+                vm.txt_Equip_Setting_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Equip_Setting_Path")) ? "" : vm.Ini_Read("Connection", "Equip_Setting_Path");
+                vm.txt_Chamber_Status_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Chamber_Status_Path")) ? vm.txt_Chamber_Status_Path : vm.Ini_Read("Connection", "Chamber_Status_Path");
+                vm.txt_Auto_Update_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Auto_Update_Path")) ? vm.txt_Auto_Update_Path : vm.Ini_Read("Connection", "Auto_Update_Path");
+                vm.Server_IP = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Server_IP")) ? vm.Server_IP : vm.Ini_Read("Connection", "Server_IP");
+                vm.txt_save_wl_data_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Save_Hermetic_Data_Path")) ? vm.txt_save_wl_data_path : vm.Ini_Read("Connection", "Save_Hermetic_Data_Path");
+                vm.txt_save_TF2_wl_data_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Save_TF2_Data_Path")) ? vm.txt_save_TF2_wl_data_path : vm.Ini_Read("Connection", "Save_TF2_Data_Path");
+                vm.txt_board_table_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Table_Path")) ? vm.txt_board_table_path : vm.Ini_Read("Connection", "Control_Board_Table_Path");
+
                 combox_comport.SelectedItem = vm.Ini_Read("Connection", "Comport");
                 vm.Comport_TLS_Filter = vm.Ini_Read("Connection", "Comport_TLS_Filter");
                 vm.Comport_Switch = vm.Ini_Read("Connection", "Comport_Switch");
@@ -118,15 +133,6 @@ namespace PD
                 vm.product_type = vm.Ini_Read("Productions", "Product");
                 vm.Is_k_WL_manual_setting = Generic_GetINISetting(vm.Is_k_WL_manual_setting, "Scan", "is_k_WL_manual_setting");
                 vm.selected_K_WL_Type = String.IsNullOrEmpty(vm.Ini_Read("Productions", "K_WL_Type")) ? "ALL Range" : vm.Ini_Read("Productions", "K_WL_Type");
-
-                vm.txt_Equip_Setting_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Equip_Setting_Path")) ? "" : vm.Ini_Read("Connection", "Equip_Setting_Path");
-                vm.txt_Chamber_Status_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Chamber_Status_Path")) ? vm.txt_Chamber_Status_Path : vm.Ini_Read("Connection", "Chamber_Status_Path");
-                vm.txt_Auto_Update_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Auto_Update_Path")) ? vm.txt_Auto_Update_Path : vm.Ini_Read("Connection", "Auto_Update_Path");
-                vm.Server_IP = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Server_IP")) ? vm.Server_IP : vm.Ini_Read("Connection", "Server_IP");
-                vm.txt_save_wl_data_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Save_Hermetic_Data_Path")) ? vm.txt_save_wl_data_path : vm.Ini_Read("Connection", "Save_Hermetic_Data_Path");
-                vm.txt_save_TF2_wl_data_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Save_TF2_Data_Path")) ? vm.txt_save_TF2_wl_data_path : vm.Ini_Read("Connection", "Save_TF2_Data_Path");
-                vm.txt_board_table_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Table_Path")) ? vm.txt_board_table_path : vm.Ini_Read("Connection", "Control_Board_Table_Path");
-                //vm.txt_now_version = vm.Ini_Read("Connection", "Latest_Version");
 
                 vm.Is_FastScan_Mode = Generic_GetINISetting(vm.Is_FastScan_Mode, "Scan", "Is_FastScan_Mode");
 
@@ -188,6 +194,8 @@ namespace PD
             }
             #endregion
 
+            listdateTime.Add(DateTime.Now);  //Event 3
+
             #region GetPowerType_Setting
             if (vm.PD_or_PM)
             {
@@ -203,6 +211,8 @@ namespace PD
             vm.GetPWSettingModel.BaudRate = vm.BoudRate;
             vm.GetPWSettingModel.DelayTime = vm.Int_Read_Delay;
             #endregion
+
+            listdateTime.Add(DateTime.Now);  //Event 4
 
             #region Calibration ComboBox Items Setting
             vm.list_combox_Calibration_items.Clear();
@@ -220,6 +230,8 @@ namespace PD
                 { "Calibration", "DAC -> 0", "VOA -> 0", "TF -> 0", "K VOA", "K TF", "ReadData", "K WL" };
             #endregion
 
+            listdateTime.Add(DateTime.Now);  //Event 5
+
             #region Timer Setting
             vm.timer2 = new System.Timers.Timer();
             vm.timer2.Interval = vm.Int_Read_Delay;
@@ -229,6 +241,8 @@ namespace PD
             vm.timer3.Interval = vm.Int_Read_Delay;
             vm.timer3.Elapsed += Timer3_PM_GO_Elapsed;
             #endregion
+
+            listdateTime.Add(DateTime.Now);  //Event 6
 
             #region Port Setting
 
@@ -252,6 +266,8 @@ namespace PD
 
             #endregion
 
+            listdateTime.Add(DateTime.Now);  //Event 7
+
             #region Page Navigation Setting
             _Page_PD_Gauges = new Page_PD_Gauges(vm);
             _Page_TF2_Main = new Page_TF2_Main(vm);
@@ -264,6 +280,8 @@ namespace PD
             _Page_Setting = new Page_Setting(vm);
             RBtn_Gauge_Page.IsChecked = true;
             #endregion
+
+            listdateTime.Add(DateTime.Now);  //Event 8
 
             #region Production Setting
             if (vm.product_type != null)
@@ -292,6 +310,8 @@ namespace PD
                 vm.Save_Product_Info = new string[] { vm.product_type, vm.selected_band };
             }
             #endregion
+
+            listdateTime.Add(DateTime.Now);  //Event 9
 
             #region Board Setting
             if (!string.IsNullOrEmpty(vm.txt_Equip_Setting_Path))
@@ -350,6 +370,12 @@ namespace PD
                 }
                 vm.list_Board_Setting = new List<List<string>>(vm.list_Board_Setting);
 
+                if (!anly.CheckDirectoryExist(vm.txt_board_table_path))
+                {
+                    vm.Str_cmd_read = vm.txt_board_table_path + "\r\n" + " Directory is not exist";
+                    return;
+                }
+
                 int k = 0;
                 foreach (List<string> board_info in vm.list_Board_Setting)
                 {
@@ -392,10 +418,7 @@ namespace PD
 
             #endregion
 
-            #region Arduino Setting
-            //if (vm.IsDistributedSystem)
-            //    Arduino_Setting();
-            #endregion
+            listdateTime.Add(DateTime.Now);  //Event 10
 
             #region Others Setting
             vm.List_D0_value = new ObservableCollection<ObservableCollection<string>>();
@@ -409,11 +432,22 @@ namespace PD
             string statId = vm.Ini_Read("Connection", "Station_ID");
             if (!string.IsNullOrEmpty(statId))
                 vm.Station_ID = statId;
+
+            vm.list_collection_GaugeModels.Clear();
             #endregion
+
+            listdateTime.Add(DateTime.Now);  //Event 12
 
             #region Event Setting
             _Page_TF2_Main.K_WL_Event += new RoutedEventHandler(K_WL_Click);  //Set mainwindow event to page event
             #endregion
+
+            listdateTime.Add(DateTime.Now);  //Event 13
+
+            for (int i = 1; i < listdateTime.Count; i++)
+            {
+                vm.Save_Log(new LogMember() {Status="Check TimeSpan", Message = $"Event {i}", Result = (listdateTime[i] - listdateTime[i - 1]).TotalMilliseconds.ToString(), Time= listdateTime[i].ToString()});
+            }
         }
 
         public T Generic_GetINISetting<T>(T input, string region, string variable) where T : new()
@@ -1986,6 +2020,7 @@ namespace PD
                             {
                                 if (!string.IsNullOrEmpty(vm.SNMembers[ch].ProductType))
                                 {
+                                    vm.selected_band = vm.SNMembers[ch].LaserBand;
                                     if (!vm.SNMembers[ch].ProductType.Contains("UFA")) continue;
                                     else
                                     {
@@ -3516,6 +3551,17 @@ namespace PD
                     {
                         if (vm.port_PD.IsOpen)
                         {
+                            //if(false)
+                            //    vm.port_PD.Write(vm.Str_Command);
+                            //else
+                            //{
+                            //    byte[] ba = Encoding.Default.GetBytes(vm.Str_Command);
+                            //    vm.port_PD.Write(ba, 0, ba.Length);
+                            //    byte[] bytestosend = { 0xff, 0xff, 0xff };
+                            //    vm.port_PD.Write(bytestosend, 0, bytestosend.Length);
+                            //}
+                            //return;
+
                             vm.port_PD.Write(vm.Str_Command + "\r");
 
                             await Task.Delay(vm.Int_Read_Delay);
@@ -6300,6 +6346,20 @@ namespace PD
                 vm.Show_Bear_Window("Before or After ?", false, "String", true);
             else if (vm.station_type.Equals("TF2"))
             {
+                if (string.IsNullOrEmpty(vm.UserID))
+                {
+                    vm.Show_Bear_Window("工號空白", false, "String", false);
+                    return;
+                }
+                else
+                {
+                    if (vm.UserID.Length != 5 || (vm.UserID.First() != 'P' && vm.UserID.First() != 'E'))
+                    {
+                        vm.Show_Bear_Window("工號格式應為PXXX", false, "String", false);
+                        return;
+                    }
+                }
+
                 List<string> list_titles = new List<string>(){ "WL","CWL", "IL", "PDL", "Mic",
                     $"{vm.opModel_1.BW_Setting_1}dB",
                     $"{vm.opModel_1.BW_Setting_2}dB",
@@ -6723,6 +6783,11 @@ namespace PD
             #endregion
 
             MessageBox.Show("Best Dac: " + curveFittingResultModel.Best_X.ToString());
+        }
+
+        private void grid_Unit_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            cmd.Switch_PM_Unit();
         }
     }
 }

@@ -2504,39 +2504,52 @@ namespace PD.ViewModel
                         #endregion
 
                         #region Get Board Table
-                        int k = 0;
-                        foreach (List<string> board_info in list_Board_Setting)
+
+                        if (CheckDirectoryExist(txt_board_table_path, "ch_count"))
                         {
-                            if (string.IsNullOrEmpty(board_info[0]))
+                            int k = 0;
+                            foreach (List<string> board_info in list_Board_Setting)
                             {
-                                k++; continue;
-                            }
+                                if (string.IsNullOrEmpty(board_info[0]))
+                                {
+                                    k++; continue;
+                                }
 
-                            string board_id = board_info[0];
-                            string path = Path.Combine(txt_board_table_path, board_id + "-boardtable.txt");
+                                string board_id = board_info[0];
+                                string path = Path.Combine(txt_board_table_path, board_id + "-boardtable.txt");
 
-                            if (!File.Exists(path))
-                            {
-                                Str_cmd_read = "UFV Board table is not exist";
-                                Save_Log("Get Board Table", (k + 1).ToString(), Str_cmd_read);
+                                if (!File.Exists(path))
+                                {
+                                    Str_cmd_read = "UFV Board table is not exist";
+                                    Save_Log(new LogMember()
+                                    {
+                                        Channel = (k + 1).ToString(),
+                                        Status = "ch_count",
+                                        Message = "Board Table is not exit",
+                                        Result = $"{board_id}-boardtable.txt",
+                                        Date = DateTime.Now.Date.ToShortDateString(),
+                                        Time = DateTime.Now.ToLongTimeString()
+                                    });
+                                    k++;
+                                    continue;
+                                }
+
+                                StreamReader str = new StreamReader(path);
+
+                                while (true)  //Read board v3 data
+                                {
+                                    string readline = str.ReadLine();
+
+                                    if (string.IsNullOrEmpty(readline)) break;
+
+                                    board_read[k].Add(readline);
+                                }
+                                str.Close(); //(關閉str)
+
                                 k++;
-                                continue;
                             }
-
-                            StreamReader str = new StreamReader(path);
-
-                            while (true)  //Read board v3 data
-                            {
-                                string readline = str.ReadLine();
-
-                                if (string.IsNullOrEmpty(readline)) break;
-
-                                board_read[k].Add(readline);
-                            }
-                            str.Close(); //(關閉str)
-
-                            k++;
                         }
+                       
                         #endregion
 
                         bool check = false;
@@ -2582,6 +2595,17 @@ namespace PD.ViewModel
                     MessageBox.Show(ex.StackTrace.ToString());
                 }
 
+            }
+        }
+
+        public bool CheckDirectoryExist(string dir_path, string status)
+        {
+            if (Directory.Exists(dir_path))
+                return true;
+            else
+            {
+                Save_Log(new LogMember() { isShowMSG = false,Status= status, Message = "Folder is not exist", Result = "Timeout" });
+                return false;
             }
         }
 
@@ -2944,11 +2968,10 @@ namespace PD.ViewModel
             {
                 _Auto_Update = value;
                 ini.IniWriteValue("Connection", "Auto_Update", value.ToString(), ini_path);
+                ini.IniWriteValue("Connection", "Auto_Update", value.ToString(), Path.Combine(CurrentPath, "Instrument.ini"));
                 OnPropertyChanged("Auto_Update");
             }
         }
-
-
 
         private bool _SN_Judge = true;
         public bool SN_Judge
@@ -3216,7 +3239,7 @@ namespace PD.ViewModel
                     }
                     else
                     {
-                        MessageBox.Show("Please check ID format");
+                        Show_Bear_Window("工號格式應為PXXX", false, "String", false);
                         return;
                     }
                 }
@@ -3224,7 +3247,7 @@ namespace PD.ViewModel
                     _UserID = value;
                 else
                 {
-                    MessageBox.Show("Please check ID format");
+                    Show_Bear_Window("工號格式應為PXXX", false, "String", false);
                     return;
                 }
 

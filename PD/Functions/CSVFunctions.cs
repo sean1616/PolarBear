@@ -408,7 +408,12 @@ namespace PD.Functions
                 saveFileDialog.Filter = "CSV (*.csv)|*.csv|TXT (*.txt)|*.txt|All files (*.*)|*.*";
 
                 //string BoardData_filePath = @"D:\" + fileName + @"_001.csv";
-                string BoardData_filePath = $@"D:\{fileName}_001.csv";
+
+                string CurrentDirectory = Directory.GetCurrentDirectory();
+
+                string BoardData_filePath = Path.Combine(CurrentDirectory, $"{fileName}_001.csv");
+                //string BoardData_filePath = $@"D:\{fileName}_001.csv";
+
                 if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     BoardData_filePath = saveFileDialog.FileName;
@@ -519,7 +524,7 @@ namespace PD.Functions
                 }
                 else
                 {
-                    MessageBoxResult msgR = MessageBox.Show("File is exist, overwrite ?", "File" , MessageBoxButton.YesNo);
+                    MessageBoxResult msgR = MessageBox.Show($"{filepath}\n,File is exist, overwrite ?", "File" , MessageBoxButton.YesNo);
                     if (msgR == MessageBoxResult.No) return "";
                 }
 

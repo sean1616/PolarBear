@@ -26,6 +26,7 @@ namespace PD.NavigationPages
     {
         ComViewModel vm;
         ControlCmd cmd;
+        AnalysisModel.Analysis analysis;
 
         public Window_PowerSupply_Setting(ComViewModel vm)
         {
@@ -40,9 +41,21 @@ namespace PD.NavigationPages
             txt_equipment_setting_Path.DataContext = vm;
 
             cmd = new ControlCmd(vm);
+            analysis = new AnalysisModel.Analysis(vm);
         }
 
-        private void btn_save_boardtable_Click(object sender, RoutedEventArgs e)
+        public bool CheckDirectoryExist(string dir_path)
+        {
+            if (Directory.Exists(dir_path))
+                return true;
+            else
+            {
+                vm.Save_Log(new LogMember() { isShowMSG = true, Message = "Folder is not exist", Result= "Timeout" });
+                return false;
+            }
+        }
+
+        private void SaveBoardTable()
         {
             #region Save Comport in INI
             try
@@ -57,19 +70,28 @@ namespace PD.NavigationPages
                 }
 
                 #region Get board calibration data
-                if (Directory.Exists(vm.txt_board_table_path))
+
+                var task = Task.Run(() => CheckDirectoryExist(vm.txt_board_table_path));
+                var result = (task.Wait(1500)) ? task.Result : false;
+
+                if (result)
                 {
                     vm.list_Board_Setting.Clear();
-                    //vm.IsCheck.Clear();
+
                     for (int i = 0; i < vm.ch_count; i++)
                     {
                         string Board_ID = "Board_ID_" + (i + 1).ToString();
                         string Board_COM = "Board_COM_" + (i + 1).ToString();
                         vm.list_Board_Setting.Add(new List<string>() { vm.Ini_Read("Board_ID", Board_ID), vm.Ini_Read("Board_Comport", Board_COM) });
-                        //vm.IsCheck.Add(false);
                         vm.list_Chart_UI_Models[i].Button_IsChecked = false;
                     }
                     vm.list_Board_Setting = new List<List<string>>(vm.list_Board_Setting);
+
+                    if (!analysis.CheckDirectoryExist(vm.txt_board_table_path))
+                    {
+                        vm.Str_cmd_read = vm.txt_board_table_path + "\r\n" + " Directory is not exist";
+                        return;
+                    }
 
                     int k = 0;
                     foreach (List<string> board_info in vm.list_Board_Setting)
@@ -87,14 +109,23 @@ namespace PD.NavigationPages
                         if (!File.Exists(path))
                         {
                             vm.Str_cmd_read = "UFV Board table is not exist";
-                            vm.Save_Log("Get Board Table", (k + 1).ToString(), vm.Str_cmd_read);
+                            vm.Save_Log(new LogMember()
+                            {
+                                Channel = (k + 1).ToString(),
+                                Status = "Save Board Table",
+                                Message = "Board Table is not exit",
+                                Result = $"{board_id}-boardtable.txt",
+                                Date = DateTime.Now.Date.ToShortDateString(),
+                                Time = DateTime.Now.ToLongTimeString()
+                            });
                             k++;
                             continue;
                         }
 
                         StreamReader str = new StreamReader(path);
 
-                        while (true)  //Read board v3 data
+                        //Read board v3 data
+                        while (true)  
                         {
                             string readline = str.ReadLine();
 
@@ -117,7 +148,7 @@ namespace PD.NavigationPages
 
                 vm.Ini_Write("Connection", "COM_Golight", vm.Golight_ChannelModel.Board_Port);
             }
-            catch (Exception ex)
+            catch (TimeoutException ex)
             {
                 MessageBox.Show(ex.StackTrace.ToString());
             }
@@ -126,7 +157,8 @@ namespace PD.NavigationPages
             #region Save equipment setting table
             List<string> list_titles = new List<string>(){"Channel", "ID", "Comport", "BautRate",
                     "PM_Type", "PM_GPIB_BoardName", "PM_Address", "PM_Slot", "PM_AverageTime", "PM_ID", "PM_Comport", "PM_BautRate", "PM_GetPower_Cmd" };
-            string filePath = CSVFunctions.Creat_New_CSV("Control_Board_Setting", list_titles);
+            //string filePath = CSVFunctions.Creat_New_CSV("Control_Board_Setting", list_titles);
+            string filePath = CSVFunctions.Creat_New_CSV(Directory.GetCurrentDirectory(), "Control_Board_Setting", list_titles, true, true);
 
             if (string.IsNullOrEmpty(filePath))
             {
@@ -159,6 +191,11 @@ namespace PD.NavigationPages
             vm.Str_cmd_read = "Board Table Saved";
             vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = false });
             #endregion
+        }
+
+        private void btn_save_boardtable_Click(object sender, RoutedEventArgs e)
+        {
+            SaveBoardTable();
         }
 
         private void ComboBox_DropDownClosed(object sender, EventArgs e)
@@ -279,7 +316,7 @@ namespace PD.NavigationPages
                 }
                 vm.list_Board_Setting = new List<List<string>>(vm.list_Board_Setting);
 
-                if (!Directory.Exists(vm.txt_board_table_path))
+                if (!analysis.CheckDirectoryExist(vm.txt_board_table_path))
                 {
                     vm.Str_cmd_read = vm.txt_board_table_path + "\r\n" + " Directory is not exist";
                     return;
@@ -301,7 +338,15 @@ namespace PD.NavigationPages
                     if (!File.Exists(path))
                     {
                         vm.Str_cmd_read = "UFV Board table is not exist";
-                        vm.Save_Log("Get Board Table", (k + 1).ToString(), vm.Str_cmd_read);
+                        vm.Save_Log(new LogMember()
+                        {
+                            Channel = (k + 1).ToString(),
+                            Status = "Load Board Table",
+                            Message = "Board Table is not exit",
+                            Result = $"{board_id}-boardtable.txt",
+                            Date = DateTime.Now.Date.ToShortDateString(),
+                            Time = DateTime.Now.ToLongTimeString()
+                        });
                         k++;
                         continue;
                     }

@@ -101,7 +101,7 @@ namespace PD.NavigationPages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.5.17;component/navigationpages/window_password.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.5.18;component/navigationpages/window_password.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NavigationPages\Window_Password.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

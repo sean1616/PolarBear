@@ -555,6 +555,7 @@
                           Tag="../Resources/Change.png" />
 
                 <Grid Name="grid_Unit"
+                      PreviewMouseLeftButtonDown="grid_Unit_PreviewMouseLeftButtonDown"
                       Grid.Row="10"
                       Grid.ColumnSpan="2">
                     <Grid.RowDefinitions>

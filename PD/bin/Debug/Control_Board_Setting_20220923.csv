@@ -1,0 +1,2 @@
+Channel,ID,Comport,BautRate,PM_Type,PM_GPIB_BoardName,PM_Address,PM_Slot,PM_AverageTime,PM_ID,PM_Comport,PM_BautRate,PM_GetPower_Cmd
+ch 1,,,115200,RS232,0,24,1,20,,COM25,115200,P2?,

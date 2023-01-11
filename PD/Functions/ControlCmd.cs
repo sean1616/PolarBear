@@ -2370,9 +2370,9 @@ namespace PD.Functions
 
         private string WL_Range_Analyze(double wl)
         {
-            if (wl >= 1523 && wl <= 1620)
-                return "C+L Band";
-            else if (wl >= 1625 && wl <= 1675)
+            //if (wl >= 1523 && wl <= 1620)
+            //    return "C+L Band";
+            if (wl >= 1625 && wl <= 1675)
                 return "U Band";
             else if (wl >= 1560 && wl <= 1625)
                 return "L Band";
@@ -2390,8 +2390,6 @@ namespace PD.Functions
 
         DiCon.Instrument.HP816x hp816x = new DiCon.Instrument.HP816x();
         DiCon.Instrument.LambdaScan lambda_scan = new DiCon.Instrument.LambdaScan();
-        private double m_StartWL = 1520.0;
-        private double m_StopWL = 1570.0;
         private bool m_HiSpeed = true;    // 40 nm/s
         public bool isLambdaInit = false;
 
@@ -2442,7 +2440,23 @@ namespace PD.Functions
             lambda_scan.LambdaScan_Sweep_Start(hp816x);
         }
 
-        public void Set_WL()
+        private bool _TLS_Unit = false;
+        public void Switch_TLS_Unit()
+        {
+            _TLS_Unit = !_TLS_Unit;
+            int tlsUt = _TLS_Unit ? 1 : 0;
+            vm.tls.setUnit(tlsUt);
+        }
+
+        private bool _PM_Unit = false;
+        public void Switch_PM_Unit()
+        {
+            _PM_Unit = !_PM_Unit;
+            int pmUt = _TLS_Unit ? 1 : 0;
+            vm.pm.setUnit(pmUt);
+        }
+
+        public async void Set_WL()
         {
             try
             {
@@ -2453,19 +2467,19 @@ namespace PD.Functions
                         switch (vm.product_type)
                         {
                             case "UFA":
-                                Set_WL(1548.5, false);
+                                await Set_WL(1548.5, false);
                                 break;
 
                             case "UFA(H)":
-                                Set_WL(1548.5, false);
+                                await Set_WL(1548.5, false);
                                 break;
 
                             case "UTF":
-                                Set_WL(1527.5, false);
+                                await Set_WL(1527.5, false);
                                 break;
 
                             case "CTF":
-                                Set_WL(1527.5, false);
+                                await Set_WL(1527.5, false);
                                 break;
 
                             case "MTF":
@@ -3696,8 +3710,6 @@ namespace PD.Functions
                 using (System.IO.StreamWriter file =
                  new System.IO.StreamWriter(filePath, true))
                 {
-
-
                     string firstline = $"{production_type},{userID},{SNnumber}";
                     file.WriteLine(firstline);  //第一列：使用者ID
 
@@ -3979,10 +3991,10 @@ namespace PD.Functions
                     if (vm.list_Chart_UI_Models[i].Button_IsChecked)
                         vm.list_ch_title[i] = $"ch{i + 1}, Delta IL : {deltaIL}";
 
-                    //if (vm.ChartNowModel.list_delta_IL.Count == 0)
-                    //    vm.ChartNowModel.list_delta_IL.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
+                    if (vm.ChartNowModel.list_delta_IL.Count == 0)
+                        vm.ChartNowModel.list_delta_IL.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
 
-                    //vm.ChartNowModel.list_delta_IL[i] = deltaIL;
+                    vm.ChartNowModel.list_delta_IL[i] = deltaIL;
                 }
             }
             #endregion

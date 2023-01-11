@@ -507,23 +507,7 @@ namespace PD.NavigationPages
         }
 
         private void btn_aft_Click(object sender, RoutedEventArgs e)
-        {
-            //if (vm.bear_say_now < vm.bear_say_all)
-            //{
-            //    vm.bear_say_now++;
-
-            //    for (int ch = 0; ch < vm.ch_count; ch++)
-            //    {
-            //        vm.list_GaugeModels[ch].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_1;
-            //        vm.list_GaugeModels[ch].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_2;
-            //        vm.list_GaugeModels[ch].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_3;
-
-            //        vm.Save_All_PD_Value[ch] = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].DataPoints;
-            //        vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
-            //        vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries                
-            //    }
-            //}
-
+        {         
             try
             {
                 if (vm.int_chart_now >= vm.int_chart_count)
@@ -550,16 +534,16 @@ namespace PD.NavigationPages
 
                 for (int i = 0; i < vm.ch_count; i++)
                 {
-                    vm.list_GaugeModels[i].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_1;
-                    vm.list_GaugeModels[i].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_2;
-                    vm.list_GaugeModels[i].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_3;
+                    vm.list_GaugeModels[i].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_1;
+                    vm.list_GaugeModels[i].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_2;
+                    vm.list_GaugeModels[i].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_3;
 
-                    if (i < vm.list_ch_title.Count)
-                        if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
-                        {
-                            if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
-                                vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
-                        }
+                    //if (i < vm.list_ch_title.Count)
+                    //    if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
+                    //    {
+                    //        if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
+                    //            vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
+                    //    }
                 }
             }
             catch (Exception ex)
@@ -571,22 +555,6 @@ namespace PD.NavigationPages
 
         private void btn_pre_Click(object sender, RoutedEventArgs e)
         {
-            //if (vm.bear_say_now > 1)
-            //{
-            //    vm.bear_say_now--;
-
-            //    for (int ch = 0; ch < vm.ch_count; ch++)
-            //    {
-            //        vm.list_GaugeModels[ch].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_1;
-            //        vm.list_GaugeModels[ch].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_2;
-            //        vm.list_GaugeModels[ch].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].GaugeBearSay_3;
-
-            //        vm.Save_All_PD_Value[ch] = vm.list_collection_GaugeModels[vm.bear_say_now - 1][ch].DataPoints;
-            //        vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
-            //        vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
-            //    }
-            //}
-
             try
             {
                 if (vm.int_chart_now > 1)
@@ -605,16 +573,16 @@ namespace PD.NavigationPages
 
                     for (int i = 0; i < vm.ch_count; i++)
                     {
-                        vm.list_GaugeModels[i].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_1;
-                        vm.list_GaugeModels[i].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_2;
-                        vm.list_GaugeModels[i].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.bear_say_now - 1][i].GaugeBearSay_3;
+                        vm.list_GaugeModels[i].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_1;
+                        vm.list_GaugeModels[i].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_2;
+                        vm.list_GaugeModels[i].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_3;
 
-                        if (i < vm.list_ch_title.Count)
-                            if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
-                            {
-                                if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
-                                    vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
-                            }
+                        //if (i < vm.list_ch_title.Count)
+                        //    if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
+                        //    {
+                        //        if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
+                        //            vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
+                        //    }
                     }
                 }
             }
@@ -953,7 +921,15 @@ namespace PD.NavigationPages
                                                 if (!File.Exists(path))
                                                 {
                                                     vm.Str_cmd_read = "UFV Board table is not exist";
-                                                    vm.Save_Log("Get Board Table", "1", vm.Str_cmd_read);
+                                                    vm.Save_Log(new LogMember()
+                                                    {
+                                                        Channel = "1",
+                                                        Status = "Write_Dac_Volt",
+                                                        Message = "Board Table is not exit",
+                                                        Result = $"{board_id}-boardtable.txt",
+                                                        Date = DateTime.Now.Date.ToShortDateString(),
+                                                        Time = DateTime.Now.ToLongTimeString()
+                                                    });
                                                 }
                                                 else
                                                 {

@@ -31,7 +31,6 @@ namespace PD.Functions
                 await vm.AccessDelayAsync(75);
                 vm.Double_Laser_Wavelength = vm.tls.ReadWL();
                 await vm.AccessDelayAsync(120);
-
             }
             catch
             {
@@ -66,6 +65,9 @@ namespace PD.Functions
 
             if (vm.Dictionary_Product_WL_Setting.ContainsKey(key))
             {
+                //string band = key.Split('_').Length == 2 ? key.Split('_')[1] : "C+L Band";
+                //vm.selected_band = band;
+
                 List<string> ls = vm.Dictionary_Product_WL_Setting[key];
                 double start = 1545;
                 double.TryParse(vm.Dictionary_Product_WL_Setting[key][0], out start);
@@ -79,6 +81,10 @@ namespace PD.Functions
                 {
                     case "UFA":
                         choose_product_voltage_setting(-65500, 65500, 25, 30, 200);
+                        //if(vm.selected_band.Equals("C Band"))
+                        //    Set_Laser_WL(1548.5);
+                        //else if (vm.selected_band.Equals("L Band"))
+                        //    Set_Laser_WL(1591);
                         break;
 
                     case "UFA-T":
@@ -87,6 +93,10 @@ namespace PD.Functions
 
                     case "UFA(H)":
                         choose_product_voltage_setting(-65500, 65500, 34, 40, 200);
+                        //if (vm.selected_band.Equals("C Band"))
+                        //    Set_Laser_WL(1548.5);
+                        //else if (vm.selected_band.Equals("L Band"))
+                        //    Set_Laser_WL(1591);
                         break;                                          
 
                     case "MTF":

@@ -746,22 +746,35 @@ namespace PD.NavigationPages
 
                     System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
                     saveFileDialog.Title = "Save Data";
-                    if (Directory.Exists(vm.txt_Chamber_Status_Path))
-                        saveFileDialog.InitialDirectory = vm.txt_Chamber_Status_Path;
-                    else
-                        saveFileDialog.InitialDirectory = @"D:\";
+
+                    var task = Task.Run(() => analysis.CheckDirectoryExist(vm.txt_Chamber_Status_Path));
+                    var result = (task.Wait(1500)) ? task.Result : false;
+
+                    saveFileDialog.InitialDirectory = result ? saveFileDialog.InitialDirectory : saveFileDialog.InitialDirectory = @"D:\";
+
                     saveFileDialog.FileName = "BoardData_" + DateTime.Today.Year + DateTime.Today.Month.ToString("00") + DateTime.Today.Day.ToString("00") + ".csv";
                     saveFileDialog.Filter = "CSV (*.csv)|*.csv|TXT (*.txt)|*.txt|All files (*.*)|*.*";
 
-                    string BoardData_server_filePath = @"\\192.168.2.3\shared\SeanWu\PD_Fast_Calibration_Voltage_Monitor";
+                    string BoardData_server_filePath = vm.txt_Chamber_Status_Path;  //\\192.168.2.3\shared\SeanWu\PD_Fast_Calibration_Voltage_Monitor
                     string BoardData_filePath = @"D:\BoardData_001.csv";
                     if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         BoardData_filePath = saveFileDialog.FileName;
                         folder = Path.GetDirectoryName(BoardData_filePath);
 
-                        if (!Directory.Exists(BoardData_server_filePath))
-                            Directory.CreateDirectory(BoardData_server_filePath);  //Creat folder on 192 server
+                        task = Task.Run(() => analysis.CheckDirectoryExist(BoardData_server_filePath));
+                        result = (task.Wait(1500)) ? task.Result : false;
+
+                        if (!result)
+                        {
+                            task = Task.Run(() => analysis.CreateDirectory(BoardData_server_filePath)); //Creat folder on 192 server
+                            result = (task.Wait(1500)) ? task.Result : false;
+
+                            if (!result)
+                            {
+                                vm.Save_Log(new LogMember() { isShowMSG = true, Status = "Save Voltage Data", Message= BoardData_server_filePath, Result = "CreateDirectory Failded" });
+                            }
+                        }
 
                         string extension = Path.GetExtension(BoardData_filePath);
 
@@ -866,7 +879,10 @@ namespace PD.NavigationPages
 
                             filepath_server = Path.Combine(BoardData_server_filePath, Path.GetFileNameWithoutExtension(BoardData_filePath)) + ".csv";
 
-                            if (Directory.Exists(BoardData_server_filePath))
+                            task = Task.Run(() => analysis.CheckDirectoryExist(BoardData_server_filePath));
+                            result = (task.Wait(1500)) ? task.Result : false;
+
+                            if (result)
                                 if (!File.Exists(filepath_server))
                                 {
                                     File.AppendAllText(filepath_server, "");  //Creat a csv file
@@ -1242,7 +1258,10 @@ namespace PD.NavigationPages
 
             #region Get Chamber Status Table Data from server
 
-            if (Directory.Exists(vm.txt_Chamber_Status_Path))
+            var task = Task.Run(() => analysis.CheckDirectoryExist(vm.txt_Chamber_Status_Path));
+            var result = (task.Wait(1500)) ? task.Result : false;
+
+            if (result)
             {
                 string[] list_chamber_directory = Directory.GetDirectories(vm.txt_Chamber_Status_Path);
 
@@ -1386,8 +1405,6 @@ namespace PD.NavigationPages
                                 }
                             }
                         #endregion
-
-
                     }
                 }
             }

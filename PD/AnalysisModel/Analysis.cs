@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Drawing;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.IO.Ports;
 using PD.ViewModel;
 using PD.Models;
@@ -29,8 +30,6 @@ namespace PD.AnalysisModel
         public Analysis(ComViewModel vm)
         {
             this.vm = vm;
-
-            //List<List<string>> ls = ListDefault<List<string>>(3);
         }
 
         public T Generic_GetINISetting<T>(T input, string region, string variable) where T : new ()
@@ -266,29 +265,26 @@ namespace PD.AnalysisModel
             return Product_type;
         }
 
-        //public void DeltaIL_Calculation(int dataCount)
-        //{
-        //    if (dataCount == 1)
-        //    {
-        //        for (int i = 0; i < vm.ch_count; i++)
-        //        {
-        //            vm.maxIL[i] = vm.Double_Powers[i];
-        //            vm.minIL[i] = vm.Double_Powers[i];
-        //        }
-        //    }
-        //    else
-        //    {
-        //        for (int i = 0; i < vm.ch_count; i++)
-        //        {
-        //            vm.maxIL[i] = vm.Double_Powers[i] > vm.maxIL[i] ? vm.Double_Powers[i] : vm.maxIL[i];
-        //            vm.minIL[i] = vm.Double_Powers[i] < vm.minIL[i] ? vm.Double_Powers[i] : vm.minIL[i];
+        public bool CheckDirectoryExist(string dir_path)
+        {
+            if (Directory.Exists(dir_path))
+                return true;
+            else
+            {
+                vm.Save_Log(new LogMember() { isShowMSG = true, Message = "Folder is not exist", Result = "Timeout" });
+                return false;
+            }
+        }
 
-        //            double deltaIL = Math.Round(Math.Abs(vm.maxIL[i] - vm.minIL[i]), 4);
-        //            vm.list_ch_title[i] = string.Concat("ch1", " ,Delta IL : ", deltaIL.ToString());
-        //            vm.ChartNowModel.list_delta_IL[i] = deltaIL;
-        //        }
-        //    }
-        //}
+        public bool CreateDirectory(string dir_path)
+        {
+            Directory.CreateDirectory(dir_path);  //Creat folder on 192 server
+
+            if (Directory.Exists(dir_path))
+                return true;
+            else
+                return false;
+        }
 
         public void BandWidth_Calculation()
         {
