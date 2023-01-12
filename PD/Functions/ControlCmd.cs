@@ -2635,7 +2635,7 @@ namespace PD.Functions
         {
             try
             {
-                if (!vm.isConnected) Connect_TLS();
+                if (!vm.isConnected) await Connect_TLS();
 
                 switch (vm.Laser_type)
                 {
@@ -3686,88 +3686,19 @@ namespace PD.Functions
             #endregion
         }
 
-        public int Save_K_TF_Data(string path, Dictionary<double, string> dic_keyPairs, GaugeModel gm, string board_ID)
+        public int Save_ChartNow_Data(string path, Dictionary<string, string> dic_keyPairs)
         {
-            //string SNnumber = gm.GaugeSN;
-            //int ch = int.Parse(gm.GaugeChannel) - 1;
-            //string filePath = "";
-
-            #region Save Bear say to txt file
-            //if (string.IsNullOrEmpty(gm.GaugeBearSay_1)) return 1;
-            //if (vm.List_bear_say.Count == 0) return 1;  //ErrorCode:1 => BearSay is empty
-            //if (string.IsNullOrWhiteSpace(SNnumber)) return 3; //ErrorCode:3 => SN number is empty
-
-            //DateTime dt = DateTime.Now;
-            //string a = dt.ToString("yyyy/MM/dd HH:mm:ss");
-
-
-
             using (System.IO.StreamWriter file =
                  new System.IO.StreamWriter(path, true))
             {
-                foreach (double wl in dic_keyPairs.Keys)
+                foreach (string wl in dic_keyPairs.Keys)
                 {
-                    string line = $"{wl.ToString()},{dic_keyPairs[wl]}";
+                    string line = $"{wl},{dic_keyPairs[wl]}";
                     file.WriteLine(line);
                 }
             }
 
-            //if (File.Exists(filePath))
-            //{
-            //    List<string> quotelist = File.ReadAllLines(filePath).ToList();
-
-            //    if (quotelist.Count > 2)  //已有兩筆數據
-            //    {
-            //        quotelist[beforeORafter] = "";  //Delete Data, 1 is before, 2 is after             
-            //                                        //quotelist.RemoveAt(beforeORafter);    //Delete Data, 1 is before, 2 is after      
-
-            //        vm.Save_Log("Save Data", "Exist data count : " + quotelist.Count.ToString(), false);
-            //    }
-            //    else if (quotelist.Count == 2) //只有一筆數據
-            //    {
-            //        quotelist.Add("");
-
-            //        vm.Save_Log("Save Data", "Exist data count : " + quotelist.Count.ToString(), false);
-            //    }
-
-            //    File.Delete(filePath);
-
-            //    string str = "";
-            //    try
-            //    {
-            //        str += gm.GaugeBearSay_1;  //第二列-波長
-            //        str += ",";
-            //        str += a;  //第二列-時間
-
-            //        quotelist[beforeORafter] = str;
-            //    }
-            //    catch { vm.Str_cmd_read = "Save data error"; return 4; }
-
-            //    using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath, true))
-            //    {
-            //        for (int i = 0; i < quotelist.Count; i++)
-            //        {
-            //            file.WriteLine(quotelist[i]);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    //if (string.IsNullOrWhiteSpace(userID)) return 2;  //ErrorCode:2 => UserID is empty
-
-            //    using (System.IO.StreamWriter file =
-            //     new System.IO.StreamWriter(filePath, true))
-            //    {
-            //        for (int i = 0; i < dic_keyPairs.Count; i++)
-            //        {
-            //            string line = $"{wl.ToString()},{gm.GaugeD0_1},{gm.GaugeD0_2},{gm.GaugeD0_3}";
-            //            file.WriteLine(line);  
-            //        }                   
-            //    }
-            //}
-
             return 0;
-            #endregion
         }
 
         public void Save_Log_Message(string Data_Type, string content, string time)

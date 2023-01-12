@@ -222,6 +222,33 @@ namespace PD.Models
         }
 
         #endregion
+
+        #region UTF600 para
+
+        private double _FOM = 0;
+        public double FOM
+        {
+            get { return _FOM; }
+            set
+            {
+                _FOM = Math.Round(value, 3);
+                OnPropertyChanged_Normal("FOM");
+            }
+        }
+
+        private double _SMR = 0;
+        public double SMR
+        {
+            get { return _SMR; }
+            set
+            {
+                _SMR = Math.Round(value, 2);
+                OnPropertyChanged_Normal("SMR");
+            }
+        }
+
+        #endregion
+
     }
 
     public class OpticalPropertyModel : NotifyBase
@@ -685,5 +712,6 @@ namespace PD.Models
         }
 
         #endregion
+
     }
 }

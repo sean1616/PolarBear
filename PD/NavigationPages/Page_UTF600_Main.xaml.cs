@@ -1483,56 +1483,6 @@ namespace PD.NavigationPages
             }
         }
 
-        private void Btn_cal_Click(object sender, RoutedEventArgs e)
-        {
-            string txt_cwl = txt_CWL.Text;
-            double cwl = 0;
-            double.TryParse(txt_cwl, out cwl);
-            cwl = Math.Round(cwl, 2);
-
-            #region Cal. 0.5dB Bandwidth
-
-            //var orderedSeries = vm.Chart_DataPoints.OrderBy(o => o.Y).ToList();
-
-            int index_CWL = vm.Chart_DataPoints.FindIndex(o => Math.Round(o.X, 2) == cwl);
-            if (index_CWL <= 0) return;
-            OxyPlot.DataPoint dp_IL_CWL = vm.Chart_DataPoints[index_CWL];
-            double IL_CWL = dp_IL_CWL.Y;
-
-            //Find point from center to right side
-            int index_R = 0; double wl_R = 0;
-            for (int i = index_CWL; i < vm.Chart_DataPoints.Count; i++)
-            {
-                if (Math.Abs(IL_CWL - vm.Chart_DataPoints[i].Y) >= 0.5)
-                {
-                    index_R = i;
-                    wl_R = vm.Chart_DataPoints[i].X;
-                    break;
-                }
-            }
-
-            //Find point from center to left side
-            int index_L = 0; double wl_L = 0;
-            for (int i = index_CWL; i >= 0; i--)
-            {
-                if (Math.Abs(IL_CWL - vm.Chart_DataPoints[i].Y) >= 0.5)
-                {
-                    index_L = i;
-                    wl_L = vm.Chart_DataPoints[i].X;
-                    break;
-                }
-            }
-
-            if (wl_R == 0 || wl_L == 0) vm.ChartNowModel.BW_1 = 0;
-            else
-            {
-                double BW = Math.Abs(wl_R - wl_L);
-                vm.ChartNowModel.BW_1 = Math.Round(BW, 2);
-            }
-
-            #endregion           
-        }
-
         private void gauge_PreviewMouseRightButtonDown(object sender, RoutedEventArgs e)
         {
             foreach (GaugeModel gm in vm.list_GaugeModels)

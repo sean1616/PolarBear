@@ -286,6 +286,10 @@ namespace PD.AnalysisModel
                 return false;
         }
 
+        public List<double> list_SMR_slope = new List<double>();
+        public List<double> list_SMR_Mountain_IL = new List<double>();
+        public List<DataPoint> list_SMR_Mountain = new List<DataPoint>();
+
         public void BandWidth_Calculation()
         {
             if (vm.Chart_DataPoints.Count != 0)
@@ -406,6 +410,202 @@ namespace PD.AnalysisModel
                             break;
                     }
                 }
+
+                if (!vm.station_type.Equals("UTF600"))
+                    return;
+
+                #region Cal. FOM
+
+                double FOM = 0;
+                if (vm.ChartNowModel.BW_4 != 0)
+                {
+                    FOM = vm.ChartNowModel.BW_3 / vm.ChartNowModel.BW_4;
+
+                    vm.ChartNowModel.FOM = vm.ChartNowModel.FOM != FOM ? Math.Round(FOM, 3) : 0;
+                }
+                else
+                    vm.ChartNowModel.FOM = 0;
+
+                #endregion
+
+                #region Cal. SMR
+
+                double SMR = 0;
+
+                if (vm.ChartNowModel.list_dataPoints[0].Count < 2) return;
+
+                list_SMR_Mountain_IL.Clear();
+                list_SMR_Mountain.Clear();
+
+                int Mountain_LeftCount = 0;
+                int Mountain_TopCount = 0;
+                int Mountain_RightCount = 0;
+                double NoiseThreshold = 0.02;
+
+                for (int i = 1; i < vm.ChartNowModel.list_dataPoints[0].Count; i++)
+                {
+                    DataPoint dp_2 = vm.ChartNowModel.list_dataPoints[0][i];
+                    DataPoint dp_1 = vm.ChartNowModel.list_dataPoints[0][i - 1];
+
+                    //Moutain not found yet
+                    if (Mountain_LeftCount < 3)
+                    {
+                        if ((dp_2.Y - dp_1.Y) > NoiseThreshold)
+                            Mountain_LeftCount++;
+                    }
+                    else if (Mountain_LeftCount >= 3)
+                    {
+                        //On the top of the mountain
+                        if (Math.Abs(dp_2.Y - dp_1.Y) <= NoiseThreshold)  //stable region
+                        {
+                            Mountain_TopCount++;
+                            Mountain_RightCount = 0;
+                            continue;
+                        }
+                        else if ((dp_1.Y - dp_2.Y) > NoiseThreshold)  //down the hill
+                        {
+                            Mountain_RightCount++;
+                            //Mountain_TopCount = 0;
+                        }
+                        else if ((dp_2.Y - dp_1.Y) > NoiseThreshold)  //up the hill
+                        {
+                            Mountain_TopCount = 0;
+                            continue;
+                        }
+                    }
+
+                    //Found a mountain
+                    if (Mountain_LeftCount >= 3 && Mountain_RightCount >= 3)
+                    {
+                        int allCount = Mountain_LeftCount + Mountain_TopCount + Mountain_RightCount;
+
+                        int startIndex = (i - (allCount)) < 0 ? 0 : i - (allCount);
+                        List<DataPoint> list_mountainRange = vm.ChartNowModel.list_dataPoints[0].GetRange
+                            (startIndex, allCount);
+
+                        DataPoint TopMountain = list_mountainRange.OrderBy(p => p.Y).Last();
+
+                        list_SMR_Mountain_IL.Add(TopMountain.Y);
+                        list_SMR_Mountain.Add(TopMountain);
+
+                        Mountain_TopCount = 0;
+                        Mountain_LeftCount = 0;
+                        Mountain_RightCount = 0;
+                    }
+
+#if false
+                DataPoint dp2 = vm.ChartNowModel.list_dataPoints[0].Last();
+                DataPoint dp1 = vm.ChartNowModel.list_dataPoints[0][vm.ChartNowModel.list_dataPoints[0].Count - 2];
+                double slopNow = (dp2.Y - dp1.Y) / (dp2.X - dp1.X);
+                list_SMR_slope.Add(Math.Round(slopNow, 3));
+
+                int isMoutainCount = 0;
+                int toleranceCount = 0;
+                list_SMR_Mountain_IL.Clear();
+
+                for (int i = 1; i < list_SMR_slope.Count; i++)
+                {
+                    //點數太少不予判斷
+                    if (list_SMR_slope.Count < 7)
+                        break;
+
+                    if (list_SMR_slope[i] <= list_SMR_slope[i - 1])
+                    {
+                        if (isMoutainCount < 4)
+                        {
+                            if (list_SMR_slope[i] >= 0)
+                                isMoutainCount++;
+                        }
+                        else
+                        {
+                            if (list_SMR_slope[i] <= 0)
+                                isMoutainCount++;
+                        }
+
+                        if (isMoutainCount >= 8)
+                        {
+                            list_SMR_Mountain_IL.Add(vm.ChartNowModel.list_dataPoints[0][i - 3].Y);  //往回推3個點為山頂
+                            isMoutainCount = 0;
+                        }
+                    }
+                    else
+                    {
+                        if (isMoutainCount < 4 && list_SMR_slope[i] > 0)
+                        {
+                            continue;
+                        }
+
+                        else if (isMoutainCount >= 4)
+                        {
+                            if (list_SMR_slope[i] >= 0 && list_SMR_slope[i - 1] >= 0)
+                                continue;
+                        }
+
+                        toleranceCount++;
+                        if (toleranceCount > 4)  //IL跳動容許次數{
+                        {
+                            isMoutainCount = 0;
+                            toleranceCount = 0;
+                        }
+                    }
+                } 
+#endif
+                }
+
+                //取最高的兩個IL
+                if (list_SMR_Mountain.Count > 1)
+                {
+                    List<DataPoint> list_SMR_inorder = list_SMR_Mountain.OrderBy(x => x.Y).ToList();
+                    SMR = Math.Abs(list_SMR_inorder.Last().Y - list_SMR_inorder[list_SMR_inorder.Count - 2].Y);
+                    vm.ChartNowModel.SMR = Math.Round(SMR, 2);
+
+                    //vm.ChartNowModel.SMR_Source = $"({Math.Round(list_SMR_Mountain.Last().Y, 2)})-({Math.Round(list_SMR_Mountain[list_SMR_Mountain.Count - 2].Y, 2)})";
+                }
+                else if (list_SMR_Mountain.Count == 1)
+                {
+                    vm.ChartNowModel.SMR = Math.Round(list_SMR_Mountain.Last().Y, 2);
+
+                    //vm.ChartNowModel.SMR_Source = $"({Math.Round(list_SMR_Mountain.Last().Y, 2)})";
+                }
+
+                //Add 30dB line in chart
+                if (list_SMR_Mountain.Count != 0)
+                {
+                    double maxIL = vm.ChartNowModel.list_dataPoints[0].Max(x => x.Y);
+                    double minIL = vm.ChartNowModel.list_dataPoints[0].Min(x => x.Y);
+                    double linePosition = maxIL - 30;
+
+                    if (vm.SpecLine30dB.Count == 0)
+                    {
+                        if (Math.Abs(maxIL - minIL) > 30)
+                        {
+                            foreach (DataPoint dp in vm.ChartNowModel.list_dataPoints[0])
+                                vm.SpecLine30dB.Add(new DataPoint(dp.X, linePosition));
+                        }
+                    }
+
+                    //若規格線的Y值改變，需重畫
+                    else
+                        if (linePosition != vm.SpecLine30dB.Last().Y)
+                    {
+                        ObservableCollection<DataPoint> tempList = new ObservableCollection<DataPoint>();
+
+                        if (Math.Abs(maxIL - minIL) > 30)
+                        {
+                            foreach (DataPoint dp in vm.ChartNowModel.list_dataPoints[0])
+                                tempList.Add(new DataPoint(dp.X, linePosition));
+
+                            vm.SpecLine30dB = tempList;
+                        }
+                    }
+                    else
+                    {
+                        vm.SpecLine30dB.Add(new DataPoint(vm.ChartNowModel.list_dataPoints[0].Last().X, linePosition));
+                    }
+                }
+
+                #endregion
+
             }
         }
 

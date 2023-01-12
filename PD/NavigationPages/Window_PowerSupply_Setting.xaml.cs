@@ -44,15 +44,12 @@ namespace PD.NavigationPages
             analysis = new AnalysisModel.Analysis(vm);
         }
 
-        public bool CheckDirectoryExist(string dir_path)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Directory.Exists(dir_path))
-                return true;
-            else
+            for (int i = 0; i < vm.list_ChannelModels.Count; i++)
             {
-                vm.Save_Log(new LogMember() { isShowMSG = false, Message = "Folder is not exist", Result= "Timeout" });
-                vm.Str_cmd_read = "Folder is not exist";
-                return false;
+                vm.list_ChannelModels[i].Board_Port = vm.list_Board_Setting[i][1];
+                vm.list_ChannelModels[i].Board_ID = vm.list_Board_Setting[i][0];
             }
         }
 
@@ -72,8 +69,8 @@ namespace PD.NavigationPages
 
                 #region Get board calibration data
 
-                var task = Task.Run(() => CheckDirectoryExist(vm.txt_board_table_path));
-                var result = (task.Wait(1500)) ? task.Result : false;
+                var task = Task.Run(() => vm.CheckDirectoryExist(vm.txt_board_table_path));
+                var result = task.Wait(1500) ? task.Result : false;
 
                 if (result)
                 {
@@ -225,15 +222,6 @@ namespace PD.NavigationPages
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < vm.list_ChannelModels.Count; i++)
-            {
-                vm.list_ChannelModels[i].Board_Port = vm.list_Board_Setting[i][1];
-                vm.list_ChannelModels[i].Board_ID = vm.list_Board_Setting[i][0];
-            }
-        }
-
         private void btn_load_boardtable_Click(object sender, RoutedEventArgs e)
         {
             string folder = System.Reflection.Assembly.GetEntryAssembly().Location;
@@ -246,6 +234,8 @@ namespace PD.NavigationPages
 
             bool? result = dialog.ShowDialog();
 
+
+            //load channels setting csv file
             if (result == true)
             {
                 string filePath = dialog.FileName;
@@ -301,10 +291,6 @@ namespace PD.NavigationPages
                         vm.Save_Log(new LogMember() { Message = "Equip setting file is not exist", isShowMSG = true });
                 }
             }
-
-
-
-            string sss = vm.list_ChannelModels[0].PM_Board_Port;
 
             #region Get Board From Server
 
@@ -385,9 +371,6 @@ namespace PD.NavigationPages
             vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = false });
         }
 
-        //DiCon.UCB.Communication.ICommunication icomm;
-        //DiCon.UCB.Communication.RS232.RS232 rs232;
-        //DiCon.UCB.MTF.IMTFCommand tf;
         private async void btn_Board_ID_Click(object sender, RoutedEventArgs e)
         {
             for (int i = 0; i < vm.list_ChannelModels.Count; i++)

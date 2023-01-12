@@ -173,7 +173,7 @@ namespace PD.NavigationPages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.5.18;component/navigationpages/page_log_command.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.5.19;component/navigationpages/page_log_command.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NavigationPages\Page_Log_Command.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

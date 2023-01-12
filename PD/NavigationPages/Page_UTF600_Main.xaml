@@ -14,6 +14,8 @@
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              d:DesignHeight="1080"
              d:DesignWidth="1920"       
+             FontFamily="Segoe Print"
+             FontWeight="ExtraBold"
              Style="{StaticResource UCAll}"
              Background="Transparent"     
              mc:Ignorable="d">
@@ -64,7 +66,7 @@
             <RowDefinition Name="grid_second_rowdefinition" Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" >
+        <!--<Grid Grid.Row="0" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -75,8 +77,8 @@
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <Border x:Name="border_Standard" />
-        </Grid>
+           
+        </Grid>-->
 
         <ScrollViewer x:Name="viewer" 
                       Background="White">
@@ -88,7 +90,7 @@
                           ItemsSource="{Binding list_GaugeModels}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="4" />
+                        <UniformGrid Columns="1" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -121,27 +123,37 @@
                                          Gauge_Mode="{Binding GaugeMode}"
                                          bool_Gauge_ContinueSelect="{Binding GaugeContinueSelect}"
                                          Width="{Binding ActualWidth, ElementName=border_Standard, Mode=OneWay}"
-                                         Height="{Binding ActualHeight, ElementName=border_Standard, Mode=OneWay}" />
+                                         Height="{Binding ActualHeight, ElementName=border_Standard, Mode=OneWay}"
+                                         Margin="10"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
 
-        <!--Chart for Testing Mode-->
-        <Grid Grid.Row="0">
+        <!--GaugeChart_visible-->
+        <!--Optical Result for Testing Mode-->
+        <Grid Visibility="{Binding GaugeChart_visible}">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
+
+            <Border x:Name="border_Standard" Grid.Column="0" />
+
+            <!--Chart for Testing Mode-->
             <oxy:Plot x:Name="Plot_Chart"
                       Title="Power"
                       Grid.Column="1"
                       Grid.ColumnSpan="3"      
-                      Margin="5,5,25,5"
+                      Margin="15,5,25,5"
                       Visibility="{Binding GaugeChart_visible}"
-                      FontFamily="Segoe Print">
+                      FontFamily="Segoe Print" Grid.RowSpan="2" Background="White">
                 <oxy:Plot.Axes>
                     <oxy:LinearAxis Title="{Binding Chart_x_title, FallbackValue=1}"
                                     Position="Bottom" />
@@ -189,24 +201,16 @@
                                     ItemsSource="{Binding Chart_All_DataPoints[7], Mode=OneWay}"
                                     Visibility="{Binding LineSeries_Visible[7]}"
                                     Color="Chocolate" />
+                    <oxy:LineSeries Name="Line30dB"
+                                    ItemsSource="{Binding SpecLine30dB, Mode=OneWay}"
+                                    Visibility="Visible"
+                                    BrokenLineStyle="Dot"
+                                    Color="#FF4C4C4C" LineStyle="Dash" />
                 </oxy:Plot.Series>
             </oxy:Plot>
-        </Grid>
 
-        <!--GaugeChart_visible-->
-        <!--Optical Result for Testing Mode-->
-        <Grid Visibility="{Binding GaugeChart_visible}">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Row="1" Margin="40,20,40,30">
+            <!--Bandwidth information-->
+            <Grid Grid.Row="1" Margin="40,0,40,30">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
@@ -219,20 +223,21 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
-                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Border Grid.ColumnSpan="3" Grid.RowSpan="7" BorderBrush="#FFD6D6D6" BorderThickness="1" CornerRadius="12"/>
                 <Border Grid.ColumnSpan="3" CornerRadius="12,12,0,0" x:Name="border_GridTitle"
                     Background="#FF1FCCD4"
                      />
-                <TextBlock Text="BW"
+                <TextBlock x:Name="txt_titile_bw" Text="BW"
                         FontFamily="Segoe Print"
                            Foreground="White"
+                           FontSize="19"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
                 <TextBlock Text="Value"
                        Grid.Column="1"
                        FontFamily="Segoe Print"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
                             Foreground="White"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
@@ -240,6 +245,7 @@
                 <TextBlock Text="CWL"
                        Grid.Column="2"
                        FontFamily="Segoe Print"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
                             Foreground="White"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
@@ -247,131 +253,82 @@
 
                 <Grid Grid.Row="1">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Text="{Binding ChartNowModel.BW_Setting_1, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
-                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print"/>
+                        <TextBox Text="{Binding ChartNowModel.BW_Setting_1, Mode=TwoWay}" FontSize="{Binding FontSize, ElementName=txt_titile_bw}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
+                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
                     </StackPanel>
                 </Grid>
                 <TextBlock x:Name="txt_BW_1"
                        Grid.Row="1"
                        FontFamily="Segoe Print"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
                        Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_1, Mode=TwoWay}" />
                 <TextBlock x:Name="txt_BW_CWL_1"
                        Grid.Row="1"
                        FontFamily="Segoe Print"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
                        Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_1, Mode=TwoWay}" />
 
-                <Grid Grid.Row="2">
+                <!--<Grid Grid.Row="2">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBox Text="{Binding ChartNowModel.BW_Setting_2, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
                         <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print"/>
                     </StackPanel>
-                </Grid>
-                <TextBlock x:Name="txt_BW_2"
+                </Grid>-->
+                <!--<TextBlock x:Name="txt_BW_2"
                        Grid.Row="2"
                        FontFamily="Segoe Print"
                        Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_2, Mode=TwoWay}" />
                 <TextBlock x:Name="txt_BW_CWL_2"
                        Grid.Row="2"
                        FontFamily="Segoe Print"
-                       Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_2, Mode=TwoWay}" />
+                       Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_2, Mode=TwoWay}" />-->
 
-                <Grid Grid.Row="3">
+                <Grid Grid.Row="2">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Text="{Binding ChartNowModel.BW_Setting_3, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
-                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print"/>
+                        <TextBox Text="{Binding ChartNowModel.BW_Setting_3, Mode=TwoWay}" FontSize="{Binding FontSize, ElementName=txt_titile_bw}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
+                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
                     </StackPanel>
                 </Grid>
                 <TextBlock x:Name="txt_BW_3"
-                       Grid.Row="3"
+                       Grid.Row="2"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
                        FontFamily="Segoe Print"
                        Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_3, Mode=TwoWay}" />
                 <TextBlock x:Name="txt_BW_CWL_3"
-                       Grid.Row="3"
+                       Grid.Row="2"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
                        FontFamily="Segoe Print"
                        Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_3, Mode=TwoWay}" />
 
-                <Grid Grid.Row="4">
+                <Grid Grid.Row="3">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Text="{Binding ChartNowModel.BW_Setting_4, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
-                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print"/>
+                        <TextBox Text="{Binding ChartNowModel.BW_Setting_4, Mode=TwoWay}" FontSize="{Binding FontSize, ElementName=txt_titile_bw}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
+                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
                     </StackPanel>
                 </Grid>
                 <TextBlock x:Name="txt_BW_4"
-                       Grid.Row="4"
+                       Grid.Row="3"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
                        FontFamily="Segoe Print"
                        Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_4, Mode=TwoWay}" />
                 <TextBlock x:Name="txt_BW_CWL_4"
-                       Grid.Row="4"
+                       Grid.Row="3"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
                        FontFamily="Segoe Print"
                        Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_4, Mode=TwoWay}" />
 
+                <TextBlock Grid.Row="4" FontFamily="Segoe Print"
+                       Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="FOM" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
+                <TextBox Grid.Row="4" FontFamily="Segoe Print" x:Name="txt_FOM"
+                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.FOM,Mode=TwoWay, FallbackValue=0}"
+                         FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
+
                 <TextBlock Grid.Row="5" FontFamily="Segoe Print"
-                       Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Set CWL"/>
-                <TextBox Grid.Row="5" FontFamily="Segoe Print" x:Name="txt_CWL"
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="0"/>
-                <ToggleButton x:Name="btn_cal" Grid.Row="6" Grid.ColumnSpan="3" Style="{DynamicResource style_btn_Cal}" Click="Btn_cal_Click">
-                    <ToggleButton.Resources>
-                        <Style x:Key="FocusVisual">
-                            <Setter Property="Control.Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
-                        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
-                        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
-                        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
-                        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
-                        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
-                        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
-                        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
-                        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
-                        <Style x:Key="style_btn_Cal" TargetType="{x:Type ToggleButton}">
-                            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-                            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
-                            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                            <Setter Property="FontFamily" Value="Segoe Print"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            <Setter Property="Padding" Value="1"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                        <Border x:Name="border" CornerRadius="0,0,12,12" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
-                                            <Grid>
-                                                <ContentPresenter x:Name="contentPresenter" Content="Cal." Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                                <Border/>
-                                            </Grid>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="Button.IsDefaulted" Value="true">
-                                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="true">
-                                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
-                                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsPressed" Value="true">
-                                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
-                                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="false">
-                                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
-                                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
-                                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ToggleButton.Resources>
-                </ToggleButton>
+                       Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="SMRR" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
+                <TextBox Grid.Row="5" FontFamily="Segoe Print" 
+                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                         Text="{Binding ChartNowModel.SMR,Mode=TwoWay, FallbackValue=0}"
+                         FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
             </Grid>
         </Grid>
 
@@ -1346,10 +1303,10 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[0]}" FontFamily="Segoe Print" FontSize="16" Margin="1" Tag="1"/>
-                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[1]}" FontFamily="Segoe Print" FontSize="16" Margin="1" Tag="2" Grid.Column="1"/>
-                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[2]}" FontFamily="Segoe Print" FontSize="16" Margin="1" Tag="3" Grid.Column="2"/>
-                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[3]}" FontFamily="Segoe Print" FontSize="16" Margin="1" Tag="4" Grid.Column="3"/>
+                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[0]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="1"/>
+                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[1]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="2" Grid.Column="1"/>
+                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[2]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="3" Grid.Column="2"/>
+                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[3]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="4" Grid.Column="3"/>
 
                     </Grid>
                     </Grid>

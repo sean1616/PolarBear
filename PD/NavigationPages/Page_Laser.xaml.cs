@@ -167,11 +167,9 @@ namespace PD.NavigationPages
             cmd.Set_TLS_Active(vm.isLaserActive);
         }
 
-        private void btn_TLS_connect_Click(object sender, RoutedEventArgs e)
+        private async void btn_TLS_connect_Click(object sender, RoutedEventArgs e)
         {
-            cmd.Connect_TLS();
-          
-
+            await cmd.Connect_TLS();
         }
 
         private async void slider_WL_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)

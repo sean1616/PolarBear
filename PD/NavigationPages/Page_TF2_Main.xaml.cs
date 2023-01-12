@@ -642,9 +642,9 @@ namespace PD.NavigationPages
             #endregion
         }
 
-        ICommunication icomm;
-        DiCon.UCB.Communication.RS232.RS232 rs232;
-        DiCon.UCB.MTF.IMTFCommand tf;
+        //ICommunication icomm;
+        //DiCon.UCB.Communication.RS232.RS232 rs232;
+        //DiCon.UCB.MTF.IMTFCommand tf;
           
        
         private void btn_bearsay_visual_Click(object sender, RoutedEventArgs e)
@@ -702,7 +702,7 @@ namespace PD.NavigationPages
 
                         //if (vm.PD_or_PM && vm.IsGoOn) await vm.PM_Stop();
                         vm.Double_Laser_Wavelength = wl;
-                        if (!vm.IsGoOn) cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true);
+                        if (!vm.IsGoOn) await cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true);
                         else
                             vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
 

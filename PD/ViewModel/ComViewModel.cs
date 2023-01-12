@@ -28,6 +28,11 @@ namespace PD.ViewModel
 {
     public class ComViewModel : NotifyBase
     {
+        public ComViewModel()
+        {
+            //cmd = new ControlCmd();
+        }
+
         #region Timers
         //public System.Timers.Timer timer1 = new System.Timers.Timer();
         public System.Timers.Timer timer2 = new System.Timers.Timer();
@@ -473,6 +478,33 @@ namespace PD.ViewModel
 
                 is_update_chart = true;
             }
+            else if (station_type.Equals("UTF600"))
+            {
+                PD_or_PM = true;
+                BoudRate = 115200;
+                ch_count = 1;
+                switch_index = 1;
+                Is_switch_mode = false;
+                GaugeText_visible = Visibility.Visible;
+                GaugeTabEnable = false;
+                GaugeSize_Height = new GridLength(7, GridUnitType.Star);
+                GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
+
+                GaugeGrid1_visible = Visibility.Collapsed;  //Only Channel 1 will Show!!
+                GaugeGrid2_visible = Visibility.Collapsed;
+                GaugeGrid3_visible = Visibility.Collapsed;
+
+                GaugeChart_visible = Visibility.Visible;
+
+                foreach (GaugeModel gm in _list_GaugeModels)
+                {
+                    gm.SN_Row = 2;
+                    gm.GaugeMode = Visibility.Collapsed;
+                }
+
+                is_update_chart = true;
+            }
+
             else if (station_type.Equals("UV_Curing") || station_type.Equals("UV Curing"))
             {
                 PD_or_PM = true;
@@ -595,6 +627,7 @@ namespace PD.ViewModel
 
                 is_update_chart = true;
             }
+
         }
 
         private void BearTest()
@@ -1713,7 +1746,7 @@ namespace PD.ViewModel
             }
         }
 
-        private string _txt_board_table_path = @"\\192.168.2.3\tff\Data\BoardCalibration\UFA\";
+        private string _txt_board_table_path = @"\\192.168.2.4\OptiComm\tff\Data\BoardCalibration\UFA\";
         public string txt_board_table_path
         {
             get { return _txt_board_table_path; }
@@ -1751,7 +1784,7 @@ namespace PD.ViewModel
             }
         }
 
-        private string _txt_Auto_Update_Path = @"\\192.168.2.3\shared\SeanWu\PB";
+        private string _txt_Auto_Update_Path = @"\\192.168.2.4\OptiComm\tff\Data\SW\PB";
         public string txt_Auto_Update_Path
         {
             get { return _txt_Auto_Update_Path; }
@@ -1763,7 +1796,7 @@ namespace PD.ViewModel
             }
         }
 
-        private string _txt_Chamber_Status_Path = @"\\192.168.2.3\shared\SeanWu\ChamberStatus";
+        private string _txt_Chamber_Status_Path = @"\\192.168.2.4\temp\Sean\ChamberStatus";
         public string txt_Chamber_Status_Path
         {
             get { return _txt_Chamber_Status_Path; }
@@ -2479,6 +2512,7 @@ namespace PD.ViewModel
                             SN_Row = 1,
                             GaugeMode = Visibility.Visible
                         });
+
                         board_read.Add(new List<string>());
                         maxIL.Add(0);
                         minIL.Add(0);
@@ -2541,7 +2575,10 @@ namespace PD.ViewModel
 
                         #region Get Board Table
 
-                        if (CheckDirectoryExist(txt_board_table_path, "ch_count"))
+                        var task = Task.Run(() => CheckDirectoryExist(txt_board_table_path, "ch_count"));
+                        var result = task.Wait(1500) ? task.Result : false;
+
+                        if (result)
                         {
                             int k = 0;
                             foreach (List<string> board_info in list_Board_Setting)
@@ -2613,6 +2650,56 @@ namespace PD.ViewModel
                         });
                     }
 
+                    //lisg gaue model setting
+                    if (IsDistributedSystem)
+                    {
+                        #region Board Setting (Load channels setting csv file)
+                        if (!string.IsNullOrEmpty(txt_Equip_Setting_Path))
+                            if (File.Exists(txt_Equip_Setting_Path))
+                                using (DataTable dtt = CSVFunctions.Read_CSV(txt_Equip_Setting_Path))
+                                {
+                                    if (dtt != null)
+                                    {
+                                        if (dtt.Rows.Count != 0)
+                                        {
+                                            if (dtt.Columns.Count >= 13)
+                                            {
+                                                int loopIndex = (list_ChannelModels.Count >= dtt.Rows.Count - 1) ? dtt.Rows.Count - 1 : list_ChannelModels.Count;
+                                                if (list_ChannelModels.Count < dtt.Rows.Count - 1)
+                                                {
+                                                    Str_cmd_read = "Channel Counts < DataTable Rows";
+                                                    Save_Log(new LogMember() { Message = Str_cmd_read, isShowMSG = false });
+                                                }
+
+                                                for (int i = 0; i < loopIndex; i++)
+                                                {
+                                                    list_ChannelModels[i].channel = dtt.Rows[i + 1][0].ToString();
+                                                    list_ChannelModels[i].Board_ID = dtt.Rows[i + 1][1].ToString();
+                                                    list_ChannelModels[i].Board_Port = dtt.Rows[i + 1][2].ToString();
+                                                    if (int.TryParse(dtt.Rows[i + 1][3].ToString(), out int brt))
+                                                        list_ChannelModels[i].BautRate = brt;
+                                                    list_ChannelModels[i].PM_Type = dtt.Rows[i + 1][4].ToString();
+                                                    if (int.TryParse(dtt.Rows[i + 1][5].ToString(), out int PM_GPIB_BoardNum))
+                                                        list_ChannelModels[i].PM_GPIB_BoardNum = PM_GPIB_BoardNum;
+                                                    if (int.TryParse(dtt.Rows[i + 1][6].ToString(), out int PM_Addr))
+                                                        list_ChannelModels[i].PM_Address = PM_Addr;
+                                                    if (int.TryParse(dtt.Rows[i + 1][7].ToString(), out int PM_Slot))
+                                                        list_ChannelModels[i].PM_Slot = PM_Slot;
+                                                    if (int.TryParse(dtt.Rows[i + 1][8].ToString(), out int PM_AveTime))
+                                                        list_ChannelModels[i].PM_AveTime = PM_AveTime;
+                                                    list_ChannelModels[i].PM_Board_ID = dtt.Rows[i + 1][9].ToString();
+                                                    list_ChannelModels[i].PM_Board_Port = dtt.Rows[i + 1][10].ToString();
+                                                    if (int.TryParse(dtt.Rows[i + 1][11].ToString(), out int PM_BautRate))
+                                                        list_ChannelModels[i].PM_BautRate = PM_BautRate;
+                                                    list_ChannelModels[i].PM_GetPower_CMD = dtt.Rows[i + 1][12].ToString();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                        #endregion
+                    }
+
                     for (int i = _ch_count; i < 16; i++)
                     {
                         list_Chart_UI_Models.Add(new Chart_UI_Model()
@@ -2634,6 +2721,18 @@ namespace PD.ViewModel
             }
         }
 
+        public bool CheckDirectoryExist(string dir_path)
+        {
+            if (Directory.Exists(dir_path))
+                return true;
+            else
+            {
+                Save_Log(new LogMember() { isShowMSG = false, Message = "Folder is not exist", Result = "Timeout" });
+                Str_cmd_read = $"{dir_path}資料夾不存在";
+                return false;
+            }
+        }
+
         public bool CheckDirectoryExist(string dir_path, string status)
         {
             if (Directory.Exists(dir_path))
@@ -2641,6 +2740,7 @@ namespace PD.ViewModel
             else
             {
                 Save_Log(new LogMember() { isShowMSG = false,Status= status, Message = "Folder is not exist", Result = "Timeout" });
+                Str_cmd_read = $"{dir_path}資料夾不存在";
                 return false;
             }
         }
@@ -2671,7 +2771,7 @@ namespace PD.ViewModel
 
 
         private List<string> _list_combox_Working_Table_Type_items =
-            new List<string>() { "Testing", "Hermetic_Test", "Chamber_S", "Chamber_S_16ch", "BR", "UV_Curing", "Fast_Calibration", "TF2" };
+            new List<string>() { "Testing", "Hermetic_Test", "Chamber_S", "Chamber_S_16ch", "BR", "UV_Curing", "Fast_Calibration", "TF2", "UTF600" };
         public List<string> list_combox_Working_Table_Type_items
         {
             get { return _list_combox_Working_Table_Type_items; }
@@ -4237,6 +4337,17 @@ namespace PD.ViewModel
             }
         }
 
+        private ObservableCollection<DataPoint> _SpecLine30dB = new ObservableCollection<DataPoint>();
+        public ObservableCollection<DataPoint> SpecLine30dB
+        {
+            get { return _SpecLine30dB; }
+            set
+            {
+                _SpecLine30dB = value;
+                OnPropertyChanged("SpecLine30dB");
+            }
+        }
+
         private List<List<DataPoint>> _chart_all_datapoints = new List<List<DataPoint>>() { new List<DataPoint>(16) };
         public List<List<DataPoint>> Chart_All_DataPoints
         {
@@ -4365,7 +4476,7 @@ namespace PD.ViewModel
             }
         }
 
-        private Visibility _GaugeChart_visible = Visibility.Collapsed;
+        private Visibility _GaugeChart_visible = Visibility.Visible;
         public Visibility GaugeChart_visible
         {
             get { return _GaugeChart_visible; }
