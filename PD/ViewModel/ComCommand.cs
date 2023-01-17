@@ -6,8 +6,8 @@ using PD.Models;
 
 namespace PD.ViewModel
 {
-    public class ComCommand : ComViewModel
+    public class ComCommand
     {
-       
+        
     }
 }

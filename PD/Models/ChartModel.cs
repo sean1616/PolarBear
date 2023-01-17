@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using PD.ViewModel;
 using OxyPlot;
+using OxyPlot.Series;
+using OxyPlot.Axes;
+using System.Collections.ObjectModel;
 
 namespace PD.Models
 {
@@ -52,6 +55,8 @@ namespace PD.Models
         public string[] preDac { get; set; }
         public List<List<DataPoint>> list_dataPoints { get; set; }
 
+        //public List<LineSeries> PlotSerie = new List<LineSeries>();
+
         private double _TimeSpan = 0.0;
         public double TimeSpan
         {
@@ -71,6 +76,17 @@ namespace PD.Models
             {
                 _SN_List = value;
                 OnPropertyChanged_Normal("SN_List");
+            }
+        }
+
+        private ObservableCollection<LineSeries> _Plot_Series = new ObservableCollection<LineSeries>();
+        public ObservableCollection<LineSeries> Plot_Series
+        {
+            get { return _Plot_Series; }
+            set
+            {
+                _Plot_Series = value;
+                OnPropertyChanged("Plot_Series");
             }
         }
 
@@ -236,14 +252,14 @@ namespace PD.Models
             }
         }
 
-        private double _SMR = 0;
-        public double SMR
+        private double _SMRR = 0;
+        public double SMRR
         {
-            get { return _SMR; }
+            get { return _SMRR; }
             set
             {
-                _SMR = Math.Round(value, 2);
-                OnPropertyChanged_Normal("SMR");
+                _SMRR = Math.Round(value, 2);
+                OnPropertyChanged_Normal("SMRR");
             }
         }
 

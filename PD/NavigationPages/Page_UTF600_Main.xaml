@@ -6,6 +6,7 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:local="clr-namespace:PD.NavigationPages"
              xmlns:vm="clr-namespace:PD.ViewModel"
+             xmlns:fnc ="clr-namespace:PD.Functions"
              xmlns:sector_btn="clr-namespace:PD.UI"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="clr-namespace:PD.UI"
@@ -52,6 +53,46 @@
             </Style.Triggers>
             <Setter Property="Background"
                     Value="Transparent" />
+        </Style>
+
+        <Style x:Key="{x:Type ToolTip}"
+               TargetType="ToolTip">
+            <Setter Property="OverridesDefaultStyle"
+                    Value="true" />
+            <Setter Property="HasDropShadow"
+                    Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Border Name="Border"
+                                BorderThickness="0.6"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                Background="#FFF3DFAA">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}" />
+                            </Border.BorderBrush>
+                            <ContentPresenter Margin="5"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Top"
+                                              TextBlock.FontSize="14"
+                                              TextBlock.FontFamily="Segoe Print"
+                                              TextBlock.Foreground="Black"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasDropShadow"
+                                     Value="true">
+                                <Setter TargetName="Border"
+                                        Property="CornerRadius"
+                                        Value="4" />
+                                <Setter TargetName="Border"
+                                        Property="SnapsToDevicePixels"
+                                        Value="true" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
     </UserControl.Resources>
@@ -152,7 +193,7 @@
                       Grid.Column="1"
                       Grid.ColumnSpan="3"      
                       Margin="15,5,25,5"
-                      Visibility="{Binding GaugeChart_visible}"
+                      Visibility="Collapsed"
                       FontFamily="Segoe Print" Grid.RowSpan="2" Background="White">
                 <oxy:Plot.Axes>
                     <oxy:LinearAxis Title="{Binding Chart_x_title, FallbackValue=1}"
@@ -205,12 +246,23 @@
                                     ItemsSource="{Binding SpecLine30dB, Mode=OneWay}"
                                     Visibility="Visible"
                                     BrokenLineStyle="Dot"
-                                    Color="#FF4C4C4C" LineStyle="Dash" />
+                                    Color="DimGray" LineStyle="Dash" />
                 </oxy:Plot.Series>
             </oxy:Plot>
 
+            <oxy:PlotView x:Name="mainPlotView"
+                                          Model="{Binding PlotViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Background="White"
+                                          BorderBrush="Black"
+                          Margin="15,5,25,5"
+                          FontFamily="Segoe Print"
+                                         Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="2"
+                          >
+            </oxy:PlotView>
+
+
             <!--Bandwidth information-->
-            <Grid Grid.Row="1" Margin="40,0,40,30">
+            <Grid Grid.Row="1" Margin="40,10,40,30">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
@@ -319,16 +371,41 @@
 
                 <TextBlock Grid.Row="4" FontFamily="Segoe Print"
                        Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="FOM" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
-                <TextBox Grid.Row="4" FontFamily="Segoe Print" x:Name="txt_FOM"
+                <TextBlock Grid.Row="4" FontFamily="Segoe Print" x:Name="txt_FOM"
                        Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.FOM,Mode=TwoWay, FallbackValue=0}"
                          FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
 
                 <TextBlock Grid.Row="5" FontFamily="Segoe Print"
                        Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="SMRR" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
-                <TextBox Grid.Row="5" FontFamily="Segoe Print" 
+                <TextBlock Grid.Row="5" FontFamily="Segoe Print" 
                        Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                         Text="{Binding ChartNowModel.SMR,Mode=TwoWay, FallbackValue=0}"
+                         Text="{Binding ChartNowModel.SMRR,Mode=TwoWay, FallbackValue=0}"
                          FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
+                <ToggleButton Name="ToggleBtn_ShowSMRRPosition"
+                                      Grid.Column="2"
+                                      Grid.Row="5"
+                                      HorizontalAlignment="Center"
+                                      MaxWidth="48"
+                                      MinWidth="45"
+                                      MaxHeight="30"
+                              ToolTip="Show Annotation"
+                                      IsChecked="{Binding isSMRR_Annotation, Mode=TwoWay}"
+                                      Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">
+                    <ToggleButton.Background>
+                        <LinearGradientBrush StartPoint="0,0"
+                                                     EndPoint="0,1">
+                            <GradientStop Offset="0"
+                                                  Color="#FFF3F3F3" />
+                            <GradientStop Offset="0.5"
+                                                  Color="#FFEBEBEB" />
+                            <GradientStop Offset="0.5"
+                                                  Color="#FFDDDDDD" />
+                            <GradientStop Offset="1"
+                                                  Color="#FF33D3C4" />
+                        </LinearGradientBrush>
+                    </ToggleButton.Background>
+                </ToggleButton>
+
             </Grid>
         </Grid>
 
@@ -413,7 +490,13 @@
                                                        img_height="40"
                                                        img_width="40"
                                                        Tag="../Resources/double_arrow.png"
-                                                       ButtonBase.Click="btn_aft_Click" />
+                                                        >
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                            <i:InvokeCommandAction Command="{Binding Next_Chart}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>   
+                                </sector_btn:Sector_BTN>
                             </Viewbox>
                             <!--Down-->
                             <Viewbox>
@@ -438,10 +521,15 @@
                                                         img_height="40"
                                                         img_width="40"
                                                         rotate_angle="180"
-                                                        ButtonBase.Click="btn_pre_Click"
                                                         Tag="../Resources/double_arrow.png"
                                                         Arc_StartAngle="225"
-                                                        Arc_EndAngle="315" />
+                                                        Arc_EndAngle="315" >
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                            <i:InvokeCommandAction Command="{Binding Pre_Chart}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </sector_btn:Sector_BTN>
                             </Viewbox>
                             <!--Up-->
                             <Viewbox>
@@ -641,12 +729,39 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.1*" />
                             <ColumnDefinition Width="3.5*" />
+                            <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
                         <Viewbox Grid.Column="1"
                                    Grid.Row="1" HorizontalAlignment="Left">
-                            <TextBlock Text="WL Start"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                            <TextBlock Text="K WL Start"
+                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}" Foreground="#FF094976"/>
                         </Viewbox>
+
+                        <ToggleButton Name="ToggleBtn_MouseSelecteScanRange"
+                                      Grid.Column="3"
+                                      Grid.Row="1"
+                                      HorizontalAlignment="Right"
+                                      MaxWidth="48"
+                                      MinWidth="45"
+                                      MaxHeight="30"
+                                      ToolTip="Select WL Scan Range"
+                                      IsChecked="{Binding isMouseSelecte_WLScanRange, Mode=TwoWay}"
+                                      Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">
+                            <ToggleButton.Background>
+                                <LinearGradientBrush StartPoint="0,0"
+                                                     EndPoint="0,1">
+                                    <GradientStop Offset="0"
+                                                  Color="#FFF3F3F3" />
+                                    <GradientStop Offset="0.5"
+                                                  Color="#FFEBEBEB" />
+                                    <GradientStop Offset="0.5"
+                                                  Color="#FFDDDDDD" />
+                                    <GradientStop Offset="1"
+                                                  Color="#FF33D3C4" />
+                                </LinearGradientBrush>
+                            </ToggleButton.Background>
+                        </ToggleButton>
+
                     </Grid>
                     <Grid Grid.Row="1"
                           Margin="3">
@@ -836,11 +951,12 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.1*" />
                             <ColumnDefinition Width="3.5*" />
+                            <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
                         <Viewbox Grid.Column="1"
                                    Grid.Row="1" HorizontalAlignment="Left">
-                            <TextBlock Text="WL End"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                            <TextBlock Text="K WL End"
+                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}" Foreground="#FFCB3B25"/>
                         </Viewbox>
                     </Grid>
                     <Grid Grid.Row="1"
@@ -1034,7 +1150,7 @@
                         </Grid.ColumnDefinitions>
                         <Viewbox Grid.Column="1"
                                    Grid.Row="1" HorizontalAlignment="Left">
-                            <TextBlock Text="WL Gap"
+                            <TextBlock Text="K WL Gap"
                                    FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
                         </Viewbox>
 
@@ -1091,7 +1207,7 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.1*" />
-                            <ColumnDefinition Width="1.5*"/>
+                            <ColumnDefinition Width="3.5*"/>
                             <ColumnDefinition Width="1.5*"/>
                         </Grid.ColumnDefinitions>
                         <Viewbox  Grid.Column="1"
@@ -1107,7 +1223,7 @@
                                       MaxWidth="48"
                                       MinWidth="45"
                                       MaxHeight="30"
-                                      Click="ToggleBtn_LaserActive_Checked"
+                                      ToolTip="TLS Power ON"
                                       IsChecked="{Binding isLaserActive, Mode=TwoWay}"
                                       Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">
                             <ToggleButton.Background>

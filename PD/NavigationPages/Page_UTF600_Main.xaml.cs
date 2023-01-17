@@ -19,6 +19,8 @@ using PD.Models;
 using PD.UI;
 using DiCon.UCB.Communication;
 using OxyPlot;
+using OxyPlot.Series;
+using OxyPlot.Axes;
 
 namespace PD.NavigationPages
 {
@@ -60,7 +62,101 @@ namespace PD.NavigationPages
             vm.Bool_Gauge.CopyTo(vm.bo_temp_gauge, 0);
 
             anly = new Analysis(vm);
+
+            vm.PlotViewModel.MouseMove += PlotViewModel_MouseMove;
+            mainPlotView.PreviewMouseLeftButtonDown += MainPlotView_PreviewMouseLeftButtonDown;
+            mainPlotView.PreviewMouseRightButtonDown += MainPlotView_PreviewMouseRightButtonDown;
+            mainPlotView.PreviewMouseRightButtonUp += MainPlotView_PreviewMouseRightButtonUp;
+            vm.PlotViewModel.MouseDown += PlotViewModel_MouseDown;
+            //vm.PlotViewModel.MouseUp += PlotViewModel_MouseUp;
         }
+
+        private void MainPlotView_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.RightButton == MouseButtonState.Released)
+            {
+                isRightMouseinPlot = false;
+            }
+        }
+
+        bool isRightMouseinPlot = false;
+        private void MainPlotView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.RightButton == MouseButtonState.Pressed)
+                isRightMouseinPlot = true;
+        }
+
+        bool isLeftMouseinPlot = false;
+        private void MainPlotView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                isLeftMouseinPlot = true;
+            else
+                isLeftMouseinPlot = false;
+        }
+
+        private void PlotViewModel_MouseMove(object sender, OxyMouseEventArgs e)
+        {
+            if (!vm.isMouseSelecte_WLScanRange || isRightMouseinPlot) return;
+
+            var position = Axis.InverseTransform(e.Position, vm.PlotViewModel.Axes[0], vm.PlotViewModel.Axes[1]);
+
+            if (!isPlotMouseDown)
+            {
+                vm.Str_cmd_read = $"WL Start :{Math.Round(position.X, 2)}";
+            }
+            else
+            {
+                vm.Str_cmd_read = $"WL End :{Math.Round(position.X, 2)}";
+            }
+
+            //vm.Str_cmd_read = $"x:{Math.Round(position.X, 2)}, y:{Math.Round(position.Y, 2)}";
+
+            
+
+            //vm.LineAnnotation_X_2.X = Math.Round(position.X, 2);
+            //vm.LineAnnotation_X_2.StrokeThickness = 2;
+            //vm.PlotViewModel.InvalidatePlot(true);
+        }
+
+       
+        bool isPlotMouseDown = false;
+        private void PlotViewModel_MouseDown(object sender, OxyMouseDownEventArgs e)
+        {
+            if (!vm.isMouseSelecte_WLScanRange || !isLeftMouseinPlot) return;
+
+            isPlotMouseDown = !isPlotMouseDown;
+
+            var position = Axis.InverseTransform(e.Position, vm.PlotViewModel.Axes[0], vm.PlotViewModel.Axes[1]);
+
+            vm.Str_cmd_read = $"x:{Math.Round(position.X, 2)}, y:{Math.Round(position.Y, 2)}";
+
+            vm.PlotViewModel.InvalidatePlot(true);
+
+            if (isPlotMouseDown)
+            {
+                vm.LineAnnotation_X_1.X = Math.Round(position.X, 2);
+                vm.LineAnnotation_X_1.StrokeThickness = 2.3;
+                vm.float_WL_Scan_Start = Math.Round(position.X, 2);
+            }
+            else
+            {
+                vm.LineAnnotation_X_2.X = Math.Round(position.X, 2);
+                vm.LineAnnotation_X_2.StrokeThickness = 2.3;
+                vm.float_WL_Scan_End = Math.Round(position.X, 2);
+                //vm.isMouseSelecte_WLScanRange = false;
+            }
+
+            isLeftMouseinPlot = false;
+        }
+
+        //DataPoint Cal_MousePos_inPlot(OxyMouseDownEventArgs e)
+        //{
+        //    if (vm.PlotViewModel.Axes.Count < 2) return new DataPoint();
+
+        //    var position = Axis.InverseTransform(e.Position, vm.PlotViewModel.Axes[0], vm.PlotViewModel.Axes[1]);
+        //    return position;
+        //}
 
         private async void TextBox_Dac_KeyDown(object sender, RoutedEventArgs e)
         {
@@ -472,76 +568,76 @@ namespace PD.NavigationPages
             grid_sector_btns.Visibility = Visibility.Hidden;
         }
 
-        private void btn_aft_Click(object sender, RoutedEventArgs e)
-        {         
-            try
-            {
-                if (vm.int_chart_now >= vm.int_chart_count)
-                    return;
+        //private void btn_aft_Click(object sender, RoutedEventArgs e)
+        //{         
+        //    try
+        //    {
+        //        if (vm.int_chart_now >= vm.int_chart_count)
+        //            return;
 
-                if (vm.Chart_All_Datapoints_History.Count <= vm.int_chart_now)
-                {
-                    vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History.Last());
-                }
-                else
-                    vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now]);
+        //        if (vm.Chart_All_Datapoints_History.Count <= vm.int_chart_now)
+        //        {
+        //            vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History.Last());
+        //        }
+        //        else
+        //            vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now]);
 
-                if (vm.Chart_All_DataPoints.Count != 0)
-                    vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);  //Update Chart UI
+        //        if (vm.Chart_All_DataPoints.Count != 0)
+        //            vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);  //Update Chart UI
 
-                vm.int_chart_now++;
+        //        vm.int_chart_now++;
 
-                vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
+        //        vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
 
-                vm.Chart_x_title = vm.ChartNowModel.title_x;
-                vm.Chart_y_title = vm.ChartNowModel.title_y;
+        //        vm.Chart_x_title = vm.ChartNowModel.title_x;
+        //        vm.Chart_y_title = vm.ChartNowModel.title_y;
 
-                vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
+        //        vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
 
-                for (int i = 0; i < vm.ch_count; i++)
-                {
-                    vm.list_GaugeModels[i].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_1;
-                    vm.list_GaugeModels[i].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_2;
-                    vm.list_GaugeModels[i].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_3;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.StackTrace.ToString());
-            }
-        }
+        //        for (int i = 0; i < vm.ch_count; i++)
+        //        {
+        //            vm.list_GaugeModels[i].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_1;
+        //            vm.list_GaugeModels[i].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_2;
+        //            vm.list_GaugeModels[i].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_3;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Windows.MessageBox.Show(ex.StackTrace.ToString());
+        //    }
+        //}
 
-        private void btn_pre_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (vm.int_chart_now > 1)
-                {
-                    vm.int_chart_now--;
-                    vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now - 1]);
-                    if (vm.Chart_All_DataPoints.Count == 0) return;
-                    vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);
+        //private void btn_pre_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (vm.int_chart_now > 1)
+        //        {
+        //            vm.int_chart_now--;
+        //            vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now - 1]);
+        //            if (vm.Chart_All_DataPoints.Count == 0) return;
+        //            vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);
 
-                    vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
+        //            vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
 
-                    vm.Chart_x_title = vm.ChartNowModel.title_x;
-                    vm.Chart_y_title = vm.ChartNowModel.title_y;
+        //            vm.Chart_x_title = vm.ChartNowModel.title_x;
+        //            vm.Chart_y_title = vm.ChartNowModel.title_y;
 
-                    vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
+        //            vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
 
-                    for (int i = 0; i < vm.ch_count; i++)
-                    {
-                        vm.list_GaugeModels[i].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_1;
-                        vm.list_GaugeModels[i].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_2;
-                        vm.list_GaugeModels[i].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_3;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.StackTrace.ToString());
-            }
-        }
+        //            for (int i = 0; i < vm.ch_count; i++)
+        //            {
+        //                vm.list_GaugeModels[i].GaugeBearSay_1 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_1;
+        //                vm.list_GaugeModels[i].GaugeBearSay_2 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_2;
+        //                vm.list_GaugeModels[i].GaugeBearSay_3 = vm.list_collection_GaugeModels[vm.int_chart_now - 1][i].GaugeBearSay_3;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Windows.MessageBox.Show(ex.StackTrace.ToString());
+        //    }
+        //}
 
         List<List<string>> temp_list_bear_say = new List<List<string>>();
         private void Btn_page2_Click(object sender, RoutedEventArgs e)
@@ -1532,11 +1628,11 @@ namespace PD.NavigationPages
             }
         }
 
-        private void ToggleBtn_LaserActive_Checked(object sender, RoutedEventArgs e)
-        {
-            vm.isConnected = false;
-            cmd.Set_TLS_Active(vm.isLaserActive);
-        }
+        //private void ToggleBtn_LaserActive_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    vm.isConnected = false;
+        //    cmd.Set_TLS_Active(vm.isLaserActive);
+        //}
 
         private void TextBox_WL_Scan_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1631,5 +1727,12 @@ namespace PD.NavigationPages
                 //vm.List_Fix_WL = new ObservableCollection<float>(vm.List_Fix_WL);
             }
         }
+
+        private void mainPlotView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //Point p = (sender as OxyPlot.Series.LineSeries).InverseTransform(e.GetPosition(mainPlotView));
+        }
+
+       
     }
 }

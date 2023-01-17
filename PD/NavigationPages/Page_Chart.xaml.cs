@@ -78,82 +78,82 @@ namespace PD.NavigationPages
 
 
 
-        private void btn_previous_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (vm.int_chart_now > 1)
-                {
-                    vm.int_chart_now--;
-                    vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now - 1]);
-                    if (vm.Chart_All_DataPoints.Count == 0) return;
-                    vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);
+        //private void btn_previous_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (vm.int_chart_now > 1)
+        //        {
+        //            vm.int_chart_now--;
+        //            vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now - 1]);
+        //            if (vm.Chart_All_DataPoints.Count == 0) return;
+        //            vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);
 
-                    vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
+        //            vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
 
-                    vm.Chart_x_title = vm.ChartNowModel.title_x;
-                    vm.Chart_y_title = vm.ChartNowModel.title_y;
+        //            vm.Chart_x_title = vm.ChartNowModel.title_x;
+        //            vm.Chart_y_title = vm.ChartNowModel.title_y;
 
-                    vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
+        //            vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
 
-                    for (int i = 0; i < vm.ch_count; i++)
-                    {
-                        if (i < vm.list_ch_title.Count)
-                            if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
-                            {
-                                if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
-                                    vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
-                            }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.StackTrace.ToString());
-            }
-        }
+        //            for (int i = 0; i < vm.ch_count; i++)
+        //            {
+        //                if (i < vm.list_ch_title.Count)
+        //                    if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
+        //                    {
+        //                        if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
+        //                            vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
+        //                    }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Windows.MessageBox.Show(ex.StackTrace.ToString());
+        //    }
+        //}
 
-        private void btn_next_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (vm.int_chart_now >= vm.int_chart_count)
-                    return;
+        //private void btn_next_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (vm.int_chart_now >= vm.int_chart_count)
+        //            return;
 
-                if (vm.Chart_All_Datapoints_History.Count <= vm.int_chart_now)
-                {
-                    vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History.Last());
-                }
-                else
-                    vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now]);
+        //        if (vm.Chart_All_Datapoints_History.Count <= vm.int_chart_now)
+        //        {
+        //            vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History.Last());
+        //        }
+        //        else
+        //            vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now]);
 
-                if (vm.Chart_All_DataPoints.Count != 0)
-                    vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);  //Update Chart UI
+        //        if (vm.Chart_All_DataPoints.Count != 0)
+        //            vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);  //Update Chart UI
 
-                vm.int_chart_now++;
+        //        vm.int_chart_now++;
 
-                vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
+        //        vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
 
-                vm.Chart_x_title = vm.ChartNowModel.title_x;
-                vm.Chart_y_title = vm.ChartNowModel.title_y;
+        //        vm.Chart_x_title = vm.ChartNowModel.title_x;
+        //        vm.Chart_y_title = vm.ChartNowModel.title_y;
 
-                vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
+        //        vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
 
-                for (int i = 0; i < vm.ch_count; i++)
-                {
-                    if (i < vm.list_ch_title.Count)
-                        if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
-                        {
-                            if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
-                                vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
-                        }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.StackTrace.ToString());
-            }
-        }
+        //        for (int i = 0; i < vm.ch_count; i++)
+        //        {
+        //            if (i < vm.list_ch_title.Count)
+        //                if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
+        //                {
+        //                    if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
+        //                        vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
+        //                }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Windows.MessageBox.Show(ex.StackTrace.ToString());
+        //    }
+        //}
 
         private void btn_Save_Chart_Click(object sender, RoutedEventArgs e)
         {

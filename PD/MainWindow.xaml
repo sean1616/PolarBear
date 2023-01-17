@@ -557,13 +557,15 @@
               Grid.Column="2"
               Background="Black">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.85*" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition Width="0.3*" />
+                <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="0.17*" />
                 <ColumnDefinition Width="0.013*" />
             </Grid.ColumnDefinitions>
             <Border Name="border_status"
                     Grid.Column="0"
+                    Grid.ColumnSpan="2"
                     Background="#FF1D363A"
                     BorderBrush="White"
                     BorderThickness="0.8,0,0.8,0">
@@ -584,8 +586,7 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Column="1"
-                  Grid.ColumnSpan="1"
+            <Grid Grid.Column="2"
                   Background="{Binding Background, ElementName=border_status}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.03*" />
@@ -601,7 +602,7 @@
                 </Viewbox>
             </Grid>
 
-            <Border Grid.Column="2"
+            <Border Grid.Column="3"
                     Background="{Binding Background, ElementName=border_status}"
                     BorderThickness="1,0,0,0"
                     BorderBrush="Gainsboro">
@@ -617,9 +618,9 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="3"
+            <Border Grid.Column="4"
                     Background="{Binding Background, ElementName=border_status}">
-                <ToggleButton Grid.Column="3"
+                <ToggleButton 
                               BorderThickness="0.8,0,0.8,0"
                               BorderBrush="#FFCBCBCB"
                               Name="btn_desktop"

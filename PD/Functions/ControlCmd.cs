@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Input;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
@@ -18,7 +19,7 @@ using DiCon.UCB.Communication.RS232;
 
 namespace PD.Functions
 {
-    class ControlCmd
+    class ControlCmd 
     {
         ComViewModel vm;
         Analysis anly;
@@ -33,6 +34,7 @@ namespace PD.Functions
         {
 
         }
+
 
         public void CommandList_Compile()
         {
@@ -845,12 +847,12 @@ namespace PD.Functions
                             {
                                 for (int i = 0; i < vm.ch_count; i++)
                                 {
-                                    vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                    vm.list_GaugeModels[i].GaugeValue = Math.Round(vm.Double_Powers[i], vm.decimal_place).ToString();
                                 }
                             }
                             else
                             {
-                                double p = vm.Double_Powers[ch - 1];
+                                double p = Math.Round(vm.Double_Powers[ch - 1], vm.decimal_place);
                                 vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
                             }
 
@@ -882,7 +884,6 @@ namespace PD.Functions
                                 {
                                     Update_Chart(var_GETPOWER, vm.Double_Powers[i], i);
                                 }
-
                             }
                             else
                             {
@@ -939,9 +940,7 @@ namespace PD.Functions
                             foreach (GaugeModel GM in vm.list_GaugeModels)
                             {
                                 if (GM.GaugeChannel.Equals(cm.Channel))
-                                    vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
-                                //else
-                                //    vm.list_GaugeModels[ch - 1].GaugeValue = "";
+                                    vm.list_GaugeModels[ch - 1].GaugeValue = Math.Round(p, vm.decimal_place).ToString();
                             }
 
                             //If value2 is not null, set the power to a var
@@ -959,7 +958,8 @@ namespace PD.Functions
                             #endregion
                         }
                     }
-                    else  //Distribution System
+                    //Distribution System
+                    else
                     {
                         if (string.IsNullOrEmpty(cm.Channel)) break;
 
@@ -984,13 +984,13 @@ namespace PD.Functions
                             {
                                 for (int i = 0; i < vm.ch_count; i++)
                                 {
-                                    vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                    vm.list_GaugeModels[i].GaugeValue = Math.Round(vm.Double_Powers[i], vm.decimal_place).ToString();
                                 }
                             }
                             else
                             {
                                 double p = vm.Double_Powers[ch - 1];
-                                vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
+                                vm.list_GaugeModels[ch - 1].GaugeValue = Math.Round(p, vm.decimal_place).ToString();
                             }
 
 
@@ -1023,7 +1023,6 @@ namespace PD.Functions
                                 {
                                     Update_Chart(var_GETPOWER, vm.Double_Powers[i], i);
                                 }
-
                             }
                             else
                             {
@@ -3205,12 +3204,12 @@ namespace PD.Functions
                                     {
                                         for (int i = 0; i < vm.ch_count; i++)
                                         {
-                                            vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                            vm.list_GaugeModels[i].GaugeValue = Math.Round(vm.Double_Powers[i], vm.decimal_place).ToString();
                                         }
                                     }
                                     else
                                     {
-                                        double p = vm.Double_Powers[ch - 1];
+                                        double p = Math.Round(vm.Double_Powers[ch - 1], vm.decimal_place);
                                         vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
                                     }
 
@@ -3233,12 +3232,12 @@ namespace PD.Functions
                                 {
                                     for (int i = 0; i < vm.ch_count; i++)
                                     {
-                                        vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();
+                                        vm.list_GaugeModels[i].GaugeValue = Math.Round(vm.Double_Powers[i], vm.decimal_place).ToString();
                                     }
                                 }
                                 else
                                 {
-                                    double p = vm.Double_Powers[ch - 1];
+                                    double p = Math.Round(vm.Double_Powers[ch - 1], vm.decimal_place);
                                     vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
                                 }
 
@@ -3254,6 +3253,8 @@ namespace PD.Functions
                                             DataPoint dp = new DataPoint(vm.wl_list[vm.wl_list_index], IL);
                                             vm.ChartNowModel.list_dataPoints[ch - 1].Add(dp);
                                             vm.Save_All_PD_Value[ch - 1].Add(dp);
+
+                                            vm.Plot_Series[ch - 1].Points.Add(dp);
 
                                             vm.wl_list_index++;
                                         }
@@ -3386,6 +3387,12 @@ namespace PD.Functions
                     await vm.Port_ReOpen(comport);
             }
 
+            for (int i = 0; i < 3; i++)
+            {
+                if (!vm.port_PD.IsOpen)
+                    await Task.Delay(100);
+            }
+           
             vm.port_PD.Write(cmd + "\r");
 
             await Task.Delay(vm.Int_Read_Delay);
@@ -3495,14 +3502,14 @@ namespace PD.Functions
                             if (vm.float_WL_Ref.Count > 0)
                             {
                                 vm.Save_Log(new LogMember() { isShowMSG = false, Status = "WL Scan", Channel = "1", Message = $"WL:{vm.Double_Laser_Wavelength}", Result = $"dBm:{power}, Ref:{vm.float_WL_Ref[0]}" });
-                                power = Math.Round(power - vm.float_WL_Ref[0], 4);
+                                power = Math.Round(power - vm.float_WL_Ref[0], vm.decimal_place);
                             }
 
-                            vm.Double_Powers[ch - 1] = power;
+                            vm.Double_Powers[ch - 1] = Math.Round(power, vm.decimal_place);
                         }
                         else  //dBm
                         {
-                            vm.Double_Powers[ch - 1] = power;
+                            vm.Double_Powers[ch - 1] = Math.Round(power, vm.decimal_place);
                         }
 
                         await Task.Delay(vm.Int_Set_WL_Delay);
@@ -3541,12 +3548,12 @@ namespace PD.Functions
             {
                 if (vm.dB_or_dBm)  //dB
                 {
-                    power = Math.Round(vm.pm.ReadPower() - vm.float_WL_Ref[0], 4);
+                    power = Math.Round(vm.pm.ReadPower() - vm.float_WL_Ref[0], vm.decimal_place);
                     vm.Double_Powers[ch] = power;
                 }
                 else  //dBm
                 {
-                    power = Math.Round(vm.pm.ReadPower(), 4);
+                    power = Math.Round(vm.pm.ReadPower(), vm.decimal_place);
                     vm.Double_Powers[ch] = power;
                 }
                 vm.list_GaugeModels[ch].GaugeValue = vm.Double_Powers[ch].ToString();
@@ -3723,7 +3730,20 @@ namespace PD.Functions
         {
             vm.Save_PD_Value = new List<DataPoint>();
             vm.Save_All_PD_Value = Analysis.ListDefine<DataPoint>(vm.Save_All_PD_Value, vm.ch_count, new List<DataPoint>());
+
             vm.ChartNowModel = new ChartModel(vm.ch_count);
+
+            vm.LineAnnotation_X_1.StrokeThickness = 0;
+            vm.LineAnnotation_X_2.StrokeThickness = 0;
+            vm.LineAnnotation_Y.StrokeThickness = 0;
+
+            vm.PointAnnotation_1.StrokeThickness = 0;
+            vm.PointAnnotation_2.StrokeThickness = 0;
+
+            for (int i = 0; i < vm.Plot_Series.Count; i++)
+            {
+                vm.Plot_Series[i].Points.Clear();
+            }
         }
 
         public async Task Save_Chart()
@@ -3742,6 +3762,17 @@ namespace PD.Functions
                 nowChartModel.BearSay_List = bearSayList;
             }
 
+            //nowChartModel.Plot_Series = new ObservableCollection<OxyPlot.Series.LineSeries>(vm.Plot_Series);
+            nowChartModel.Plot_Series = new ObservableCollection<OxyPlot.Series.LineSeries>();
+
+            foreach (OxyPlot.Series.LineSeries ls in vm.Plot_Series)
+            {
+                OxyPlot.Series.LineSeries serie = new OxyPlot.Series.LineSeries();
+
+                serie.Points.AddRange(ls.Points);
+                nowChartModel.Plot_Series.Add(serie);
+            }
+
             vm.list_ChartModels.Add(nowChartModel);
 
             vm.Chart_All_Datapoints_History.Add(vm.Chart_All_DataPoints);
@@ -3754,7 +3785,7 @@ namespace PD.Functions
         {
             #region Set Chart data points   
 
-            if (vm.station_type.Equals("Testing") || vm.station_type.Equals("Hermetic_Test") || vm.IsDistributedSystem)
+            if (vm.station_type.Equals("Testing") || vm.station_type.Equals("UTF600")  || vm.station_type.Equals("Hermetic_Test") || vm.IsDistributedSystem)
             {
                 //if (vm.timer3_count > 28800)  //Default 28800 , two hours
                 //    vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
@@ -3778,12 +3809,16 @@ namespace PD.Functions
 
                 vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
 
-                //vm.Save_All_PD_Value[vm.switch_index].Add(new DataPoint(Math.Round(X, 2), Y));
-
                 vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
 
                 vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+
+
+                vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
+                vm.PlotViewModel.InvalidatePlot(vm.is_update_chart);
             }
+
+            //PD mode
             else if (!vm.PD_or_PM)
             {
                 vm.Save_All_PD_Value[ch].Add(new DataPoint(Math.Round(X, 2), Y));
@@ -3791,6 +3826,37 @@ namespace PD.Functions
                 vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
 
                 vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+
+
+                vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
+                vm.PlotViewModel.InvalidatePlot(vm.is_update_chart);
+            }
+
+            else
+            {
+                if (vm.isTimerOn)
+                {
+                    if (X > vm.int_timer_timespan)
+                    {
+                        vm.IsGoOn = false;
+                        vm.isTimerOn = false;
+                    }
+
+                    // 更新Timer顯示的"剩餘時間"
+                    TimeSpan time = new TimeSpan(0, 0, vm.int_timer_timespan - (int)X);
+                    vm.int_timer_hrs = time.Hours;
+                    vm.int_timer_min = time.Minutes;
+                    vm.int_timer_sec = time.Seconds;
+                }
+
+                vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
+
+                vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+
+                vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+
+                vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
+                vm.PlotViewModel.InvalidatePlot(vm.is_update_chart);
             }
             #endregion
         }

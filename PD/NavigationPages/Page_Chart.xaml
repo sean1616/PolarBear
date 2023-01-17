@@ -57,7 +57,7 @@
                 </Grid.ColumnDefinitions>
                 <Button Name="btn_previous"
                         Grid.Column="1"
-                        Click="btn_previous_Click"
+                        Command="{Binding Pre_Chart}"
                         Style="{DynamicResource style_PictureBtn}">
                     <Image Source="../Resources/left-arrow.png"
                            Visibility="Hidden" />
@@ -74,7 +74,7 @@
                 </Viewbox>
                 <Button Name="btn_next"
                         Grid.Column="3"
-                        Click="btn_next_Click"
+                        Command="{Binding Next_Chart}"
                         Tag="../../Resources/r-arrow.png"
                         Style="{DynamicResource style_PictureBtn}">
                     <Image Source="../Resources/r-arrow.png"

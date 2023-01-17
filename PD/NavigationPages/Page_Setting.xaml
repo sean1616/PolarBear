@@ -221,6 +221,12 @@
                                                  Background="White"
                                                  Ischecked="{Binding is_update_chart, Mode=TwoWay}" />
 
+                        <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                txtbox_content="IL decimal place"
+                                            FontFamily="Segoe Print"
+                                            border_Background="#FF98DEB5"
+                                            Background="White"
+                                                txtbox_value="{Binding decimal_place, Mode=TwoWay}" />
                     </StackPanel>
                 </Grid>
             </ScrollViewer>

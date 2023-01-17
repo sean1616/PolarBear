@@ -20,6 +20,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 
 namespace PD
 {
@@ -102,9 +104,9 @@ namespace PD
 
             listdateTime.Add(DateTime.Now);  //Event 2
 
+            #region Read ini file and setting   
             string ini_path = vm.ini_exist();
 
-            #region Read ini file and setting   
             if (File.Exists(ini_path))
             {
                 vm.txt_Equip_Setting_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Equip_Setting_Path")) ? "" : vm.Ini_Read("Connection", "Equip_Setting_Path");
@@ -439,6 +441,36 @@ namespace PD
 
             listdateTime.Add(DateTime.Now);  //Event 13
 
+
+            #region Initial Chart Setting
+           
+            vm.Plot_Series.Clear();
+            vm.Plot_Series.Add(new LineSeries
+            {
+                Title = "Ch1",
+                FontSize = 20,
+                StrokeThickness = 1.8,
+                MarkerType = MarkerType.Circle,
+                MarkerSize = 0,  //4
+                //Smooth = true,
+                MarkerFill = vm.list_OxyColor[0],
+                Color = vm.list_OxyColor[0],
+                CanTrackerInterpolatePoints = true,
+                TrackerFormatString = vm.Chart_x_title + " : {2}\n" + vm.Chart_y_title + " : {4}",
+            });
+
+            for (int i = -35; i < 36; i++)
+            {
+                vm.Plot_Series[0].Points.Add(new DataPoint(i + 1548, vm.gauss_2D(i * 0.4, 0, 0, 0, 14.2, 0, 4.0)));
+            }
+
+            vm.PlotViewModel.Series.Clear();
+            vm.PlotViewModel.Series.Add(vm.Plot_Series[0]);
+
+            //vm.PlotViewModel.Annotations.Add(vm.LineAnnotation_X);
+            //vm.PlotViewModel.Annotations.Add(vm.LineAnnotation_Y);
+            #endregion
+
             for (int i = 1; i < listdateTime.Count; i++)
             {
                 vm.Save_Log(new LogMember() { Status = "Check TimeSpan", Message = $"Event {i}", Result = (listdateTime[i] - listdateTime[i - 1]).TotalMilliseconds.ToString(), Time = listdateTime[i].ToString() });
@@ -554,6 +586,11 @@ namespace PD
                     vm.watch.Start();
                     cmd.Clean_Chart();
                     vm.isConnected = false;
+
+                    foreach(LineSeries ls in vm.Plot_Series)
+                    {
+                        ls.Points.Clear();
+                    }
 
                     if (!vm.IsDistributedSystem)
                     {
@@ -3838,6 +3875,19 @@ namespace PD
 
             vm.isGetPowerWaitForReadBack = vm.Is_FastScan_Mode ? false : true;
 
+            await cmd.Connect_TLS();
+
+            if (!vm.isConnected)
+            {
+                vm.Str_cmd_read = "Connect Laser Failed";
+                vm.Save_Log(new LogMember()
+                {
+                    isShowMSG = true,
+                    Status = "K WL",
+                    Message = vm.Str_cmd_read
+                });
+            }
+
             #endregion
 
             try
@@ -5078,7 +5128,7 @@ namespace PD
                 vm.Chart_x_title = "Wavelength (nm)";
 
                 #region Bandwith UI initialization
-                vm.SpecLine30dB = new ObservableCollection<DataPoint>();
+                //vm.SpecLine30dB = new ObservableCollection<DataPoint>();
                 anly.list_SMR_slope.Clear();
                 anly.list_SMR_Mountain_IL.Clear();
                 anly.list_SMR_Mountain.Clear();
@@ -5086,9 +5136,12 @@ namespace PD
                 for (int i = 0; i < vm.ch_count; i++)
                 {
                     vm.ChartNowModel.list_dataPoints[i].Clear();
-                    vm.ChartNowModel.SMR = 0;
+                    vm.ChartNowModel.SMRR = 0;
                     vm.ChartNowModel.FOM = 0;
                 }
+
+                cmd.Clean_Chart();
+
                 #endregion
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -5126,7 +5179,7 @@ namespace PD
 
                 foreach (double wl in vm.wl_list)
                 {
-                    if (vm.isStop) return false;
+                    if (vm.isStop) break;
 
                     double WL = Math.Round(wl, 2);
 
@@ -5144,12 +5197,18 @@ namespace PD
 
                     for (int ch = 0; ch < vm.ch_count; ch++)
                     {
-                        if (vm.isStop) return false;
+                        if (vm.isStop) break;
+                            
 
                         if (!vm.BoolAllGauge)
                             if (!vm.list_GaugeModels[ch].boolGauge) continue;
 
-                        vm.Str_cmd_read = $"Ch {ch + 1} : {WL}";
+                        if (vm.ch_count > 1)
+                            vm.Str_Status = $"WL Scan - Ch {ch + 1}";
+                        else
+                            vm.Str_Status = $"WL Scan";
+
+                        //vm.Str_cmd_read = $"Ch {ch + 1} : {WL}";
 
                         #region switch re-open && Switch write Cmd
 
@@ -5211,6 +5270,8 @@ namespace PD
                             {
                                 vm.ChartNowModel.list_dataPoints[ch].Clear();
                                 vm.Save_All_PD_Value[ch].Clear();
+
+                                vm.Plot_Series[ch].Points.Clear();
                             }
 
                             await cmd.Get_Power(ch, true);
@@ -5221,6 +5282,8 @@ namespace PD
                                 DataPoint dp = new DataPoint(vm.Double_Laser_Wavelength, vm.Double_Powers[ch]);
                                 vm.ChartNowModel.list_dataPoints[ch].Add(dp);
                                 vm.Save_All_PD_Value[ch].Add(dp);
+
+                                vm.Plot_Series[ch].Points.Add(dp);
                             }
                         }
                     }
@@ -5229,6 +5292,8 @@ namespace PD
                     #region Set Chart data points   
                     vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                     vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries  
+
+                    vm.PlotViewModel.InvalidatePlot(true);
 
                     scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
                     vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
@@ -5264,17 +5329,17 @@ namespace PD
                 }
 
                 //Add 30dB line in chart if spec line is not show yet
-                if (vm.station_type.Equals("UTF600") && vm.SpecLine30dB.Count == 0)
-                {
-                    double maxIL = vm.ChartNowModel.list_dataPoints[0].Max(x => x.Y);
-                    double minIL = vm.ChartNowModel.list_dataPoints[0].Min(x => x.Y);
+                //if (vm.station_type.Equals("UTF600") && vm.SpecLine30dB.Count == 0)
+                //{
+                //    double maxIL = vm.ChartNowModel.list_dataPoints[0].Max(x => x.Y);
+                //    double minIL = vm.ChartNowModel.list_dataPoints[0].Min(x => x.Y);
 
-                    if (Math.Abs(maxIL - minIL) > 30)
-                    {
-                        foreach (DataPoint dp in vm.ChartNowModel.list_dataPoints[0])
-                            vm.SpecLine30dB.Add(new DataPoint(dp.X, maxIL - 30));
-                    }
-                }
+                //    if (Math.Abs(maxIL - minIL) > 30)
+                //    {
+                //        foreach (DataPoint dp in vm.ChartNowModel.list_dataPoints[0])
+                //            vm.SpecLine30dB.Add(new DataPoint(dp.X, maxIL - 30));
+                //    }
+                //}
 
                 scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
                 vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
@@ -5282,7 +5347,8 @@ namespace PD
 
                 vm.msgModel.msg_3 = Math.Round(scan_timespan, 1).ToString() + " s";  //Update Main UI timespan
 
-                vm.Show_Bear_Window($"WL Scan 完成  ({Math.Round(scan_timespan, 1)} s)", false, "String", false);
+                if (!vm.isStop)
+                    vm.Show_Bear_Window($"WL Scan 完成  ({Math.Round(scan_timespan, 1)} s)", false, "String", false);
 
                 int a = vm.list_ChartModels.Count;
 

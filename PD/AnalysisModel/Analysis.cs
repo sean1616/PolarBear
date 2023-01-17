@@ -11,6 +11,7 @@ using PD.ViewModel;
 using PD.Models;
 using PD.NavigationPages;
 using OxyPlot;
+using OxyPlot.Annotations;
 using System.Threading.Tasks;
 
 namespace PD.AnalysisModel
@@ -428,6 +429,7 @@ namespace PD.AnalysisModel
 
                 #endregion
 
+
                 #region Cal. SMR
 
                 double SMR = 0;
@@ -557,51 +559,46 @@ namespace PD.AnalysisModel
                 {
                     List<DataPoint> list_SMR_inorder = list_SMR_Mountain.OrderBy(x => x.Y).ToList();
                     SMR = Math.Abs(list_SMR_inorder.Last().Y - list_SMR_inorder[list_SMR_inorder.Count - 2].Y);
-                    vm.ChartNowModel.SMR = Math.Round(SMR, 2);
+                    vm.ChartNowModel.SMRR = Math.Round(SMR, 2);
 
-                    //vm.ChartNowModel.SMR_Source = $"({Math.Round(list_SMR_Mountain.Last().Y, 2)})-({Math.Round(list_SMR_Mountain[list_SMR_Mountain.Count - 2].Y, 2)})";
+                    if (vm.isSMRR_Annotation)
+                    {
+                        vm.PointAnnotation_1.StrokeThickness = 8;
+                        vm.PointAnnotation_2.StrokeThickness = 8;
+                    }
+
+                    vm.PointAnnotation_1.X = list_SMR_Mountain.Last().X;
+                    vm.PointAnnotation_1.Y = list_SMR_Mountain.Last().Y;
+
+                    vm.PointAnnotation_2.X = list_SMR_inorder[list_SMR_inorder.Count - 2].X;
+                    vm.PointAnnotation_2.Y = list_SMR_inorder[list_SMR_inorder.Count - 2].Y;
                 }
                 else if (list_SMR_Mountain.Count == 1)
                 {
-                    vm.ChartNowModel.SMR = Math.Round(list_SMR_Mountain.Last().Y, 2);
+                    vm.ChartNowModel.SMRR = Math.Round(list_SMR_Mountain.Last().Y, 2);
 
-                    //vm.ChartNowModel.SMR_Source = $"({Math.Round(list_SMR_Mountain.Last().Y, 2)})";
+                    if(vm.PointAnnotation_1.StrokeThickness != 8)
+                    {
+                        if(vm.isSMRR_Annotation)
+                            vm.PointAnnotation_1.StrokeThickness = 8;
+
+                        vm.PointAnnotation_1.X = list_SMR_Mountain.Last().X;
+                        vm.PointAnnotation_1.Y = list_SMR_Mountain.Last().Y;
+                    }
                 }
 
+
                 //Add 30dB line in chart
-                if (list_SMR_Mountain.Count != 0)
+
+                double maxIL = vm.ChartNowModel.list_dataPoints[0].Max(x => x.Y);
+                double minIL = vm.ChartNowModel.list_dataPoints[0].Min(x => x.Y);
+                double SpecLinePosition = maxIL - 30;
+
+                if (SpecLinePosition > minIL && vm.LineAnnotation_Y.Y != SpecLinePosition)
                 {
-                    double maxIL = vm.ChartNowModel.list_dataPoints[0].Max(x => x.Y);
-                    double minIL = vm.ChartNowModel.list_dataPoints[0].Min(x => x.Y);
-                    double linePosition = maxIL - 30;
-
-                    if (vm.SpecLine30dB.Count == 0)
-                    {
-                        if (Math.Abs(maxIL - minIL) > 30)
-                        {
-                            foreach (DataPoint dp in vm.ChartNowModel.list_dataPoints[0])
-                                vm.SpecLine30dB.Add(new DataPoint(dp.X, linePosition));
-                        }
-                    }
-
-                    //若規格線的Y值改變，需重畫
-                    else
-                        if (linePosition != vm.SpecLine30dB.Last().Y)
-                    {
-                        ObservableCollection<DataPoint> tempList = new ObservableCollection<DataPoint>();
-
-                        if (Math.Abs(maxIL - minIL) > 30)
-                        {
-                            foreach (DataPoint dp in vm.ChartNowModel.list_dataPoints[0])
-                                tempList.Add(new DataPoint(dp.X, linePosition));
-
-                            vm.SpecLine30dB = tempList;
-                        }
-                    }
-                    else
-                    {
-                        vm.SpecLine30dB.Add(new DataPoint(vm.ChartNowModel.list_dataPoints[0].Last().X, linePosition));
-                    }
+                    vm.LineAnnotation_Y.StrokeThickness = 2.5;
+                    vm.LineAnnotation_Y.Y = SpecLinePosition;
+                    vm.PlotViewModel.InvalidatePlot(true);
                 }
 
                 #endregion
@@ -858,7 +855,7 @@ namespace PD.AnalysisModel
 
             return z;
         }
-
+                
         Random rdm = new Random();
         public string Read_analysis(string cmd, byte[] dataBuffer)
         {
@@ -913,7 +910,7 @@ namespace PD.AnalysisModel
                         {
                             if (x != "")
                             {
-                                double y = Math.Round(Convert.ToDouble(x) - vm.float_WL_Ref[ch], 3);  //y is 0~-64dB in double type
+                                double y = Math.Round(Convert.ToDouble(x) - vm.float_WL_Ref[ch], vm.decimal_place);  //y is 0~-64dB in double type
                                 list_dB_readpower.Add(y.ToString());
                                 vm.Double_Powers.Add(y);  //list 0~-64dBm in float type
                             }
@@ -926,7 +923,7 @@ namespace PD.AnalysisModel
                         {
                             if (!string.IsNullOrEmpty(x))
                             {
-                                double y = Math.Round(Convert.ToDouble(x), 3);  //y is 0~-64dBm in float type       
+                                double y = Math.Round(Convert.ToDouble(x), vm.decimal_place);  //y is 0~-64dBm in float type       
                                 vm.Double_Powers.Add(y);  //list 0~-64dBm in float type
                             }
                         }
@@ -945,7 +942,7 @@ namespace PD.AnalysisModel
                             else if (vm.Double_Powers[i] < vm.double_MinIL_for_DeltaMode[i])
                                 vm.double_MinIL_for_DeltaMode[i] = vm.Double_Powers[i];
 
-                            vm.double_Maxdelta[i] = Math.Round((vm.double_MaxIL_for_DeltaMode[i] - vm.double_MinIL_for_DeltaMode[i]), 4);
+                            vm.double_Maxdelta[i] = Math.Round((vm.double_MaxIL_for_DeltaMode[i] - vm.double_MinIL_for_DeltaMode[i]), vm.decimal_place);
 
                             vm.Str_PD.Add(vm.double_Maxdelta[i].ToString());
                             i++;
@@ -981,7 +978,7 @@ namespace PD.AnalysisModel
                     {
                         if (!string.IsNullOrEmpty(x))
                         {
-                            double y = Math.Round(Convert.ToDouble(x), 3);  //y is 0~-64dBm in float type       
+                            double y = Math.Round(Convert.ToDouble(x), vm.decimal_place);  //y is 0~-64dBm in float type       
                             vm.Double_Powers.Add(y);  //list 0~-64dBm in float type
                         }
                     }
@@ -1003,7 +1000,7 @@ namespace PD.AnalysisModel
                                 vm.double_MinIL_for_DeltaMode[i] = vm.Double_Powers[i];
                             }
 
-                            vm.double_Maxdelta[i] = Math.Round((vm.double_MaxIL_for_DeltaMode[i] - vm.double_MinIL_for_DeltaMode[i]), 4);
+                            vm.double_Maxdelta[i] = Math.Round((vm.double_MaxIL_for_DeltaMode[i] - vm.double_MinIL_for_DeltaMode[i]), vm.decimal_place);
 
                             vm.Str_PD.Add(vm.double_Maxdelta[i].ToString());
                             i++;
