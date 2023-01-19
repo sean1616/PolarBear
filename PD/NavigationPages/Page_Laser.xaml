@@ -5,6 +5,9 @@
              xmlns:local="clr-namespace:PD.NavigationPages"
              xmlns:vm="clr-namespace:PD.ViewModel"
              xmlns:uc="clr-namespace:PD.UI"
+             xmlns:fnc="clr-namespace:PD.Functions"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:ut="clr-namespace:PD.Utility"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              d:DesignHeight="450"
              d:DesignWidth="1200"
@@ -14,6 +17,10 @@
     <UserControl.DataContext>
         <vm:ComViewModel />
     </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <fnc:Double_To_Txt_ValueConverter x:Key="d_to_txt"/>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -281,7 +288,13 @@
                              HorizontalContentAlignment="Center"
                              FontFamily="Segoe Print"
                              PreviewKeyDown="txt_WL_KeyDown"
-                             Text="{Binding Value, ElementName=slider_WL, Mode=TwoWay}" />
+                             Text="{Binding Laser_Wavelength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewKeyDown">
+                                <ut:EventCommandAction Command="{Binding Cmd_TXT_TLS_WL_KeyDown}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                     <TextBlock Grid.Column="2"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
@@ -483,7 +496,13 @@
                              HorizontalContentAlignment="Center"
                              FontFamily="Segoe Print"
                              KeyDown="txt_PM_WL_KeyDown"
-                             Text="{Binding Value, ElementName=slider_PM_WL, Mode=TwoWay}" />
+                             Text="{Binding PM_Wavelength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewKeyDown">
+                                <ut:EventCommandAction Command="{Binding Cmd_TXT_PM_WL_KeyDown}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                     <TextBlock Grid.Column="2"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
@@ -655,8 +674,14 @@
                              VerticalAlignment="Center"
                              HorizontalContentAlignment="Center"
                              FontFamily="{Binding FontFamily, ElementName=txt_WL}"
-                             PreviewKeyDown="txt_power_KeyDown"
-                             Text="{Binding Value, ElementName=slider_Power}" />
+                             Text="{Binding Laser_Power, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewKeyDown">
+                                <!--<i:InvokeCommandAction Command="{Binding Cmd_Set_TLS_Power}" />-->
+                                <ut:EventCommandAction Command="{Binding Cmd_TXT_Power_KeyDown}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                     <TextBlock Grid.Column="2"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"

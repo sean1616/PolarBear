@@ -25,6 +25,7 @@ using PD.Functions;
 using PD.Models;
 using PD.AnalysisModel;
 using PD.NavigationPages;
+using PD.Utility;
 using DiCon.Instrument.HP;
 
 namespace PD.ViewModel
@@ -33,10 +34,14 @@ namespace PD.ViewModel
     {
         public ComViewModel()
         {
+            #region ICommand Setting
+            //Cmd_TXT_Power_KeyDown = new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown, CanExecute);
+            #endregion
+
             #region PlotModel
 
             //Initialize line series color of chart
-            list_OxyColor = new List<OxyColor>() { OxyColor.FromRgb(0,128,0)};
+            list_OxyColor = new List<OxyColor>() { OxyColor.FromRgb(0, 128, 0) };
             for (int i = 0; i < 16; i++)
             {
                 OxyColor oc = list_OxyColor.Last();
@@ -55,7 +60,7 @@ namespace PD.ViewModel
                 LegendPlacement = LegendPlacement.Inside,
                 LegendPosition = LegendPosition.RightTop,
             };
-          
+
 
             var lineSeries1 = new LineSeries
             {
@@ -69,7 +74,7 @@ namespace PD.ViewModel
 
             for (int i = -65; i < 66; i++)
             {
-                lineSeries1.Points.Add(new DataPoint(i, gauss_2D(i*0.2, 0, 0, 0, 14.2, 0, 4.0)));
+                lineSeries1.Points.Add(new DataPoint(i, gauss_2D(i * 0.2, 0, 0, 0, 14.2, 0, 4.0)));
             }
 
             plotModel1.Series.Clear();
@@ -93,7 +98,7 @@ namespace PD.ViewModel
             LineAnnotation_X_1 = new LineAnnotation()
             {
                 Type = LineAnnotationType.Vertical,
-                Color = OxyColor.FromRgb(9,73,118),
+                Color = OxyColor.FromRgb(9, 73, 118),
                 ClipByYAxis = false,
                 X = 0,
                 StrokeThickness = 0
@@ -101,7 +106,7 @@ namespace PD.ViewModel
             LineAnnotation_X_2 = new LineAnnotation()
             {
                 Type = LineAnnotationType.Vertical,
-                Color = OxyColor.FromRgb(203,59,37),
+                Color = OxyColor.FromRgb(203, 59, 37),
                 ClipByYAxis = false,
                 X = 0,
                 StrokeThickness = 0
@@ -109,7 +114,7 @@ namespace PD.ViewModel
             LineAnnotation_Y = new LineAnnotation()
             {
                 Type = LineAnnotationType.Horizontal,
-                Color = OxyColor.FromRgb(90,90,90),
+                Color = OxyColor.FromRgb(90, 90, 90),
                 ClipByXAxis = false,
                 Y = 0,
                 StrokeThickness = 0,
@@ -126,7 +131,7 @@ namespace PD.ViewModel
                 X = 0,
                 Y = 0,
                 Size = 8,
-                Shape=MarkerType.Cross,
+                Shape = MarkerType.Cross,
                 Stroke = OxyColors.Orange,
                 StrokeThickness = 0,
             };
@@ -152,9 +157,10 @@ namespace PD.ViewModel
 
         }
 
-        ControlCmd cmd;
 
-        //private LineAnnotation _LineAnnotation_X;
+
+        //ControlCmd cmd;
+
         public LineAnnotation LineAnnotation_X_1 = new LineAnnotation();
         public LineAnnotation LineAnnotation_X_2 = new LineAnnotation();
 
@@ -162,8 +168,6 @@ namespace PD.ViewModel
 
         public PointAnnotation PointAnnotation_1 = new PointAnnotation();
         public PointAnnotation PointAnnotation_2 = new PointAnnotation();
-
-        //public PlotController PlotView_Controller;
 
 
         public List<OxyColor> list_OxyColor { get; set; } = new List<OxyColor>();
@@ -178,8 +182,8 @@ namespace PD.ViewModel
 
         #region Timers
         //public System.Timers.Timer timer1 = new System.Timers.Timer();
-        public System.Timers.Timer timer2 = new System.Timers.Timer();
-        public System.Timers.Timer timer3 = new System.Timers.Timer();
+        public System.Timers.Timer timer_PD_GO = new System.Timers.Timer();
+        public System.Timers.Timer timer_PM_GO = new System.Timers.Timer();
         public System.Timers.Timer timer_arduino_AdRead = new System.Timers.Timer();
 
         //宣告Timer
@@ -455,17 +459,33 @@ namespace PD.ViewModel
         //ICommand
         #region ICommand
 
+        //private bool CanExecute(object param)
+        //{
+        //    return true;  // 假設都執行
+        //}
+
         public ICommand BearTestCommand { get { return new Delegatecommand(BearTest); } }
 
-        public ICommand Cmd_Test { get { return new Delegatecommand(cmd_test); } }
 
         public ICommand Pre_Chart { get { return new Delegatecommand(btn_previous_chart_Click); } }
         public ICommand Next_Chart { get { return new Delegatecommand(btn_next_chart_Click); } }
 
+        public ICommand Cmd_TXT_Power_KeyDown { get { return new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown); } }
+        //public ICommand Cmd_TXT_Set_Power_Content_KeyDown { get { return new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown, CanExecute); } }
+        //public ICommand Cmd_TXT_Power_KeyDown { get; set; }
+
+        public ICommand Cmd_TXT_PM_WL_KeyDown { get { return new DelegateCommand<KeyEventArgs>(TXT_PM_WL_KeyDown); } }
+        public ICommand Cmd_TXT_TLS_WL_KeyDown { get { return new DelegateCommand<KeyEventArgs>(TXT_TLS_WL_KeyDown); } }
+
+        public ICommand Cmd_Set_TLS_WL { get { return new DelegateCommand_T<string>(para => Set_WL(para)); } }
+
+
         #endregion
 
+
+
         //Commands
-        #region Commands
+        #region Command Cycle
         private async void CommandListCycle()
         {
             while (IsGoOn && !isStop)
@@ -479,12 +499,12 @@ namespace PD.ViewModel
                         {
                             Save_Command(Cmd_Count++, "P0?");
                             Save_cmd(new ComMember() { No = Cmd_Count++.ToString(), Command = "P0?" });
-                            await AccessDelayAsync(20);
+                            await Task.Delay(20);
                         }
                         else  //PM mode
                         {
                             Save_cmd(new ComMember() { YN = true, No = Cmd_Count++.ToString(), Command = "GETPOWER", Type = "PM", Channel = "1" });
-                            await AccessDelayAsync(20);
+                            await Task.Delay(20);
                         }
                     }
 
@@ -529,62 +549,903 @@ namespace PD.ViewModel
             }
         }
 
-        public string[] Get_BoardRatio_Database(string board_no, string dataBase, string server_IP, int channel)
+        public void Save_Spare_Command<T>(string status, string type, string command, string comport, T No)
+        {
+            ComMembers_Spare.Insert(0, new ComMember()
+            {
+                YN = true,
+                No = No.ToString(),
+                Status = status,
+                Type = type,
+                Command = command,
+                Comport = comport
+            });
+        }
+
+        public void Save_cmd(ComMember cm)
+        {
+            ComMembers.Insert(0, cm);
+        }
+
+        public void Save_Command<T>(T No, string command)
+        {
+            if (station_type == "UV_Curing")
+            {
+                ComMembers.Add(new ComMember()
+                {
+                    YN = true,
+                    No = No.ToString(),
+                    Command = command
+                });
+            }
+            else
+                ComMembers.Insert(0, new ComMember()
+                {
+                    YN = true,
+                    No = No.ToString(),
+                    Command = command
+                });
+        }
+
+        public void Save_Command<T>(string status, string type, string command, string comport)
+        {
+            ComMembers.Insert(0, new ComMember()
+            {
+                YN = true,
+                Status = status,
+                Type = type,
+                Command = command,
+                Comport = comport
+            });
+        }
+
+        public void Save_Command<T>(string status, string type, string command, string comport, T No)
+        {
+            if (station_type == "UV_Curing")
+            {
+                ComMembers.Add(new ComMember()
+                {
+                    YN = true,
+                    No = No.ToString(),
+                    Status = status,
+                    Type = type,
+                    Command = command,
+                    Comport = comport
+
+                });
+            }
+            else
+            {
+                ComMembers.Insert(0, new ComMember()
+                {
+                    YN = true,
+                    No = No.ToString(),
+                    Status = status,
+                    Type = type,
+                    Command = command,
+                    Comport = comport
+                });
+            }
+        }
+
+        public void Save_Command<T>(string status, string type, string command, string comport, T No, string description)
+        {
+            if (station_type == "UV_Curing")
+            {
+                ComMembers.Add(new ComMember()
+                {
+                    YN = true,
+                    No = No.ToString(),
+                    Status = status,
+                    Type = type,
+                    Command = command,
+                    Comport = comport,
+                    Description = description
+                });
+            }
+            else
+            {
+                ComMembers.Insert(0, new ComMember()
+                {
+                    YN = true,
+                    No = No.ToString(),
+                    Status = status,
+                    Type = type,
+                    Command = command,
+                    Comport = comport,
+                    Description = description
+                });
+            }
+        }
+
+        public void Save_Command(int No, string status, string type, string comport, string Ch, string command, string value1, string value2, string value3, string value4, string read, string description)
+        {
+            if (station_type == "UV_Curing")
+            {
+                ComMembers.Add(new ComMember()
+                {
+                    YN = true,
+                    No = No.ToString(),
+                    Status = status,
+                    Type = type,
+                    Comport = comport,
+                    Channel = Ch.ToString(),
+                    Command = command,
+                    Value_1 = value1.ToString(),
+                    Value_2 = value2.ToString(),
+                    Value_3 = value3.ToString(),
+                    Value_4 = value4.ToString(),
+                    Read = read,
+                    Description = description
+                });
+            }
+            else
+            {
+                try
+                {
+                    ComMembers.Insert(0, new ComMember()
+                    {
+                        YN = true,
+                        No = No.ToString(),
+                        Status = status,
+                        Type = type,
+                        Comport = comport,
+                        Channel = Ch.ToString(),
+                        Command = command,
+                        Value_1 = value1.ToString(),
+                        Value_2 = value2.ToString(),
+                        Value_3 = value3.ToString(),
+                        Value_4 = value4.ToString(),
+                        Read = read,
+                        Description = description
+                    });
+                }
+                catch { Save_Log("Add command to list error"); }
+            }
+        }
+
+        public void Save_Command_Read(string read)
+        {
+            ComMembers.Insert(0, new ComMember()
+            {
+                YN = true,
+                Read = read
+            });
+        }
+
+        public void Save_Command_Read<T>(string command, T no, string read)
+        {
+            ComMembers.Insert(0, new ComMember()
+            {
+                YN = true,
+                No = no.ToString(),
+                Command = command,
+                Read = read
+            });
+        }
+
+        #endregion
+
+        #region Log Command
+        public void Save_Log<T>(T msg)
+        {
+            LogMembers.Add(new LogMember()
+            {
+                Message = msg.ToString()
+            });
+            Str_cmd_read = msg.ToString();
+        }
+
+        public void Save_Log(LogMember lm)
+        {
+            if (lm.isShowMSG)
+            {
+                Str_Status = lm.Status;
+                Str_cmd_read = lm.Message.ToString();
+
+                if (lm.TimeSpan != null)
+                    msgModel.msg_3 = lm.TimeSpan;
+
+                Show_Bear_Window(Str_cmd_read);
+            }
+
+            LogMembers.Add(lm);
+        }
+
+        public void Save_Log<T>(string status, T msg, bool showMSG)
+        {
+            if (showMSG)
+                Str_cmd_read = msg.ToString();
+            LogMembers.Add(new LogMember()
+            {
+                Status = status,
+                Message = msg.ToString(),
+                Date = DateTime.Now.Date.ToShortDateString(),
+                Time = DateTime.Now.ToLongTimeString()
+            });
+        }
+
+        public void Save_Log<T>(string status, T ch, T msg)
+        {
+            LogMembers.Add(new LogMember()
+            {
+                Status = status,
+                Channel = ch.ToString(),
+                Message = msg.ToString(),
+                Date = DateTime.Now.Date.ToShortDateString(),
+                Time = DateTime.Now.ToLongTimeString()
+            });
+        }
+
+        public void Save_Log<T>(string status, T ch, T msg, T result)
+        {
+            LogMembers.Add(new LogMember()
+            {
+                Status = status,
+                Channel = ch.ToString(),
+                Message = msg.ToString(),
+                Result = result.ToString(),
+                Date = DateTime.Now.Date.ToShortDateString(),
+                Time = DateTime.Now.ToLongTimeString()
+            });
+        }
+        #endregion
+
+        #region TLS Command
+        public async Task Connect_TLS()
         {
             try
             {
-                string connstring = "User ID=" + "opticomm_pe" + ";" +
-                                            "Password=" + "opticomm_pe!@#456" + ";" +
-                                            "Trusted_Connection=false;" +
-                                            "Server=" + "OPTICOMM-MFG" + ";" +
-                                            "Data Source=" + server_IP + ";" +
-                                            "Initial Catalog=" + dataBase + ";Pooling=false;Connection Timeout=2";  //DataBase： "UFA", "CTF"為不同的資料庫
-
-                string tableName = "Board_V";
-                string boardSN = board_no;   //板號 ex: "U4V35"
-                string sql = "SELECT [Board_SN],[V1],[V2] FROM [dbo]." + tableName + " WHERE [Board_SN]= '" + boardSN + "'";
-
-                DataSet ds = new DataSet();
-                SqlConnection connection = new SqlConnection(connstring);
-                SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, connection);
-                Console.WriteLine("ConnectionTimeout: {0}",
-            connection.ConnectionTimeout);
-                connection.Open();
-                dataAdapter.Fill(ds, tableName);
-                connection.Close();
-                connection = null;
-
-                if (ds.Tables[0].Rows.Count > 0)
+                switch (Laser_type)
                 {
-                    //vm.BoardTable_Dictionary.Clear();
-                    for (int i = 0; i < ds.Tables[0].Rows.Count;)
+                    case "Agilent":
+
+                        #region Tunable Laser setting
+                        if (!isConnected)
+                        {
+                            tls = new HPTLS();
+                            tls.BoardNumber = tls_BoardNumber;
+                            tls.Addr = tls_Addr;
+
+                            try
+                            {
+                                if (!tls.Open())
+                                {
+                                    Str_cmd_read = "GPIB Setting Error, Check Address.";
+                                    Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                    return;
+                                }
+                                else
+                                {
+                                    double d = tls.ReadWL();
+                                    if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
+                                    {
+                                        Str_cmd_read = "Laser Connection Failed";
+                                        Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                        return;
+                                    }
+                                }
+                                tls.init();
+
+                                Double_Laser_Wavelength = tls.ReadWL();
+
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Str_cmd_read = "TLS GPIB Setting Error";
+                                Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
+                        }
+
+                        #endregion
+
+                        #region PowerMeter Setting
+                        if (!isConnected)
+                        {
+                            pm = new HPPM();
+                            pm.Addr = pm_Addr;
+                            pm.Slot = PM_slot;
+                            pm.BoardNumber = pm_BoardNumber;
+                            if (pm.Open() == false)
+                            {
+                                Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
+                                Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                return;
+                            }
+                            pm.init();
+                            pm.setUnit(1);
+                            pm.AutoRange(true);
+                            pm.aveTime(PM_AveTime);
+
+                            try
+                            {
+                                if (pm.Open())
+                                    Double_PM_Wavelength = pm.ReadWL();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
+                        }
+
+                        isConnected = true;
+                        #endregion                      
+
+                        break;
+
+                    case "Golight":
+
+                        if (!isConnected)
+                        {
+                            if (!string.IsNullOrEmpty(Golight_ChannelModel.Board_Port))
+                            {
+                                var task = Task.Run(() => ConnectGolightTLS(tls_GL, Golight_ChannelModel.Board_Port));
+                                var result = (task.Wait(1500)) ? task.Result : false;
+
+                                if (result)
+                                {
+                                    //await Task.Run(async () => await ConnectGolightTLS(tls_GL, Golight_ChannelModel.Board_Port));
+
+                                    isConnected = true;
+
+                                    await Task.Delay(250);
+
+                                    string ReadWLMinMax = tls_GL.ReadWL_MinMax();
+                                    string[] wl_min_max = ReadWLMinMax.Split(',');
+
+                                    if (wl_min_max != null)
+                                    {
+                                        if (wl_min_max.Length == 2)
+                                        {
+                                            float_TLS_WL_Range[0] = float.Parse(wl_min_max[0]);
+                                            float_TLS_WL_Range[1] = float.Parse(wl_min_max[1]);
+                                        }
+                                    }
+
+                                    Save_Log(new Models.LogMember()
+                                    {
+                                        isShowMSG = false,
+                                        Message = "Golight TLS connected",
+                                    });
+
+                                    Save_Log(new Models.LogMember()
+                                    {
+                                        isShowMSG = false,
+                                        Message = "Get TLS WL Range",
+                                        Result = ReadWLMinMax
+                                    });
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Timeout");
+
+                                    Save_Log(new Models.LogMember()
+                                    {
+                                        isShowMSG = false,
+                                        Message = "Connect Golight TLS Fail"
+                                    });
+                                }
+                            }
+                            else
+                                Save_Log(new Models.LogMember()
+                                {
+                                    isShowMSG = true,
+                                    Message = "Golight comport is null or empty"
+                                });
+                        }
+
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.StackTrace.ToString());
+            }
+        }
+
+        private bool ConnectGolightTLS(DiCon.Instrument.HP.GLTLS port, string portName)
+        {
+            try
+            {
+                port.Open(portName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.StackTrace.ToString());
+                return false;
+            }
+
+            return true;
+        }
+
+        public async void Set_TLS_Active(bool _laserActive)
+        {
+            try
+            {
+                if (!isConnected) await Connect_TLS();
+
+                if (isConnected)
+                {
+                    switch (Laser_type)
                     {
-                        string board_SN, V1_Ratio, V2_Ratio;
-                        board_SN = ds.Tables[0].Rows[i]["Board_SN"].ToString().Trim();
-                        V1_Ratio = ds.Tables[0].Rows[i]["V1"].ToString().Trim();
-                        V2_Ratio = ds.Tables[0].Rows[i]["V2"].ToString().Trim();
+                        case "Agilent":
+                            tls.SetActive(_laserActive);
+                            break;
 
-                        return new string[] { V1_Ratio, V2_Ratio };
+                        case "Golight":
+                            tls_GL.SetActive(_laserActive);
+                            break;
+                    }
 
-                        //vm.BoardTable_Dictionary.Add(board_SN,
-                        //    new List<string>() { V1_Ratio, V2_Ratio });
+                    await Task.Delay(Int_Set_WL_Delay + 100);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.StackTrace.ToString());
+            }
+        }
+
+        public async void Set_TLS_Power()
+        {
+            try
+            {
+                if (!isConnected) await Connect_TLS();
+
+                switch (Laser_type)
+                {
+                    case "Agilent":
+                        tls.SetPower(Double_Laser_Power);
+                        break;
+
+                    case "Golight":
+                        tls_GL.SetPower(Double_Laser_Power);
+                        break;
+                }
+
+                await Task.Delay(Int_Set_WL_Delay);
+
+                bool readback = false;
+                if (readback)
+                {
+                    if (Laser_type.Equals("Golight"))
+                        Double_Laser_Power = Math.Round(tls_GL.ReadPower(), 1);
+                }
+            }
+            catch { Save_Log("Set TLS Power", "Set Power Error", true); }
+        }
+
+        public async void Set_WL<T>(T wl)
+        {
+            try
+            {
+                if (typeof(T) == typeof(string))
+                {
+                    Double_Laser_Wavelength = Convert.ToDouble(wl);
+                }
+                else return;
+
+
+                if (!isConnected)
+                    await Connect_TLS();
+
+                if (!isConnected) return;
+
+                switch (Laser_type)
+                {
+                    case "Agilent":
+                        tls.SetWL(Double_Laser_Wavelength);
+                        break;
+
+                    case "Golight":
+                        tls_GL.SetWL(Double_Laser_Wavelength);
+                        break;
+                }
+
+                if (!IsDistributedSystem)
+                {
+                    if (PD_or_PM)
+                        if (PM_sync)
+                            if (pm != null) pm.SetWL(Double_Laser_Wavelength);
+                }
+
+                Set_TLS_Filter(Double_Laser_Wavelength, true);
+
+                await Task.Delay(Int_Read_Delay);
+
+                if (station_type.Equals("Testing") || station_type.Equals("UTF600") || station_type.Equals("TF2"))
+                {
+                    if (float_WL_Ref.Count != 0)
+                        Double_PM_Ref = float_WL_Ref[0];
+                }
+            }
+            catch { Save_Log("Set WL", "Set WL Error", false); }
+        }
+
+
+        public async void Set_WL(double wl, bool readback, bool isCloseTLS_Filter)
+        {
+            try
+            {
+                wl = Math.Round(wl, 2);
+                string band = Analysis.WL_Range_Analyze(wl);
+                if (string.IsNullOrEmpty(band))
+                {
+                    Str_cmd_read = "WL out of range";
+                    Save_Log(new LogMember() { Message = Str_cmd_read, isShowMSG = false });
+                }
+                else
+                    selected_band = band;
+
+                await Connect_TLS();
+
+                switch (Laser_type)
+                {
+                    case "Agilent":
+                        tls.SetWL(wl);
+                        break;
+
+                    case "Golight":
+                        tls_GL.SetWL((float)wl);
+                        break;
+                }
+
+                if (!IsDistributedSystem)
+                {
+                    if (PD_or_PM)
+                        if (PM_sync)
+                            if (pm != null) pm.SetWL(wl);
+                }
+
+                Set_TLS_Filter(wl, isCloseTLS_Filter);
+
+                await Task.Delay(Int_Read_Delay);
+
+                if (readback)
+                {
+                    double wl_read = 0;
+                    switch (Laser_type)
+                    {
+                        case "Agilent":
+                            wl_read = tls.ReadWL();
+                            if (wl_read > 0)
+                                Double_Laser_Wavelength = wl_read;
+                            else
+                                Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
+                            break;
+
+                        case "Golight":
+
+                            wl_read = tls_GL.ReadWL();
+
+                            if (wl_read > 0)
+                                Double_Laser_Wavelength = wl_read;
+
+                            if (wl_read != wl)
+                                Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "SetWL failed" });
+
+                            break;
+                    }
+
+                    if (PD_or_PM && PM_sync && pm != null)
+                        Double_PM_Wavelength = pm.ReadWL();
+                }
+
+                if (station_type.Equals("Testing"))
+                {
+                    if (float_WL_Ref.Count != 0)
+                        Double_PM_Ref = float_WL_Ref[0];
+                }
+            }
+            catch { Save_Log("Set WL", "Set WL Error", false); }
+        }
+
+        public async void Set_TLS_Filter(double wl, bool isClosePort)
+        {
+            try
+            {
+                if (is_TLS_Filter)
+                {
+                    if (port_TLS_Filter != null)
+                        if (!string.IsNullOrEmpty(port_TLS_Filter.PortName))
+                        {
+                            if (!port_TLS_Filter.IsOpen)
+                            {
+                                port_TLS_Filter.Open();
+                                await Task.Delay(100);
+                            }
+
+                            port_TLS_Filter.Write($"WL {wl}\r");
+
+                            if (isClosePort)
+                            {
+                                await Task.Delay(Int_Read_Delay);
+
+                                if (port_TLS_Filter.IsOpen)
+                                {
+                                    port_TLS_Filter.DiscardInBuffer();
+                                    port_TLS_Filter.DiscardOutBuffer();
+
+                                    port_TLS_Filter.Close();
+                                }
+                            }
+                        }
+                }
+            }
+            catch
+            {
+                Str_cmd_read = "Set TLS Filter Error";
+                Save_Log(new LogMember() { isShowMSG = false, Status = "Set TLS WL", Result = "Set TLS Filter Failed", Message = $"WL : {wl}" });
+            }
+        }
+
+        private async void TXT_Power_KeyDown(KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                try
+                {
+                    if (!isConnected)
+                        await Connect_TLS();
+
+                    if (isConnected)
+                    {
+                        if (Double_Laser_Power > 10 || Double_Laser_Power < -15)
+                        {
+                            Str_cmd_read = "Power out of range";
+                            return;
+                        }
+
+                        if (!IsGoOn)
+                            Set_TLS_Power();
+                        else
+                            Save_cmd(new ComMember() { YN = true, No = Cmd_Count.ToString(), Command = "SETPOWER", Type = "Agilent", Value_1 = Double_Laser_Power.ToString() });
+                    }
+                }
+                catch { }
+            }
+        }
+
+        private async void TXT_PM_WL_KeyDown(KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                double PM_WL = 1550;
+                if (double.TryParse(PM_Wavelength, out PM_WL))
+                {
+                    try
+                    {
+                        Double_PM_Wavelength = PM_WL;
+                        pm.SetWL(Double_PM_Wavelength);
+
+                        await Task.Delay(Int_Set_WL_Delay);
+
+                        Double_PM_Wavelength = pm.ReadWL();
+                    }
+                    catch { }
+                }
+            }
+        }
+
+        private async void TXT_TLS_WL_KeyDown(KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Up || e.Key == Key.Down)
+            {
+                if (!isConnected)
+                    await Connect_TLS();
+
+                if (!isConnected) return;
+
+                double TLS_WL = 1550;
+
+                if (double.TryParse(Laser_Wavelength, out TLS_WL))
+                {
+                    switch (e.Key)
+                    {
+                        case Key.Enter:
+                            Double_Laser_Wavelength = TLS_WL;
+                            break;
+
+                        case Key.Up:
+                            TLS_WL += 0.01;
+                            Double_Laser_Wavelength = TLS_WL;
+                            Laser_Wavelength = TLS_WL.ToString();
+                            break;
+
+                        case Key.Down:
+                            TLS_WL += 0.01;
+                            Double_Laser_Wavelength = TLS_WL;
+                            Laser_Wavelength = TLS_WL.ToString();
+                            break;
+                    }
+
+                    if (!IsGoOn) Set_WL(Double_Laser_Wavelength, false, true);
+                    else
+                        Save_cmd(new ComMember() { YN = true, No = Cmd_Count.ToString(), Command = "SETWL", Value_1 = Laser_Wavelength });
+                }
+            }
+        }
+
+
+        #endregion
+
+        #region Port Command
+        public async Task Port_ReOpen(string comport)
+        {
+            try
+            {
+                if (port_PD != null)
+                {
+                    if (port_PD.IsOpen)
+                    {
+                        if (port_PD.PortName != comport)
+                        {
+                            port_PD.DiscardInBuffer();       // RX
+                            port_PD.DiscardOutBuffer();      // TX
+                            port_PD.Close();
+                        }
+                        else return;
+                    }
+                }
+                else port_PD = new SerialPort(comport, _BoudRate, Parity.None, 8, StopBits.One);
+            }
+            catch { }
+
+            try
+            {
+                if (port_PD.PortName != comport || port_PD.BaudRate != _BoudRate)
+                    port_PD = new SerialPort(comport, _BoudRate, Parity.None, 8, StopBits.One);
+
+
+                port_PD.Open();
+
+                await Task.Delay(10);  //100ms
+            }
+            catch (Exception ex)
+            {
+                Str_cmd_read = "Port Open Error";
+                throw ex;
+            }
+        }
+
+        public async Task Port_ReOpen(SerialPort port, string comport, int boudRate)
+        {
+            try
+            {
+                if (port.PortName != comport)
+                    port = new SerialPort(comport, boudRate, Parity.None, 8, StopBits.One);
+
+                if (!port.IsOpen)
+                    port_PD.Open();
+
+                await Task.Delay(100);
+            }
+            catch (Exception ex) { Str_cmd_read = "Port Open Error"; Save_Log("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString()); throw ex; }
+        }
+
+        public async Task Port_PD_B_ReOpen(string comport)
+        {
+            try
+            {
+                if (port_PD_B != null)
+                {
+                    if (port_PD_B.IsOpen)
+                    {
+                        if (port_PD_B.PortName != comport)
+                        {
+                            port_PD_B.DiscardInBuffer();       // RX
+                            port_PD_B.DiscardOutBuffer();      // TX
+                            port_PD_B.Close();
+                        }
+                        else return;
+                    }
+                }
+                else port_PD_B = new SerialPort(comport, _BoudRate, Parity.None, 8, StopBits.One);
+            }
+            catch { }
+
+            try
+            {
+                if (port_PD_B.PortName != comport || port_PD_B.BaudRate != _BoudRate)
+                    port_PD_B = new SerialPort(comport, _BoudRate, Parity.None, 8, StopBits.One);
+
+                port_PD_B.Open();
+
+                await Task.Delay(100);
+            }
+            catch (Exception ex) { Str_cmd_read = "Port Open Error"; Save_Log("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString()); throw ex; }
+        }
+
+        public void Multi_Port_Setting()
+        {
+            try
+            {
+                List_Port = new List<SerialPort>();
+                if (list_Board_Setting.Count > 0)
+                {
+                    foreach (List<string> board_setting in list_Board_Setting)
+                    {
+                        if (!string.IsNullOrEmpty(board_setting[1]))
+                        {
+                            SerialPort port = new SerialPort(board_setting[1], _BoudRate, Parity.None, 8, StopBits.One);
+                            List_Port.Add(port);
+                        }
+                        else
+                            List_Port.Add(new SerialPort());
+                    }
+
+                    foreach (SerialPort port in List_Port)
+                    {
+                        port.Open();
+                    }
+                }
+
+            }
+            catch { Str_cmd_read = "Port Open Error"; }
+        }
+
+        public async Task Port_Switch_ReOpen()
+        {
+            try
+            {
+                if (port_Switch != null)
+                {
+                    if (port_Switch.IsOpen)
+                    {
+                        if (!port_Switch.PortName.Equals(comport_switch))
+                        {
+                            port_Switch.DiscardInBuffer();       // RX
+                            port_Switch.DiscardOutBuffer();      // TX
+
+                            port_Switch.Close();
+
+                            await Task.Delay(30);
+
+                            port_Switch.PortName = comport_switch;
+                            port_Switch.BaudRate = _Switch_BoudRate;
+                            port_Switch.Parity = Parity.None;
+                            port_Switch.StopBits = StopBits.One;
+
+                            port_Switch.Open();
+                        }
+
+                        return;
+                    }
+                    else
+                    {
+
+                        port_Switch.PortName = comport_switch;
+                        port_Switch.BaudRate = _Switch_BoudRate;
+                        port_Switch.Parity = Parity.None;
+                        port_Switch.StopBits = StopBits.One;
+                        port_Switch.Open();
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        port_Switch = new SerialPort("COM" + comport_switch.ToString(), _BoudRate, Parity.None, 8, StopBits.One);
+                        port_Switch.Open();
+                    }
+                    catch
+                    {
+                        Str_cmd_read = "Switch Port Open Error";
+                        return;
                     }
                 }
             }
             catch
             {
-                Save_Log(new LogMember()
-                {
-                    Status = "Get_BoardRatio_Database",
-                    Message = "SqlConnection error",
-                    isShowMSG = false,
-                    Channel = channel.ToString()
-                });
+                port_Switch = new SerialPort(comport_switch, _BoudRate, Parity.None, 8, StopBits.One);
+                port_Switch.Open();
             }
-
-            return new string[] { "0.00068665598", "0.00068665598" };  //若資料庫中無此板號
         }
+        #endregion
 
+        #region UI Command
         public void Set_StationType(string station_type)
         {
             if (string.IsNullOrEmpty(station_type)) return;
@@ -784,6 +1645,12 @@ namespace PD.ViewModel
 
                 GaugeChart_visible = Visibility.Collapsed;
 
+                if (list_GaugeModels.Count != ch_count)
+                {
+                    ch_count = 0;
+                    ch_count = 8;
+                }
+
                 foreach (GaugeModel gm in _list_GaugeModels)
                 {
                     gm.SN_Row = 2;
@@ -795,289 +1662,25 @@ namespace PD.ViewModel
 
         }
 
-        private void BearTest()
+        public void Clean_Chart()
         {
-            #region Get Board Name
-            //rs232 = new DiCon.UCB.Communication.RS232.RS232(Selected_Comport);
-            //rs232.OpenPort();
-            //icomm = (ICommunication)rs232;
+            Save_PD_Value = new List<DataPoint>();
 
-            //tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
+            Save_All_PD_Value = Analysis.ListDefine<DataPoint>(Save_All_PD_Value, ch_count, new List<DataPoint>());
 
-            //string str_ID = string.Empty;
-            //try
-            //{
-            //    str_ID = tf.ReadSN();
-            //    Str_cmd_read = str_ID;               
-            //    rs232.ClosePort();
-            //}
-            //catch { }
-            #endregion
+            ChartNowModel = new ChartModel(ch_count);
 
-            List<List<string>> lls = new List<List<string>>();
-            lls.Add(new List<string>() { "1530.33", "-1.561" });
-            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
-            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
-            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
-            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
-            List_bear_say = new List<List<string>>(lls);
+            LineAnnotation_X_1.StrokeThickness = 0;
+            LineAnnotation_X_2.StrokeThickness = 0;
+            LineAnnotation_Y.StrokeThickness = 0;
 
-            //Collection_bear_say.Add(lls);
-            bear_say_all++;
-            bear_say_now = bear_say_all;
+            PointAnnotation_1.StrokeThickness = 0;
+            PointAnnotation_2.StrokeThickness = 0;
 
-            TraversalRequest tRequest = new TraversalRequest(FocusNavigationDirection.Next);
-            System.Windows.UIElement keyboardFocus = Keyboard.FocusedElement as System.Windows.UIElement;
-
-            if (keyboardFocus != null)
+            for (int i = 0; i < Plot_Series.Count; i++)
             {
-                keyboardFocus.MoveFocus(tRequest);
+                Plot_Series[i].Points.Clear();
             }
-        }
-
-        public void Save_Log<T>(T msg)
-        {
-            LogMembers.Add(new LogMember()
-            {
-                Message = msg.ToString()
-            });
-            Str_cmd_read = msg.ToString();
-        }
-
-        public void Save_Log(LogMember lm)
-        {
-            if (lm.isShowMSG)
-            {
-                Str_Status = lm.Status;
-                Str_cmd_read = lm.Message.ToString();
-
-                if (lm.TimeSpan != null)
-                    msgModel.msg_3 = lm.TimeSpan;
-
-                Show_Bear_Window(Str_cmd_read);
-            }
-
-            LogMembers.Add(lm);
-        }
-
-        public void Save_Log<T>(string status, T msg, bool showMSG)
-        {
-            if (showMSG)
-                Str_cmd_read = msg.ToString();
-            LogMembers.Add(new LogMember()
-            {
-                Status = status,
-                Message = msg.ToString(),
-                Date = DateTime.Now.Date.ToShortDateString(),
-                Time = DateTime.Now.ToLongTimeString()
-            });
-        }
-
-        public void Save_Log<T>(string status, T ch, T msg)
-        {
-            LogMembers.Add(new LogMember()
-            {
-                Status = status,
-                Channel = ch.ToString(),
-                Message = msg.ToString(),
-                Date = DateTime.Now.Date.ToShortDateString(),
-                Time = DateTime.Now.ToLongTimeString()
-            });
-        }
-
-        public void Save_Log<T>(string status, T ch, T msg, T result)
-        {
-            LogMembers.Add(new LogMember()
-            {
-                Status = status,
-                Channel = ch.ToString(),
-                Message = msg.ToString(),
-                Result = result.ToString(),
-                Date = DateTime.Now.Date.ToShortDateString(),
-                Time = DateTime.Now.ToLongTimeString()
-            });
-        }
-
-        public int Cmd_Count { get; set; } = 0;
-
-        public bool BoolAllGauge { get; set; } = true;
-
-        public void Save_Spare_Command<T>(string status, string type, string command, string comport, T No)
-        {
-            ComMembers_Spare.Insert(0, new ComMember()
-            {
-                YN = true,
-                No = No.ToString(),
-                Status = status,
-                Type = type,
-                Command = command,
-                Comport = comport
-            });
-        }
-
-        public void Save_cmd(ComMember cm)
-        {
-            ComMembers.Insert(0, cm);
-        }
-
-        public void Save_Command<T>(T No, string command)
-        {
-            if (station_type == "UV_Curing")
-            {
-                ComMembers.Add(new ComMember()
-                {
-                    YN = true,
-                    No = No.ToString(),
-                    Command = command
-                });
-            }
-            else
-                ComMembers.Insert(0, new ComMember()
-                {
-                    YN = true,
-                    No = No.ToString(),
-                    Command = command
-                });
-        }
-
-        public void Save_Command<T>(string status, string type, string command, string comport)
-        {
-            ComMembers.Insert(0, new ComMember()
-            {
-                YN = true,
-                Status = status,
-                Type = type,
-                Command = command,
-                Comport = comport
-            });
-        }
-
-        public void Save_Command<T>(string status, string type, string command, string comport, T No)
-        {
-            if (station_type == "UV_Curing")
-            {
-                ComMembers.Add(new ComMember()
-                {
-                    YN = true,
-                    No = No.ToString(),
-                    Status = status,
-                    Type = type,
-                    Command = command,
-                    Comport = comport
-
-                });
-            }
-            else
-            {
-                ComMembers.Insert(0, new ComMember()
-                {
-                    YN = true,
-                    No = No.ToString(),
-                    Status = status,
-                    Type = type,
-                    Command = command,
-                    Comport = comport
-                });
-            }
-        }
-
-        public void Save_Command<T>(string status, string type, string command, string comport, T No, string description)
-        {
-            if (station_type == "UV_Curing")
-            {
-                ComMembers.Add(new ComMember()
-                {
-                    YN = true,
-                    No = No.ToString(),
-                    Status = status,
-                    Type = type,
-                    Command = command,
-                    Comport = comport,
-                    Description = description
-                });
-            }
-            else
-            {
-                ComMembers.Insert(0, new ComMember()
-                {
-                    YN = true,
-                    No = No.ToString(),
-                    Status = status,
-                    Type = type,
-                    Command = command,
-                    Comport = comport,
-                    Description = description
-                });
-            }
-        }
-
-        public void Save_Command(int No, string status, string type, string comport, string Ch, string command, string value1, string value2, string value3, string value4, string read, string description)
-        {
-            if (station_type == "UV_Curing")
-            {
-                ComMembers.Add(new ComMember()
-                {
-                    YN = true,
-                    No = No.ToString(),
-                    Status = status,
-                    Type = type,
-                    Comport = comport,
-                    Channel = Ch.ToString(),
-                    Command = command,
-                    Value_1 = value1.ToString(),
-                    Value_2 = value2.ToString(),
-                    Value_3 = value3.ToString(),
-                    Value_4 = value4.ToString(),
-                    Read = read,
-                    Description = description
-                });
-            }
-            else
-            {
-                try
-                {
-                    ComMembers.Insert(0, new ComMember()
-                    {
-                        YN = true,
-                        No = No.ToString(),
-                        Status = status,
-                        Type = type,
-                        Comport = comport,
-                        Channel = Ch.ToString(),
-                        Command = command,
-                        Value_1 = value1.ToString(),
-                        Value_2 = value2.ToString(),
-                        Value_3 = value3.ToString(),
-                        Value_4 = value4.ToString(),
-                        Read = read,
-                        Description = description
-                    });
-                }
-                catch { Save_Log("Add command to list error"); }
-            }
-        }
-
-        public void Save_Command_Read(string read)
-        {
-            ComMembers.Insert(0, new ComMember()
-            {
-                YN = true,
-                Read = read
-            });
-        }
-
-        public void Save_Command_Read<T>(string command, T no, string read)
-        {
-            ComMembers.Insert(0, new ComMember()
-            {
-                YN = true,
-                No = no.ToString(),
-                Command = command,
-                Read = read
-            });
         }
 
         private void btn_previous_chart_Click()
@@ -1098,7 +1701,7 @@ namespace PD.ViewModel
                         Plot_Series[ch].Points.Clear();
                         Plot_Series[ch].Points.AddRange(ChartNowModel.Plot_Series[ch].Points);
                     }
-                    
+
                     PlotViewModel.InvalidatePlot(true);
 
                     Chart_x_title = ChartNowModel.title_x;
@@ -1173,19 +1776,47 @@ namespace PD.ViewModel
             }
         }
 
-        private void cmd_test()
+        private void BearTest()
         {
-            MessageBox.Show("Test");
-        }
+            #region Get Board Name
+            //rs232 = new DiCon.UCB.Communication.RS232.RS232(Selected_Comport);
+            //rs232.OpenPort();
+            //icomm = (ICommunication)rs232;
 
-        public string ini_exist()
-        {
-            if (Directory.Exists(@"D:"))
-                ini_path = @"D:\PD\Instrument.ini";
-            else
-                ini_path = System.Environment.CurrentDirectory + @"\Instrument.ini";
+            //tf = new DiCon.UCB.MTF.RS232.RS232(icomm);
 
-            return ini_path;
+            //string str_ID = string.Empty;
+            //try
+            //{
+            //    str_ID = tf.ReadSN();
+            //    Str_cmd_read = str_ID;               
+            //    rs232.ClosePort();
+            //}
+            //catch { }
+            #endregion
+
+            List<List<string>> lls = new List<List<string>>();
+            lls.Add(new List<string>() { "1530.33", "-1.561" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            lls.Add(new List<string>() { "1530.33", "-1.561", "28.9" });
+            lls.Add(new List<string>() { "1531.58", "-1.528", "29.3" });
+            List_bear_say = new List<List<string>>(lls);
+
+            //Collection_bear_say.Add(lls);
+            bear_say_all++;
+            bear_say_now = bear_say_all;
+
+            TraversalRequest tRequest = new TraversalRequest(FocusNavigationDirection.Next);
+            System.Windows.UIElement keyboardFocus = Keyboard.FocusedElement as System.Windows.UIElement;
+
+            if (keyboardFocus != null)
+            {
+                keyboardFocus.MoveFocus(tRequest);
+            }
         }
 
         public void Convert_ReadPower_to_UIGauge(double power_PM, int ch)
@@ -1277,206 +1908,17 @@ namespace PD.ViewModel
 
             Winbear.Show();
         }
+        #endregion
 
-        public async Task AccessDelayAsync(int delayTime)
+        #region Instrument Command
+        public string ini_exist()
         {
-            await Task.Delay(delayTime);
-        }
+            if (Directory.Exists(@"D:"))
+                ini_path = @"D:\PD\Instrument.ini";
+            else
+                ini_path = System.Environment.CurrentDirectory + @"\Instrument.ini";
 
-        public async Task Connect_TLS()
-        {
-            try
-            {
-                switch (Laser_type)
-                {
-                    case "Agilent":
-
-                        #region Tunable Laser setting
-                        if (!isConnected)
-                        {
-                            tls = new HPTLS();
-                            tls.BoardNumber = tls_BoardNumber;
-                            tls.Addr = tls_Addr;
-
-                            try
-                            {
-                                if (!tls.Open())
-                                {
-                                    Str_cmd_read = "GPIB Setting Error, Check Address.";
-                                    Show_Bear_Window(Str_cmd_read, false, "String", false);
-                                    return;
-                                }
-                                else
-                                {
-                                    double d = tls.ReadWL();
-                                    if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
-                                    {
-                                        Str_cmd_read = "Laser Connection Failed";
-                                         Show_Bear_Window(Str_cmd_read, false, "String", false);
-                                        return;
-                                    }
-                                }
-                                tls.init();
-
-                                Double_Laser_Wavelength = tls.ReadWL();
-
-
-                            }
-                            catch (Exception ex)
-                            {
-                                Str_cmd_read = "TLS GPIB Setting Error";
-                                Show_Bear_Window(Str_cmd_read, false, "String", false);
-                                MessageBox.Show(ex.StackTrace.ToString());
-                            }
-                        }
-
-                        #endregion
-
-                        #region PowerMeter Setting
-                        if (!isConnected)
-                        {
-                            pm = new HPPM();
-                            pm.Addr = pm_Addr;
-                            pm.Slot = PM_slot;
-                            pm.BoardNumber = pm_BoardNumber;
-                            if (pm.Open() == false)
-                            {
-                                Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
-                                Show_Bear_Window(Str_cmd_read, false, "String", false);
-                                return;
-                            }
-                            pm.init();
-                            pm.setUnit(1);
-                            pm.AutoRange(true);
-                            pm.aveTime(PM_AveTime);
-
-                            try
-                            {
-                                if (pm.Open())
-                                    Double_PM_Wavelength = pm.ReadWL();
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.StackTrace.ToString());
-                            }
-                        }
-
-                        isConnected = true;
-                        #endregion                      
-
-                        break;
-
-                    case "Golight":
-
-                        if (!isConnected)
-                        {
-                            if (!string.IsNullOrEmpty(Golight_ChannelModel.Board_Port))
-                            {
-                                var task = Task.Run(() => ConnectGolightTLS(tls_GL, Golight_ChannelModel.Board_Port));
-                                var result = (task.Wait(1500)) ? task.Result : false;
-
-                                if (result)
-                                {
-                                    //await Task.Run(async () => await ConnectGolightTLS(tls_GL, Golight_ChannelModel.Board_Port));
-
-                                    isConnected = true;
-
-                                    await Task.Delay(250);
-
-                                    string ReadWLMinMax = tls_GL.ReadWL_MinMax();
-                                    string[] wl_min_max = ReadWLMinMax.Split(',');
-
-                                    if (wl_min_max != null)
-                                    {
-                                        if (wl_min_max.Length == 2)
-                                        {
-                                            float_TLS_WL_Range[0] = float.Parse(wl_min_max[0]);
-                                            float_TLS_WL_Range[1] = float.Parse(wl_min_max[1]);
-                                        }
-                                    }
-
-                                    Save_Log(new Models.LogMember()
-                                    {
-                                        isShowMSG = false,
-                                        Message = "Golight TLS connected",
-                                    });
-
-                                    Save_Log(new Models.LogMember()
-                                    {
-                                        isShowMSG = false,
-                                        Message = "Get TLS WL Range",
-                                        Result = ReadWLMinMax
-                                    });
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Timeout");
-
-                                    Save_Log(new Models.LogMember()
-                                    {
-                                        isShowMSG = false,
-                                        Message = "Connect Golight TLS Fail"
-                                    });
-                                }
-                            }
-                            else
-                                Save_Log(new Models.LogMember()
-                                {
-                                    isShowMSG = true,
-                                    Message = "Golight comport is null or empty"
-                                });
-                        }
-
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.StackTrace.ToString());
-            }
-        }
-
-        public async void Set_TLS_Active(bool _laserActive)
-        {
-            try
-            {
-                if (!isConnected) await Connect_TLS();
-
-                if (isConnected)
-                {
-                    switch (Laser_type)
-                    {
-                        case "Agilent":
-                            tls.SetActive(_laserActive);
-                            break;
-
-                        case "Golight":
-                            tls_GL.SetActive(_laserActive);
-                            break;
-                    }
-
-                    await Task.Delay(Int_Set_WL_Delay + 100);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.StackTrace.ToString());
-            }
-        }
-
-        private bool ConnectGolightTLS(DiCon.Instrument.HP.GLTLS port, string portName)
-        {
-            try
-            {
-                port.Open(portName);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.StackTrace.ToString());
-                return false;
-            }
-
-            return true;
+            return ini_path;
         }
 
         public string Ini_Read(string Section, string key)
@@ -1498,201 +1940,9 @@ namespace PD.ViewModel
                 Directory.CreateDirectory(System.IO.Directory.GetParent(ini_path).ToString());  //建立資料夾
             ini.IniWriteValue(Section, key, value, ini_path);  //創建ini file並寫入基本設定
         }
+        #endregion
 
-        public void Clean_Chart()
-        {
-            Save_PD_Value = new List<DataPoint>();
-
-            Save_All_PD_Value = Analysis.ListDefine<DataPoint>(Save_All_PD_Value, ch_count, new List<DataPoint>());
-
-            ChartNowModel = new ChartModel(ch_count);
-
-            LineAnnotation_X_1.StrokeThickness = 0;
-            LineAnnotation_X_2.StrokeThickness = 0;
-            LineAnnotation_Y.StrokeThickness = 0;
-
-            PointAnnotation_1.StrokeThickness = 0;
-            PointAnnotation_2.StrokeThickness = 0;
-
-            for (int i = 0; i < Plot_Series.Count; i++)
-            {
-                Plot_Series[i].Points.Clear();
-            }
-        }
-
-        public async Task Port_ReOpen(string comport)
-        {
-            try
-            {
-                if (port_PD != null)
-                {
-                    if (port_PD.IsOpen)
-                    {
-                        if (port_PD.PortName != comport)
-                        {
-                            port_PD.DiscardInBuffer();       // RX
-                            port_PD.DiscardOutBuffer();      // TX
-                            port_PD.Close();
-                        }
-                        else return;
-                    }
-                }
-                else port_PD = new SerialPort(comport, _BoudRate, Parity.None, 8, StopBits.One);
-            }
-            catch { }
-
-            try
-            {
-                if (port_PD.PortName != comport || port_PD.BaudRate != _BoudRate)
-                    port_PD = new SerialPort(comport, _BoudRate, Parity.None, 8, StopBits.One);
-
-
-                port_PD.Open();
-
-                await Task.Delay(10);  //100ms
-            }
-            catch (Exception ex)
-            {
-                Str_cmd_read = "Port Open Error";
-                throw ex;
-            }
-        }
-
-        public async Task Port_ReOpen(SerialPort port, string comport, int boudRate)
-        {
-            try
-            {
-                if (port.PortName != comport)
-                    port = new SerialPort(comport, boudRate, Parity.None, 8, StopBits.One);
-
-                if (!port.IsOpen)
-                    port_PD.Open();
-
-                await Task.Delay(100);
-            }
-            catch (Exception ex) { Str_cmd_read = "Port Open Error"; cmd.Save_Log_Message("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString()); throw ex; }
-        }
-
-        public async Task Port_PD_B_ReOpen(string comport)
-        {
-            try
-            {
-                if (port_PD_B != null)
-                {
-                    if (port_PD_B.IsOpen)
-                    {
-                        if (port_PD_B.PortName != comport)
-                        {
-                            port_PD_B.DiscardInBuffer();       // RX
-                            port_PD_B.DiscardOutBuffer();      // TX
-                            port_PD_B.Close();
-                        }
-                        else return;
-                    }
-                }
-                else port_PD_B = new SerialPort(comport, _BoudRate, Parity.None, 8, StopBits.One);
-            }
-            catch { }
-
-            try
-            {
-                if (port_PD_B.PortName != comport || port_PD_B.BaudRate != _BoudRate)
-                    port_PD_B = new SerialPort(comport, _BoudRate, Parity.None, 8, StopBits.One);
-
-                port_PD_B.Open();
-
-                await Task.Delay(100);
-            }
-            catch (Exception ex) { Str_cmd_read = "Port Open Error"; cmd.Save_Log_Message("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString()); throw ex; }
-        }
-
-        public List<SerialPort> List_Port = new List<SerialPort>();
-        public void Multi_Port_Setting()
-        {
-            try
-            {
-                List_Port = new List<SerialPort>();
-                if (list_Board_Setting.Count > 0)
-                {
-                    foreach (List<string> board_setting in list_Board_Setting)
-                    {
-                        if (!string.IsNullOrEmpty(board_setting[1]))
-                        {
-                            SerialPort port = new SerialPort(board_setting[1], _BoudRate, Parity.None, 8, StopBits.One);
-                            List_Port.Add(port);
-                        }
-                        else
-                            List_Port.Add(new SerialPort());
-                    }
-
-                    foreach (SerialPort port in List_Port)
-                    {
-                        port.Open();
-                    }
-                }
-
-            }
-            catch { Str_cmd_read = "Port Open Error"; }
-        }
-
-        public async Task Port_Switch_ReOpen()
-        {
-            try
-            {
-                if (port_Switch != null)
-                {
-                    if (port_Switch.IsOpen)
-                    {
-                        if (!port_Switch.PortName.Equals(comport_switch))
-                        {
-                            port_Switch.DiscardInBuffer();       // RX
-                            port_Switch.DiscardOutBuffer();      // TX
-
-                            port_Switch.Close();
-
-                            await Task.Delay(30);
-
-                            port_Switch.PortName = comport_switch;
-                            port_Switch.BaudRate = _Switch_BoudRate;
-                            port_Switch.Parity = Parity.None;
-                            port_Switch.StopBits = StopBits.One;
-
-                            port_Switch.Open();
-                        }
-
-                        return;
-                    }
-                    else
-                    {
-
-                        port_Switch.PortName = comport_switch;
-                        port_Switch.BaudRate = _Switch_BoudRate;
-                        port_Switch.Parity = Parity.None;
-                        port_Switch.StopBits = StopBits.One;
-                        port_Switch.Open();
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        port_Switch = new SerialPort("COM" + comport_switch.ToString(), _BoudRate, Parity.None, 8, StopBits.One);
-                        port_Switch.Open();
-                    }
-                    catch
-                    {
-                        Str_cmd_read = "Switch Port Open Error";
-                        return;
-                    }
-                }
-            }
-            catch
-            {
-                port_Switch = new SerialPort(comport_switch, _BoudRate, Parity.None, 8, StopBits.One);
-                port_Switch.Open();
-            }
-        }
-
+        #region Go/Stop Command
         public async Task<string> PD_GO()
         {
             try
@@ -1711,11 +1961,11 @@ namespace PD.ViewModel
                     else
                         await Port_ReOpen(_Selected_Comport);
 
-                    timer2.Start();
+                    timer_PD_GO.Start();
                 }
             }
             catch { Str_cmd_read = "Port is closed"; }
-            await AccessDelayAsync(1);
+            await Task.Delay(1);
             return Str_cmd_read;
         }
 
@@ -1727,7 +1977,7 @@ namespace PD.ViewModel
                 port_PD.DiscardInBuffer();       // RX
                 port_PD.DiscardOutBuffer();      // TX
 
-                timer2.Stop();
+                timer_PD_GO.Stop();
 
                 port_PD.Close();
 
@@ -1736,7 +1986,7 @@ namespace PD.ViewModel
                 timer2_count = 0;
             }
             catch { Str_cmd_read = "---"; }
-            await AccessDelayAsync(1);
+            await Task.Delay(1);
         }
 
         public void PM_GO()
@@ -1744,7 +1994,7 @@ namespace PD.ViewModel
             if (_pd_or_pm)  //PM mode
             {
                 Save_All_PD_Value = new List<List<DataPoint>>() { new List<DataPoint>() };
-                try { timer3.Start(); }
+                try { timer_PM_GO.Start(); }
                 catch { Save_Log("Timer Start", "GPIB error", true); }
             }
         }
@@ -1753,7 +2003,7 @@ namespace PD.ViewModel
         {
             try
             {
-                timer3.Stop();
+                timer_PM_GO.Stop();
 
                 await Task.Delay(200);
 
@@ -1765,7 +2015,9 @@ namespace PD.ViewModel
             }
             await Task.Delay(_int_Read_Delay * 2);
         }
+        #endregion
 
+        #region Dac Command
         public async Task WriteDac<T>(string ch, string TF_or_VOA, T DAC)
         {
             string cmd = "";
@@ -1851,7 +2103,7 @@ namespace PD.ViewModel
                     if (_pd_or_pm)
                     {
                         if (port_PD != null) Str_Command = "P0?";
-                        timer3.Start();
+                        timer_PM_GO.Start();
                     }
                 }
                 catch
@@ -1895,13 +2147,13 @@ namespace PD.ViewModel
 
                 if (!PD_or_PM)  //PD mode
                 {
-                    if(DAC1 != "0" && DAC2 != "0")
+                    if (DAC1 != "0" && DAC2 != "0")
                     {
                         Str_cmd_read = "Dac format error";
-                        Save_Log(new LogMember() { Status="Set PD Dac", Message = Str_cmd_read, Result = $"D1={DAC1}, D2={DAC2}" });
+                        Save_Log(new LogMember() { Status = "Set PD Dac", Message = Str_cmd_read, Result = $"D1={DAC1}, D2={DAC2}" });
                         return;
                     }
-                    else if(DAC1 == "0")
+                    else if (DAC1 == "0")
                     {
                         if (int.TryParse(DAC2, out int d2))
                         {
@@ -1910,7 +2162,7 @@ namespace PD.ViewModel
                             //Str_Command = "D" + channel.ToString() + " " + d2.ToString();  //Write Dac
                         }
                     }
-                    else if(!string.IsNullOrEmpty(DAC1))
+                    else if (!string.IsNullOrEmpty(DAC1))
                     {
                         //Str_Command = "D" + channel.ToString() + " " + DAC1;  //Write Dac
                         Str_Command = $"D{channel} {DAC1}";  //Write Dac
@@ -1977,7 +2229,69 @@ namespace PD.ViewModel
         }
         #endregion
 
+        #region Database Command
+        public string[] Get_BoardRatio_Database(string board_no, string dataBase, string server_IP, int channel)
+        {
+            try
+            {
+                string connstring = "User ID=" + "opticomm_pe" + ";" +
+                                            "Password=" + "opticomm_pe!@#456" + ";" +
+                                            "Trusted_Connection=false;" +
+                                            "Server=" + "OPTICOMM-MFG" + ";" +
+                                            "Data Source=" + server_IP + ";" +
+                                            "Initial Catalog=" + dataBase + ";Pooling=false;Connection Timeout=2";  //DataBase： "UFA", "CTF"為不同的資料庫
 
+                string tableName = "Board_V";
+                string boardSN = board_no;   //板號 ex: "U4V35"
+                string sql = "SELECT [Board_SN],[V1],[V2] FROM [dbo]." + tableName + " WHERE [Board_SN]= '" + boardSN + "'";
+
+                DataSet ds = new DataSet();
+                SqlConnection connection = new SqlConnection(connstring);
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, connection);
+                Console.WriteLine("ConnectionTimeout: {0}",
+            connection.ConnectionTimeout);
+                connection.Open();
+                dataAdapter.Fill(ds, tableName);
+                connection.Close();
+                connection = null;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    //vm.BoardTable_Dictionary.Clear();
+                    for (int i = 0; i < ds.Tables[0].Rows.Count;)
+                    {
+                        string board_SN, V1_Ratio, V2_Ratio;
+                        board_SN = ds.Tables[0].Rows[i]["Board_SN"].ToString().Trim();
+                        V1_Ratio = ds.Tables[0].Rows[i]["V1"].ToString().Trim();
+                        V2_Ratio = ds.Tables[0].Rows[i]["V2"].ToString().Trim();
+
+                        return new string[] { V1_Ratio, V2_Ratio };
+
+                        //vm.BoardTable_Dictionary.Add(board_SN,
+                        //    new List<string>() { V1_Ratio, V2_Ratio });
+                    }
+                }
+            }
+            catch
+            {
+                Save_Log(new LogMember()
+                {
+                    Status = "Get_BoardRatio_Database",
+                    Message = "SqlConnection error",
+                    isShowMSG = false,
+                    Channel = channel.ToString()
+                });
+            }
+
+            return new string[] { "0.00068665598", "0.00068665598" };  //若資料庫中無此板號
+        }
+        #endregion
+
+        public List<SerialPort> List_Port = new List<SerialPort>();
+
+        public int Cmd_Count { get; set; } = 0;
+
+        public bool BoolAllGauge { get; set; } = true;
 
         public SerialPort port_PD, port_PD_B, _port_Switch, port_TLS_Filter;
 
@@ -2068,7 +2382,7 @@ namespace PD.ViewModel
         }
 
         public string LastScript_Path { get; set; }
-      
+
         public bool is_BearSay_History_Loaded { get; set; }
 
         public MsgModel msgModel = new MsgModel() { msg_1 = "", msg_2 = "", msg_3 = "" };
@@ -2111,7 +2425,7 @@ namespace PD.ViewModel
         private string _Station_ID { get; set; } = "S00";
         public string Station_ID
         {
-            get { return _Station_ID;}
+            get { return _Station_ID; }
             set
             {
                 _Station_ID = value;
@@ -2212,7 +2526,7 @@ namespace PD.ViewModel
             }
         }
 
-        
+
 
         private string _txt_save_TF2_wl_data_path = @"\\192.168.2.4\OptiComm\tff\Data\TF2\data\";
         public string txt_save_TF2_wl_data_path
@@ -2386,7 +2700,7 @@ namespace PD.ViewModel
             set
             {
                 comport_switch = value;
-                Ini_Write("Connection", "Comport_Switch", value.ToString()); 
+                Ini_Write("Connection", "Comport_Switch", value.ToString());
                 OnPropertyChanged("Comport_Switch");
 
                 if (port_Switch != null)
@@ -2891,7 +3205,7 @@ namespace PD.ViewModel
                 value = value < 1 ? 1 : value;
                 if (value < 1) value = 1;
                 _ch_count = value;
-                
+
                 if (station_type == "Hermetic_Test")
                 {
                     if (value <= 4)
@@ -3087,7 +3401,7 @@ namespace PD.ViewModel
                                 k++;
                             }
                         }
-                       
+
                         #endregion
 
                         bool check = false;
@@ -3204,7 +3518,7 @@ namespace PD.ViewModel
                 return true;
             else
             {
-                Save_Log(new LogMember() { isShowMSG = false,Status= status, Message = "Folder is not exist", Result = "Timeout" });
+                Save_Log(new LogMember() { isShowMSG = false, Status = status, Message = "Folder is not exist", Result = "Timeout" });
                 Str_cmd_read = $"{dir_path}資料夾不存在";
                 return false;
             }
@@ -3328,7 +3642,7 @@ namespace PD.ViewModel
                 OnPropertyChanged("list_combox_Product_items");
             }
         }
-       
+
 
         private List<string> _list_combox_PowerMeterType_items =
             new List<string>() { "GPIB", "RS232" };
@@ -3510,7 +3824,7 @@ namespace PD.ViewModel
                 _isSMRR_Annotation = value;
                 OnPropertyChanged("isSMRR_Annotation");
 
-                if(_isSMRR_Annotation)
+                if (_isSMRR_Annotation)
                 {
                     PointAnnotation_1.StrokeThickness = 8;
                     PointAnnotation_2.StrokeThickness = 8;
@@ -3729,8 +4043,6 @@ namespace PD.ViewModel
             set
             {
                 _float_WL_Scan_Start = value;
-                OnPropertyChanged("float_WL_Scan_Start");
-
                 Ini_Write("Scan", "WL_Scan_Start", value.ToString());
             }
         }
@@ -3742,7 +4054,6 @@ namespace PD.ViewModel
             set
             {
                 _float_WL_Scan_End = value;
-                OnPropertyChanged("float_WL_Scan_End");
                 Ini_Write("Scan", "WL_Scan_End", value.ToString());
             }
         }
@@ -3754,7 +4065,6 @@ namespace PD.ViewModel
             set
             {
                 _float_WL_Scan_Gap = value;
-                OnPropertyChanged("float_WL_Scan_Gap");
                 Ini_Write("Scan", "WL_Scan_Gap", value.ToString());
             }
         }
@@ -3770,8 +4080,8 @@ namespace PD.ViewModel
             }
         }
 
-        private ObservableCollection<float> _List_Fix_WL = new ObservableCollection<float>() { 1530, 1548, 1565, 1550 };
-        public ObservableCollection<float> List_Fix_WL
+        private ObservableCollection<string> _List_Fix_WL = new ObservableCollection<string>() { "1530", "1548", "1565", "1550" };
+        public ObservableCollection<string> List_Fix_WL
         {
             get { return _List_Fix_WL; }
             set
@@ -3779,6 +4089,13 @@ namespace PD.ViewModel
                 _List_Fix_WL = value;
                 OnPropertyChanged("List_Fix_WL");
             }
+        }
+
+        private string _Laser_Wavelength = "1548";
+        public string Laser_Wavelength
+        {
+            get { return _Laser_Wavelength; }
+            set { _Laser_Wavelength = value; }
         }
 
         //int index = 0;
@@ -3789,6 +4106,8 @@ namespace PD.ViewModel
             set
             {
                 _double_Laser_Wavelength = Math.Round(value, 2);
+
+                Laser_Wavelength = _double_Laser_Wavelength.ToString();
 
                 float_WL_Ref = new List<double>();  //目前波長的Ref值
 
@@ -3801,8 +4120,14 @@ namespace PD.ViewModel
                             float_WL_Ref.Add(_Ref_dictionaries[ch].ContainsKey(_double_Laser_Wavelength) ? _Ref_dictionaries[ch][_double_Laser_Wavelength] : 0);
                         }
                     }
-                OnPropertyChanged("Double_Laser_Wavelength");
             }
+        }
+
+        private string _PM_Wavelength = "1548";
+        public string PM_Wavelength
+        {
+            get { return _PM_Wavelength; }
+            set { _PM_Wavelength = value; }
         }
 
         private double _double_PM_Wavelength;
@@ -3812,7 +4137,8 @@ namespace PD.ViewModel
             set
             {
                 _double_PM_Wavelength = value;
-                OnPropertyChanged("Double_PM_Wavelength");
+
+                PM_Wavelength = _double_PM_Wavelength.ToString();
             }
         }
 
@@ -3925,15 +4251,25 @@ namespace PD.ViewModel
             }
         }
 
+        private string _Laser_Power = "0";
+        public string Laser_Power
+        {
+            get { return _Laser_Power; }
+            set
+            {
+                _Laser_Power = value;
+
+                double power = 0;
+                if (double.TryParse(value, out power))
+                    Double_Laser_Power = power;
+            }
+        }
+
         private double _double_Laser_Power = 0;
         public double Double_Laser_Power
         {
             get { return _double_Laser_Power; }
-            set
-            {
-                _double_Laser_Power = value;
-                OnPropertyChanged("Double_Laser_Power");
-            }
+            set { _double_Laser_Power = value; }
         }
 
         private SolidColorBrush[] _ref_Color = new SolidColorBrush[16];
@@ -4415,8 +4751,8 @@ namespace PD.ViewModel
             set
             {
                 _int_Read_Delay = value;
-                timer2.Interval = value;
-                timer3.Interval = value;
+                timer_PD_GO.Interval = value;
+                timer_PM_GO.Interval = value;
                 OnPropertyChanged("Int_Read_Delay");
 
                 Ini_Write("Connection", "RS232_Delay_Time", value.ToString());

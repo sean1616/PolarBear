@@ -266,6 +266,26 @@ namespace PD.AnalysisModel
             return Product_type;
         }
 
+       static public string WL_Range_Analyze(double wl)
+        {
+            //if (wl >= 1523 && wl <= 1620)
+            //    return "C+L Band";
+            if (wl >= 1625 && wl <= 1675)
+                return "U Band";
+            else if (wl >= 1560 && wl <= 1625)
+                return "L Band";
+            else if (wl >= 1520 && wl <= 1573)
+                return "C Band";
+            else if (wl >= 1460 && wl <= 1520)
+                return "S Band";
+            else if (wl >= 1360 && wl <= 1460)
+                return "E Band";
+            else if (wl >= 1260 && wl <= 1360)
+                return "O Band";
+
+            else return "";  //Out of range
+        }
+
         public bool CheckDirectoryExist(string dir_path)
         {
             if (Directory.Exists(dir_path))
@@ -771,7 +791,7 @@ namespace PD.AnalysisModel
                     string cmd = string.Format("D{0}?", ch);
                     vm.port_PD.Write(cmd + "\r");
 
-                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                    await Task.Delay(vm.Int_Read_Delay);
 
                     int size = vm.port_PD.BytesToRead;
                     byte[] dataBuffer = new byte[size];
@@ -1444,7 +1464,7 @@ namespace PD.AnalysisModel
 
         public async Task<bool> CurFit_All(List<List<DataPoint>> Save_All_PD_Value, List<PointF> Points, List<double> BestCoeffs, string action)
         {
-            await vm.AccessDelayAsync(1);
+            await Task.Delay(1);
             if (Save_All_PD_Value.Count < 1)
             {
                 vm.Show_Bear_Window("無細掃資訊", false, "String");
@@ -1707,9 +1727,9 @@ namespace PD.AnalysisModel
                 else
                 {
                     if (vm.PD_or_PM == false)
-                        vm.timer2.Stop();
+                        vm.timer_PD_GO.Stop();
                     else
-                        vm.timer3.Stop();
+                        vm.timer_PM_GO.Stop();
                     await Task.Delay(vm.Int_Read_Delay);
                     vm.port_PD.Close();
                     await Task.Delay(50);

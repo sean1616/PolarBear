@@ -711,7 +711,7 @@ namespace PD.NavigationPages
                         {
                             vm.Str_Command = "SW0 " + gm.GaugeChannel;
                             vm.port_Switch.Write(vm.Str_Command + "\r");
-                            //await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                            //await Task.Delay(vm.Int_Write_Delay);
 
                         }
                         catch { vm.Str_cmd_read = "Set Switch Error"; vm.Save_Log(vm.Str_Status, gm.GaugeChannel, vm.Str_cmd_read); }
@@ -858,7 +858,7 @@ namespace PD.NavigationPages
                                     string cmd = "D1?";
                                     vm.port_PD.Write(cmd + "\r");
 
-                                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                                    await Task.Delay(vm.Int_Read_Delay);
 
                                     int size = vm.port_PD.BytesToRead;
                                     byte[] dataBuffer = new byte[size];

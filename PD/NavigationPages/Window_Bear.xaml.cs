@@ -142,7 +142,7 @@ namespace PD.NavigationPages
                 vm.window_bear_width = 500;
                 vm.window_bear_heigh = 250;
                                 
-                await vm.AccessDelayAsync(400);
+                await Task.Delay(400);
                 string[] str_show_array = vm.Str_bear_say.Split(' ');
 
                 txt_bear_say_something.Visibility = Visibility.Visible;
@@ -155,7 +155,7 @@ namespace PD.NavigationPages
                             break;
 
                         txt_bear_say_something.Text += s;
-                        await vm.AccessDelayAsync(300);
+                        await Task.Delay(300);
                     }
                 }
                 while (is_txt_reshow);
@@ -331,7 +331,7 @@ namespace PD.NavigationPages
                 double wl = txt_value;
                 vm.tls.SetWL(wl);
                 vm.Double_Laser_Wavelength = wl;
-                await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
+                await Task.Delay(vm.Int_Set_WL_Delay);
                 vm.pm.SetWL(Convert.ToDouble(obj.Content));
                 #endregion
             }
@@ -354,12 +354,12 @@ namespace PD.NavigationPages
                     else
                     {
                         if (vm.PD_or_PM == false)
-                            vm.timer2.Stop();
+                            vm.timer_PD_GO.Stop();
                         else
-                            vm.timer3.Stop();
-                        await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                            vm.timer_PM_GO.Stop();
+                        await Task.Delay(vm.Int_Read_Delay);
                         vm.port_PD.Close();
-                        await vm.AccessDelayAsync(50);
+                        await Task.Delay(50);
                         vm.port_PD.Open();
                         vm.port_PD.DiscardInBuffer();       // RX
                         vm.port_PD.DiscardOutBuffer();      // TX
@@ -371,10 +371,10 @@ namespace PD.NavigationPages
                 //Set voltage
                 vm.Str_Command = "D1 0,0," + (dac).ToString();  //cmd = D1 0,0,1000
                 vm.port_PD.Write(vm.Str_Command + "\r");
-                await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                await Task.Delay(vm.Int_Write_Delay);
 
                 vm.port_PD.Close();
-                await vm.AccessDelayAsync(50);
+                await Task.Delay(50);
                 vm.port_PD.DiscardInBuffer();       // RX
                 vm.port_PD.DiscardOutBuffer();      // TX
             }
@@ -386,7 +386,7 @@ namespace PD.NavigationPages
             {
                 if (vm.port_Switch != null) vm.port_Switch.Close();
 
-                await vm.AccessDelayAsync(50);
+                await Task.Delay(50);
 
                 vm.port_Switch = new SerialPort(vm.Comport_Switch.ToString(), vm.BoudRate, Parity.None, 8, StopBits.One);
                 vm.port_Switch.Open();
@@ -431,7 +431,7 @@ namespace PD.NavigationPages
                 {
                     vm.Str_Command = "SW0 " + switch_index.ToString();
                     vm.port_Switch.Write(vm.Str_Command + "\r");
-                    await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                    await Task.Delay(vm.Int_Write_Delay);
                 }
                 catch { }
             }
@@ -439,7 +439,7 @@ namespace PD.NavigationPages
             {
                 vm.Str_Command = "I1?";
                 vm.port_Switch.Write(vm.Str_Command + "\r");
-                await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                await Task.Delay(vm.Int_Read_Delay);
             }
             else
             {

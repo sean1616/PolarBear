@@ -267,7 +267,6 @@ D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\OxyPlot.Wpf.xml
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\WpfAnimatedGif.xml
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\Wpf_Control_Library.pdb
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\de\MahApps.Metro.resources.dll
-D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.csproj.AssemblyReference.cache
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\MainWindow.g.cs
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Board_Grid.g.cs
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Page_Chamber_Status.g.cs
@@ -619,3 +618,9 @@ D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.5.19_MarkupCom
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.5.19.g.resources
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.5.19.exe
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.5.19.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Waiting.g.cs
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window_Waiting.baml
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.csproj.AssemblyReference.cache
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.GeneratedMSBuildEditorConfig.editorconfig
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.csproj.Fody.CopyLocal.cache
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.csproj.Fody.RuntimeCopyLocal.cache

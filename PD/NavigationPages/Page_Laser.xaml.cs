@@ -276,90 +276,61 @@ namespace PD.NavigationPages
 
         private void txt_WL_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                double wl = Convert.ToDouble(txt_WL.Text);
+            //if (e.Key == Key.Enter)
+            //{
+            //    double wl = Convert.ToDouble(txt_WL.Text);
 
-                if (!vm.IsGoOn) cmd.Set_WL(wl, false, true);
-                else
-                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = txt_WL.Text });
-            }
-            else if (e.Key == Key.Up)
-            {
-                double wl = Convert.ToDouble(txt_WL.Text) + 0.01;
+            //    if (!vm.IsGoOn) cmd.Set_WL(wl, false, true);
+            //    else
+            //        vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = txt_WL.Text });
+            //}
+            //else if (e.Key == Key.Up)
+            //{
+            //    double wl = Convert.ToDouble(txt_WL.Text) + 0.01;
 
-                if (!vm.IsGoOn)
-                    try
-                    {
-                        txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(wl, false, true);
-                    }
-                    catch { }
-                else
-                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
+            //    if (!vm.IsGoOn)
+            //        try
+            //        {
+            //            txt_WL.Text = (wl).ToString();
+            //            cmd.Set_WL(wl, false, true);
+            //        }
+            //        catch { }
+            //    else
+            //        vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
 
-                vm.Double_Laser_Wavelength = wl;
-            }
-            else if (e.Key == Key.Down)
-            {
-                double wl = Convert.ToDouble(txt_WL.Text) - 0.01;
+            //    vm.Double_Laser_Wavelength = wl;
+            //}
+            //else if (e.Key == Key.Down)
+            //{
+            //    double wl = Convert.ToDouble(txt_WL.Text) - 0.01;
 
-                if (!vm.IsGoOn)
-                    try
-                    {
-                        txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(wl, false, true);
-                    }
-                    catch { }
-                else
-                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
+            //    if (!vm.IsGoOn)
+            //        try
+            //        {
+            //            txt_WL.Text = (wl).ToString();
+            //            cmd.Set_WL(wl, false, true);
+            //        }
+            //        catch { }
+            //    else
+            //        vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
 
-                vm.Double_Laser_Wavelength = wl;
-            }
+            //    vm.Double_Laser_Wavelength = wl;
+            //}
         }
 
         private void txt_PM_WL_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                vm.pm.SetWL(Convert.ToDouble(txt_PM_WL.Text));
-                try
-                {
-                    vm.Double_PM_Wavelength = vm.pm.ReadWL();
-                }
-                catch { }
-            }
+            //if (e.Key == Key.Enter)
+            //{
+            //    vm.pm.SetWL(Convert.ToDouble(txt_PM_WL.Text));
+            //    try
+            //    {
+            //        vm.Double_PM_Wavelength = vm.pm.ReadWL();
+            //    }
+            //    catch { }
+            //}
         }
 
-        private void txt_power_KeyDown(object sender, KeyEventArgs e)
-        {
-
-            if (e.Key == Key.Enter)
-            {
-                if (vm.isConnected)
-                {
-                    try
-                    {
-                        double pwr = double.Parse(txt_power.Text);
-                        vm.Double_Laser_Power = pwr;
-                        if (pwr > 10 || pwr < -15)
-                        {
-                            vm.Str_cmd_read = "Power out of range";
-                            return;
-                        }
-
-                        if (!vm.IsGoOn)
-                            cmd.Set_TLS_Power(pwr, false);
-                        else
-                            vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETPOWER", Type = "Agilent", Value_1 = pwr.ToString() });
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
-        }
 
         private void btn_PDL_connect_Click(object sender, RoutedEventArgs e)
         {

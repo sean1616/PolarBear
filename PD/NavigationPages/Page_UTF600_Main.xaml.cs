@@ -36,6 +36,9 @@ namespace PD.NavigationPages
         bool _isDrag = false;
         Analysis anly;
 
+        readonly public System.Windows.Media.Animation.Storyboard sb_bear_shake;
+        readonly public System.Windows.Media.Animation.Storyboard sb_bear_reset;
+
         public Page_UTF600_Main(ComViewModel vm)
         {
             InitializeComponent();
@@ -69,6 +72,9 @@ namespace PD.NavigationPages
             mainPlotView.PreviewMouseRightButtonUp += MainPlotView_PreviewMouseRightButtonUp;
             vm.PlotViewModel.MouseDown += PlotViewModel_MouseDown;
             //vm.PlotViewModel.MouseUp += PlotViewModel_MouseUp;
+
+            sb_bear_shake = FindResource("Storyboard_Bear_Shake") as System.Windows.Media.Animation.Storyboard;
+            sb_bear_reset = FindResource("Storyboard_Bear_Reset") as System.Windows.Media.Animation.Storyboard;
         }
 
         private void MainPlotView_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -419,55 +425,6 @@ namespace PD.NavigationPages
         }
 
         bool _is_txtWL_already_click = false;
-        private void txt_WL_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (_is_txtWL_already_click) return;
-
-            _is_txtWL_already_click = true;
-
-            if (e.Key == Key.Enter)
-            {
-                double wl = Convert.ToDouble(txt_WL.Text);
-
-                if (!vm.IsGoOn) cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true, true);
-                else
-                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = txt_WL.Text });
-            }
-            if (e.Key == Key.Up)
-            {
-                double wl = Convert.ToDouble(txt_WL.Text) + 0.01;
-             
-                if (!vm.IsGoOn)
-                    try
-                    {
-                        txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(wl, true, true);
-                    }
-                    catch { }
-                else
-                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
-
-                vm.Double_Laser_Wavelength = wl;
-            }
-            if (e.Key == Key.Down)
-            {
-                double wl = Convert.ToDouble(txt_WL.Text) - 0.01;
-
-                if (!vm.IsGoOn)
-                    try
-                    {
-                        txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(wl, true, true);
-                    }
-                    catch { }
-                else
-                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
-
-                vm.Double_Laser_Wavelength = wl;
-            }
-
-            _is_txtWL_already_click = false;
-        }
 
         private async void txt_Dac_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -506,7 +463,7 @@ namespace PD.NavigationPages
                                 string cmd = "D1?";
                                 vm.port_PD.Write(cmd + "\r");
 
-                                await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                                await Task.Delay(vm.Int_Read_Delay);
 
                                 int size = vm.port_PD.BytesToRead;
                                 byte[] dataBuffer = new byte[size];
@@ -1223,7 +1180,7 @@ namespace PD.NavigationPages
                         {
                             vm.Str_Command = "SW0 " + gm.GaugeChannel;
                             vm.port_Switch.Write(vm.Str_Command + "\r");
-                            //await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                            //await Task.Delay(vm.Int_Write_Delay);
 
                         }
                         catch { vm.Str_cmd_read = "Set Switch Error"; vm.Save_Log(vm.Str_Status, gm.GaugeChannel, vm.Str_cmd_read); }
@@ -1366,7 +1323,7 @@ namespace PD.NavigationPages
                                     string cmd = "D1?";
                                     vm.port_PD.Write(cmd + "\r");
 
-                                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                                    await Task.Delay(vm.Int_Read_Delay);
 
                                     int size = vm.port_PD.BytesToRead;
                                     byte[] dataBuffer = new byte[size];
@@ -1628,12 +1585,6 @@ namespace PD.NavigationPages
             }
         }
 
-        //private void ToggleBtn_LaserActive_Checked(object sender, RoutedEventArgs e)
-        //{
-        //    vm.isConnected = false;
-        //    cmd.Set_TLS_Active(vm.isLaserActive);
-        //}
-
         private void TextBox_WL_Scan_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Enter) return;
@@ -1699,23 +1650,6 @@ namespace PD.NavigationPages
             }
         }
 
-        private void Button_SendFixWL_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var obj = sender as Button;
-                int index = int.Parse(obj.Tag.ToString());
-
-                if (!vm.IsGoOn)
-                    cmd.Set_WL(double.Parse(obj.Content.ToString()), true, true);
-                else
-                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = obj.Content.ToString() });
-
-                vm.Ini_Write("Scan", $"Fix_WL_{index}", obj.Content.ToString());
-            }
-            catch { }
-        }
-
         private void Button_Fix_WL_Update_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             var obj = sender as Button;
@@ -1723,16 +1657,23 @@ namespace PD.NavigationPages
 
             if (float.TryParse(txt_WL.Text, out float value))
             {
-                vm.List_Fix_WL[index - 1] = value;
-                //vm.List_Fix_WL = new ObservableCollection<float>(vm.List_Fix_WL);
+                vm.List_Fix_WL[index - 1] = value.ToString();
             }
         }
 
-        private void mainPlotView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //Point p = (sender as OxyPlot.Series.LineSeries).InverseTransform(e.GetPosition(mainPlotView));
-        }
+            if (sb_bear_shake != null)
+            {
+                sb_bear_shake.Begin();
+                //sb_bear_shake.Pause();
+            }
 
-       
+            if (sb_bear_reset != null)
+            {
+                sb_bear_reset.Begin();
+                sb_bear_reset.Pause();
+            }
+        }
     }
 }

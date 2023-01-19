@@ -52,6 +52,9 @@ namespace PD
         Page_Command _Page_Command;
         //Page_Log _Page_Log;
         Page_Setting _Page_Setting;
+
+        Window_Waiting win_waiting;
+
         int int_saved_combox_index;
 
         private SerialPort port_arduino = null;
@@ -62,6 +65,9 @@ namespace PD
         {
             InitializeComponent();
 
+            this.Left = System.Windows.Forms.Screen.AllScreens.FirstOrDefault().WorkingArea.Left;
+            this.Top = System.Windows.Forms.Screen.AllScreens.FirstOrDefault().WorkingArea.Top;
+
             //設定datacontext
             vm = new ComViewModel();
             this.DataContext = vm;
@@ -70,6 +76,10 @@ namespace PD
             setting = new Setting(vm);
             cmd = new ControlCmd(vm);
             anly = new Analysis(vm);
+
+            win_waiting = new Window_Waiting();
+            win_waiting.Center_MSG = "Loading";
+            win_waiting.Show();
 
             List<DateTime> listdateTime = new List<DateTime>();
             listdateTime.Add(DateTime.Now);
@@ -159,11 +169,11 @@ namespace PD
                 vm.float_WL_Scan_End = Generic_GetINISetting(vm.float_WL_Scan_End, "Scan", "WL_Scan_End");
 
                 vm.float_WL_Scan_Gap = Generic_GetINISetting(vm.float_WL_Scan_Gap, "Scan", "WL_Scan_Gap");
-
-                vm.List_Fix_WL[0] = Generic_GetINISetting(vm.List_Fix_WL[0], "Scan", "Fix_WL_1");
-                vm.List_Fix_WL[1] = Generic_GetINISetting(vm.List_Fix_WL[1], "Scan", "Fix_WL_2");
-                vm.List_Fix_WL[2] = Generic_GetINISetting(vm.List_Fix_WL[2], "Scan", "Fix_WL_3");
-                vm.List_Fix_WL[3] = Generic_GetINISetting(vm.List_Fix_WL[3], "Scan", "Fix_WL_4");
+                
+                vm.List_Fix_WL[0] = String.IsNullOrEmpty(vm.Ini_Read("Scan", "Fix_WL_1")) ? "1530" : vm.Ini_Read("Scan", "Fix_WL_1");
+                vm.List_Fix_WL[1] = String.IsNullOrEmpty(vm.Ini_Read("Scan", "Fix_WL_2")) ? "1548" : vm.Ini_Read("Scan", "Fix_WL_2");
+                vm.List_Fix_WL[2] = String.IsNullOrEmpty(vm.Ini_Read("Scan", "Fix_WL_3")) ? "1565" : vm.Ini_Read("Scan", "Fix_WL_3");
+                vm.List_Fix_WL[3] = String.IsNullOrEmpty(vm.Ini_Read("Scan", "Fix_WL_4")) ? "1550" : vm.Ini_Read("Scan", "Fix_WL_4");
 
                 vm.IsDistributedSystem = Generic_GetINISetting(vm.IsDistributedSystem, "Connection", "IsDistributedSystem");
 
@@ -229,13 +239,13 @@ namespace PD
             listdateTime.Add(DateTime.Now);  //Event 5
 
             #region Timer Setting
-            vm.timer2 = new System.Timers.Timer();
-            vm.timer2.Interval = vm.Int_Read_Delay;
-            vm.timer2.Elapsed += Timer2_PD_GO_Elapsed;
+            vm.timer_PD_GO = new System.Timers.Timer();
+            vm.timer_PD_GO.Interval = vm.Int_Read_Delay;
+            vm.timer_PD_GO.Elapsed += Timer2_PD_GO_Elapsed;
 
-            vm.timer3 = new System.Timers.Timer();
-            vm.timer3.Interval = vm.Int_Read_Delay;
-            vm.timer3.Elapsed += Timer3_PM_GO_Elapsed;
+            vm.timer_PM_GO = new System.Timers.Timer();
+            vm.timer_PM_GO.Interval = vm.Int_Read_Delay;
+            vm.timer_PM_GO.Elapsed += Timer3_PM_GO_Elapsed;
 
             #endregion
 
@@ -441,7 +451,6 @@ namespace PD
 
             listdateTime.Add(DateTime.Now);  //Event 13
 
-
             #region Initial Chart Setting
            
             vm.Plot_Series.Clear();
@@ -475,7 +484,10 @@ namespace PD
             {
                 vm.Save_Log(new LogMember() { Status = "Check TimeSpan", Message = $"Event {i}", Result = (listdateTime[i] - listdateTime[i - 1]).TotalMilliseconds.ToString(), Time = listdateTime[i].ToString() });
             }
+
+            win_waiting.Close();
         }
+
 
         public T Generic_GetINISetting<T>(T input, string region, string variable) where T : new()
         {
@@ -582,6 +594,7 @@ namespace PD
                     if (!vm.isTimerOn)
                         vm.int_timer_timespan = int.MaxValue;
                     vm.timer2_count = 0;
+                    vm.timer3_count = 0;
                     vm.watch = new System.Diagnostics.Stopwatch();
                     vm.watch.Start();
                     cmd.Clean_Chart();
@@ -938,7 +951,7 @@ namespace PD
                             str_ID = tf.ReadSN();
                             vm.Str_Status = str_ID;
 
-                            await vm.AccessDelayAsync(125);
+                            await Task.Delay(125);
                             rs232.ClosePort();
                         }
                         catch { }
@@ -1448,11 +1461,11 @@ namespace PD
                         {
                             vm.Str_Command = "D1 0,0,0";
                             vm.port_PD.Write(vm.Str_Command + "\r");
-                            await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                            await Task.Delay(vm.Int_Write_Delay);
                         }
                         catch { vm.Str_cmd_read = "Reset DAC Error"; return; }
 
-                        await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                        await Task.Delay(vm.Int_Read_Delay);
                     }
                 }
                 else
@@ -1620,11 +1633,11 @@ namespace PD
                         {
                             vm.Str_Command = "D1 0,0,0";
                             vm.port_PD.Write(vm.Str_Command + "\r");
-                            await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                            await Task.Delay(vm.Int_Write_Delay);
                         }
                         catch { vm.Str_cmd_read = "Reset VOA Error"; return; }
 
-                        await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                        await Task.Delay(vm.Int_Read_Delay);
                     }
                 }
             }
@@ -2161,7 +2174,7 @@ namespace PD
                                 }
                                 //vm.List_V3_dac[c][maxpower_index[c]].ToString()   //電壓對應的DAC
                                 //lls[ch] = new List<string>() { "", "", final_voltage.ToString() };
-                                //await vm.AccessDelayAsync(30);
+                                //await Task.Delay(30);
                             }
 
                             #endregion
@@ -2570,7 +2583,7 @@ namespace PD
 
                         vm.port_PD.Write(vm.Str_Command + "\r");
 
-                        await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                        await Task.Delay(vm.Int_Read_Delay);
 
                         await D0_show();
 
@@ -3037,7 +3050,7 @@ namespace PD
                 {
                     vm.port_PD.Write(cmd + "\r");
 
-                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                    await Task.Delay(vm.Int_Read_Delay);
 
                     int size = vm.port_PD.BytesToRead;
                     byte[] dataBuffer = new byte[size];
@@ -3240,7 +3253,7 @@ namespace PD
             {
                 if (vm.port_PD.IsOpen)
                 {
-                    await vm.AccessDelayAsync(1);
+                    await Task.Delay(1);
 
                     int size = vm.port_PD.BytesToRead;
                     byte[] dataBuffer = new byte[size];
@@ -3925,6 +3938,8 @@ namespace PD
                 }
                 else vm.Is_switch_mode = false;
 
+                _Page_UTF600_Main.sb_bear_shake.Begin();
+
                 if (!vm.isStop)
                 {
                     if (vm.selected_K_WL_Type.Equals("ALL Range"))
@@ -3939,6 +3954,9 @@ namespace PD
                 }
                 else
                     vm.Show_Bear_Window("Stop", false, "String", false);
+
+                _Page_UTF600_Main.sb_bear_shake.Pause();
+                _Page_UTF600_Main.sb_bear_reset.Begin();
 
                 vm.list_collection_GaugeModels.Add(new ObservableCollection<GaugeModel>());
                 for (int i = 0; i < vm.list_GaugeModels.Count; i++)
@@ -4014,7 +4032,7 @@ namespace PD
 
                         setting.Set_Laser_WL(Math.Round(wl, 2));  //切換TLS WL        
 
-                        await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
+                        await Task.Delay(vm.Int_Set_WL_Delay);
 
                         //double power = vm.pm.ReadPower();                        
                         double power = double.Parse(await cmd.Get_PD_Value_1ch(ch));
@@ -4030,7 +4048,7 @@ namespace PD
                             DataPoint dp = new DataPoint(wl, power);
                             vm.Save_All_PD_Value[ch].Add(dp);
 
-                            await vm.AccessDelayAsync(40);
+                            await Task.Delay(40);
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
@@ -4110,7 +4128,7 @@ namespace PD
                             DataPoint dp = new DataPoint(wl, power);
                             vm.Save_All_PD_Value[ch].Add(dp);
 
-                            await vm.AccessDelayAsync(40);
+                            await Task.Delay(40);
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
@@ -4189,7 +4207,7 @@ namespace PD
                             DataPoint dp = new DataPoint(wl, power);
                             vm.Save_All_PD_Value[ch].Add(dp);
 
-                            await vm.AccessDelayAsync(40);
+                            await Task.Delay(40);
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
@@ -4241,7 +4259,7 @@ namespace PD
             var elapsedMs = watch.ElapsedMilliseconds;
 
             vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
-            await vm.AccessDelayAsync(50);
+            await Task.Delay(50);
 
             vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String", false);
             //vm.Collection_bear_say.Add(_save_all_WL_and_IL);   //Save data in history record
@@ -4345,7 +4363,7 @@ namespace PD
 
                     setting.Set_Laser_WL(Math.Round(wl, 2));  //逐步切換TLS WL
                     vm.Str_cmd_read = "Ch " + (ch + 1).ToString() + ":" + wl.ToString();
-                    await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
+                    await Task.Delay(vm.Int_Set_WL_Delay);
 
                     vm.Double_Powers = Analysis.ListDefault<double>(8);
 
@@ -4400,7 +4418,7 @@ namespace PD
                 }
 
                 vm.tls.SetWL(list_best_wl[ch]);
-                await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
+                await Task.Delay(vm.Int_Set_WL_Delay);
                 await cmd.Get_PD_Value();
                 _save_all_WL_and_IL.Add(new List<string>() { list_best_wl[ch].ToString(), Math.Round(vm.Double_Powers[ch], 3).ToString() });
             }
@@ -4408,7 +4426,7 @@ namespace PD
             var elapsedMs = watch.ElapsedMilliseconds;
 
             vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
-            await vm.AccessDelayAsync(50);
+            await Task.Delay(50);
 
             vm.Show_Bear_Window("K WL 完成 (" + Math.Round((decimal)elapsedMs / 1000, 1).ToString() + " s)", false, "String", false);
             //vm.Collection_bear_say.Add(_save_all_WL_and_IL);   //Save data in history record
@@ -4513,7 +4531,7 @@ namespace PD
                     //vm.switch_selected_index = ch + 1;
                     //vm.switch_index = ch;
                     vm.ch = ch + 1;   //Save Switch channel
-                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                    await Task.Delay(vm.Int_Read_Delay);
                 }
                 #endregion
 
@@ -4549,7 +4567,7 @@ namespace PD
                             DataPoint dp = new DataPoint(wl, power);
                             vm.Save_All_PD_Value[ch].Add(dp);
 
-                            await vm.AccessDelayAsync(40);
+                            await Task.Delay(40);
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
@@ -4658,7 +4676,7 @@ namespace PD
                             DataPoint dp = new DataPoint(wl, power);
                             vm.Save_All_PD_Value[ch].Add(dp);
 
-                            await vm.AccessDelayAsync(40);
+                            await Task.Delay(40);
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
@@ -4741,7 +4759,7 @@ namespace PD
                             DataPoint dp = new DataPoint(wl, power);
                             vm.Save_All_PD_Value[ch].Add(dp);
 
-                            await vm.AccessDelayAsync(40);
+                            await Task.Delay(40);
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
@@ -4818,7 +4836,7 @@ namespace PD
                             DataPoint dp = new DataPoint(wl, power);
                             vm.Save_All_PD_Value[ch].Add(dp);
 
-                            await vm.AccessDelayAsync(40);
+                            await Task.Delay(40);
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries   
@@ -4882,7 +4900,7 @@ namespace PD
             }
 
             vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
-            await vm.AccessDelayAsync(150);
+            await Task.Delay(150);
 
             await cmd.Save_Chart();
 
@@ -4938,7 +4956,7 @@ namespace PD
                     try { vm.port_Switch.Write(vm.Str_Command + "\r"); }
                     catch { vm.Str_cmd_read = "Set Switch Error"; return; }
 
-                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                    await Task.Delay(vm.Int_Read_Delay);
                     #endregion
 
                     vm.Str_cmd_read = "Ch " + (ch + 1).ToString() + ":" + wl.ToString();
@@ -4990,7 +5008,7 @@ namespace PD
                 {
                     vm.Str_Command = "SW0 " + (ch + 1).ToString();
                     vm.port_Switch.Write(vm.Str_Command + "\r");
-                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                    await Task.Delay(vm.Int_Read_Delay);
                 }
                 catch { vm.Str_cmd_read = "Set Switch Error"; return; }
                 #endregion
@@ -5002,7 +5020,7 @@ namespace PD
 
                     setting.Set_Laser_WL(Math.Round(wl, 2));  //逐步切換TLS WL
                     vm.Str_cmd_read = "Ch " + (ch + 1).ToString() + ":" + wl.ToString();
-                    await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
+                    await Task.Delay(vm.Int_Set_WL_Delay);
 
                     vm.Double_Powers = Analysis.ListDefault<double>(vm.ch_count);
 
@@ -5048,7 +5066,7 @@ namespace PD
                     {
                         vm.Str_Command = "SW0 " + (ch + 1).ToString();
                         vm.port_Switch.Write(vm.Str_Command + "\r");
-                        await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                        await Task.Delay(vm.Int_Read_Delay);
                     }
                     catch { vm.Str_cmd_read = "Set Switch Error"; return; }
                 }
@@ -5089,9 +5107,9 @@ namespace PD
 
                 //Final Check Best IL
                 //cmd.Set_WL(best_wl);
-                //await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);                
+                //await Task.Delay(vm.Int_Set_WL_Delay);                
                 //best_power = vm.pm.ReadPower();
-                //await vm.AccessDelayAsync(vm.Int_Set_WL_Delay);
+                //await Task.Delay(vm.Int_Set_WL_Delay);
 
                 _save_all_WL_and_IL.Add(new List<string>() { best_wl.ToString(), Math.Round(best_power, 3).ToString() });
                 #endregion
@@ -5100,7 +5118,7 @@ namespace PD
             var elapsedMs = watch.ElapsedMilliseconds;
 
             vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);
-            await vm.AccessDelayAsync(50);
+            await Task.Delay(50);
 
             vm.Show_Bear_Window("K WL 完成" + "  (" + elapsedMs.ToString() + " ms)", false, "String", false);
             vm.bear_say_all++;
@@ -6520,7 +6538,7 @@ namespace PD
                     {
                         vm.port_Switch.Write(vm.Str_Command + "\r");
 
-                        await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                        await Task.Delay(vm.Int_Read_Delay);
 
                         int size = vm.port_Switch.BytesToRead;
                         byte[] dataBuffer = new byte[size];
@@ -6562,7 +6580,7 @@ namespace PD
                     {
                         vm.port_PD.Write(vm.Str_Command + "\r");
 
-                        await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                        await Task.Delay(vm.Int_Read_Delay);
 
                         int size = vm.port_PD.BytesToRead;
                         byte[] dataBuffer = new byte[size];

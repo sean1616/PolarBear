@@ -125,7 +125,7 @@ namespace PD.NavigationPages
                 {
                     vm.Str_Command = "SW0 " + ch.ToString();
                     vm.port_Switch.Write(vm.Str_Command + "\r");
-                    await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                    await Task.Delay(vm.Int_Write_Delay);
                 }
                 catch { }
             }
@@ -133,7 +133,7 @@ namespace PD.NavigationPages
             {
                 vm.Str_Command = "I1?";
                 vm.port_Switch.Write(vm.Str_Command + "\r");
-                await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                await Task.Delay(vm.Int_Read_Delay);
             }
             else  //Switch > 12 , Gauge顯示項控制
             {

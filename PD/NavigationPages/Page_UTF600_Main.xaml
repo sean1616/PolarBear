@@ -10,6 +10,7 @@
              xmlns:sector_btn="clr-namespace:PD.UI"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="clr-namespace:PD.UI"
+             xmlns:ut="clr-namespace:PD.Utility"
              xmlns:ug="clr-namespace:Circle_Gauge;assembly=Circle_Gauge"
              xmlns:uc="clr-namespace:Wpf_Control_Library;assembly=Wpf_Control_Library"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
@@ -19,6 +20,7 @@
              FontWeight="ExtraBold"
              Style="{StaticResource UCAll}"
              Background="Transparent"     
+             Loaded="UserControl_Loaded"
              mc:Ignorable="d">
     <UserControl.Resources>
 
@@ -94,8 +96,28 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Storyboard x:Key="Storyboard_Bear_Shake" RepeatBehavior="Forever">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="image">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="15"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="-15"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="15"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.1" Value="-15"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="15"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:3.3" Value="-15"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="Storyboard_Bear_Reset">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="image">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
 
     </UserControl.Resources>
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource Storyboard_Bear_Reset}"/>
+        </EventTrigger>
+    </UserControl.Triggers>
 
     <UserControl.DataContext>
         <vm:ComViewModel />
@@ -188,67 +210,6 @@
             <Border x:Name="border_Standard" Grid.Column="0" />
 
             <!--Chart for Testing Mode-->
-            <oxy:Plot x:Name="Plot_Chart"
-                      Title="Power"
-                      Grid.Column="1"
-                      Grid.ColumnSpan="3"      
-                      Margin="15,5,25,5"
-                      Visibility="Collapsed"
-                      FontFamily="Segoe Print" Grid.RowSpan="2" Background="White">
-                <oxy:Plot.Axes>
-                    <oxy:LinearAxis Title="{Binding Chart_x_title, FallbackValue=1}"
-                                    Position="Bottom" />
-                    <oxy:LinearAxis Title="{Binding Chart_y_title, FallbackValue=2}"
-                                    Position="Left" />
-                </oxy:Plot.Axes>
-                <oxy:Plot.Series>
-                    <oxy:LineSeries Name="No1"                                    
-                                    Title="{Binding list_ch_title[0], FallbackValue=ch1}"
-                                    ItemsSource="{Binding Chart_DataPoints, Mode=OneWay}"
-                                    Visibility="{Binding LineSeries_Visible[0]}"
-                                    Color="Green" />
-                    <oxy:LineSeries Name="No2"
-                                    Title="{Binding list_ch_title[1], FallbackValue=ch2}"
-                                    ItemsSource="{Binding Chart_All_DataPoints[1], Mode=OneWay}"
-                                    Visibility="{Binding LineSeries_Visible[1]}"
-                                    Color="Red" />
-                    <oxy:LineSeries Name="No3"
-                                    Title="{Binding list_ch_title[2], FallbackValue=ch3}"
-                                    ItemsSource="{Binding Chart_All_DataPoints[2], Mode=OneWay}"
-                                    Visibility="{Binding LineSeries_Visible[2]}"
-                                    Color="Blue" />
-                    <oxy:LineSeries Name="No4"
-                                    Title="{Binding list_ch_title[3], FallbackValue=ch4}"
-                                    ItemsSource="{Binding Chart_All_DataPoints[3], Mode=OneWay}"
-                                    Visibility="{Binding LineSeries_Visible[3]}"
-                                    Color="Orange" />
-                    <oxy:LineSeries Name="No5"
-                                    Title="{Binding list_ch_title[4], FallbackValue=ch5}"
-                                    ItemsSource="{Binding Chart_All_DataPoints[4], Mode=OneWay}"
-                                    Visibility="{Binding LineSeries_Visible[4]}"
-                                    Color="GreenYellow" />
-                    <oxy:LineSeries Name="No6"
-                                    Title="{Binding list_ch_title[5], FallbackValue=ch6}"
-                                    ItemsSource="{Binding Chart_All_DataPoints[5], Mode=OneWay}"
-                                    Visibility="{Binding LineSeries_Visible[5]}"
-                                    Color="Purple" />
-                    <oxy:LineSeries Name="No7"
-                                    Title="{Binding list_ch_title[6], FallbackValue=ch7}"
-                                    ItemsSource="{Binding Chart_All_DataPoints[6], Mode=OneWay}"
-                                    Visibility="{Binding LineSeries_Visible[6]}"
-                                    Color="Gray" />
-                    <oxy:LineSeries Name="No8"
-                                    Title="{Binding list_ch_title[7], FallbackValue=ch8}"
-                                    ItemsSource="{Binding Chart_All_DataPoints[7], Mode=OneWay}"
-                                    Visibility="{Binding LineSeries_Visible[7]}"
-                                    Color="Chocolate" />
-                    <oxy:LineSeries Name="Line30dB"
-                                    ItemsSource="{Binding SpecLine30dB, Mode=OneWay}"
-                                    Visibility="Visible"
-                                    BrokenLineStyle="Dot"
-                                    Color="DimGray" LineStyle="Dash" />
-                </oxy:Plot.Series>
-            </oxy:Plot>
 
             <oxy:PlotView x:Name="mainPlotView"
                                           Model="{Binding PlotViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -459,7 +420,16 @@
                                Grid.RowSpan="3"
                                MouseEnter="image_MouseEnter"
                                Visibility="Visible"
-                               Source="../Resources/polar-bear.png" />
+                               Source="../Resources/polar-bear.png" RenderTransformOrigin="0.5,0.5" >
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
                         <Viewbox Grid.Row="1"
                                  Margin="0,261,0,261">
                             <TextBlock Visibility="{Binding Visibility, ElementName=grid_sector_btns}">        
@@ -495,7 +465,7 @@
                                         <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                             <i:InvokeCommandAction Command="{Binding Next_Chart}" />
                                         </i:EventTrigger>
-                                    </i:Interaction.Triggers>   
+                                    </i:Interaction.Triggers>
                                 </sector_btn:Sector_BTN>
                             </Viewbox>
                             <!--Down-->
@@ -1183,7 +1153,7 @@
                 </Grid>
             </Border>
 
-         
+
             <Border Grid.Column="6"
                     Grid.RowSpan="3"
                     Margin="5,5,5,5"
@@ -1259,9 +1229,14 @@
                                      HorizontalContentAlignment="Center"
                                      FontFamily="Segoe Print"
                                      BorderBrush="Transparent"
-                                     Keyboard.PreviewKeyDown="txt_WL_KeyDown"
-                                     Text="{Binding Value, ElementName=slider_WL, Mode=TwoWay}"
-                                     MinWidth="50" />
+                                     Text="{Binding Laser_Wavelength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                     MinWidth="50" >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewKeyDown">
+                                        <ut:EventCommandAction Command="{Binding Cmd_TXT_TLS_WL_KeyDown}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
                         </Viewbox>
                         <Viewbox Grid.Row="1" HorizontalAlignment="Right" >
                             <TextBlock Text=" nm" />
@@ -1269,7 +1244,7 @@
                     </Grid>
                     <Grid Grid.Row="2"
                           Grid.Column="6">
-                        
+
                         <!--WL slider-->
                         <Slider Name="slider_WL"
                                 VerticalAlignment="Center"
@@ -1419,13 +1394,38 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[0]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="1"/>
-                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[1]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="2" Grid.Column="1"/>
-                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[2]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="3" Grid.Column="2"/>
-                        <Button PreviewMouseLeftButtonDown="Button_SendFixWL_Click" MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[3]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="4" Grid.Column="3"/>
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[0]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="1">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[0]}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[1]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="2" Grid.Column="1">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[1]}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[2]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="3" Grid.Column="2">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[2]}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[3]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="4" Grid.Column="3">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[3]}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
 
                     </Grid>
-                    </Grid>
+                </Grid>
             </Border>
 
 

@@ -25,4 +25,27 @@ namespace PD.Functions
             throw new NotImplementedException();
         }
     }
+
+    public class Double_To_Txt_ValueConverter : IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double d = (double)value;
+            return d.ToString();
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            string s = value.ToString();
+
+            double result = 0;
+
+            if (double.TryParse(s, out result))
+            {
+                return result;
+            }
+
+            return result;
+        }
+    }
 }

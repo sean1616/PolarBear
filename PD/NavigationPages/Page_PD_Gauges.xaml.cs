@@ -323,55 +323,55 @@ namespace PD.NavigationPages
         }
 
         bool _is_txtWL_already_click = false;
-        private void txt_WL_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (_is_txtWL_already_click) return;
+        //private void txt_WL_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        //{
+        //    if (_is_txtWL_already_click) return;
 
-            _is_txtWL_already_click = true;
+        //    _is_txtWL_already_click = true;
 
-            if (e.Key == Key.Enter)
-            {
-                double wl = Convert.ToDouble(txt_WL.Text);
+        //    if (e.Key == Key.Enter)
+        //    {
+        //        double wl = Convert.ToDouble(txt_WL.Text);
 
-                if (!vm.IsGoOn) cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true, true);
-                else
-                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = txt_WL.Text });
-            }
-            if (e.Key == Key.Up)
-            {
-                double wl = Convert.ToDouble(txt_WL.Text) + 0.01;
+        //        if (!vm.IsGoOn) cmd.Set_WL(Convert.ToDouble(txt_WL.Text), true, true);
+        //        else
+        //            vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = txt_WL.Text });
+        //    }
+        //    if (e.Key == Key.Up)
+        //    {
+        //        double wl = Convert.ToDouble(txt_WL.Text) + 0.01;
              
-                if (!vm.IsGoOn)
-                    try
-                    {
-                        txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(wl, true, true);
-                    }
-                    catch { }
-                else
-                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
+        //        if (!vm.IsGoOn)
+        //            try
+        //            {
+        //                txt_WL.Text = (wl).ToString();
+        //                cmd.Set_WL(wl, true, true);
+        //            }
+        //            catch { }
+        //        else
+        //            vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
 
-                vm.Double_Laser_Wavelength = wl;
-            }
-            if (e.Key == Key.Down)
-            {
-                double wl = Convert.ToDouble(txt_WL.Text) - 0.01;
+        //        vm.Double_Laser_Wavelength = wl;
+        //    }
+        //    if (e.Key == Key.Down)
+        //    {
+        //        double wl = Convert.ToDouble(txt_WL.Text) - 0.01;
 
-                if (!vm.IsGoOn)
-                    try
-                    {
-                        txt_WL.Text = (wl).ToString();
-                        cmd.Set_WL(wl, true, true);
-                    }
-                    catch { }
-                else
-                    vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
+        //        if (!vm.IsGoOn)
+        //            try
+        //            {
+        //                txt_WL.Text = (wl).ToString();
+        //                cmd.Set_WL(wl, true, true);
+        //            }
+        //            catch { }
+        //        else
+        //            vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
 
-                vm.Double_Laser_Wavelength = wl;
-            }
+        //        vm.Double_Laser_Wavelength = wl;
+        //    }
 
-            _is_txtWL_already_click = false;
-        }
+        //    _is_txtWL_already_click = false;
+        //}
 
         private async void txt_Dac_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -410,7 +410,7 @@ namespace PD.NavigationPages
                                 string cmd = "D1?";
                                 vm.port_PD.Write(cmd + "\r");
 
-                                await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                                await Task.Delay(vm.Int_Read_Delay);
 
                                 int size = vm.port_PD.BytesToRead;
                                 byte[] dataBuffer = new byte[size];
@@ -1127,7 +1127,7 @@ namespace PD.NavigationPages
                         {
                             vm.Str_Command = "SW0 " + gm.GaugeChannel;
                             vm.port_Switch.Write(vm.Str_Command + "\r");
-                            //await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                            //await Task.Delay(vm.Int_Write_Delay);
 
                         }
                         catch { vm.Str_cmd_read = "Set Switch Error"; vm.Save_Log(vm.Str_Status, gm.GaugeChannel, vm.Str_cmd_read); }
@@ -1270,7 +1270,7 @@ namespace PD.NavigationPages
                                     string cmd = "D1?";
                                     vm.port_PD.Write(cmd + "\r");
 
-                                    await vm.AccessDelayAsync(vm.Int_Read_Delay);
+                                    await Task.Delay(vm.Int_Read_Delay);
 
                                     int size = vm.port_PD.BytesToRead;
                                     byte[] dataBuffer = new byte[size];
@@ -1677,9 +1677,10 @@ namespace PD.NavigationPages
 
             if (float.TryParse(txt_WL.Text, out float value))
             {
-                vm.List_Fix_WL[index - 1] = value;
-                //vm.List_Fix_WL = new ObservableCollection<float>(vm.List_Fix_WL);
+                vm.List_Fix_WL[index - 1] = value.ToString();
             }
         }
+
+       
     }
 }

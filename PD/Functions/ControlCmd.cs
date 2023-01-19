@@ -560,7 +560,7 @@ namespace PD.Functions
                 case "PAUSE":
                     while (vm.lastCMD.YN)
                     {
-                        await vm.AccessDelayAsync(300);
+                        await Task.Delay(300);
                     }
                     vm.lastCMD.YN = true;
                     break;
@@ -587,7 +587,7 @@ namespace PD.Functions
                             {
                                 while (vm.lastCMD.YN)
                                 {
-                                    await vm.AccessDelayAsync(300);
+                                    await Task.Delay(300);
                                 }
                                 vm.lastCMD.YN = true;
                             }
@@ -1128,7 +1128,7 @@ namespace PD.Functions
                     break;
 
                 case "DELAY":
-                    await vm.AccessDelayAsync(int.Parse(cm.Value_1));
+                    await Task.Delay(int.Parse(cm.Value_1));
                     cmdMsg.isJump = true;
                     cmdMsg.JumpIndex = int.Parse(cm.No);
                     break;
@@ -1750,7 +1750,7 @@ namespace PD.Functions
                         if (msg.Equals("DiCon Fiberoptics Inc, MEMS UFA"))
                         {
                             vm.port_PD.Write("SN?" + "\r");
-                            await vm.AccessDelayAsync(125);
+                            await Task.Delay(125);
                             size = vm.port_PD.BytesToRead;
                             dataBuffer = new byte[size];
                             length = vm.port_PD.Read(dataBuffer, 0, size);
@@ -2320,25 +2320,25 @@ namespace PD.Functions
             return Delta_IL;
         }
 
-        private string WL_Range_Analyze(double wl)
-        {
-            //if (wl >= 1523 && wl <= 1620)
-            //    return "C+L Band";
-            if (wl >= 1625 && wl <= 1675)
-                return "U Band";
-            else if (wl >= 1560 && wl <= 1625)
-                return "L Band";
-            else if (wl >= 1520 && wl <= 1573)
-                return "C Band";
-            else if (wl >= 1460 && wl <= 1520)
-                return "S Band";
-            else if (wl >= 1360 && wl <= 1460)
-                return "E Band";
-            else if (wl >= 1260 && wl <= 1360)
-                return "O Band";
+        //private string WL_Range_Analyze(double wl)
+        //{
+        //    //if (wl >= 1523 && wl <= 1620)
+        //    //    return "C+L Band";
+        //    if (wl >= 1625 && wl <= 1675)
+        //        return "U Band";
+        //    else if (wl >= 1560 && wl <= 1625)
+        //        return "L Band";
+        //    else if (wl >= 1520 && wl <= 1573)
+        //        return "C Band";
+        //    else if (wl >= 1460 && wl <= 1520)
+        //        return "S Band";
+        //    else if (wl >= 1360 && wl <= 1460)
+        //        return "E Band";
+        //    else if (wl >= 1260 && wl <= 1360)
+        //        return "O Band";
 
-            else return "";  //Out of range
-        }
+        //    else return "";  //Out of range
+        //}
 
         DiCon.Instrument.HP816x hp816x = new DiCon.Instrument.HP816x();
         DiCon.Instrument.LambdaScan lambda_scan = new DiCon.Instrument.LambdaScan();
@@ -2475,7 +2475,7 @@ namespace PD.Functions
             try
             {
                 wl = Math.Round(wl, 2);
-                string band = WL_Range_Analyze(wl);
+                string band = Analysis.WL_Range_Analyze(wl);
                 if (string.IsNullOrEmpty(band))
                 {
                     vm.Str_cmd_read = "WL out of range";
@@ -2556,7 +2556,7 @@ namespace PD.Functions
             try
             {
                 wl = Math.Round(wl, 2);
-                string band = WL_Range_Analyze(wl);
+                string band = Analysis.WL_Range_Analyze(wl);
                 if (string.IsNullOrEmpty(band))
                 {
                     vm.Str_cmd_read = "WL out of range";
@@ -2965,7 +2965,7 @@ namespace PD.Functions
             {
                 vm.Str_Command = "D1 0,0," + (final_dac).ToString();  //cmd = D1 0,0,1000
                 vm.port_PD.Write(vm.Str_Command + "\r");
-                await vm.AccessDelayAsync(vm.Int_Write_Delay);
+                await Task.Delay(vm.Int_Write_Delay);
                 vm.port_PD.Close();
             }
             catch { vm.Str_cmd_read = "Write Dac Error"; }
@@ -3872,7 +3872,8 @@ namespace PD.Functions
                 vm.list_ch_title.Clear();
                 for (int i = 0; i < vm.ch_count; i++)
                 {
-                    if (vm.list_GaugeModels[i].boolGauge)
+                    vm.list_ch_title.Add($"Ch{i+1}");
+                    if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
                     {
                         vm.maxIL[i] = 0;
                         vm.minIL[i] = 0;
@@ -3883,7 +3884,7 @@ namespace PD.Functions
             {
                 for (int i = 0; i < vm.ch_count; i++)
                 {
-                    if (vm.list_GaugeModels[i].boolGauge)
+                    if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
                     {
                         power = vm.ChartNowModel.list_dataPoints[i].Last().Y;
                         //power = vm.Chart_All_DataPoints[i].Last().Y;
@@ -3896,7 +3897,7 @@ namespace PD.Functions
             {
                 for (int i = 0; i < vm.ch_count; i++)
                 {
-                    if (vm.list_GaugeModels[i].boolGauge)
+                    if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
                     {
                         power = vm.ChartNowModel.list_dataPoints[i].Last().Y;
                         //power = vm.Chart_All_DataPoints[i].Last().Y;
@@ -3905,14 +3906,18 @@ namespace PD.Functions
 
                         double deltaIL = Math.Round(Math.Abs(vm.maxIL[i] - vm.minIL[i]), 4);
 
-                        if (vm.list_ch_title.Count <= i) break;
+                        if (vm.list_ch_title.Count > i)
+                        {
+                            vm.list_ch_title[i] = string.Concat("ch1", " ,Delta IL : ", deltaIL.ToString());
 
-                        vm.list_ch_title[i] = string.Concat("ch1", " ,Delta IL : ", deltaIL.ToString());
+                            if (vm.ChartNowModel.list_delta_IL.Count == 0)
+                                vm.ChartNowModel.list_delta_IL.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
 
-                        if (vm.ChartNowModel.list_delta_IL.Count == 0)
-                            vm.ChartNowModel.list_delta_IL.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
+                            vm.ChartNowModel.list_delta_IL[i] = deltaIL;
+                        }
 
-                        vm.ChartNowModel.list_delta_IL[i] = deltaIL;
+                        if (vm.Plot_Series.Count > i)
+                            vm.Plot_Series[i].Title = $"Ch{i + 1}, Delta IL : {deltaIL}";
                     }
                 }
             }
@@ -3945,6 +3950,9 @@ namespace PD.Functions
                         vm.ChartNowModel.list_delta_IL.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
 
                     vm.ChartNowModel.list_delta_IL[i] = deltaIL;
+
+                    if (vm.Plot_Series.Count > i)
+                        vm.Plot_Series[i].Title = $"ch{i + 1}, Delta IL : {deltaIL}";
                 }
             }
             #endregion

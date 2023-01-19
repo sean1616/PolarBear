@@ -26,11 +26,11 @@ namespace PD.Functions
             try
             {
                 vm.tls.SetWL(WL);
-                await vm.AccessDelayAsync(75);
+                await System.Threading.Tasks.Task.Delay(75);
                 vm.pm.SetWL(WL);
-                await vm.AccessDelayAsync(75);
+                await System.Threading.Tasks.Task.Delay(75);
                 vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-                await vm.AccessDelayAsync(120);
+                await System.Threading.Tasks.Task.Delay(120);
             }
             catch
             {

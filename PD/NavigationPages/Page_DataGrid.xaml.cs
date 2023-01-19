@@ -65,12 +65,18 @@ namespace PD.NavigationPages
             pageTransitionControl.ShowPage(_Page_Ref_Grid);
             pageTransitionControl.CurrentPage = _Page_Ref_Grid;
 
-            if (vm.isConnected == false)
+            if (!vm.isConnected)
             {
                 if (vm.Ini_Read("Connection", "Band") == "C Band")
+                {
                     vm.Double_Laser_Wavelength = 1523;  //Set wavelength to setup ref value
+                    vm.Double_PM_Wavelength = 1523;
+                }
                 else
+                {
                     vm.Double_Laser_Wavelength = 1571;
+                    vm.Double_PM_Wavelength = 1571;
+                }
             }
 
             try
