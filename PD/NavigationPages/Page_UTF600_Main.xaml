@@ -1229,11 +1229,22 @@
                                      HorizontalContentAlignment="Center"
                                      FontFamily="Segoe Print"
                                      BorderBrush="Transparent"
-                                     Text="{Binding Laser_Wavelength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                     Text="1548"
                                      MinWidth="50" >
+                                <!--Text="{Binding Laser_Wavelength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+                                
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding Text, ElementName=txt_WL}" />
+                                </TextBox.InputBindings>
+                                <!--<i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewKeyDown">
+                                        <i:InvokeCommandAction Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding Text, ElementName=txt_WL}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>-->
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewKeyDown">
-                                        <ut:EventCommandAction Command="{Binding Cmd_TXT_TLS_WL_KeyDown}"/>
+                                        <ut:EventCommand Command="{Binding Cmd_TXT_TLS_WL_KeyDown}" 
+                                                         CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=InvokeParameter}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </TextBox>

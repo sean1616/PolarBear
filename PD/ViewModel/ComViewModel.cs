@@ -36,6 +36,8 @@ namespace PD.ViewModel
         {
             #region ICommand Setting
             //Cmd_TXT_Power_KeyDown = new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown, CanExecute);
+
+            //Cmd_Set_TLS_WL2 = new DelegateCommand_Double(Set_WL2, CanExecuteMethod);
             #endregion
 
             #region PlotModel
@@ -156,8 +158,6 @@ namespace PD.ViewModel
             #endregion
 
         }
-
-
 
         //ControlCmd cmd;
 
@@ -479,6 +479,13 @@ namespace PD.ViewModel
 
         public ICommand Cmd_Set_TLS_WL { get { return new DelegateCommand_T<string>(para => Set_WL(para)); } }
 
+        //public ICommand Cmd_Set_TLS_WL2;
+
+        private bool CanExecuteMethod(double parameter)
+        {
+            // Your logic here
+            return true;
+        }
 
         #endregion
 
@@ -1025,8 +1032,11 @@ namespace PD.ViewModel
                 {
                     Double_Laser_Wavelength = Convert.ToDouble(wl);
                 }
+                else if (typeof(T) == typeof(double))
+                {
+                    Double_Laser_Wavelength = Convert.ToDouble(wl);
+                }
                 else return;
-
 
                 if (!isConnected)
                     await Connect_TLS();
@@ -1063,7 +1073,6 @@ namespace PD.ViewModel
             }
             catch { Save_Log("Set WL", "Set WL Error", false); }
         }
-
 
         public async void Set_WL(double wl, bool readback, bool isCloseTLS_Filter)
         {
@@ -3060,6 +3069,9 @@ namespace PD.ViewModel
             {
                 _station_type = value;
 
+                if (value == null)
+                    return;
+
                 Set_StationType(value);
 
                 OnPropertyChanged("station_type");
@@ -4886,7 +4898,6 @@ namespace PD.ViewModel
                 _isGoOn = value;
                 isStop = value ? false : true;
                 Str_Go_Content = value == false ? "Go" : "Stop";
-                OnPropertyChanged("IsGoOn");
             }
         }
 

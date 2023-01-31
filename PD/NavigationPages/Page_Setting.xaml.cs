@@ -293,6 +293,11 @@ namespace PD.NavigationPages
             ComboBox cbb = (ComboBox)sender;
             if (cbb.SelectedIndex < 0)
                 cbb.SelectedIndex = pre_combobox_index;
+
+            //if(cbb.SelectedIndex == pre_combobox_index)
+            //{
+            //    vm.Set_StationType(vm.station_type);
+            //}
         }
 
         //private void cxmItemPaste_Click(object sender, RoutedEventArgs e)

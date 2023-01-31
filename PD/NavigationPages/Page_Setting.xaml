@@ -129,7 +129,7 @@
                         <ComboBox Name="ComBox_Station_Type"
                                   Grid.Row="2"
                                   Grid.Column="1"
-                                  SelectedItem="{Binding station_type}"
+                                  SelectedItem="{Binding station_type, NotifyOnTargetUpdated=True, UpdateSourceTrigger=PropertyChanged}"
                                   DropDownOpened="ComBox_DropDownOpened"
                                   DropDownClosed="ComBox_DropDownClosed"
                                   ItemsSource="{Binding list_combox_Working_Table_Type_items}"

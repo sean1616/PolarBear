@@ -119,6 +119,28 @@ namespace PD.ViewModel
         #endregion
     }
 
+    public class DelegateCommand_Double : ICommand
+    {
+        private readonly Action<double> _execute;
+        private readonly Func<double, bool> _canExecute;
+
+        public DelegateCommand_Double(Action<double> execute, Func<double, bool> canExecute = null)
+        {
+            _execute = execute;
+            _canExecute = canExecute;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
+
+        public bool CanExecute(object parameter) => _canExecute?.Invoke((double)parameter) ?? true;
+
+        public void Execute(object parameter) => _execute((double)parameter);
+    }
+
     public class DelegateCommand_T<TParam> : ICommand where TParam : class
     {
         private readonly Func<TParam, bool> _canExecute;

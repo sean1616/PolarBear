@@ -319,7 +319,7 @@
                               Click="btn_GO_Click"
                               Content="{Binding Str_Go_Content, FallbackValue=Go}"
                               FontSize="{Binding Int_Fontsize}"
-                              IsChecked="{Binding IsGoOn}"
+                              IsChecked="{Binding IsGoOn, NotifyOnTargetUpdated=True}"
                               Style="{DynamicResource style_FuncToggleBtn}"
                               Tag="../Resources/Stopwatch.png" >
                     <ToggleButton.ContextMenu>

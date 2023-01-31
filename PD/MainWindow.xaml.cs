@@ -3819,6 +3819,7 @@ namespace PD
         private void btn_Stop_Click(object sender, RoutedEventArgs e)
         {
             vm.IsGoOn = false;
+            //vm.isStop = true;
         }
 
         private void combox_product_DropDownClosed(object sender, EventArgs e)
