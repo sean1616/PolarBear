@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using Excel = Microsoft.Office.Interop.Excel;
 using PD.Models;
 using OxyPlot.Wpf;
+using OxyPlot;
 
 namespace PD.NavigationPages
 {
@@ -40,14 +41,56 @@ namespace PD.NavigationPages
 
             cmd = new ControlCmd(vm);
 
-            window_Bear_Grid = new Window_Bear_Grid(vm, "Delta IL");
+            //window_Bear_Grid = new Window_Bear_Grid(vm, "Delta IL");
         }
-              
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //一個plotModel同一時間只能供給一個plotview使用，頁面切換時需重新指派
+            vm.PlotViewModel_TF2 = new PlotModel();
+            vm.PlotViewModel_UTF600 = new PlotModel();
+            vm.PlotViewModel_BR = new PlotModel();
+            vm.PlotViewModel_Testing = new PlotModel();
+            vm.PlotViewModel_Chart = vm.PlotViewModel;
+
+            vm.Update_ALL_PlotView();
+        }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.CheckBox chbox = (System.Windows.Controls.CheckBox)sender;
             Chart_UI_Model uiModel = (Chart_UI_Model)chbox.DataContext;
+
+            vm.list_OxyColor = new List<OxyColor>()
+            {
+                OxyColors.Green, 
+                OxyColors.Red, 
+                OxyColors.Blue, 
+                OxyColors.Orange,                        
+                OxyColors.DarkGreen, 
+                OxyColors.Purple, 
+                OxyColors.Gray,
+                OxyColors.Chocolate,                        
+                OxyColors.LightSeaGreen, 
+                OxyColors.MediumVioletRed,
+                OxyColors.Coral, 
+                OxyColors.DarkTurquoise,                        
+                OxyColors.DarkKhaki, 
+                OxyColors.DarkCyan,
+                OxyColors.MediumPurple, 
+                OxyColors.OrangeRed,
+            };
+
+            for (int i = 0; i < vm.list_Chart_UI_Models.Count; i++)
+            {
+                if(vm.Plot_Series.Count > i)
+                {
+                    vm.Plot_Series[i].IsVisible = vm.list_Chart_UI_Models[i].Button_IsChecked;
+                    vm.Plot_Series[i].Color = vm.list_OxyColor[i];
+                }
+            }
+
+            vm.Update_ALL_PlotView();
         }
 
         private void ALL_CheckBox_Click(object sender, RoutedEventArgs e)
@@ -75,85 +118,6 @@ namespace PD.NavigationPages
                 vm.list_Chart_UI_Models[i].Button_IsChecked = !judge;
             }
         }
-
-
-
-        //private void btn_previous_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        if (vm.int_chart_now > 1)
-        //        {
-        //            vm.int_chart_now--;
-        //            vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now - 1]);
-        //            if (vm.Chart_All_DataPoints.Count == 0) return;
-        //            vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);
-
-        //            vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
-
-        //            vm.Chart_x_title = vm.ChartNowModel.title_x;
-        //            vm.Chart_y_title = vm.ChartNowModel.title_y;
-
-        //            vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
-
-        //            for (int i = 0; i < vm.ch_count; i++)
-        //            {
-        //                if (i < vm.list_ch_title.Count)
-        //                    if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
-        //                    {
-        //                        if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
-        //                            vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
-        //                    }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        System.Windows.MessageBox.Show(ex.StackTrace.ToString());
-        //    }
-        //}
-
-        //private void btn_next_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        if (vm.int_chart_now >= vm.int_chart_count)
-        //            return;
-
-        //        if (vm.Chart_All_Datapoints_History.Count <= vm.int_chart_now)
-        //        {
-        //            vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History.Last());
-        //        }
-        //        else
-        //            vm.Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(vm.Chart_All_Datapoints_History[vm.int_chart_now]);
-
-        //        if (vm.Chart_All_DataPoints.Count != 0)
-        //            vm.Chart_DataPoints = new List<OxyPlot.DataPoint>(vm.Chart_All_DataPoints[0]);  //Update Chart UI
-
-        //        vm.int_chart_now++;
-
-        //        vm.ChartNowModel = vm.list_ChartModels[vm.int_chart_now - 1];
-
-        //        vm.Chart_x_title = vm.ChartNowModel.title_x;
-        //        vm.Chart_y_title = vm.ChartNowModel.title_y;
-
-        //        vm.msgModel.msg_3 = Math.Round(vm.ChartNowModel.TimeSpan, 1).ToString();
-
-        //        for (int i = 0; i < vm.ch_count; i++)
-        //        {
-        //            if (i < vm.list_ch_title.Count)
-        //                if (vm.list_ChartModels.Count > (vm.int_chart_now - 1))
-        //                {
-        //                    if (i <= vm.list_ch_title.Count - 1 && i <= vm.ChartNowModel.list_delta_IL.Count)
-        //                        vm.list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, vm.ChartNowModel.list_delta_IL[i]);
-        //                }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        System.Windows.MessageBox.Show(ex.StackTrace.ToString());
-        //    }
-        //}
 
         private void btn_Save_Chart_Click(object sender, RoutedEventArgs e)
         {
@@ -315,39 +279,8 @@ namespace PD.NavigationPages
             window.Show();
         }
 
-        public Window_Bear_Grid window_Bear_Grid;
-        private void btn_Calculation_Click(object sender, RoutedEventArgs e)
-        {
+        
 
-
-            //vm.List_bear_grid_data = new System.Collections.ObjectModel.ObservableCollection<string>();
-
-            //try
-            //{
-            //    for (int i = 0; i < vm.ch_count; i++)
-            //    {
-            //        List<double> list_all_PD_Value = new List<double>();
-            //        int c = vm.Chart_All_DataPoints[i].Count();
-
-            //        for (int j = 0; j < c; j++)
-            //        {
-            //            list_all_PD_Value.Add(vm.Chart_All_DataPoints[i][j].Y);
-            //        }
-            //        string str_maxDeltaIL = Math.Round(list_all_PD_Value.Max() - list_all_PD_Value.Min(), 6).ToString();
-
-            //        vm.List_bear_grid_data.Add(str_maxDeltaIL);
-            //    }
-
-            //    if (window_Bear_Grid.IsLoaded) window_Bear_Grid.Close();
-            //    window_Bear_Grid = new Window_Bear_Grid(vm, "Cal.");
-            //    window_Bear_Grid.Show();
-            //}
-            //catch { vm.Show_Bear_Window("No Data", false, "String", false); }
-        }
-
-        private void btn_line_x_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        //public Window_Bear_Grid window_Bear_Grid;
     }
 }

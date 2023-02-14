@@ -12,9 +12,7 @@ using System.Collections.ObjectModel;
 using WpfAnimatedGif;
 
 using PD;
-using PD.Models;
 using PD.ViewModel;
-using PD.NavigationPages;
 
 namespace PD.NavigationPages
 {
@@ -24,7 +22,7 @@ namespace PD.NavigationPages
     public partial class Page_Setting : UserControl
     {
         readonly ComViewModel vm;
-        readonly string ini_path = @"d:\PD\Instrument.ini";
+        //readonly string ini_path = @"d:\PD\Instrument.ini";
         readonly static string CurrentDirectory = Directory.GetCurrentDirectory();
 
         public Page_Setting(ComViewModel vm)
@@ -34,51 +32,56 @@ namespace PD.NavigationPages
             this.vm = vm;
             this.DataContext = this.vm;
 
-            ini_path = Path.Combine(CurrentDirectory, "Instrument.ini");
-
-            try { if (File.Exists(ini_path)) 
-                    vm.selected_band = vm.Ini_Read("Connection", "Band"); }
-            catch { }
-
-            if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Laser_type")))
-                vm.Laser_type = vm.Ini_Read("Connection", "Laser_type");
-
-            if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Switch_Comport"))) vm.Comport_Switch = vm.Ini_Read("Connection", "Switch_Comport");
-
-            if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Station")))
-                vm.station_type = vm.Ini_Read("Connection", "Station");
-
-            if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Type")))
+            if (!vm.CheckDirectoryExist(@"D:\PD"))
+                vm.ini_path = Path.Combine(CurrentDirectory, "Instrument.ini");
+            else
             {
-                //string a = vm.Ini_Read("Connection", "Control_Board_Type");
-                ComBox_Control_Board_Type.SelectedItem = vm.Ini_Read("Connection", "Control_Board_Type");
-
                 try
                 {
-                    string control_board_type = ComBox_Control_Board_Type.SelectedItem.ToString();
-                    switch (control_board_type)
+                    if (File.Exists(vm.ini_path))
                     {
-                        case "UFV":
-                            vm.Control_board_type = 0;
-                            break;
+                        vm.selected_band = vm.Ini_Read("Connection", "Band");
 
-                        case "V":
-                            vm.Control_board_type = 1;
-                            break;
+                        if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Laser_type")))
+                            vm.Laser_type = vm.Ini_Read("Connection", "Laser_type");
+
+                        if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Switch_Comport"))) vm.Comport_Switch = vm.Ini_Read("Connection", "Switch_Comport");
+
+                        if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Station")))
+                            vm.station_type = vm.Ini_Read("Connection", "Station");
+
+                        if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Type")))
+                        {
+                            ComBox_Control_Board_Type.SelectedItem = vm.Ini_Read("Connection", "Control_Board_Type");
+
+                            try
+                            {
+                                string control_board_type = ComBox_Control_Board_Type.SelectedItem.ToString();
+                                switch (control_board_type)
+                                {
+                                    case "UFV":
+                                        vm.Control_board_type = 0;
+                                        break;
+
+                                    case "V":
+                                        vm.Control_board_type = 1;
+                                        break;
+                                }
+                            }
+                            catch { }
+                        }
+
+                        vm.Golight_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_Golight");
                     }
                 }
                 catch { }
             }
-
-            vm.Golight_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_Golight");
-
-            //if (string.IsNullOrEmpty(vm.Laser_type)) 
-
+            
             if (vm.Laser_type.Equals("Golight") && vm.Auto_Connect_TLS)
             {               
                 if (!string.IsNullOrEmpty(vm.Golight_ChannelModel.Board_Port))
                 {
-                    vm.tls_GL = new DiCon.Instrument.HP.GLTLS();
+                    vm.tls_GL = new DiCon.Instrument.HP.GLTLS.GLTLS();
                     if (vm.tls_GL.Open(vm.Golight_ChannelModel.Board_Port))
                     {
                         vm.isConnected = true;
@@ -97,7 +100,6 @@ namespace PD.NavigationPages
                         Message = "Golight comport is null or empty"
                     });
             }
-
         }
 
         int i, c = 1;
@@ -173,16 +175,20 @@ namespace PD.NavigationPages
             {
                 string control_board_type = obj.SelectedItem.ToString();
 
-                switch (control_board_type)
-                {
-                    case "UFV":
-                        vm.Control_board_type = 0;
-                        break;
+                //switch (control_board_type)
+                //{
+                //    case "UFV":
+                //        vm.Control_board_type = 0;
+                //        break;
 
-                    case "V":
-                        vm.Control_board_type = 1;
-                        break;
-                }
+                //    case "V":
+                //        vm.Control_board_type = 1;
+                //        break;
+
+                //    case "MTF Board":
+                //        vm.Control_board_type = 2;
+                //        break;
+                //}
 
                 vm.Ini_Write("Connection", "Control_Board_Type", control_board_type);  //創建ini file並寫入基本設定
             }
@@ -202,9 +208,16 @@ namespace PD.NavigationPages
 
         private void BTN_INI_CLICK(object sender, RoutedEventArgs e)
         {
-            Process process = new Process();
-            process.StartInfo.FileName = ini_path;
-            process.Start();
+            try 
+            {
+                if (File.Exists(vm.ini_path))
+                {
+                    Process process = new Process();
+                    process.StartInfo.FileName = vm.ini_path;
+                    process.Start();
+                }
+            }
+            catch { }
         }
 
         private void ComBox_K_WL_Type_DropDownClosed(object sender, EventArgs e)
@@ -233,11 +246,6 @@ namespace PD.NavigationPages
             //setting.Product_Setting();
 
             vm.Ini_Write("Connection", "Band", vm.selected_band);  //創建ini file並寫入基本設定
-        }
-
-        private void ComBox_Arduino_Comport_DropDownClosed(object sender, EventArgs e)
-        {
-
         }
 
         string[] myPorts;
@@ -270,7 +278,6 @@ namespace PD.NavigationPages
                 {
                     window_PowerSupply_Setting = new Window_PowerSupply_Setting(vm);
                     window_PowerSupply_Setting.Show();
-                    //window_PowerSupply_Setting.Show();
                 }
             }
             else
@@ -293,19 +300,7 @@ namespace PD.NavigationPages
             ComboBox cbb = (ComboBox)sender;
             if (cbb.SelectedIndex < 0)
                 cbb.SelectedIndex = pre_combobox_index;
-
-            //if(cbb.SelectedIndex == pre_combobox_index)
-            //{
-            //    vm.Set_StationType(vm.station_type);
-            //}
         }
-
-        //private void cxmItemPaste_Click(object sender, RoutedEventArgs e)
-        //{
-        //    var obj = sender as TextBox;
-
-        //    Process.Start(obj.Text);
-        //}
 
         private void ComBox_Laser_Selection_DropDownClosed(object sender, EventArgs e)
         {
@@ -327,10 +322,6 @@ namespace PD.NavigationPages
                 }
             }
         }
-
-        //private void Image_Loaded(object sender, RoutedEventArgs e)
-        //{
-            
-        //}
+        
     }
 }

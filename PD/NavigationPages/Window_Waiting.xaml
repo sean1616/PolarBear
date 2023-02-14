@@ -11,6 +11,114 @@
         Topmost="True"
         mc:Ignorable="d"
         Title="Window_Waiting" Height="320" Width="320" Background="{x:Null}">
+    <Window.Resources>
+        <Storyboard x:Key="Storyboard_Opac" RepeatBehavior="Forever">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ellipse">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.88"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.77"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.66"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0.55"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.44"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0.33"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="0.22"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0.11"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ellipse1">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.77"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.66"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.55"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0.44"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.33"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0.22"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="0.11"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0.88"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ellipse2">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.66"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.55"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.44"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0.33"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.22"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0.11"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0.88"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0.77"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ellipse3">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.55"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.44"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.33"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0.22"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.11"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="0.88"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0.77"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0.66"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ellipse4">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.44"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.33"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.22"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0.11"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0.88"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="0.77"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0.66"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0.55"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ellipse5">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.33"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.22"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.11"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.88"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0.77"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="0.66"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0.55"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0.44"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ellipse6">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.22"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.11"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0.88"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.77"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0.66"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="0.55"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0.44"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0.33"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ellipse7">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.11"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.88"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0.77"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.66"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0.55"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="0.44"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0.33"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0.22"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ellipse8">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.88"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.77"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0.66"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0.55"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0.44"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="0.33"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0.22"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0.11"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource Storyboard_Opac}"/>
+        </EventTrigger>
+    </Window.Triggers>
     <!--<Window.Resources>
         <Storyboard x:Key="Storyboard_Circle_Rotation"/>
         <Storyboard x:Key="Storyboard_Circle_Opacity">
@@ -47,7 +155,7 @@
     <!--<Window.DataContext>
         <local:Window_Waiting/>
     </Window.DataContext>-->
-    
+
     <Grid x:Name="grid" RenderTransformOrigin="0.5,0.5">
         <Grid.RenderTransform>
             <TransformGroup>
@@ -62,11 +170,17 @@
                Content="{Binding Center_MSG, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window_Waiting}}}" 
                FontFamily="Segoe Print" FontSize="23" Foreground="#FF385697"/>
 
-        <Grid x:Name="grid_circle_base" RenderTransformOrigin="0.5,0.5" Margin="20">
+        <!--<Grid x:Name="grid_circle_base" RenderTransformOrigin="0.5,0.5" Margin="20">
             <Ellipse x:Name="ellipse" Fill="#FF94C3EA" 
             Height="30"
             Width="30" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top"
                      Opacity="{Binding list_opa[0], NotifyOnSourceUpdated=True,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window_Waiting}}}"
+                     />-->
+
+        <Grid x:Name="grid_circle_base" RenderTransformOrigin="0.5,0.5" Margin="20">
+            <Ellipse x:Name="ellipse" Fill="#FF94C3EA" 
+            Height="30"
+            Width="30" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0"
                      />
         </Grid>
 
@@ -81,8 +195,7 @@
             </Grid.RenderTransform>
             <Ellipse x:Name="ellipse1" Fill="{Binding Fill, ElementName=ellipse}" 
             Height="{Binding ActualHeight, ElementName=ellipse}"
-            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                     Opacity="{Binding list_opa[1], NotifyOnSourceUpdated=True,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window_Waiting}}}"
+            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.88" 
                      />
         </Grid>
 
@@ -97,8 +210,7 @@
             </Grid.RenderTransform>
             <Ellipse x:Name="ellipse2" Fill="{Binding Fill, ElementName=ellipse}" 
             Height="{Binding ActualHeight, ElementName=ellipse}"
-            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                    Opacity="{Binding list_opa[2], NotifyOnSourceUpdated=True,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window_Waiting}}}"
+            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.77" 
                      />
         </Grid>
 
@@ -113,8 +225,7 @@
             </Grid.RenderTransform>
             <Ellipse x:Name="ellipse3" Fill="{Binding Fill, ElementName=ellipse}" 
             Height="{Binding ActualHeight, ElementName=ellipse}"
-            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                     Opacity="{Binding list_opa[3], NotifyOnSourceUpdated=True,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window_Waiting}}}"
+            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.66" 
                      />
         </Grid>
 
@@ -129,8 +240,7 @@
             </Grid.RenderTransform>
             <Ellipse x:Name="ellipse4" Fill="{Binding Fill, ElementName=ellipse}" 
             Height="{Binding ActualHeight, ElementName=ellipse}"
-            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                     Opacity="{Binding list_opa[4], NotifyOnSourceUpdated=True,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window_Waiting}}}"
+            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.55" 
                      />
         </Grid>
 
@@ -145,8 +255,7 @@
             </Grid.RenderTransform>
             <Ellipse x:Name="ellipse5" Fill="{Binding Fill, ElementName=ellipse}" 
             Height="{Binding ActualHeight, ElementName=ellipse}"
-            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                     Opacity="{Binding list_opa[5], NotifyOnSourceUpdated=True,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window_Waiting}}}"
+            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.44" 
                      />
         </Grid>
 
@@ -161,8 +270,7 @@
             </Grid.RenderTransform>
             <Ellipse x:Name="ellipse6" Fill="{Binding Fill, ElementName=ellipse}" 
             Height="{Binding ActualHeight, ElementName=ellipse}"
-            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                     Opacity="{Binding list_opa[6], NotifyOnSourceUpdated=True,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window_Waiting}}}"
+            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.33" 
                      />
         </Grid>
 
@@ -177,8 +285,7 @@
             </Grid.RenderTransform>
             <Ellipse x:Name="ellipse7" Fill="{Binding Fill, ElementName=ellipse}" 
             Height="{Binding ActualHeight, ElementName=ellipse}"
-            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                     Opacity="{Binding list_opa[7], NotifyOnSourceUpdated=True,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window_Waiting}}}"
+            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.22" 
                      />
         </Grid>
 
@@ -193,8 +300,7 @@
             </Grid.RenderTransform>
             <Ellipse x:Name="ellipse8" Fill="{Binding Fill, ElementName=ellipse}" 
             Height="{Binding ActualHeight, ElementName=ellipse}"
-            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                     Opacity="{Binding list_opa[8], NotifyOnSourceUpdated=True,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window_Waiting}}}"
+            Width="{Binding ActualHeight, ElementName=ellipse}" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.11" 
                      />
         </Grid>
 

@@ -23,6 +23,7 @@ namespace PD.NavigationPages
     public partial class Window_Waiting : Window , INotifyPropertyChanged
     {
         DispatcherTimer timer_Circle_Opacity_UI;
+        public System.Timers.Timer timer_UI;
 
         private ObservableCollection<double> _list_opa = new ObservableCollection<double>() { 0.99, 0.88, 0.77, 0.66, 0.55, 0.44, 0.33, 0.22, 0.11 };
         public ObservableCollection<double> list_opa
@@ -58,10 +59,29 @@ namespace PD.NavigationPages
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            timer_Circle_Opacity_UI = new DispatcherTimer();
-            timer_Circle_Opacity_UI.Interval = TimeSpan.FromMilliseconds(100);
-            timer_Circle_Opacity_UI.Tick += _timer_Circle_Opacity_UI;
-            timer_Circle_Opacity_UI.Start();
+            //timer_Circle_Opacity_UI = new DispatcherTimer();
+            //timer_Circle_Opacity_UI.Interval = TimeSpan.FromMilliseconds(100);
+            //timer_Circle_Opacity_UI.Tick += _timer_Circle_Opacity_UI;
+            //timer_Circle_Opacity_UI.Start();
+
+            //timer_UI = new System.Timers.Timer();
+            //timer_UI.Interval = 100;
+            //timer_UI.Elapsed += Timer_UI_Elapsed;
+            //timer_UI.Start();            
+        }
+
+        
+
+        private void Timer_UI_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            for (int i = 0; i < list_opa.Count; i++)
+            {
+                if (list_opa[i] >= 0.22)
+                    list_opa[i] -= 0.11;
+                else
+                    list_opa[i] = 0.99;
+            }
+            list_opa = new ObservableCollection<double>(list_opa);
         }
 
         void _timer_Circle_Opacity_UI(object sender, EventArgs e)

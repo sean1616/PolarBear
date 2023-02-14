@@ -8,7 +8,7 @@
     <ProjectGuid>{3F1E0450-202F-4E7B-ACDA-4856A829360E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>PD</RootNamespace>
-    <AssemblyName>PD-v5.5.19</AssemblyName>
+    <AssemblyName>PD-v5.6.2</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -62,6 +62,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.10.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Circle_Gauge, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Circle_Gauge.dll</HintPath>
@@ -104,6 +107,9 @@
     </Reference>
     <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
+    <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
+      <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -204,6 +210,7 @@
     <Compile Include="Models\ChannelModel.cs" />
     <Compile Include="Models\RefModel.cs" />
     <Compile Include="Models\ScriptModel.cs" />
+    <Compile Include="Models\SettingUnitModel.cs" />
     <Compile Include="Models\StringModel.cs" />
     <Compile Include="Models\ComMember.cs" />
     <Compile Include="Models\LogMember.cs" />
@@ -218,6 +225,9 @@
     </Compile>
     <Compile Include="NavigationPages\Page_Chart.xaml.cs">
       <DependentUpon>Page_Chart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationPages\Page_BR.xaml.cs">
+      <DependentUpon>Page_BR.xaml</DependentUpon>
     </Compile>
     <Compile Include="NavigationPages\Page_UTF600_Main.xaml.cs">
       <DependentUpon>Page_UTF600_Main.xaml</DependentUpon>
@@ -303,6 +313,9 @@
     <Compile Include="UI\UC_Gauge.xaml.cs">
       <DependentUpon>UC_Gauge.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\UC_OSA_WL_Button.xaml.cs">
+      <DependentUpon>UC_OSA_WL_Button.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\UC_Setting_Button.xaml.cs">
       <DependentUpon>UC_Setting_Button.xaml</DependentUpon>
     </Compile>
@@ -342,6 +355,10 @@
     <Page Include="NavigationPages\Page_Chart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationPages\Page_BR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="NavigationPages\Page_UTF600_Main.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -425,6 +442,10 @@
     <Page Include="UI\UC_Gauge.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UC_OSA_WL_Button.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\UC_Setting_Button.xaml">
       <SubType>Designer</SubType>

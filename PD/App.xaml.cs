@@ -15,7 +15,8 @@ namespace PD
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             MainWindow mainWindow = new MainWindow();
-            mainWindow.Show();
+            if(mainWindow!=null)
+                    mainWindow.Show();
         }
     }
 }

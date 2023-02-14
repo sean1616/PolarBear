@@ -69,7 +69,7 @@ namespace PD.NavigationPages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.5.19;component/navigationpages/page_board_grid.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.6.2;component/navigationpages/page_board_grid.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NavigationPages\Page_Board_Grid.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

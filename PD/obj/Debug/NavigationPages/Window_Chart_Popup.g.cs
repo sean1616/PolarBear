@@ -215,7 +215,7 @@ namespace PD.NavigationPages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.5.19;component/navigationpages/window_chart_popup.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.6.2;component/navigationpages/window_chart_popup.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NavigationPages\Window_Chart_Popup.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

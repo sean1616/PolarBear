@@ -12,6 +12,7 @@
              d:DesignHeight="1080"
              d:DesignWidth="1920"
              Background="White"
+             Loaded="UserControl_Loaded"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ui:VisValueConverter x:Key="VisValueConverter" />
@@ -119,12 +120,7 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <Grid Grid.Row="11">
-                <Button Name="btn_Calculation"
-                        Content="Calculation"
-                        Style="{StaticResource style_FuncBtn_CenterAlign}"
-                        Click="btn_Calculation_Click" />
-            </Grid>
+           
             <Grid Grid.Row="12">
                 <Button Name="btn_Timer"
                         Content="Timer"
@@ -139,9 +135,11 @@
             </Grid>
         </Grid>
 
+        <!--Chart for Testing Mode-->
         <oxy:Plot x:Name="Plot_Chart"
                   Title="{Binding Chart_title}"
                   Grid.Column="1"
+                  Visibility="Collapsed"
                   Margin="20,0,20,10"
                   FontFamily="Segoe Print">
             <oxy:Plot.Axes>
@@ -233,6 +231,14 @@
                                 Color="OrangeRed" />
             </oxy:Plot.Series>
         </oxy:Plot>
+        <oxy:PlotView x:Name="mainPlotView"
+                      Model="{Binding PlotViewModel_Chart}"
+                      Background="White"
+                      BorderBrush="Black"
+                      Margin="20,0,20,10"
+                      FontFamily="Segoe Print"
+                      Grid.Column="1">
+        </oxy:PlotView>
 
         <StackPanel Grid.Column="1" Orientation="Horizontal"
                     HorizontalAlignment="Right"

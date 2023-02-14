@@ -287,7 +287,6 @@
                              VerticalAlignment="Center"
                              HorizontalContentAlignment="Center"
                              FontFamily="Segoe Print"
-                             PreviewKeyDown="txt_WL_KeyDown"
                              Text="{Binding Laser_Wavelength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="PreviewKeyDown">
@@ -318,7 +317,6 @@
                              VerticalAlignment="Center"
                              HorizontalContentAlignment="Center"
                              FontFamily="Segoe Print"
-                             KeyDown="txt_PM_WL_KeyDown"
                              Text="{Binding Double_PM_Ref}" />
                     <TextBlock Grid.Column="2"
                                HorizontalAlignment="Left"
@@ -495,7 +493,6 @@
                              VerticalAlignment="Center"
                              HorizontalContentAlignment="Center"
                              FontFamily="Segoe Print"
-                             KeyDown="txt_PM_WL_KeyDown"
                              Text="{Binding PM_Wavelength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="PreviewKeyDown">

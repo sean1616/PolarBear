@@ -66,7 +66,7 @@ namespace PD.NavigationPages
 
             anly = new Analysis(vm);
 
-            vm.PlotViewModel.MouseMove += PlotViewModel_MouseMove;
+            //vm.PlotViewModel.MouseMove += PlotViewModel_MouseMove;
             mainPlotView.PreviewMouseLeftButtonDown += MainPlotView_PreviewMouseLeftButtonDown;
             mainPlotView.PreviewMouseRightButtonDown += MainPlotView_PreviewMouseRightButtonDown;
             mainPlotView.PreviewMouseRightButtonUp += MainPlotView_PreviewMouseRightButtonUp;
@@ -76,6 +76,28 @@ namespace PD.NavigationPages
             sb_bear_shake = FindResource("Storyboard_Bear_Shake") as System.Windows.Media.Animation.Storyboard;
             sb_bear_reset = FindResource("Storyboard_Bear_Reset") as System.Windows.Media.Animation.Storyboard;
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //一個plotModel同一時間只能供給一個plotview使用，頁面切換時需重新指派
+            vm.PlotViewModel_Chart = new PlotModel();
+            vm.PlotViewModel_Testing = new PlotModel();
+            vm.PlotViewModel_BR = new PlotModel();
+            vm.PlotViewModel_TF2 = new PlotModel();
+            vm.PlotViewModel_UTF600 = vm.PlotViewModel;
+
+            vm.Update_ALL_PlotView();
+
+            if (sb_bear_shake != null)
+                sb_bear_shake.Begin();
+
+            if (sb_bear_reset != null)
+            {
+                sb_bear_reset.Begin();
+                sb_bear_reset.Pause();
+            }
+        }
+
 
         private void MainPlotView_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -88,6 +110,8 @@ namespace PD.NavigationPages
         bool isRightMouseinPlot = false;
         private void MainPlotView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (!vm.PlotViewModel.Axes[0].Title.Contains("Wavelength") && !vm.PlotViewModel.Axes[0].Title.Contains("nm")) return;
+
             if (e.RightButton == MouseButtonState.Pressed)
                 isRightMouseinPlot = true;
         }
@@ -95,41 +119,36 @@ namespace PD.NavigationPages
         bool isLeftMouseinPlot = false;
         private void MainPlotView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (!vm.PlotViewModel.Axes[0].Title.Contains("Wavelength") && !vm.PlotViewModel.Axes[0].Title.Contains("nm")) return;
+
             if (e.LeftButton == MouseButtonState.Pressed)
                 isLeftMouseinPlot = true;
             else
                 isLeftMouseinPlot = false;
         }
 
-        private void PlotViewModel_MouseMove(object sender, OxyMouseEventArgs e)
-        {
-            if (!vm.isMouseSelecte_WLScanRange || isRightMouseinPlot) return;
+        //private void PlotViewModel_MouseMove(object sender, OxyMouseEventArgs e)
+        //{
+        //    if (!vm.isMouseSelecte_WLScanRange || isRightMouseinPlot) return;
 
-            var position = Axis.InverseTransform(e.Position, vm.PlotViewModel.Axes[0], vm.PlotViewModel.Axes[1]);
+        //    var position = Axis.InverseTransform(e.Position, vm.PlotViewModel.Axes[0], vm.PlotViewModel.Axes[1]);
 
-            if (!isPlotMouseDown)
-            {
-                vm.Str_cmd_read = $"WL Start :{Math.Round(position.X, 2)}";
-            }
-            else
-            {
-                vm.Str_cmd_read = $"WL End :{Math.Round(position.X, 2)}";
-            }
-
-            //vm.Str_cmd_read = $"x:{Math.Round(position.X, 2)}, y:{Math.Round(position.Y, 2)}";
-
-            
-
-            //vm.LineAnnotation_X_2.X = Math.Round(position.X, 2);
-            //vm.LineAnnotation_X_2.StrokeThickness = 2;
-            //vm.PlotViewModel.InvalidatePlot(true);
-        }
-
+        //    if (!isPlotMouseDown)
+        //    {
+        //        vm.Str_cmd_read = $"WL Start :{Math.Round(position.X, 2)}";
+        //    }
+        //    else
+        //    {
+        //        vm.Str_cmd_read = $"WL End :{Math.Round(position.X, 2)}";
+        //    }
+        //}
        
         bool isPlotMouseDown = false;
         private void PlotViewModel_MouseDown(object sender, OxyMouseDownEventArgs e)
         {
             if (!vm.isMouseSelecte_WLScanRange || !isLeftMouseinPlot) return;
+
+            if (!vm.PlotViewModel.Axes[0].Title.Contains("Wavelength") && !vm.PlotViewModel.Axes[0].Title.Contains("nm")) return;
 
             isPlotMouseDown = !isPlotMouseDown;
 
@@ -1661,19 +1680,5 @@ namespace PD.NavigationPages
             }
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (sb_bear_shake != null)
-            {
-                sb_bear_shake.Begin();
-                //sb_bear_shake.Pause();
-            }
-
-            if (sb_bear_reset != null)
-            {
-                sb_bear_reset.Begin();
-                sb_bear_reset.Pause();
-            }
-        }
     }
 }

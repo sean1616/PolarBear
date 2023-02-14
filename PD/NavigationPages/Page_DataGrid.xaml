@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:PD.NavigationPages"
              xmlns:vm="clr-namespace:PD.ViewModel"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:ut="clr-namespace:PD.Utility"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pageTransitions="clr-namespace:WpfPageTransitions;assembly=WpfPageTransitions"
              d:DesignHeight="450"
@@ -99,7 +101,13 @@
                     Name="Btn_Get_Ref"
                     Click="Btn_Get_Ref_Click"
                     Content="Get Ref"
-                    Style="{StaticResource style_FuncBtn_CenterAlign}" />
+                    Style="{StaticResource style_FuncBtn_CenterAlign}" >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewKeyDown">
+                        <ut:EventCommand Command="{Binding Get_Ref}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
 
             <Button Name="btn_show"
                     Click="Btn_show_Click"

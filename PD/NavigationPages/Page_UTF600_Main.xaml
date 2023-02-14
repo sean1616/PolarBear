@@ -22,6 +22,7 @@
              Background="Transparent"     
              Loaded="UserControl_Loaded"
              mc:Ignorable="d">
+    
     <UserControl.Resources>
 
         <Style x:Key="BorderStyle1"
@@ -96,6 +97,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <Storyboard x:Key="Storyboard_Bear_Shake" RepeatBehavior="Forever">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="image">
                 <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="15"/>
@@ -104,6 +106,7 @@
                 <EasingDoubleKeyFrame KeyTime="0:0:2.1" Value="-15"/>
                 <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="15"/>
                 <EasingDoubleKeyFrame KeyTime="0:0:3.3" Value="-15"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:3.6" Value="0"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Key="Storyboard_Bear_Reset">
@@ -128,20 +131,6 @@
             <RowDefinition Height="3.6*" />
             <RowDefinition Name="grid_second_rowdefinition" Height="*"/>
         </Grid.RowDefinitions>
-
-        <!--<Grid Grid.Row="0" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-            </Grid.RowDefinitions>
-           
-        </Grid>-->
 
         <ScrollViewer x:Name="viewer" 
                       Background="White">
@@ -193,7 +182,6 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <!--GaugeChart_visible-->
         <!--Optical Result for Testing Mode-->
         <Grid Visibility="{Binding GaugeChart_visible}">
             <Grid.RowDefinitions>
@@ -209,10 +197,8 @@
 
             <Border x:Name="border_Standard" Grid.Column="0" />
 
-            <!--Chart for Testing Mode-->
-
-            <oxy:PlotView x:Name="mainPlotView"
-                                          Model="{Binding PlotViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            <!--Chart for Testing Mode--> <oxy:PlotView x:Name="mainPlotView"
+                                          Model="{Binding PlotViewModel_UTF600, Mode=OneWay}"
                                           Background="White"
                                           BorderBrush="Black"
                           Margin="15,5,25,5"
@@ -220,6 +206,7 @@
                                          Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="2"
                           >
             </oxy:PlotView>
+           
 
 
             <!--Bandwidth information-->
@@ -750,7 +737,7 @@
                                      FontFamily="Segoe Print"
                                      BorderBrush="Transparent"
                                 KeyDown="TextBox_WL_Scan_KeyDown"
-                                     Text="{Binding float_WL_Scan_Start}"
+                                     Text="{Binding float_WL_Scan_Start, FallbackValue=1527}"
                                      MinWidth="50" />
                         </Viewbox>
                         <Viewbox Grid.Row="1" HorizontalAlignment="Right" >
@@ -946,7 +933,7 @@
                                      FontFamily="Segoe Print"
                                      KeyDown="TextBox_WL_Scan_KeyDown"
                                      BorderBrush="Transparent"
-                                     Text="{Binding float_WL_Scan_End}"
+                                     Text="{Binding float_WL_Scan_End, FallbackValue=1565}"
                                      MinWidth="50" />
                         </Viewbox>
                         <Viewbox Grid.Row="1" HorizontalAlignment="Right" >
@@ -1139,7 +1126,7 @@
                                      FontFamily="Segoe Print"
                                      KeyDown="TextBox_WL_Scan_KeyDown"
                                      BorderBrush="Transparent"
-                                     Text="{Binding float_WL_Scan_Gap}"
+                                     Text="{Binding float_WL_Scan_Gap, FallbackValue=0.1}"
                                      MinWidth="50" />
                         </Viewbox>
                         <TextBlock Grid.Column="2"
@@ -1229,9 +1216,8 @@
                                      HorizontalContentAlignment="Center"
                                      FontFamily="Segoe Print"
                                      BorderBrush="Transparent"
-                                     Text="1548"
+                                     Text="{Binding Laser_Wavelength, FallbackValue=1548.5, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      MinWidth="50" >
-                                <!--Text="{Binding Laser_Wavelength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
                                 
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Enter" Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding Text, ElementName=txt_WL}" />
@@ -1405,32 +1391,31 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[0]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="1">
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[0], FallbackValue=1527}" Style="{DynamicResource ButtonStyle_TextOnly}" Margin="1" Tag="1">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[0]}"/>
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[0], FallbackValue=1527}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[1]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="2" Grid.Column="1">
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[1], FallbackValue=1548}"  Margin="1" Tag="2" Grid.Column="1" Style="{DynamicResource ButtonStyle_TextOnly}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[1]}"/>
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[1], FallbackValue=1548}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[2]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="3" Grid.Column="2">
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[2], FallbackValue=1565}" Style="{DynamicResource ButtonStyle_TextOnly}" Margin="1" Tag="3" Grid.Column="2">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[2]}"/>
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[2], FallbackValue=1565}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-
-                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[3]}" FontFamily="Segoe Print" FontSize="14" Margin="1" Tag="4" Grid.Column="3">
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[3], FallbackValue=1550}" Style="{DynamicResource ButtonStyle_TextOnly}" Margin="1" Tag="4" Grid.Column="3">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[3]}"/>
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[3], FallbackValue=1550}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>

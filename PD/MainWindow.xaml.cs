@@ -14,6 +14,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -45,6 +46,7 @@ namespace PD
         Page_PD_Gauges _Page_PD_Gauges;
         Page_TF2_Main _Page_TF2_Main;
         Page_UTF600_Main _Page_UTF600_Main;
+        Page_BR _Page_BR;
         Page_Chart _Page_Chart;
         Page_DataGrid _Page_DataGrid;
         Page_Laser _Page_Laser;
@@ -81,6 +83,99 @@ namespace PD
             win_waiting.Center_MSG = "Loading";
             win_waiting.Show();
 
+            vm.InitializeComViewModel();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Initializing();
+
+            vm.mainWin_size = new double[] { ActualWidth, ActualHeight };
+            vm.mainWin_point = new System.Windows.Point(Left, Top);
+            vm.BoolAllGauge = true;
+
+            win_waiting.Close();
+
+            btn_desktop.Visibility = Visibility.Collapsed;
+
+            this.ResizeMode = ResizeMode.CanResizeWithGrip;
+            this.WindowState = WindowState.Normal;
+
+            //取得可獲得之工作視窗大小(不含工作列)         
+            var a = SystemParameters.WorkArea;
+            this.MaxHeight = a.Height;
+            this.MaxWidth = a.Width;
+            Height = MaxHeight;
+            Width = MaxWidth;
+            System.Windows.Point p = this.PointToScreen(new System.Windows.Point(0, 0));
+            this.Left = Left - p.X;
+            this.Top = Top - p.Y;
+        }
+
+        private async void OSA_StarTrack()
+        {
+            List<DataPoint> result = new List<DataPoint>();
+
+            int points = Convert.ToInt32((vm.float_WL_Scan_End - vm.float_WL_Scan_Start) / vm.float_WL_Scan_Gap + 1);
+
+            vm.OSA.SendCommand(string.Format("sens:bwid:res {0} nm;", vm.float_WL_Scan_Gap.ToString("f2")));
+            await Task.Delay(30);
+            //Set coninue
+            vm.OSA.SendCommand(string.Format("init:cont {0}", "OFF"));
+            await Task.Delay(30);
+            //set start , end
+            vm.OSA.SendCommand(string.Format("SENS:WAV:START {0}nm;STOP {1}nm;", vm.float_WL_Scan_Start.ToString("#0.00"), vm.float_WL_Scan_End.ToString("#0.00")));
+            await Task.Delay(30);
+            //set sensitive
+            vm.OSA.SendCommand(string.Format("sens:pow:rang:low {0}dbm;", -70));
+            await Task.Delay(30);
+            //set points
+            vm.OSA.SendCommand(string.Format("sens:swe:poin {0}", points));
+            await Task.Delay(30);
+            vm.OSA.SendCommand("TRAC:FEED:CONT TRA,ALW");
+
+            await Task.Delay(300);
+            vm.OSA.SendCommand("INIT:IMM");
+            await Task.Delay(300);
+
+            vm.OSA.SendCommand("DISP:WIND:TRAC:STAT TRA,ON");
+            await Task.Delay(300);
+            vm.OSA.SendCommand("TRAC:DATA:Y? TRA");
+
+            string rawdata = vm.OSA.Read(17 * points); // set length of geting attenuation, 1 raw = 17 byte
+
+            int counter = 0;
+            while (rawdata == "-100" && counter < 10)
+            {
+
+                vm.OSA.SendCommand("TRAC:DATA:Y? TRA");
+                rawdata = vm.OSA.Read(17 * Convert.ToInt32((vm.float_WL_Scan_End - vm.float_WL_Scan_Start + 1) / vm.float_WL_Scan_Gap));
+                counter++;
+            }
+            if (rawdata == "-100")
+                Console.WriteLine("-999,Time Limit Exceeded to complete operation");
+            double osastep = vm.float_WL_Scan_Gap;// ((ewl - swl) / 1000); // each wavelength gets count
+            string s = vm.OSA.GetAllPower(rawdata, osastep, vm.float_WL_Scan_Start, vm.float_WL_Scan_End);
+
+            string[] list_s = s.Split(',');
+
+            if (list_s.Length > 1)
+            {
+                for (int i = 1; i < list_s.Length; i++)
+                {
+                    if (i % 2 == 1)
+                    {
+                        if (double.TryParse(list_s[i - 1], out double wl) && double.TryParse(list_s[i], out double IL))
+                            result.Add(new DataPoint(wl, IL));
+                    }
+                }
+            }
+        }
+
+        private void Initializing()
+        {
+            #region Initialization
+
             List<DateTime> listdateTime = new List<DateTime>();
             listdateTime.Add(DateTime.Now);
 
@@ -97,23 +192,6 @@ namespace PD
 
             listdateTime.Add(DateTime.Now);  //Event 1
 
-            #region Product Combobox Setting
-            //combox_product.Items.Clear();
-            //combox_product.Items.Add("CTF");
-            //combox_product.Items.Add("UFA");
-            //combox_product.Items.Add("UFA-T");
-            //combox_product.Items.Add("UFA(H)");
-            //combox_product.Items.Add("UTF");
-            //combox_product.Items.Add("UTF300(H)");
-            //combox_product.Items.Add("UTF400");
-            //combox_product.Items.Add("UTF450");
-            //combox_product.Items.Add("UTF500");
-            //combox_product.Items.Add("UTF550");
-            //combox_product.Items.Add("MTF");
-            #endregion
-
-            listdateTime.Add(DateTime.Now);  //Event 2
-
             #region Read ini file and setting   
             string ini_path = vm.ini_exist();
 
@@ -126,8 +204,10 @@ namespace PD
                 vm.txt_save_wl_data_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Save_Hermetic_Data_Path")) ? vm.txt_save_wl_data_path : vm.Ini_Read("Connection", "Save_Hermetic_Data_Path");
                 vm.txt_save_TF2_wl_data_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Save_TF2_Data_Path")) ? vm.txt_save_TF2_wl_data_path : vm.Ini_Read("Connection", "Save_TF2_Data_Path");
                 vm.txt_board_table_path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Table_Path")) ? vm.txt_board_table_path : vm.Ini_Read("Connection", "Control_Board_Table_Path");
+                vm.txt_BR_Save_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "BR_Save_Path")) ? vm.txt_BR_Save_Path : vm.Ini_Read("Connection", "BR_Save_Path");
 
-                combox_comport.SelectedItem = vm.Ini_Read("Connection", "Comport");
+                //combox_comport.SelectedItem = vm.Ini_Read("Connection", "Comport");
+                vm.Selected_Comport = vm.Ini_Read("Connection", "Comport");
                 vm.Comport_TLS_Filter = vm.Ini_Read("Connection", "Comport_TLS_Filter");
                 vm.Comport_Switch = vm.Ini_Read("Connection", "Comport_Switch");
                 vm.station_type = vm.Ini_Read("Connection", "Station");
@@ -186,8 +266,10 @@ namespace PD
 
                 if (vm.Ini_Read("Productions", "Unit") == "dBm")
                 {
-                    run_dBm.Foreground = new SolidColorBrush(Colors.White);
-                    run_dB.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
+                    //run_dBm.Foreground = new SolidColorBrush(Colors.White);
+                    vm.run_dBm_color = new SolidColorBrush(Colors.White);
+                    vm.run_dB_color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
+                    //run_dB.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
                     vm.str_Unit = "dBm";
                     vm.dB_or_dBm = false;
                 }
@@ -285,7 +367,9 @@ namespace PD
             //_Page_Log = new Page_Log(vm);
             _Page_Log_Command = new Page_Log_Command(vm);
             _Page_Setting = new Page_Setting(vm);
+            _Page_BR = new Page_BR(vm);
             RBtn_Gauge_Page.IsChecked = true;
+           
             #endregion
 
             listdateTime.Add(DateTime.Now);  //Event 8
@@ -453,41 +537,34 @@ namespace PD
 
             #region Initial Chart Setting
            
-            vm.Plot_Series.Clear();
-            vm.Plot_Series.Add(new LineSeries
-            {
-                Title = "Ch1",
-                FontSize = 20,
-                StrokeThickness = 1.8,
-                MarkerType = MarkerType.Circle,
-                MarkerSize = 0,  //4
-                //Smooth = true,
-                MarkerFill = vm.list_OxyColor[0],
-                Color = vm.list_OxyColor[0],
-                CanTrackerInterpolatePoints = true,
-                TrackerFormatString = vm.Chart_x_title + " : {2}\n" + vm.Chart_y_title + " : {4}",
-            });
+            //vm.Plot_Series.Clear();
+            //vm.Plot_Series.Add(new LineSeries
+            //{
+            //    Title = "Ch1",
+            //    FontSize = 20,
+            //    StrokeThickness = 1.8,
+            //    MarkerType = MarkerType.Circle,
+            //    MarkerSize = 0,  //4
+            //    //Smooth = true,
+            //    MarkerFill = vm.list_OxyColor[0],
+            //    Color = vm.list_OxyColor[0],
+            //    CanTrackerInterpolatePoints = true,
+            //    TrackerFormatString = vm.Chart_x_title + " : {2}\n" + vm.Chart_y_title + " : {4}",
+            //});
 
-            for (int i = -35; i < 36; i++)
-            {
-                vm.Plot_Series[0].Points.Add(new DataPoint(i + 1548, vm.gauss_2D(i * 0.4, 0, 0, 0, 14.2, 0, 4.0)));
-            }
+            //for (int i = -35; i < 36; i++)
+            //{
+            //    vm.Plot_Series[0].Points.Add(new DataPoint(i + 1548, vm.gauss_2D(i * 0.4, 0, 0, 0, 14.2, 0, 4.0)));
+            //}
 
-            vm.PlotViewModel.Series.Clear();
-            vm.PlotViewModel.Series.Add(vm.Plot_Series[0]);
+            //vm.PlotViewModel.Series.Clear();
+            //vm.PlotViewModel.Series.Add(vm.Plot_Series[0]);
 
-            //vm.PlotViewModel.Annotations.Add(vm.LineAnnotation_X);
-            //vm.PlotViewModel.Annotations.Add(vm.LineAnnotation_Y);
             #endregion
 
-            for (int i = 1; i < listdateTime.Count; i++)
-            {
-                vm.Save_Log(new LogMember() { Status = "Check TimeSpan", Message = $"Event {i}", Result = (listdateTime[i] - listdateTime[i - 1]).TotalMilliseconds.ToString(), Time = listdateTime[i].ToString() });
-            }
-
-            win_waiting.Close();
+            listdateTime.Add(DateTime.Now);  //Event 14
+            #endregion
         }
-
 
         public T Generic_GetINISetting<T>(T input, string region, string variable) where T : new()
         {
@@ -588,8 +665,15 @@ namespace PD
 
                     vm.ChartNowModel = new ChartModel(vm.ch_count);
                     vm.ChartNowModel.list_delta_IL.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
+
                     vm.Chart_title = "Power x Time";
-                    vm.Chart_x_title = "Time(s)"; //Set Chart x axis title
+                    vm.PlotViewModel.Title = vm.Chart_title;
+                    vm.Chart_x_title = "Time (s)"; //Set Chart x axis title
+                    vm.Chart_y_title = vm.dB_or_dBm ? "IL (dB)" : "IL (dBm)";
+
+                    vm.PlotViewModel.Axes[0].Title = vm.Chart_x_title;
+                    vm.PlotViewModel.Axes[1].Title = vm.Chart_y_title;
+
                     vm.Str_Status = "Get Power";
                     if (!vm.isTimerOn)
                         vm.int_timer_timespan = int.MaxValue;
@@ -1773,12 +1857,17 @@ namespace PD
             List<string> list_final_voltage = new List<string>();
             vm.Chart_title = "Power X DAC";
             vm.Chart_x_title = "DAC"; //Rename Chart x axis title
+            vm.Chart_y_title = vm.dB_or_dBm ? "IL (dB)" : $"IL (dBm)";
+
+            vm.Update_ALL_PlotView_Title(vm.Chart_title, vm.Chart_x_title, vm.Chart_y_title);
+
             vm.Str_Status = "Calibration VOA";
             vm.Double_Powers = new List<double>();
             vm.Double_Powers.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
             var watch = System.Diagnostics.Stopwatch.StartNew();
             for (int i = 0; i < vm.ch_count; i++)
             {
+                vm.Plot_Series[i].Points.Clear();
                 vm.ChartNowModel.list_dataPoints[i].Clear();
             }
 
@@ -1849,7 +1938,6 @@ namespace PD
                             vm.list_GaugeModels[ch].GaugeValue = Math.Round(power, 4).ToString();
 
                             DataPoint dp = new DataPoint(dac, power);
-                            //vm.kModels[ch].dataPoints.Add(dp);
                             vm.ChartNowModel.list_dataPoints[ch].Add(dp);
 
                             #region Update Chart
@@ -2237,16 +2325,21 @@ namespace PD
             List<string> list_final_voltage = new List<string>();
             vm.Chart_title = "Power X DAC";
             vm.Chart_x_title = "DAC"; //Rename Chart x axis title
+            vm.Chart_y_title = vm.dB_or_dBm ? "IL (dB)" : $"IL (dBm)";
+
+            vm.Update_ALL_PlotView_Title(vm.Chart_title, vm.Chart_x_title, vm.Chart_y_title);
+
             vm.Str_Status = "Calibration TF";
             vm.Double_Powers = new List<double>();
             vm.Double_Powers.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            //vm.kModels.Clear();
-            //for (int i = 0; i < vm.ch_count; i++)
-            //{
-            //    vm.kModels.Add(new KModel());
-            //}
+        
             anly.JudgeAllBoolGauge();
+
+            for (int i = 0; i < vm.Plot_Series.Count; i++)
+            {
+                vm.Plot_Series[i].Points.Clear();
+            }
             #endregion
 
             #region Scan Range Calculation
@@ -2608,6 +2701,10 @@ namespace PD
             List<string> list_final_voltage = new List<string>();
             vm.Chart_title = "Power X DAC";
             vm.Chart_x_title = "DAC"; //Rename Chart x axis title
+            vm.Chart_y_title = vm.dB_or_dBm ? "IL (dB)" : $"IL (dBm)";
+
+            vm.Update_ALL_PlotView_Title(vm.Chart_title, vm.Chart_x_title, vm.Chart_y_title);
+
             vm.Str_Status = "Calibration TF";
             vm.Double_Powers = new List<double>();
             vm.Double_Powers.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
@@ -2616,7 +2713,7 @@ namespace PD
             for (int i = 0; i < vm.ch_count; i++)
             {
                 vm.ChartNowModel.list_dataPoints[i].Clear();
-                //vm.kModels.Add(new KModel());
+                vm.Plot_Series[i].Points.Clear();
             }
             anly.JudgeAllBoolGauge();
             #endregion
@@ -3609,6 +3706,14 @@ namespace PD
                     pageTransitionControl.Visibility = Visibility.Hidden;
                     Frame_Navigation.Visibility = Visibility.Visible;
                     Frame_Navigation.Navigate(_Page_TF2_Main);
+
+                    //一個plotModel同一時間只能供給一個plotview使用，頁面切換時需重新指派
+                    vm.PlotViewModel_Chart = new PlotModel();
+                    vm.PlotViewModel_TF2 = new PlotModel();
+                    vm.PlotViewModel_UTF600 = new PlotModel();
+                    vm.PlotViewModel_BR = new PlotModel();
+                    vm.PlotViewModel_Testing = vm.PlotViewModel;
+
                     break;
 
                 case "UTF600":
@@ -3618,6 +3723,31 @@ namespace PD
                     pageTransitionControl.Visibility = Visibility.Hidden;
                     Frame_Navigation.Visibility = Visibility.Visible;
                     Frame_Navigation.Navigate(_Page_UTF600_Main);
+
+                    //一個plotModel同一時間只能供給一個plotview使用，頁面切換時需重新指派
+                    vm.PlotViewModel_Chart = new PlotModel();
+                    vm.PlotViewModel_TF2 = new PlotModel();
+                    vm.PlotViewModel_Testing = new PlotModel();
+                    vm.PlotViewModel_BR = new PlotModel();
+                    vm.PlotViewModel_UTF600 = vm.PlotViewModel;
+
+                    break;
+
+                case "BR":
+                    if (_Page_BR == null)
+                        _Page_BR = new Page_BR(vm);
+
+                    pageTransitionControl.Visibility = Visibility.Hidden;
+                    Frame_Navigation.Visibility = Visibility.Visible;
+                    Frame_Navigation.Navigate(_Page_BR);
+
+                    //一個plotModel同一時間只能供給一個plotview使用，頁面切換時需重新指派
+                    vm.PlotViewModel_Chart = new PlotModel();
+                    vm.PlotViewModel_TF2 = new PlotModel();
+                    vm.PlotViewModel_Testing = new PlotModel();
+                    vm.PlotViewModel_UTF600 = new PlotModel();
+                    vm.PlotViewModel_BR = vm.PlotViewModel;
+
                     break;
 
                 default:
@@ -3628,6 +3758,13 @@ namespace PD
                     Frame_Navigation.Visibility = Visibility.Visible;
                     //pageTransitionControl.ShowPage(_Page_PD_Gauges);
                     Frame_Navigation.Navigate(_Page_PD_Gauges);
+
+                    //一個plotModel同一時間只能供給一個plotview使用，頁面切換時需重新指派
+                    vm.PlotViewModel_Chart = new PlotModel();
+                    vm.PlotViewModel_TF2 = new PlotModel();
+                    vm.PlotViewModel_UTF600 = new PlotModel();
+                    vm.PlotViewModel_BR = new PlotModel();
+                    vm.PlotViewModel_Testing = vm.PlotViewModel;
                     break;
             }
 
@@ -3819,7 +3956,11 @@ namespace PD
         private void btn_Stop_Click(object sender, RoutedEventArgs e)
         {
             vm.IsGoOn = false;
-            //vm.isStop = true;
+            vm.isStop = true;
+
+            //if (win_waiting != null)
+            //    if (win_waiting.ShowActivated)
+            //        win_waiting.Close();
         }
 
         private void combox_product_DropDownClosed(object sender, EventArgs e)
@@ -3837,24 +3978,7 @@ namespace PD
         List<PointF> Points = new List<PointF>();
         CurveFitting CurveFunctions = new CurveFitting();
 
-        private void TBtn_Unit_Click(object sender, RoutedEventArgs e)
-        {
-            if (!vm.dB_or_dBm)   //dBm mode
-            {
-                run_dBm.Foreground = new SolidColorBrush(Colors.White);
-                run_dB.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
-                vm.str_Unit = "dBm";
-                vm.Chart_y_title = "Power (dBm)";
-            }
-            else
-            {
-                run_dBm.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
-                run_dB.Foreground = new SolidColorBrush(Colors.White);
-                vm.str_Unit = "dB";
-                vm.Chart_y_title = "Power (dB)";
-            }
-            vm.Ini_Write("Productions", "Unit", vm.str_Unit);
-        }
+       
 
         private void K_WL_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -3889,9 +4013,10 @@ namespace PD
 
             vm.isGetPowerWaitForReadBack = vm.Is_FastScan_Mode ? false : true;
 
-            await cmd.Connect_TLS();
+            if (!vm.is_BR_OSA)
+                await cmd.Connect_TLS();
 
-            if (!vm.isConnected)
+            if (!vm.isConnected && !vm.is_BR_OSA)
             {
                 vm.Str_cmd_read = "Connect Laser Failed";
                 vm.Save_Log(new LogMember()
@@ -3908,7 +4033,7 @@ namespace PD
             {
                 List<string> list_finalVoltage = new List<string>();
 
-                //氣密站：掃圖前先判斷產品序號且設定波長
+                //氣密站：掃圖前先判斷產品序號且設定波長 , Animate start
                 if (vm.station_type.Equals("Hermetic_Test"))
                 {
                     if (vm.SN_Judge)
@@ -3936,19 +4061,41 @@ namespace PD
                         if (vm.product_type == "UFA" || vm.product_type == "UFA(H)")
                             list_finalVoltage = await K_V3();   //K V3                
                     }
-                }
-                else vm.Is_switch_mode = false;
 
-                _Page_UTF600_Main.sb_bear_shake.Begin();
+                    _Page_PD_Gauges.sb_bear_shake.Begin();
+                }
+                else if (vm.station_type.Equals("UTF600"))
+                {
+                    _Page_UTF600_Main.sb_bear_shake.Begin();
+                    vm.Is_switch_mode = false;
+                }
+                else if (vm.station_type.Equals("BR"))
+                {
+                    _Page_BR.sb_bear_shake.Begin();
+                    vm.Is_switch_mode = false;
+                }
+                else if (vm.station_type.Equals("TF2"))
+                {
+                    vm.Is_switch_mode = false;
+                }
+                else
+                {
+                    _Page_PD_Gauges.sb_bear_shake.Begin();
+                    vm.Is_switch_mode = false;
+                }
 
                 if (!vm.isStop)
                 {
-                    if (vm.selected_K_WL_Type.Equals("ALL Range"))
+                    if (vm.selected_K_WL_Type.Equals("ALL Range") && !vm.is_BR_OSA)
                     {
                         if (!vm.PD_or_PM && !vm.IsDistributedSystem)
                             await WL_Scan_PDFC();  //Scan action for getting power from PD Fast Clibration
                         else
                             await WL_Scan();
+                    }
+                    else if (vm.is_BR_OSA)
+                    {
+                        await WL_Scan_BR();
                     }
                     else
                         await WL_Scan_Iteration();
@@ -3956,8 +4103,21 @@ namespace PD
                 else
                     vm.Show_Bear_Window("Stop", false, "String", false);
 
-                _Page_UTF600_Main.sb_bear_shake.Pause();
-                _Page_UTF600_Main.sb_bear_reset.Begin();
+                if (vm.station_type.Equals("UTF600"))
+                {
+                    _Page_UTF600_Main.sb_bear_shake.Pause();
+                    _Page_UTF600_Main.sb_bear_reset.Begin();
+                }
+                else if (vm.station_type.Equals("BR"))
+                {
+                    _Page_BR.sb_bear_shake.Pause();
+                    _Page_BR.sb_bear_reset.Begin();
+                }
+                else if(!vm.station_type.Equals("TF2"))
+                {
+                    _Page_PD_Gauges.sb_bear_shake.Pause();
+                    _Page_PD_Gauges.sb_bear_reset.Begin();
+                }
 
                 vm.list_collection_GaugeModels.Add(new ObservableCollection<GaugeModel>());
                 for (int i = 0; i < vm.list_GaugeModels.Count; i++)
@@ -3978,6 +4138,8 @@ namespace PD
             catch (Exception ex)
             {
                 MessageBox.Show(ex.StackTrace.ToString());
+                K_WL.IsEnabled = true;  //取消防呆
+                btn_GO.IsEnabled = true;
             }
         }
 
@@ -5143,8 +5305,12 @@ namespace PD
                 vm.IL_ALL = "";
                 vm.Double_Powers = new List<double>();
                 vm.Double_Powers.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
+
                 vm.Chart_title = "Power X Wavelength";
                 vm.Chart_x_title = "Wavelength (nm)";
+                vm.Chart_y_title = vm.dB_or_dBm ? "IL (dB)" : "IL (dBm)";
+
+                vm.Update_ALL_PlotView_Title(vm.Chart_title, vm.Chart_x_title, vm.Chart_y_title);
 
                 #region Bandwith UI initialization
                 //vm.SpecLine30dB = new ObservableCollection<DataPoint>();
@@ -5194,6 +5360,7 @@ namespace PD
                 for (int i = 0; i < vm.ch_count; i++)
                 {
                     vm.ChartNowModel.list_dataPoints[i].Clear();
+                    vm.Plot_Series[i].Points.Clear();
                 }
 
                 foreach (double wl in vm.wl_list)
@@ -5208,16 +5375,13 @@ namespace PD
                         await Task.Delay(600);
 
                     if (!(!vm.IsDistributedSystem && !vm.PD_or_PM && vm.Is_FastScan_Mode))
-                    {
                         await Task.Delay(vm.Int_Set_WL_Delay);
-                    }
 
                     vm.Double_Laser_Wavelength = wl;
 
                     for (int ch = 0; ch < vm.ch_count; ch++)
                     {
                         if (vm.isStop) break;
-                            
 
                         if (!vm.BoolAllGauge)
                             if (!vm.list_GaugeModels[ch].boolGauge) continue;
@@ -5226,8 +5390,6 @@ namespace PD
                             vm.Str_Status = $"WL Scan - Ch {ch + 1}";
                         else
                             vm.Str_Status = $"WL Scan";
-
-                        //vm.Str_cmd_read = $"Ch {ch + 1} : {WL}";
 
                         #region switch re-open && Switch write Cmd
 
@@ -5312,7 +5474,7 @@ namespace PD
                     vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                     vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries  
 
-                    vm.PlotViewModel.InvalidatePlot(true);
+                    vm.Update_ALL_PlotView();
 
                     scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
                     vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
@@ -5331,7 +5493,7 @@ namespace PD
                 }
 
                 //Calculate the position with maximum IL and show data in UI
-                for (int ch = 0; ch < vm.ch_count; ch++)  
+                for (int ch = 0; ch < vm.ch_count; ch++)
                 {
                     if (vm.Save_All_PD_Value[ch].Count > 0)
                     {
@@ -5347,19 +5509,6 @@ namespace PD
                     }
                 }
 
-                //Add 30dB line in chart if spec line is not show yet
-                //if (vm.station_type.Equals("UTF600") && vm.SpecLine30dB.Count == 0)
-                //{
-                //    double maxIL = vm.ChartNowModel.list_dataPoints[0].Max(x => x.Y);
-                //    double minIL = vm.ChartNowModel.list_dataPoints[0].Min(x => x.Y);
-
-                //    if (Math.Abs(maxIL - minIL) > 30)
-                //    {
-                //        foreach (DataPoint dp in vm.ChartNowModel.list_dataPoints[0])
-                //            vm.SpecLine30dB.Add(new DataPoint(dp.X, maxIL - 30));
-                //    }
-                //}
-
                 scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
                 vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
                 await cmd.Save_Chart();
@@ -5369,7 +5518,7 @@ namespace PD
                 if (!vm.isStop)
                     vm.Show_Bear_Window($"WL Scan 完成  ({Math.Round(scan_timespan, 1)} s)", false, "String", false);
 
-                int a = vm.list_ChartModels.Count;
+                //int a = vm.list_ChartModels.Count;
 
                 vm.Str_Status = "WL Scan Stop";
                 vm.Save_Log("WL Scan", "Stop", false);
@@ -5396,8 +5545,12 @@ namespace PD
                 vm.IL_ALL = "";
                 vm.Double_Powers = new List<double>();
                 vm.Double_Powers.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
+
                 vm.Chart_title = "Power X Wavelength";
                 vm.Chart_x_title = "Wavelength (nm)";
+                vm.Chart_y_title = vm.dB_or_dBm ? "IL (dB)" : "IL (dBm)";
+
+                vm.Update_ALL_PlotView_Title(vm.Chart_title, vm.Chart_x_title, vm.Chart_y_title);
 
                 double cwl = 0;
 
@@ -5426,7 +5579,10 @@ namespace PD
                 #endregion
 
                 for (int i = 0; i < vm.ch_count; i++)
+                {
+                    vm.Plot_Series[i].Points.Clear();
                     vm.ChartNowModel.list_dataPoints[i].Clear();
+                }
 
                 foreach (double wl in vm.wl_list)
                 {
@@ -5450,8 +5606,6 @@ namespace PD
 
                     #region Get IL and set chart data points
 
-                    //vm.isGetPowerWaitForReadBack = true;
-
                     if (wl == vm.wl_list.First())
                     {
                         for (int ch = 0; ch < vm.ch_count; ch++)
@@ -5466,8 +5620,6 @@ namespace PD
                                 vm.port_PD.DiscardInBuffer();
                                 vm.port_PD.DiscardOutBuffer();
                             }
-
-                        //await Task.Delay(0);
                     }
 
                     if (vm.Is_FastScan_Mode && wl != vm.wl_list.First() && wl != vm.wl_list.Last())
@@ -5488,9 +5640,10 @@ namespace PD
                                 DataPoint dp = new DataPoint(vm.wl_list[vm.Save_All_PD_Value[ch].Count], vm.Double_Powers[ch + (i * vm.ch_count)]);
                                 vm.ChartNowModel.list_dataPoints[ch].Add(dp);
                                 vm.Save_All_PD_Value[ch].Add(dp);
+
+                                vm.Plot_Series[ch].Points.Add(new DataPoint(wl, vm.Double_Powers[ch + (i * vm.ch_count)]));
                             }
                         }
-
                     }
                     #endregion
 
@@ -5541,6 +5694,8 @@ namespace PD
                     #region Set Chart data points   
                     vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                     vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries  
+
+                    vm.Update_ALL_PlotView();
 
                     scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
                     vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
@@ -5839,17 +5994,22 @@ namespace PD
             }
         }
 
-
         private async Task<bool> WL_Scan_Iteration()
         {
             #region Setting
             vm.Save_All_PD_Value = Analysis.ListDefine<DataPoint>(vm.Save_All_PD_Value, vm.ch_count, new List<DataPoint>());
             for (int i = 0; i < vm.ch_count; i++)
             {
+                vm.Plot_Series[i].Points.Clear();
                 vm.ChartNowModel.list_dataPoints[i].Clear();
             }
+
             vm.Chart_title = "Power X Wavelength";
             vm.Chart_x_title = "Wavelength (nm)";
+            vm.Chart_y_title = vm.dB_or_dBm ? "IL (dB)" : "IL (dBm)";
+
+            vm.Update_ALL_PlotView_Title(vm.Chart_title, vm.Chart_x_title, vm.Chart_y_title);
+
             K_WL.IsEnabled = false;
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -6077,7 +6237,6 @@ namespace PD
 
                     if (finalIL > -30)
                     {
-                        //vm.list_GaugeModels[ch].GaugeBearSay_1 = Math.Round(vm.Double_Laser_Wavelength, 2).ToString();
                         vm.list_GaugeModels[ch].GaugeBearSay_1 = Math.Round(listPoints_final.Last().X, 2).ToString();
                         vm.list_GaugeModels[ch].GaugeBearSay_2 = finalIL.ToString();
                     }
@@ -6103,6 +6262,123 @@ namespace PD
 
             K_WL.IsEnabled = true;
             vm.IsGoOn = false;
+
+            return true;
+        }
+
+        private async Task<bool> WL_Scan_BR()
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            decimal scan_timespan = elapsedMs / (decimal)1000;
+
+            cmd.Reset_Chart(vm.list_BR_DAC_WL.ToList());
+
+            vm.Chart_title = "Power X Wavelength";
+            vm.Chart_x_title = "Wavelength (nm)";
+            vm.Chart_y_title = vm.dB_or_dBm ? "IL (dB)" : "IL (dBm)";
+
+            vm.Update_ALL_PlotView_Title(vm.Chart_title, vm.Chart_x_title, vm.Chart_y_title);
+
+            for (int i = 0; i < vm.Plot_Series.Count; i++)
+            {
+                vm.Plot_Series[i].Points.Clear();
+            }
+
+            for (int i = 0; i < vm.ChartNowModel.list_dataPoints.Count; i++)
+            {
+                vm.ChartNowModel.list_dataPoints[i].Clear();
+            }
+
+            if (string.IsNullOrWhiteSpace(vm.Selected_Comport)) return false;
+            await vm.Port_ReOpen(vm.Selected_Comport);
+
+            for (int wl_idx = 0; wl_idx < vm.list_BR_DAC_WL.Count; wl_idx++)
+            {
+                if (vm.isStop) break;
+                
+                //Set Dac 
+                try
+                {
+                    string wl = vm.list_BR_DAC_WL[wl_idx];
+
+                    if (_Page_BR.dict_WL_to_Dac.Count != 0)
+                        vm.Str_Command = $"D1 {_Page_BR.dict_WL_to_Dac[wl]}";
+                    else
+                        vm.Str_Command = $"WL {wl}";
+
+                    await cmd.Write_Cmd(vm.Str_Command, true);
+
+                    await Task.Delay(vm.Int_Read_Delay);
+                }
+                catch { }
+
+                vm.Str_cmd_read = $"WL : {vm.list_BR_DAC_WL[wl_idx]}";
+
+                //Call OSA scan and show Data function (one lineseries)
+                List<DataPoint> list_WL_IL = await Task.Run(() => cmd.OSA_Scan());
+
+                foreach (DataPoint dp in list_WL_IL)
+                {
+                    double ref_value = 0;
+
+                    if (vm.dB_or_dBm)
+                    {
+                        RefModel rm = vm.Ref_memberDatas.Where(r => r.Wavelength == dp.X).FirstOrDefault();
+
+                        if (rm != null)
+                            ref_value = rm.Ch_1;
+                    }
+
+                    vm.Plot_Series[wl_idx].Points.Add(new DataPoint(dp.X, dp.Y - vm.BR_Diff - ref_value));
+                }
+
+                vm.Update_ALL_PlotView();
+
+                vm.Str_cmd_read = vm.Str_cmd_read + $", {list_WL_IL.Count} points";
+
+                scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
+                vm.msgModel.msg_3 = $"{Math.Round(scan_timespan, 1)} s";
+            }
+
+            vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
+
+            await cmd.Save_Chart();
+
+            if (!vm.isStop)
+                vm.Show_Bear_Window($"WL Scan 完成  ({Math.Round(scan_timespan, 1)} s)", false, "String", false);
+
+            vm.IsGoOn = false;
+
+            #region 儲存資料 - 初始設定判斷
+            if (string.IsNullOrEmpty(vm.UserID))
+            {
+                vm.Show_Bear_Window("工號空白", false, "String", false);
+                return true;
+            }
+            else
+            {
+                if (vm.UserID.Length != 5 || (vm.UserID.First() != 'P' && vm.UserID.First() != 'E'))
+                {
+                    vm.Show_Bear_Window("工號格式應為PXXX", false, "String", false);
+                    return true;
+                }
+            }
+
+            if (string.IsNullOrEmpty(vm.list_GaugeModels.First().GaugeSN))
+            {
+                vm.Show_Bear_Window("序號空白", false, "String", false);
+                return true;
+            }
+
+            if (!vm.CheckDirectoryExist(vm.txt_BR_Save_Path))
+            {
+                vm.Show_Bear_Window("儲存路徑不存在", false, "String", false);
+                return true;
+            }
+            #endregion
+
+            cmd.Save_BR_Data();
 
             return true;
         }
@@ -6285,12 +6561,7 @@ namespace PD
                 vm.WinSwitch.Close();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            vm.mainWin_size = new double[] { ActualWidth, ActualHeight };
-            vm.mainWin_point = new System.Windows.Point(Left, Top);
-            vm.BoolAllGauge = true;
-        }
+       
 
         private void btn_desktop_Click(object sender, RoutedEventArgs e)
         {
@@ -6398,7 +6669,7 @@ namespace PD
 
                 if (!string.IsNullOrEmpty(filePath))
                 {
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    CSVFunctions.Write_a_row_in_CSV(filePath, new List<string>()
                     {
                         vm.opModel_1.WL_Setting_1,
                         vm.opModel_1.WL_1_CWL.ToString(),
@@ -6410,7 +6681,7 @@ namespace PD
                         vm.opModel_1.WL_1_BW_3.ToString()
                     });
 
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    CSVFunctions.Write_a_row_in_CSV(filePath, new List<string>()
                     {
                         vm.opModel_1.WL_Setting_2.ToString(),
                         vm.opModel_1.WL_2_CWL.ToString(),
@@ -6422,7 +6693,7 @@ namespace PD
                         vm.opModel_1.WL_2_BW_3.ToString()
                     });
 
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    CSVFunctions.Write_a_row_in_CSV(filePath, new List<string>()
                     {
                         vm.opModel_1.WL_Setting_3.ToString(),
                         vm.opModel_1.WL_3_CWL.ToString(),
@@ -6434,33 +6705,33 @@ namespace PD
                         vm.opModel_1.WL_3_BW_3.ToString()
                     });
 
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    CSVFunctions.Write_a_row_in_CSV(filePath, new List<string>()
                     {
                         "Mic. Lower", vm.opModel_1.Mic_Lower_Limit.ToString()
                     });
 
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    CSVFunctions.Write_a_row_in_CSV(filePath, new List<string>()
                     {
                         "Mic. Upper", vm.opModel_1.Mic_Upper_Limit.ToString()
                     });
 
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    CSVFunctions.Write_a_row_in_CSV(filePath, new List<string>()
                     {
                         "Tech ID", vm.UserID
                     });
 
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    CSVFunctions.Write_a_row_in_CSV(filePath, new List<string>()
                     {
                         "Station", vm.TF2_station_type
                     });
 
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    CSVFunctions.Write_a_row_in_CSV(filePath, new List<string>()
                     {
                         "Temp.", vm.opModel_1.HighPower_Temp.ToString()
                     });
 
                     string dateTime = DateTime.Now.ToString("yyyy'/'MM'/'dd' 'HH':'mm':'ss");
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, new List<string>()
+                    CSVFunctions.Write_a_row_in_CSV(filePath, new List<string>()
                     {
                         "DateTime", dateTime
                     });
@@ -6468,6 +6739,38 @@ namespace PD
                     vm.Str_Status = "Save Data to CSV";
                     vm.Str_cmd_read = vm.opModel_1.SN;
                 }
+            }
+            else if (vm.station_type.Equals("BR"))
+            {
+                #region 初始設定判斷
+                if (string.IsNullOrEmpty(vm.UserID))
+                {
+                    vm.Show_Bear_Window("工號空白", false, "String", false);
+                    return;
+                }
+                else
+                {
+                    if (vm.UserID.Length != 5 || (vm.UserID.First() != 'P' && vm.UserID.First() != 'E'))
+                    {
+                        vm.Show_Bear_Window("工號格式應為PXXX", false, "String", false);
+                        return;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(vm.list_GaugeModels.First().GaugeSN))
+                {
+                    vm.Show_Bear_Window("序號空白", false, "String", false);
+                    return;
+                }
+
+                if (!vm.CheckDirectoryExist(vm.txt_BR_Save_Path))
+                {
+                    vm.Show_Bear_Window("儲存路徑不存在", false, "String", false);
+                    return;
+                }
+                #endregion
+
+                cmd.Save_BR_Data();
             }
             else
             {
@@ -6711,23 +7014,7 @@ namespace PD
             vm.Ini_Write("Connection", "Band", vm.selected_band);  //創建ini file並寫入基本設定
         }
 
-        private void btn_max_Loaded(object sender, RoutedEventArgs e)
-        {
-            btn_desktop.Visibility = Visibility.Collapsed;
-
-            this.ResizeMode = ResizeMode.CanResizeWithGrip;
-            this.WindowState = WindowState.Normal;
-
-            //取得可獲得之工作視窗大小(不含工作列)         
-            var a = SystemParameters.WorkArea;
-            this.MaxHeight = a.Height;
-            this.MaxWidth = a.Width;
-            Height = MaxHeight;
-            Width = MaxWidth;
-            System.Windows.Point p = this.PointToScreen(new System.Windows.Point(0, 0));
-            this.Left = Left - p.X;
-            this.Top = Top - p.Y;
-        }
+     
 
         private void TextBlock_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {

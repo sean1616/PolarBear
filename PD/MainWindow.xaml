@@ -237,7 +237,6 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
                         Click="btn_max_Click"
-                        Loaded="btn_max_Loaded"
                         Style="{DynamicResource style_WindowFuncBtn}"
                         Tag="../Resources/normal.png" />
                 <Button Name="btn_close"
@@ -287,7 +286,7 @@
                           FontSize="{Binding Int_Fontsize}"
                           SelectedItem="{Binding Selected_Comport, Mode=TwoWay}"
                           ItemsSource="{Binding list_combox_comports}"
-                          Style="{DynamicResource style_combobox}"
+                          Style="{DynamicResource style_combobox_mainFunc}"
                           Tag="../Resources/Network.png" />
 
                 <ComboBox x:Name="combox_product"
@@ -320,7 +319,8 @@
                               Content="{Binding Str_Go_Content, FallbackValue=Go}"
                               FontSize="{Binding Int_Fontsize}"
                               IsChecked="{Binding IsGoOn, NotifyOnTargetUpdated=True}"
-                              Style="{DynamicResource style_FuncToggleBtn}"
+                              Style="{DynamicResource style_FuncToggleBtn_Main}"
+                              Background="#FF6B6D78"
                               Tag="../Resources/Stopwatch.png" >
                     <ToggleButton.ContextMenu>
                         <ContextMenu>
@@ -448,38 +448,6 @@
                         Style="{DynamicResource style_FuncBtn}"
                         Tag="../Resources/Save.png" />
 
-                <!--<ComboBox x:Name="ComBox_SaveData"
-                          Grid.Row="9"
-                          Grid.ColumnSpan="2"
-                          DropDownClosed="ComBox_SaveData_DropDownClosed"
-                          FontSize="{Binding Int_Fontsize}"
-                          ItemsSource="{Binding list_combox_SaveData_items}"
-                          SelectedIndex="0"
-                          Style="{DynamicResource style_FuncCombobox}"
-                          Tag="../Resources/Save.png">
-                </ComboBox>-->
-
-                <!--<ComboBox Name="Combox_Switch"
-                          Grid.Row="7"
-                          Grid.ColumnSpan="2"
-                          DropDownClosed="Combox_Switch_DropDownClosed"
-                          DropDownOpened="Combox_Switch_DropDownOpened"
-                          FontSize="{Binding Int_Fontsize}"
-                          ItemsSource="{Binding list_combox_switch_items}"
-                          SelectedIndex="{Binding switch_index}"
-                          Style="{DynamicResource style_FuncCombobox}"
-                          Tag="../Resources/box.png"
-                          Visibility="Visible" />-->
-                <!--<ComboBox Name="Combox_Station"
-                          Grid.Row="7"
-                          Grid.ColumnSpan="2"
-                          FontSize="{Binding Int_Fontsize}"
-                          SelectedItem="{Binding station_type}"
-                          ItemsSource="{Binding list_combox_Working_Table_Type_items}"
-                          Style="{DynamicResource style_FuncCombobox}"
-                          Tag="../Resources/box.png"
-                          Visibility="Visible" />-->
-
                 <ToggleButton Name="tbtn_switch"
                               Grid.Row="7"
                               Grid.ColumnSpan="2"
@@ -520,7 +488,6 @@
                                   MinWidth="40"
                                   MaxHeight="30"
                                   Margin="10,0,18,0"
-                                  Click="TBtn_Unit_Click"
                                   IsChecked="{Binding dB_or_dBm}"
                                   Style="{StaticResource SwitchTypeToggleButton}" />
                     <Viewbox Grid.Column="1"
@@ -530,12 +497,12 @@
                         <TextBlock FontFamily="Segoe Print"
                                    FontSize="{Binding Int_Fontsize}">
                         <Run Name="run_dBm"
-                             Foreground="#FFACACAC"
+                             Foreground="{Binding run_dBm_color, FallbackValue=#FFACACAC}"
                              Text="dBm" />
                         <Run Foreground="White"
                              Text="/" />
                         <Run Name="run_dB"
-                             Foreground="White"
+                             Foreground="{Binding run_dB_color, FallbackValue=White}"
                              Text="dB" />
                         </TextBlock>
                     </Viewbox>
@@ -613,7 +580,7 @@
                                KeyDown="TextBlock_KeyDown"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center">
-                        <Run Text="{Binding msg_3, Mode=TwoWay}" />
+                        <Run Text="{Binding msg_3}" />
                     </TextBlock>
                 </Grid>
             </Border>

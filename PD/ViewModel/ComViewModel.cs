@@ -27,6 +27,9 @@ using PD.AnalysisModel;
 using PD.NavigationPages;
 using PD.Utility;
 using DiCon.Instrument.HP;
+using DiCon.Instrument.HP.GLTLS;
+
+using AutoMapper;
 
 namespace PD.ViewModel
 {
@@ -34,27 +37,35 @@ namespace PD.ViewModel
     {
         public ComViewModel()
         {
+            
+        }
+
+        public void InitializeComViewModel()
+        {
+            #region Setting Page
+            #endregion
+
             #region ICommand Setting
             //Cmd_TXT_Power_KeyDown = new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown, CanExecute);
 
             //Cmd_Set_TLS_WL2 = new DelegateCommand_Double(Set_WL2, CanExecuteMethod);
             #endregion
 
-            #region PlotModel
-
-            //Initialize line series color of chart
-            list_OxyColor = new List<OxyColor>() { OxyColor.FromRgb(0, 128, 0) };
-            for (int i = 0; i < 16; i++)
+            #region Color Setting
+            list_brushes = new List<SolidColorBrush>();
+            for (int i = 0; i < list_OxyColor.Count; i++)
             {
-                OxyColor oc = list_OxyColor.Last();
-                list_OxyColor.Add(OxyColor.FromAColor(16, oc));
+                list_brushes.Add(new SolidColorBrush(Color.FromRgb(list_OxyColor[i].R, list_OxyColor[i].G, list_OxyColor[i].B)));
             }
+            
+            #endregion
+
+            #region PlotModel
 
             // Create the plot model for pre-view
             var plotModel1 = new PlotModel
             {
                 Title = Chart_title,
-                //Subtitle = " ",
                 DefaultFont = "Segoe Print",
                 LegendTitleColor = OxyColor.FromRgb(0, 0, 0),
                 //TitleColor = OxyColor.FromRgb(160, 160, 160),
@@ -62,7 +73,6 @@ namespace PD.ViewModel
                 LegendPlacement = LegendPlacement.Inside,
                 LegendPosition = LegendPosition.RightTop,
             };
-
 
             var lineSeries1 = new LineSeries
             {
@@ -74,103 +84,156 @@ namespace PD.ViewModel
             Plot_Series = new ObservableCollection<LineSeries>();
             Plot_Series.Add(lineSeries1);
 
-            for (int i = -65; i < 66; i++)
-            {
-                lineSeries1.Points.Add(new DataPoint(i, gauss_2D(i * 0.2, 0, 0, 0, 14.2, 0, 4.0)));
-            }
-
-            plotModel1.Series.Clear();
-            plotModel1.Series.Add(lineSeries1);
+            //for (int i = -65; i < 66; i++)
+            //{
+            //    lineSeries1.Points.Add(new DataPoint(i, gauss_2D(i * 0.2, 0, 0, 0, 14.2, 0, 4.0)));
+            //}
 
             LinearAxis linearAxis1 = new LinearAxis();
+            linearAxis1.Tag = "X axis";
             linearAxis1.Position = AxisPosition.Bottom;
             linearAxis1.Title = Chart_x_title;
 
             LinearAxis linearAxis2 = new LinearAxis();
+            linearAxis2.Tag = "Y axis";
             linearAxis2.Position = AxisPosition.Left;
             linearAxis2.Title = Chart_y_title;
-            //linearAxis2.TitleColor = .FromRgb(160, 160, 160);
-            //linearAxis2.TextColor = OxyColor.FromRgb(160, 160, 160);
-            //linearAxis2.MinorTicklineColor = OxyColor.FromRgb(160, 160, 160);
-            //linearAxis2.TicklineColor = OxyColor.FromRgb(160, 160, 160);
 
+            //LineAnnotation_X_1 = new LineAnnotation()
+            //{
+            //    Type = LineAnnotationType.Vertical,
+            //    Color = OxyColor.FromRgb(9, 73, 118),
+            //    ClipByYAxis = false,
+            //    X = 0,
+            //    StrokeThickness = 0
+            //};
+            //LineAnnotation_X_2 = new LineAnnotation()
+            //{
+            //    Type = LineAnnotationType.Vertical,
+            //    Color = OxyColor.FromRgb(203, 59, 37),
+            //    ClipByYAxis = false,
+            //    X = 0,
+            //    StrokeThickness = 0
+            //};
+            //LineAnnotation_Y = new LineAnnotation()
+            //{
+            //    Type = LineAnnotationType.Horizontal,
+            //    Color = OxyColor.FromRgb(90, 90, 90),
+            //    ClipByXAxis = false,
+            //    Y = 0,
+            //    StrokeThickness = 0,
+            //};
+
+            //PointAnnotation_1 = new PointAnnotation()
+            //{
+            //    Fill = OxyColors.Orange,
+            //    X = 0,
+            //    Y = 0,
+            //    Size = 8,
+            //    Shape = MarkerType.Cross,
+            //    Stroke = OxyColors.Orange,
+            //    StrokeThickness = 0,
+            //};
+
+            //PointAnnotation_2 = new PointAnnotation()
+            //{
+            //    Fill = OxyColors.DarkGray,
+            //    X = 10,
+            //    Y = 0,
+            //    Size = 8,
+            //    Shape = MarkerType.Cross,
+            //    Stroke = OxyColors.DarkGray,
+            //    StrokeThickness = 0,
+            //};
+
+            plotModel1.Series.Clear();
+            plotModel1.Series.Add(lineSeries1);
+            plotModel1.Axes.Clear();
             plotModel1.Axes.Add(linearAxis1);
             plotModel1.Axes.Add(linearAxis2);
-
-            LineAnnotation_X_1 = new LineAnnotation()
-            {
-                Type = LineAnnotationType.Vertical,
-                Color = OxyColor.FromRgb(9, 73, 118),
-                ClipByYAxis = false,
-                X = 0,
-                StrokeThickness = 0
-            };
-            LineAnnotation_X_2 = new LineAnnotation()
-            {
-                Type = LineAnnotationType.Vertical,
-                Color = OxyColor.FromRgb(203, 59, 37),
-                ClipByYAxis = false,
-                X = 0,
-                StrokeThickness = 0
-            };
-            LineAnnotation_Y = new LineAnnotation()
-            {
-                Type = LineAnnotationType.Horizontal,
-                Color = OxyColor.FromRgb(90, 90, 90),
-                ClipByXAxis = false,
-                Y = 0,
-                StrokeThickness = 0,
-            };
-
             plotModel1.Annotations.Clear();
             plotModel1.Annotations.Add(LineAnnotation_X_1);
             plotModel1.Annotations.Add(LineAnnotation_X_2);
             plotModel1.Annotations.Add(LineAnnotation_Y);
-
-            PointAnnotation_1 = new PointAnnotation()
-            {
-                Fill = OxyColors.Orange,
-                X = 0,
-                Y = 0,
-                Size = 8,
-                Shape = MarkerType.Cross,
-                Stroke = OxyColors.Orange,
-                StrokeThickness = 0,
-            };
-
-            PointAnnotation_2 = new PointAnnotation()
-            {
-                Fill = OxyColors.DarkGray,
-                X = 10,
-                Y = 0,
-                Size = 8,
-                Shape = MarkerType.Cross,
-                Stroke = OxyColors.DarkGray,
-                StrokeThickness = 0,
-            };
-
             plotModel1.Annotations.Add(PointAnnotation_1);
             plotModel1.Annotations.Add(PointAnnotation_2);
 
-            this.PlotViewModel = plotModel1;
-
+            //一個plotModel同一時間只能供給一個plotview使用
+            PlotViewModel = plotModel1;
+            PlotViewModel_Chart = plotModel1;
 
             #endregion
-
         }
 
-        //ControlCmd cmd;
+        public LineAnnotation LineAnnotation_X_1 = new LineAnnotation()
+        {
+            Type = LineAnnotationType.Vertical,
+            Color = OxyColor.FromRgb(9, 73, 118),
+            ClipByYAxis = false,
+            X = 0,
+            StrokeThickness = 0
+        };
+        public LineAnnotation LineAnnotation_X_2 = new LineAnnotation()
+        {
+            Type = LineAnnotationType.Vertical,
+            Color = OxyColor.FromRgb(203, 59, 37),
+            ClipByYAxis = false,
+            X = 0,
+            StrokeThickness = 0
+        };
 
-        public LineAnnotation LineAnnotation_X_1 = new LineAnnotation();
-        public LineAnnotation LineAnnotation_X_2 = new LineAnnotation();
+        public LineAnnotation LineAnnotation_Y = new LineAnnotation()
+        {
+            Type = LineAnnotationType.Horizontal,
+            Color = OxyColor.FromRgb(90, 90, 90),
+            ClipByXAxis = false,
+            Y = 0,
+            StrokeThickness = 0,
+        };
 
-        public LineAnnotation LineAnnotation_Y = new LineAnnotation();
+        public PointAnnotation PointAnnotation_1 = new PointAnnotation()
+        {
+            Fill = OxyColors.Orange,
+            X = 0,
+            Y = 0,
+            Size = 8,
+            Shape = MarkerType.Cross,
+            Stroke = OxyColors.Orange,
+            StrokeThickness = 0,
+        };
+        public PointAnnotation PointAnnotation_2 = new PointAnnotation()
+        {
+            Fill = OxyColors.DarkGray,
+            X = 10,
+            Y = 0,
+            Size = 8,
+            Shape = MarkerType.Cross,
+            Stroke = OxyColors.DarkGray,
+            StrokeThickness = 0,
+        };
 
-        public PointAnnotation PointAnnotation_1 = new PointAnnotation();
-        public PointAnnotation PointAnnotation_2 = new PointAnnotation();
 
+        public List<OxyColor> list_OxyColor = new List<OxyColor>()
+            {
+                OxyColors.Green,
+                OxyColors.Red,
+                OxyColors.Blue,
+                OxyColors.Orange,
+                OxyColors.DarkGreen,
+                OxyColors.Purple,
+                OxyColors.Gray,
+                OxyColors.Chocolate,
+                OxyColors.LightSeaGreen,
+                OxyColors.MediumVioletRed,
+                OxyColors.Coral,
+                OxyColors.DarkTurquoise,
+                OxyColors.DarkKhaki,
+                OxyColors.DarkCyan,
+                OxyColors.MediumPurple,
+                OxyColors.OrangeRed,
+            };
 
-        public List<OxyColor> list_OxyColor { get; set; } = new List<OxyColor>();
+        public List<SolidColorBrush> list_brushes;
 
         public double gauss_2D(double x, double y, double deltaX, double deltaY, double a, double b, double c)
         {
@@ -453,7 +516,7 @@ namespace PD.ViewModel
         #endregion
 
 
-        string ini_path = @"D:\PD\Instrument.ini";
+        public string ini_path = @"D:\PD\Instrument.ini";
         public string CurrentPath { get; set; } = Directory.GetCurrentDirectory();
 
         //ICommand
@@ -469,6 +532,8 @@ namespace PD.ViewModel
 
         public ICommand Pre_Chart { get { return new Delegatecommand(btn_previous_chart_Click); } }
         public ICommand Next_Chart { get { return new Delegatecommand(btn_next_chart_Click); } }
+
+        public ICommand Get_Ref { get { return new Delegatecommand(Cmd_Get_Reference); } }
 
         public ICommand Cmd_TXT_Power_KeyDown { get { return new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown); } }
         //public ICommand Cmd_TXT_Set_Power_Content_KeyDown { get { return new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown, CanExecute); } }
@@ -492,6 +557,47 @@ namespace PD.ViewModel
 
 
         //Commands
+        public void AsyncDelay(int delay)
+        {
+            SpinWait.SpinUntil(() => false, delay); //返回false會進入等待狀態，類似於Thread.Sleep()等待，但是會盤旋CPU周期，在短期內等待事件準確度都高於Sleep 
+            //SpinWait.SpinUntil(() => true, 1000);  //返回true會自動跳出等待狀態，不再休眠，繼續執行下面的代碼
+        }
+
+        public void Update_ALL_PlotView()
+        {
+            if(PlotViewModel.PlotView != null)
+                PlotViewModel.InvalidatePlot(is_update_chart);
+
+            if (PlotViewModel_Chart.PlotView != null)
+                PlotViewModel_Chart.InvalidatePlot(is_update_chart);
+
+            if (PlotViewModel_TF2.PlotView != null)
+                PlotViewModel_TF2.InvalidatePlot(is_update_chart);
+
+            if (PlotViewModel_UTF600.PlotView != null)
+                PlotViewModel_UTF600.InvalidatePlot(is_update_chart);
+
+            if (PlotViewModel_BR.PlotView != null)
+                PlotViewModel_BR.InvalidatePlot(is_update_chart);
+
+            if (PlotViewModel_Testing.PlotView != null)
+                PlotViewModel_Testing.InvalidatePlot(is_update_chart);
+        }
+
+        public void Update_ALL_PlotView_Title(string Title, string X_Title, string Y_Title)
+        {
+            if(PlotViewModel.PlotView!=null)
+            {
+                PlotViewModel.Title = Title;
+
+                if (PlotViewModel.Axes.Count >= 2)
+                {
+                    PlotViewModel.Axes[0].Title = X_Title;
+                    PlotViewModel.Axes[1].Title = Y_Title;
+                }
+            }
+        }
+
         #region Command Cycle
         private async void CommandListCycle()
         {
@@ -952,7 +1058,7 @@ namespace PD.ViewModel
             }
         }
 
-        private bool ConnectGolightTLS(DiCon.Instrument.HP.GLTLS port, string portName)
+        private bool ConnectGolightTLS(DiCon.Instrument.HP.GLTLS.GLTLS port, string portName)
         {
             try
             {
@@ -1050,7 +1156,7 @@ namespace PD.ViewModel
                         break;
 
                     case "Golight":
-                        tls_GL.SetWL(Double_Laser_Wavelength);
+                        tls_GL.SetWL((float)Double_Laser_Wavelength);
                         break;
                 }
 
@@ -1452,6 +1558,294 @@ namespace PD.ViewModel
                 port_Switch.Open();
             }
         }
+
+        public async void Cmd_Get_Reference()
+        {
+            //try
+            //{
+            //    isStop = false;
+
+            //    analysis.JudgeAllBoolGauge();
+
+            //    string RefName = String.Empty;
+            //    string RefPath = String.Empty;
+
+            //    for (int ch = 0; ch < ch_count; ch++)
+            //    {
+            //        RefName = $"Ref{ch + 1}.txt";
+            //        RefPath = Path.Combine(@"D:\Ref\", RefName);
+
+            //        if (!File.Exists(RefPath))
+            //        {
+            //            string s = Directory.GetParent(RefPath).ToString();
+            //            if (!analysis.CheckDirectoryExist(s))
+            //                Directory.CreateDirectory(s);  //Creat ref folder
+
+            //            if (analysis.CheckDirectoryExist(s))
+            //                File.AppendAllText(RefPath, "");  //Creat txt file
+            //            else
+            //                return;  //If Ref folder still not exist, return.
+            //        }
+            //    }
+
+            //    MessageBoxResult msgBoxResult = MessageBox.Show("Cover old ref.txt ?", "Get Ref", MessageBoxButton.YesNoCancel);
+
+            //    if (msgBoxResult != MessageBoxResult.Cancel)
+            //    {
+            //        string savePath = @"D:\";
+            //        if (!CheckDirectoryExist(@"D:"))
+            //        {
+            //            MessageBox.Show($"D槽不存在，更改路徑為{CurrentPath}");
+            //            savePath = CurrentPath;
+            //        }
+
+            //        if (!CheckDirectoryExist(Path.Combine(savePath, @"\Ref\")))
+            //        {
+            //            savePath = CurrentPath;
+            //            Directory.CreateDirectory(Path.Combine(savePath, @"\Ref\"));
+            //        }
+
+            //        Str_Status = "Get Ref";
+            //        dB_or_dBm = false;
+
+            //        cmd.Clean_Chart();
+
+            //        List<double> list_wl = new List<double>();
+
+            //        if (msgBoxResult == MessageBoxResult.Yes)
+            //        {
+            //            for (int ch = 0; ch < ch_count; ch++)
+            //            {
+            //                RefName = $"Ref{ch + 1}.txt";
+            //                RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+
+            //                if (File.Exists(RefPath))
+            //                {
+            //                    File.Delete(RefPath);
+            //                    File.AppendAllText(RefPath, "");
+            //                }
+            //            }
+
+            //            for (double wl = float_WL_Scan_Start; wl <= float_WL_Scan_End; wl = wl + float_WL_Scan_Gap)
+            //            {
+            //                list_wl.Add(wl);
+            //            }
+
+            //            Ref_memberDatas.Clear();
+
+            //            for (int i = 0; i < Ref_Dictionaries.Count; i++)
+            //            {
+            //                Ref_Dictionaries[i].Clear();
+            //            }
+            //        }
+            //        else if (msgBoxResult == MessageBoxResult.No)
+            //        {
+            //            //add specific channel ref to ref.txt
+            //            for (double wl = float_WL_Scan_Start; wl <= float_WL_Scan_End; wl = wl + float_WL_Scan_Gap)
+            //            {
+            //                for (int ch = 0; ch < ch_count; ch++)
+            //                {
+            //                    if (BoolAllGauge || list_GaugeModels[ch].boolGauge)
+            //                    {
+            //                        if (Ref_Dictionaries[ch].ContainsKey(wl))
+            //                            continue;
+
+            //                        if (!list_wl.Contains(wl))
+            //                            list_wl.Add(wl);
+            //                    }
+            //                }
+            //            }
+            //        }
+
+            //        bool tempBool = Is_FastScan_Mode;
+            //        Is_FastScan_Mode = false;
+
+            //        foreach (double wl in list_wl)
+            //        {
+            //            if (isStop) break;
+
+            //            await cmd.Set_WL(wl, false);
+
+            //            Double_Laser_Wavelength = Math.Round(wl, 2);
+
+            //            Str_cmd_read = Math.Round(wl, 2).ToString();
+
+            //            await Task.Delay(Int_Set_WL_Delay);
+
+            //            double IL = 0;
+
+            //            if (!IsDistributedSystem)
+            //            {
+            //                //PM mode
+            //                if (PD_or_PM)
+            //                {
+            //                    for (int ch = 0; ch < ch_count; ch++)
+            //                    {
+            //                        if (BoolAllGauge || list_GaugeModels[ch].boolGauge)
+            //                        {
+            //                            switch_index = ch + 1;
+            //                            if (station_type.Equals("Hermetic_Test"))
+            //                            {
+            //                                RefName = string.Format("Ref{0}.txt", switch_index);
+            //                                RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+
+            //                                await Port_Switch_ReOpen();
+            //                                port_Switch.Write(string.Format("SW0 {0}", switch_index));
+            //                            }
+            //                            else
+            //                            {
+            //                                RefName = $"Ref{ch + 1}.txt";
+            //                                RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+            //                            }
+
+            //                            IL = await cmd.Get_PM_Value((switch_index - 1));
+
+            //                            //string msg = string.Format("{0},{1}", Math.Round(wl, 2).ToString(), IL.ToString());
+            //                            string msg = $"{Math.Round(wl, 2)},{IL}";
+
+            //                            File.AppendAllText(RefPath, msg + "\r");
+
+            //                            Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+
+            //                            Ref_memberDatas.Add(new RefModel()
+            //                            {
+            //                                Wavelength = Math.Round(wl, 2),
+            //                                Ch_1 = Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
+            //                                Ch_2 = Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
+            //                                Ch_3 = Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
+            //                                Ch_4 = Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
+            //                                Ch_5 = Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
+            //                                Ch_6 = Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
+            //                                Ch_7 = Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
+            //                                Ch_8 = Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
+            //                                Ch_9 = Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
+            //                                Ch_10 = Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
+            //                                Ch_11 = Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
+            //                                Ch_12 = Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
+            //                                Ch_13 = Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
+            //                                Ch_14 = Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
+            //                                Ch_15 = Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
+            //                                Ch_16 = Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
+            //                            });
+            //                        }
+            //                    }
+            //                }
+            //                //PD mode
+            //                else
+            //                {
+            //                    await cmd.Get_PD_Value(Selected_Comport);
+
+            //                    Ref_memberDatas.Add(new RefModel());
+            //                    Ref_memberDatas.Last().Wavelength = Math.Round(wl, 2);
+
+            //                    for (int ch = 0; ch < ch_count; ch++)
+            //                    {
+            //                        if (BoolAllGauge || list_GaugeModels[ch].boolGauge)
+            //                        {
+            //                            IL = Double_Powers[ch];
+            //                            Save_All_PD_Value[ch].Add(new DataPoint(Math.Round(wl, 2), IL));
+            //                            list_GaugeModels[ch].GaugeValue = IL.ToString();
+
+            //                            string msg = $"{wl},{IL}\r";
+
+            //                            RefName = $"Ref{ch + 1}.txt";
+            //                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+
+            //                            File.AppendAllText(RefPath, msg);  //Add new line to ref file
+
+            //                            Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+
+            //                            Ref_memberDatas.Last().Wavelength = Math.Round(wl, 2);   //Add a new data to grid ref
+
+            //                            //get all properties and it's values in the last of Ref_memberDatas
+            //                            var props = Ref_memberDatas.Last().GetPropertiesFromCache();
+
+            //                            foreach (var prop in props)
+            //                            {
+            //                                //Set value to which property name is match channel now
+            //                                if (prop.Name == $"Ch_{ch + 1}")
+            //                                {
+            //                                    prop.SetValue(Ref_memberDatas.Last(), Ref_Dictionaries[0][Math.Round(wl, 2)]);
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                    Chart_All_DataPoints = new List<List<DataPoint>>(Save_All_PD_Value);
+
+            //                    Chart_DataPoints = new List<DataPoint>(Chart_All_DataPoints[0]);  //A lineseries
+            //                }
+            //            }
+            //            //Distribution system
+            //            else
+            //            {
+            //                for (int ch = 0; ch < vm.ch_count; ch++)
+            //                {
+            //                    await cmd.Get_Power(ch, true);
+            //                    IL = vm.Double_Powers[ch];
+            //                    File.AppendAllText(RefPath, $"{Math.Round(wl, 2)},{IL}\r");
+
+            //                    vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+
+            //                    vm.Ref_memberDatas.Add(new RefModel()
+            //                    {
+            //                        Wavelength = Math.Round(wl, 2),
+            //                        Ch_1 = vm.Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
+            //                        Ch_2 = vm.Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
+            //                        Ch_3 = vm.Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
+            //                        Ch_4 = vm.Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
+            //                        Ch_5 = vm.Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
+            //                        Ch_6 = vm.Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
+            //                        Ch_7 = vm.Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
+            //                        Ch_8 = vm.Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
+            //                        Ch_9 = vm.Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
+            //                        Ch_10 = vm.Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
+            //                        Ch_11 = vm.Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
+            //                        Ch_12 = vm.Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
+            //                        Ch_13 = vm.Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
+            //                        Ch_14 = vm.Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
+            //                        Ch_15 = vm.Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
+            //                        Ch_16 = vm.Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
+            //                    });
+            //                }
+            //            }
+            //        }
+
+            //        vm.Is_FastScan_Mode = tempBool;
+
+            //        if (!vm.PD_or_PM && !vm.IsDistributedSystem)
+            //        {
+            //            if (vm.port_PD != null)
+            //            {
+            //                if (vm.port_PD.IsOpen)
+            //                {
+            //                    vm.port_PD.DiscardInBuffer();
+            //                    vm.port_PD.DiscardOutBuffer();
+            //                    vm.port_PD.Close();
+            //                }
+            //            }
+            //        }
+
+            //        //Close TLS filter port for other control action
+            //        cmd.Close_TLS_Filter();
+
+            //        vm.Str_Status = "Get Ref End";
+
+            //        #region Get data from txt file and show
+            //        _Page_Ref_Grid = new Page_Ref_Grid(vm, txt_path.Text);
+
+            //        pageTransitionControl.ShowPage(_Page_Ref_Grid);
+
+            //        save_path = txt_path.Text;
+
+            //        pageTransitionControl.CurrentPage.Name = "Grid";
+
+            //        currentPage = false;
+            //        #endregion
+            //    }
+            //}
+            //catch { }
+
+        }
         #endregion
 
         #region UI Command
@@ -1538,6 +1932,112 @@ namespace PD.ViewModel
                 }
 
                 is_update_chart = true;
+            }
+            else if (station_type.Equals("BR"))
+            {
+                PD_or_PM = true;
+                BoudRate = 115200;
+                ch_count = 1;
+                switch_index = 1;
+                Is_switch_mode = false;
+                GaugeText_visible = Visibility.Visible;
+                GaugeTabEnable = false;
+                GaugeSize_Height = new GridLength(7, GridUnitType.Star);
+                GaugeTxtSize_Height = new GridLength(0, GridUnitType.Star);
+
+                GaugeGrid1_visible = Visibility.Collapsed;  //Only Channel 1 will Show!!
+                GaugeGrid2_visible = Visibility.Collapsed;
+                GaugeGrid3_visible = Visibility.Collapsed;
+
+                GaugeChart_visible = Visibility.Visible;
+
+                foreach (GaugeModel gm in _list_GaugeModels)
+                {
+                    gm.SN_Row = 2;
+                    gm.GaugeMode = Visibility.Collapsed;
+                }
+
+                if (bool.TryParse(Ini_Read("Connection", "is_BR_OSA"), out bool isBROSA))
+                    is_BR_OSA = isBROSA;
+
+                if (is_BR_OSA)
+                    BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_OSA_Para_List.ini");
+                else
+                    BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_TLS_Para_List.ini");
+
+                if (File.Exists(BR_Scan_Para_Path))
+                {
+                    list_BR_Scan_Para = new ObservableCollection<string>(Ini_Read_All_Sections(BR_Scan_Para_Path));
+
+                    if (list_BR_Scan_Para.Count > 0)
+                        OSA_Scan_Para = list_BR_Scan_Para.First();
+                }
+
+                Plot_Series.Clear();
+                PlotViewModel.Series.Clear();
+
+                list_Chart_UI_Models.Clear();
+
+                //若BR_Scan_Dac的參數量多於16(color list的預設數)，則需擴充color list
+                int expand_times = 5;
+                for (int i = 0; i < expand_times; i++)
+                {
+                    if (list_BR_DAC_WL.Count > list_brushes.Count)
+                    {
+                        list_brushes.AddRange(list_brushes);
+                        list_OxyColor.AddRange(list_OxyColor);
+                    }
+                    else
+                        break;
+                }
+
+                //根據BR_Scan_Dac的參數數量來新增對應的圖表線數
+                //Add Chart line series for Scan_Para count
+                if (list_BR_DAC_WL.Count <= list_brushes.Count)
+                {
+                    for (int i = 0; i < list_BR_DAC_WL.Count; i++)
+                    {
+                        list_Chart_UI_Models.Add(new Chart_UI_Model()
+                        {
+                            Button_Color = i < list_brushes.Count() ? list_brushes[i] : list_brushes[i - list_brushes.Count()],
+                            Button_Channel = i + 1,
+                            Button_Content = string.Format("Ch {0}", i + 1),
+                            Button_IsChecked = true,
+                            Button_IsVisible = Visibility.Visible,
+                            Button_Tag = "../../Resources/right-arrow.png"
+                        });
+
+                        LineSeries lineSerie = new LineSeries
+                        {
+                            Title = $"Ch{i + 1}",
+                            FontSize = 20,
+                            StrokeThickness = 1.8,
+                            MarkerType = MarkerType.Circle,
+                            MarkerSize = 0,  //4
+                            Smooth = false,
+                            MarkerFill = list_OxyColor[i],
+                            Color = list_OxyColor[i],
+                            CanTrackerInterpolatePoints = true,
+                            TrackerFormatString = Chart_x_title + " : {2}\n" + Chart_y_title + " : {4}",
+                            LineLegendPosition = LineLegendPosition.None,
+                            IsVisible = list_Chart_UI_Models[i].Button_IsChecked
+                        };
+
+                        Plot_Series.Add(lineSerie);
+
+                        PlotViewModel.Series.Add(Plot_Series[i]);
+                    }
+
+                    PlotViewModel.InvalidatePlot(true);
+                }
+                else
+                {
+                    Str_cmd_read = $"WL參數量 > {expand_times * 16}";
+                    Save_Log(new LogMember() { Status="Station Initializing", Message = Str_cmd_read });
+                }
+
+                is_update_chart = true;
+                isOSAConnected = false;
             }
 
             else if (station_type.Equals("UV_Curing") || station_type.Equals("UV Curing"))
@@ -1705,27 +2205,64 @@ namespace PD.ViewModel
 
                     ChartNowModel = list_ChartModels[int_chart_now - 1];
 
-                    for (int ch = 0; ch < Plot_Series.Count; ch++)
+                    if (ch_count != ChartNowModel.Plot_Series.Count)
                     {
-                        Plot_Series[ch].Points.Clear();
-                        Plot_Series[ch].Points.AddRange(ChartNowModel.Plot_Series[ch].Points);
-                    }
+                        Plot_Series.Clear();
+                        PlotViewModel.Series.Clear();
 
-                    PlotViewModel.InvalidatePlot(true);
+                        for (int i = 0; i < ChartNowModel.Plot_Series.Count; i++)
+                        {
+                            LineSeries lineSerie = new LineSeries
+                            {
+                                Title = $"{ChartNowModel.Plot_Series[i].Title}",
+                                FontSize = 20,
+                                StrokeThickness = 1.8,
+                                MarkerType = MarkerType.Circle,
+                                MarkerSize = 0,  //4
+                                Smooth = false,
+                                MarkerFill = list_OxyColor[i],
+                                Color = list_OxyColor[i],
+                                CanTrackerInterpolatePoints = true,
+                                TrackerFormatString = Chart_x_title + " : {2}\n" + Chart_y_title + " : {4}",
+                                LineLegendPosition = LineLegendPosition.None,
+                                IsVisible = true
+                            };
+
+                            Plot_Series.Add(lineSerie);
+
+                            if(ChartNowModel.Plot_Series[i].Points.Count > 0)
+                            {
+                                Plot_Series.Last().Points.AddRange(ChartNowModel.Plot_Series[i].Points);
+                            }
+
+                            PlotViewModel.Series.Add(Plot_Series.Last());
+                        }
+                    }
+                    else
+                        for (int ch = 0; ch < ChartNowModel.Plot_Series.Count; ch++)
+                        {
+                            Plot_Series[ch].Points.Clear();
+                            Plot_Series[ch].Points.AddRange(ChartNowModel.Plot_Series[ch].Points);
+                        }
+
+                    Update_ALL_PlotView();
 
                     Chart_x_title = ChartNowModel.title_x;
                     Chart_y_title = ChartNowModel.title_y;
 
-                    msgModel.msg_3 = Math.Round(ChartNowModel.TimeSpan, 1).ToString();
+                    msgModel.msg_3 = $"{Math.Round(ChartNowModel.TimeSpan, 1)} s";
 
-                    for (int i = 0; i < ch_count; i++)
+                    if (ch_count == ChartNowModel.Plot_Series.Count)
                     {
-                        if (i < list_ch_title.Count)
-                            if (list_ChartModels.Count > (int_chart_now - 1))
-                            {
-                                if (i <= list_ch_title.Count - 1 && i <= ChartNowModel.list_delta_IL.Count)
-                                    list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, ChartNowModel.list_delta_IL[i]);
-                            }
+                        for (int i = 0; i < ch_count; i++)
+                        {
+                            if (i < list_ch_title.Count)
+                                if (list_ChartModels.Count > (int_chart_now - 1))
+                                {
+                                    if (i <= list_ch_title.Count - 1 && i <= ChartNowModel.list_delta_IL.Count)
+                                        list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, ChartNowModel.list_delta_IL[i]);
+                                }
+                        }
                     }
                 }
             }
@@ -1756,27 +2293,64 @@ namespace PD.ViewModel
 
                 ChartNowModel = list_ChartModels[int_chart_now - 1];
 
-                for (int ch = 0; ch < Plot_Series.Count; ch++)
+                if (ch_count != ChartNowModel.Plot_Series.Count)
                 {
-                    Plot_Series[ch].Points.Clear();
-                    Plot_Series[ch].Points.AddRange(ChartNowModel.Plot_Series[ch].Points);
-                }
+                    Plot_Series.Clear();
+                    PlotViewModel.Series.Clear();
 
-                PlotViewModel.InvalidatePlot(true);
+                    for (int i = 0; i < ChartNowModel.Plot_Series.Count; i++)
+                    {
+                        LineSeries lineSerie = new LineSeries
+                        {
+                            Title = $"{ChartNowModel.Plot_Series[i].Title}",
+                            FontSize = 20,
+                            StrokeThickness = 1.8,
+                            MarkerType = MarkerType.Circle,
+                            MarkerSize = 0,  //4
+                            Smooth = false,
+                            MarkerFill = list_OxyColor[i],
+                            Color = list_OxyColor[i],
+                            CanTrackerInterpolatePoints = true,
+                            TrackerFormatString = Chart_x_title + " : {2}\n" + Chart_y_title + " : {4}",
+                            LineLegendPosition = LineLegendPosition.None,
+                            IsVisible = true
+                        };
+
+                        Plot_Series.Add(lineSerie);
+
+                        if(ChartNowModel.Plot_Series[i].Points.Count > 0)
+                        {
+                            Plot_Series.Last().Points.AddRange(ChartNowModel.Plot_Series[i].Points);
+                        }
+
+                        PlotViewModel.Series.Add(Plot_Series.Last());
+                    }
+                }
+                else
+                    for (int ch = 0; ch < ChartNowModel.Plot_Series.Count; ch++)
+                    {
+                        Plot_Series[ch].Points.Clear();
+                        Plot_Series[ch].Points.AddRange(ChartNowModel.Plot_Series[ch].Points);
+                    }
+
+                Update_ALL_PlotView();
 
                 Chart_x_title = ChartNowModel.title_x;
                 Chart_y_title = ChartNowModel.title_y;
 
-                msgModel.msg_3 = Math.Round(ChartNowModel.TimeSpan, 1).ToString();
+                msgModel.msg_3 = $"{Math.Round(ChartNowModel.TimeSpan, 1)} s";
 
-                for (int i = 0; i < ch_count; i++)
+                if (ch_count == ChartNowModel.Plot_Series.Count)
                 {
-                    if (i < list_ch_title.Count)
-                        if (list_ChartModels.Count > (int_chart_now - 1))
-                        {
-                            if (i <= list_ch_title.Count - 1 && i <= ChartNowModel.list_delta_IL.Count)
-                                list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, ChartNowModel.list_delta_IL[i]);
-                        }
+                    for (int i = 0; i < ch_count; i++)
+                    {
+                        if (i < list_ch_title.Count)
+                            if (list_ChartModels.Count > (int_chart_now - 1))
+                            {
+                                if (i <= list_ch_title.Count - 1 && i <= ChartNowModel.list_delta_IL.Count)
+                                    list_ch_title[i] = string.Format("ch{0} ,Delta IL : {1}", i + 1, ChartNowModel.list_delta_IL[i]);
+                            }
+                    }
                 }
             }
             catch (Exception ex)
@@ -1934,9 +2508,7 @@ namespace PD.ViewModel
         {
             string _ini_read;
             if (File.Exists(ini_path))
-            {
                 _ini_read = ini.IniReadValue(Section, key, ini_path);
-            }
             else
                 _ini_read = "";
 
@@ -1948,6 +2520,39 @@ namespace PD.ViewModel
             if (!File.Exists(ini_path))
                 Directory.CreateDirectory(System.IO.Directory.GetParent(ini_path).ToString());  //建立資料夾
             ini.IniWriteValue(Section, key, value, ini_path);  //創建ini file並寫入基本設定
+        }
+
+        public List<string> Ini_Read_All_Sections(string ini_path)
+        {
+            List<string> result;
+            if (File.Exists(ini_path))
+                result = ini.IniReadAllSections(ini_path);
+            else
+                result = new List<string>();
+
+            return result;
+        }
+
+        public List<string> Ini_Read_All_KeyNames(string ini_path, string Section)
+        {
+            List<string> result;
+            if (File.Exists(ini_path))
+                result = ini.IniReadAllKeyNames(ini_path, Section);
+            else
+                result = new List<string>();
+
+            return result;
+        }
+
+        public Dictionary<string, string> Ini_Read_All_Keys(string ini_path, string Section)
+        {
+            Dictionary<string, string> result;
+            if (File.Exists(ini_path))
+                result = ini.IniReadAllKeys(ini_path, Section);
+            else
+                result = new Dictionary<string, string>();
+
+            return result;
         }
         #endregion
 
@@ -2306,7 +2911,6 @@ namespace PD.ViewModel
 
         private object key_port_Switch = new object();
 
-
         public SerialPort port_Switch
         {
             get
@@ -2597,6 +3201,17 @@ namespace PD.ViewModel
             }
         }
 
+        private string _txt_BR_Save_Path = @"\\192.168.2.4\OptiComm\ProductionLineData\WDM_Data\UTF BR\Bf. Connector\Room\";
+        public string txt_BR_Save_Path
+        {
+            get { return _txt_BR_Save_Path; }
+            set
+            {
+                _txt_BR_Save_Path = value;
+                ini.IniWriteValue("Connection", "BR_Save_Path", value.ToString(), ini_path);
+            }
+        }
+
         private string _Server_IP = @"172.16.10.108";
         public string Server_IP
         {
@@ -2691,16 +3306,22 @@ namespace PD.ViewModel
             set { progressbar_value = value; }
         }
 
-        private int _control_board_type = 0;  //0: UFV, 1: V, ...
+        /// <summary>
+        /// Control Board Type, 0=UFV, 1=V, 2=MTF Board
+        /// </summary>
+        private int _control_board_type = 0;  //0: UFV, 1: V, 2: MTF Board ...
         public int Control_board_type
         {
             get { return _control_board_type; }
-            set
-            {
-                _control_board_type = value;
-                OnPropertyChanged("Control_board_type");
-            }
+            set { _control_board_type = value; }
         }
+
+        //private string _txt_control_board_type = "UFV";  //0: UFV, 1: V, 2: MTF Board ...
+        //public string Txt_Control_board_type
+        //{
+        //    get { return _txt_control_board_type; }
+        //    set { _txt_control_board_type = value; }
+        //}
 
         private string comport_switch;
         public string Comport_Switch
@@ -3049,6 +3670,17 @@ namespace PD.ViewModel
             }
         }
 
+        private string _TLS_TCPIP = "100.65.8.113::5052";
+        public string TLS_TCPIP
+        {
+            get { return _TLS_TCPIP; }
+            set
+            {
+                _TLS_TCPIP = value;
+                OnPropertyChanged("TLS_TCPIP");
+            }
+        }
+
         private string _Laser_type = "Agilent";
         public string Laser_type
         {
@@ -3057,11 +3689,10 @@ namespace PD.ViewModel
             {
                 _Laser_type = value;
                 OnPropertyChanged("Laser_type");
-                //Ini_Write("Connection", "Laser_type", value);
             }
         }
 
-        private string _station_type = "Testing";
+        private string _station_type = "";
         public string station_type
         {
             get { return _station_type; }
@@ -3161,6 +3792,33 @@ namespace PD.ViewModel
                 _list_TF2_station_type = value;
                 OnPropertyChanged("list_TF2_station_type");
             }
+        }
+
+        private ObservableCollection<string> _list_BR_DAC_WL = new ObservableCollection<string>() { "1527", "1548.5", "1565" };
+        public ObservableCollection<string> list_BR_DAC_WL
+        {
+            get { return _list_BR_DAC_WL; }
+            set
+            {
+                _list_BR_DAC_WL = value;
+            }
+        }
+
+        private ObservableCollection<string> _list_BR_Scan_Para = new ObservableCollection<string>() { "[3 Points (1575-1610)]", "[5 Points (1524-1569)]", "[5 Points (1260-1340)]" };
+        public ObservableCollection<string> list_BR_Scan_Para
+        {
+            get { return _list_BR_Scan_Para; }
+            set
+            {
+                _list_BR_Scan_Para = value;
+            }
+        }
+
+        private string _OSA_Scan_Para = "[3 Points (1575-1610)]";
+        public string OSA_Scan_Para
+        {
+            get { return _OSA_Scan_Para; }
+            set { _OSA_Scan_Para = value; }
         }
 
         private string _waterPrint1 = "Command";
@@ -3264,13 +3922,23 @@ namespace PD.ViewModel
 
                     list_Board_Setting.Clear();
 
-                    //(SolidColorBrush)(new BrushConverter().ConvertFrom("#FF858585"))
                     SolidColorBrush[] M_brushes = new SolidColorBrush[]
                         {
-                        Brushes.Green, Brushes.Red, Brushes.Blue, Brushes.Orange,
-                        Brushes.YellowGreen, Brushes.Purple, Brushes.Gray, Brushes.Chocolate,
-                        Brushes.LightSeaGreen, Brushes.MediumVioletRed, Brushes.Coral, Brushes.BurlyWood,
-                        Brushes.DarkKhaki, Brushes.DarkCyan, Brushes.MediumPurple, Brushes.OrangeRed,
+                            Brushes.Green, 
+                            Brushes.Red, 
+                            Brushes.Blue, 
+                            Brushes.Orange,                        
+                            Brushes.DarkGreen, 
+                            Brushes.Purple, 
+                            Brushes.Gray, 
+                            Brushes.Chocolate,
+                            Brushes.DarkGreen, 
+                            Brushes.MediumVioletRed, 
+                            Brushes.Coral, Brushes.DarkTurquoise,
+                            Brushes.DarkKhaki, 
+                            Brushes.DarkCyan, 
+                            Brushes.MediumPurple, 
+                            Brushes.OrangeRed,
                         };
 
                     for (int i = 0; i < _ch_count; i++)
@@ -3290,11 +3958,25 @@ namespace PD.ViewModel
                         Save_All_PD_Value.Add(new List<DataPoint>());
                         Chart_All_DataPoints.Add(new List<DataPoint>());
 
+                        bool check = false;
+                        if (i == 0)
+                            check = true;
+
+                        list_Chart_UI_Models.Add(new Chart_UI_Model()
+                        {
+                            Button_Color = i < M_brushes.Count() ? M_brushes[i] : M_brushes[i - M_brushes.Count()],
+                            Button_Channel = (i + 1),
+                            Button_Content = string.Format("Ch {0}", (i + 1)),
+                            Button_IsChecked = check,
+                            Button_IsVisible = Visibility.Visible,
+                            Button_Tag = "../../Resources/right-arrow.png"
+                        });
+
                         LineSeries lineSerie = new LineSeries
                         {
                             Title = $"Ch{i + 1}",
                             FontSize = 20,
-                            StrokeThickness = 1.5,
+                            StrokeThickness = 1.8,
                             MarkerType = MarkerType.Circle,
                             MarkerSize = 0,  //4
                             Smooth = false,
@@ -3302,7 +3984,8 @@ namespace PD.ViewModel
                             Color = list_OxyColor[i],
                             CanTrackerInterpolatePoints = true,
                             TrackerFormatString = Chart_x_title + " : {2}\n" + Chart_y_title + " : {4}",
-                            LineLegendPosition = LineLegendPosition.End,
+                            LineLegendPosition = LineLegendPosition.None,
+                            IsVisible = list_Chart_UI_Models[i].Button_IsChecked
                         };
 
                         Plot_Series.Add(lineSerie);
@@ -3415,30 +4098,7 @@ namespace PD.ViewModel
                         }
 
                         #endregion
-
-                        bool check = false;
-                        if (i == 0)
-                        {
-                            //IsCheck.Add(true);
-                            check = true;
-                        }
-                        //else
-                        //{
-                        //IsCheck.Add(false);
-                        //}
-                        //IsCheck = new List<bool>(IsCheck);
-
-                        //list_Chart_UI_Models[i].Button_IsChecked = check;
-
-                        list_Chart_UI_Models.Add(new Chart_UI_Model()
-                        {
-                            Button_Color = i < M_brushes.Count() ? M_brushes[i] : M_brushes[i - M_brushes.Count()],
-                            Button_Channel = (i + 1),
-                            Button_Content = string.Format("Ch {0}", (i + 1)),
-                            Button_IsChecked = check,
-                            Button_IsVisible = Visibility.Visible,
-                            Button_Tag = "../../Resources/right-arrow.png"
-                        });
+                        
                     }
 
                     //lisg gaue model setting
@@ -3574,7 +4234,7 @@ namespace PD.ViewModel
         }
 
         private List<string> _list_combox_Control_Board_Type_items =
-            new List<string>() { "UFV", "V" };
+            new List<string>() { "UFV", "V", "MTF Board" };
         public List<string> list_combox_Control_Board_Type_items
         {
             get { return _list_combox_Control_Board_Type_items; }
@@ -3586,7 +4246,7 @@ namespace PD.ViewModel
         }
 
         private List<string> _list_combox_Laser_Type_items =
-            new List<string>() { "Agilent", "Golight" };
+            new List<string>() { "Agilent", "Keysight" , "Golight" };
         public List<string> list_combox_Laser_Type_items
         {
             get { return _list_combox_Laser_Type_items; }
@@ -3636,11 +4296,7 @@ namespace PD.ViewModel
         public ObservableCollection<string> list_combox_comports
         {
             get { return _list_combox_comports; }
-            set
-            {
-                _list_combox_comports = value;
-                OnPropertyChanged("list_combox_comports");
-            }
+            set { _list_combox_comports = value; }
         }
 
         private List<string> _list_combox_Product_items =
@@ -3778,6 +4434,15 @@ namespace PD.ViewModel
             }
         }
 
+        private bool _isOSAConnected = false;
+        public bool isOSAConnected
+        {
+            get { return _isOSAConnected; }
+            set { _isOSAConnected = value; }
+        }
+
+        public string BR_Scan_Para_Path { get; set; }
+
         private bool _isMouseSelecte_WLScanRange = false;
         public bool isMouseSelecte_WLScanRange
         {
@@ -3851,6 +4516,32 @@ namespace PD.ViewModel
             }
         }
 
+        private bool _BR_INOut = false;
+        /// <summary>
+        /// False is IN, True is OUT
+        /// </summary>
+        public bool BR_INOut
+        {
+            get { return _BR_INOut; }
+            set
+            {
+                _BR_INOut = value;
+            }
+        }
+
+        private double _BR_Diff = -3.3;
+        public double BR_Diff
+        {
+            get { return _BR_Diff;}
+            set
+            {
+                _BR_Diff = value;
+                Ini_Write("Scan", "BR_Diff", value.ToString());
+
+                Str_cmd_read = $"BR Diff = {value} dB";
+            }
+        }
+
         private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
         {
             //timer3.Stop();
@@ -3917,7 +4608,10 @@ namespace PD.ViewModel
             }
         }
 
-        private bool _dB_or_dBm = true; //false is "dBm"
+        private bool _dB_or_dBm = false; //false is "dBm"
+        /// <summary>
+        /// False is dBm, True is dB
+        /// </summary>
         public bool dB_or_dBm
         {
             get { return _dB_or_dBm; }
@@ -3930,7 +4624,38 @@ namespace PD.ViewModel
                 {
                     list_GaugeModels[ch].GaugeUnit = value ? "dB" : "dBm";
                 }
+
+                if (!dB_or_dBm)   //dBm mode
+                {
+                    run_dBm_color = new SolidColorBrush(Colors.White);
+                    run_dB_color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
+                    str_Unit = "dBm";
+                }
+                else
+                {
+                    run_dBm_color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
+                    run_dB_color = new SolidColorBrush(Colors.White);
+                    str_Unit = "dB";
+                }
+
+                Chart_y_title = $"Power ({str_Unit})";
+
+                Ini_Write("Productions", "Unit", str_Unit);
             }
+        }
+
+        private SolidColorBrush _run_dBm_color = new SolidColorBrush(Colors.White);
+        public SolidColorBrush run_dBm_color
+        {
+            get { return _run_dBm_color; }
+            set { _run_dBm_color = value; }
+        }
+
+        private SolidColorBrush _run_dB_color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
+        public SolidColorBrush run_dB_color
+        {
+            get { return _run_dB_color; }
+            set { _run_dB_color = value; }
         }
 
         private bool _Auto_Connect_TLS = true;
@@ -3991,6 +4716,22 @@ namespace PD.ViewModel
                 _is_TLS_Filter = value;
                 ini.IniWriteValue("Connection", "is_TLS_Filter", value.ToString(), ini_path);
                 OnPropertyChanged("is_TLS_Filter");
+            }
+        }
+
+        private bool _is_BR_OSA = false;
+        public bool is_BR_OSA
+        {
+            get { return _is_BR_OSA; }
+            set
+            {
+                _is_BR_OSA = value;
+                ini.IniWriteValue("Connection", "is_BR_OSA", value.ToString(), ini_path);
+
+                if (is_BR_OSA)
+                    BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_OSA_Para_List.ini");
+                else
+                    BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_TLS_Para_List.ini");
             }
         }
 
@@ -4323,8 +5064,8 @@ namespace PD.ViewModel
             }
         }
 
-        private DiCon.Instrument.HP.GLTLS _tls_GL = new DiCon.Instrument.HP.GLTLS();
-        public DiCon.Instrument.HP.GLTLS tls_GL
+        private DiCon.Instrument.HP.GLTLS.GLTLS _tls_GL = new DiCon.Instrument.HP.GLTLS.GLTLS();
+        public DiCon.Instrument.HP.GLTLS.GLTLS tls_GL
         {
             get { return _tls_GL; }
             set
@@ -4344,6 +5085,8 @@ namespace PD.ViewModel
         //        OnPropertyChanged("tls_GL");
         //    }
         //}
+
+        public HPOSA OSA { get; set; } = new HPOSA();
 
         private HPTLS _tls = new HPTLS();
         public HPTLS tls
@@ -5001,6 +5744,56 @@ namespace PD.ViewModel
             }
         }
 
+        private int _OSA_BoardNumber = 0;
+        public int OSA_BoardNumber
+        {
+            get { return _tls_BoardNumber; }
+            set
+            {
+                _OSA_BoardNumber = value;
+                Ini_Write("Connection", "OSA_BoardNumber", value.ToString());
+
+                if (OSA != null)
+                    OSA.BoardNumber = value;
+            }
+        }
+
+        private int _OSA_Addr = 23;
+        public int OSA_Addr
+        {
+            get { return _OSA_Addr; }
+            set
+            {
+                _OSA_Addr = value;
+                Ini_Write("Connection", "OSA_Addr", value.ToString());
+
+                if (OSA != null)
+                    OSA.Addr = value;
+            }
+        }
+
+        private double _OSA_Sensitivity = -80;
+        public double OSA_Sensitivity
+        {
+            get { return _OSA_Sensitivity; }
+            set
+            {
+                _OSA_Sensitivity = value;
+                Ini_Write("Connection", "OSA_Sensitivity ", value.ToString());
+            }
+        }
+
+        private double _OSA_RBW = 0.1;
+        public double OSA_RBW
+        {
+            get { return _OSA_RBW; }
+            set
+            {
+                _OSA_RBW = value;
+                Ini_Write("Connection", "OSA_RBW ", value.ToString());
+            }
+        }
+
         private int _tls_BoardNumber = 0;
         public int tls_BoardNumber
         {
@@ -5202,26 +5995,53 @@ namespace PD.ViewModel
             }
         }
 
-        //private ObservableCollection<DataPoint> _SpecLine30dB = new ObservableCollection<DataPoint>();
-        //public ObservableCollection<DataPoint> SpecLine30dB
-        //{
-        //    get { return _SpecLine30dB; }
-        //    set
-        //    {
-        //        _SpecLine30dB = value;
-        //        OnPropertyChanged("SpecLine30dB");
-        //    }
-        //}
-
         private PlotModel _PlotViewModel;
         public PlotModel PlotViewModel
         {
             get { return _PlotViewModel; }
-            set
-            {
-                _PlotViewModel = value;
-                OnPropertyChanged("PlotViewModel");
-            }
+            set { _PlotViewModel = value; }
+        }
+
+        //private PlotModel _PlotViewModel_Temp;
+        //public PlotModel PlotViewModel_Temp
+        //{
+        //    get { return _PlotViewModel_Temp; }
+        //    set { _PlotViewModel_Temp = value; }
+        //}
+
+        private PlotModel _PlotViewModel_Chart;
+        public PlotModel PlotViewModel_Chart
+        {
+            get { return _PlotViewModel_Chart; }
+            set { _PlotViewModel_Chart = value; }
+        }
+
+        private PlotModel _PlotViewModel_Testing;
+        public PlotModel PlotViewModel_Testing
+        {
+            get { return _PlotViewModel_Testing; }
+            set { _PlotViewModel_Testing = value; }
+        }
+
+        private PlotModel _PlotViewModel_UTF600;
+        public PlotModel PlotViewModel_UTF600
+        {
+            get { return _PlotViewModel_UTF600; }
+            set { _PlotViewModel_UTF600 = value; }
+        }
+
+        private PlotModel _PlotViewModel_BR;
+        public PlotModel PlotViewModel_BR
+        {
+            get { return _PlotViewModel_BR; }
+            set { _PlotViewModel_BR = value; }
+        }
+
+        private PlotModel _PlotViewModel_TF2;
+        public PlotModel PlotViewModel_TF2
+        {
+            get { return _PlotViewModel_TF2; }
+            set { _PlotViewModel_TF2 = value; }
         }
 
         private List<List<DataPoint>> _chart_all_datapoints = new List<List<DataPoint>>() { new List<DataPoint>(16) };

@@ -546,15 +546,22 @@ namespace PD.Functions
             }
         }
 
+        static public string filepath { get; set; } = "";
 
-        public static void Write_a_row_in_CSV(int columns, string filepath, List<string> list_a_row_datas)
+        /// <summary>
+        /// Write a row message into the csv file
+        /// </summary>
+        /// <param name="columns">All columns</param>
+        /// <param name="filepath">Save file path</param>
+        /// <param name="list_a_row_datas">Write content</param>
+        public static void Write_a_row_in_CSV(string filepath, List<string> list_a_row_datas)
         {
             try
             {
                 #region String Builder
                 StringBuilder _stringBuilder = new StringBuilder();
 
-                columns = list_a_row_datas.Count;
+                int columns = list_a_row_datas.Count;
 
                 //資料內容
                 for (int i = 0; i < columns; i++)
@@ -573,6 +580,36 @@ namespace PD.Functions
             catch
             {
             }
+        }
+
+        /// <summary>
+        /// Write a row message into the specific csv file
+        /// </summary>
+        /// <param name="list_a_row_datas">Write content</param>
+        public static void Write_a_row_in_CSV(List<string> list_a_row_datas)
+        {
+            try
+            {
+                #region String Builder
+                StringBuilder _stringBuilder = new StringBuilder();
+
+                int columns = list_a_row_datas.Count;
+
+                //資料內容
+                for (int i = 0; i < columns; i++)
+                {
+                    _stringBuilder.Append(list_a_row_datas[i]);
+
+                    if (i != columns)
+                        _stringBuilder.Append(",");
+                }
+                _stringBuilder.AppendLine();  //換行
+                #endregion
+
+                // Save data in csv type
+                File.AppendAllText(filepath, _stringBuilder.ToString());  //Save string builder to csv
+            }
+            catch { }
         }
     }
 }

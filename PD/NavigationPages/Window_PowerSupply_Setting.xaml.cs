@@ -184,7 +184,7 @@ namespace PD.NavigationPages
                         cm.PM_Board_Port,
                         cm.PM_BautRate.ToString(),
                         cm.PM_GetPower_CMD};
-                    CSVFunctions.Write_a_row_in_CSV(list_titles.Count, filePath, list_datas);
+                    CSVFunctions.Write_a_row_in_CSV(filePath, list_datas);
                 }
 
                 vm.txt_Equip_Setting_Path = filePath;

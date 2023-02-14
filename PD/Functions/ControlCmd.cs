@@ -340,23 +340,11 @@ namespace PD.Functions
 
                             vm.port_PD.Write("P0?\r");
 
-                            //if (cm.Channel == "16")   //Write Cmd to port_B
-                            //    vm.port_PD_B.Write("P0?\r");
-
                             await Task.Delay(vm.Int_Read_Delay);
-
-                            //int size = vm.port_PD.BytesToRead;
-                            //byte[] dataBuffer = new byte[size];
-                            //int length = vm.port_PD.Read(dataBuffer, 0, size);
-
-                            ////Show read back message
-                            //string msg = anly.Read_analysis("PD?\r", dataBuffer);
 
                             await Cmd_RecieveData("PD_Read", false);
 
                             #region Set Chart data points                                           
-                            //if (vm.timer2_count > 36000)  //Default 28800 , two hours
-                            //    vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
 
                             double sec = (double)Math.Round((decimal)vm.timer2_count * vm.Int_Read_Delay / 1000, 2);
 
@@ -378,13 +366,17 @@ namespace PD.Functions
                             for (int i = 0; i < vm.Double_Powers.Count; i++)
                             {
                                 vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();  //Update gauge value
-                                                                                                     //vm.list_GaugeModels[i].GaugeEndAngle = anly.Read_PM_to_Gauge(vm.Double_Powers[i], (i + 1));
                                 vm.Save_All_PD_Value[i].Add(new DataPoint(sec, vm.Double_Powers[i]));
-                            }
 
+                                if (vm.Plot_Series.Count > i)
+                                    vm.Plot_Series[i].Points.Add(new DataPoint(sec, vm.Double_Powers[i]));
+                            }
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+                            
+                            vm.PlotViewModel.InvalidatePlot(true);
+
                             vm.timer2_count++;
                             #endregion
 
@@ -543,10 +535,16 @@ namespace PD.Functions
                                 vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();  //Update gauge value
                                                                                                      //vm.list_GaugeModels[i].GaugeEndAngle = anly.Read_PM_to_Gauge(vm.Double_Powers[i], (i + 1));
                                 vm.Save_All_PD_Value[i].Add(new DataPoint(sec, vm.Double_Powers[i]));
+
+                                if (vm.Plot_Series.Count > i)
+                                    vm.Plot_Series[i].Points.Add(new DataPoint(sec, vm.Double_Powers[i]));
                             }
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+
+                            vm.Update_ALL_PlotView();
+
                             vm.timer2_count++;
                             #endregion
 
@@ -711,7 +709,7 @@ namespace PD.Functions
 
                     vm.port_PD.Write(cm.Value_1 + "\r");
                     await Task.Delay(125);
-                    await Cmd_RecieveData(cm.Value_1, false);
+                    await Write_Cmd(cm.Value_1, true);
                     break;
 
                 case "WRITEDAC":
@@ -2016,6 +2014,36 @@ namespace PD.Functions
             return vm.IsGoOn;
         }
 
+        public async Task<bool> Write_Cmd(string cmd, bool Is_Port_Close)
+        {
+            try
+            {
+                if(vm.port_PD!=null)
+                    if (!vm.port_PD.IsOpen)
+                    {
+                        await vm.Port_ReOpen(vm.Selected_Comport);
+                    }
+
+                if (vm.port_PD.IsOpen)
+                {
+                    vm.port_PD.Write(cmd + "\r");
+
+                    await Task.Delay(vm.Int_Read_Delay);
+
+                    if (Is_Port_Close)
+                    {
+                        vm.port_PD.DiscardInBuffer();       // RX
+                        vm.port_PD.DiscardOutBuffer();      // TX
+                        vm.port_PD.Close();
+                    }
+                }
+            }
+            catch { }
+
+            return vm.IsGoOn;
+        }
+
+
         //private void ConnectGoLightTLS()
         //{
         //    if (vm.tls_GL.Open(vm.Golight_ChannelModel.Board_Port))
@@ -2057,7 +2085,7 @@ namespace PD.Functions
 
         //}
 
-        private bool ConnectGolightTLS(DiCon.Instrument.HP.GLTLS port,  string portName)
+        private bool ConnectGolightTLS(DiCon.Instrument.HP.GLTLS.GLTLS port,  string portName)
         {
             try
             {
@@ -2152,6 +2180,50 @@ namespace PD.Functions
 
                         vm.isConnected = true;
                         #endregion                      
+
+                        break;
+
+                    case "Keysight":
+
+                        #region Tunable Laser setting
+                        if (!vm.isConnected)
+                        {
+                            vm.tls = new HPTLS();
+                            vm.tls.Addr_TCPIP = vm.TLS_TCPIP;
+                            vm.tls.BoardNumber = vm.tls_BoardNumber;
+
+                            try
+                            {
+                                if (!vm.tls.Open())
+                                {
+                                    vm.Str_cmd_read = "Connect Keysight TLS error, Check setting.";
+                                    //vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                    return;
+                                }
+                                else
+                                {
+                                    double d = vm.tls.ReadWL();
+                                    if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
+                                    {
+                                        vm.Str_cmd_read = "Laser Connection Failed";
+                                        vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                        return;
+                                    }
+                                }
+                                vm.tls.init();
+
+                                vm.Double_Laser_Wavelength = vm.tls.ReadWL();
+                                vm.isConnected = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                vm.Str_cmd_read = "Keysight TLS Setting Error";
+                                //vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
+                        }
+
+                        #endregion
 
                         break;
 
@@ -2489,11 +2561,13 @@ namespace PD.Functions
                 switch (vm.Laser_type)
                 {
                     case "Agilent":
-                        vm.tls.SetWL(wl);
+                        //vm.tls.SetWL(wl);
+                        await Task.Run(() => vm.tls.SetWL(wl));
                         break;
 
                     case "Golight":
-                        vm.tls_GL.SetWL((float)wl);
+                        //vm.tls_GL.SetWL((float)wl);
+                        await Task.Run(() => vm.tls_GL.SetWL((float)wl));
                         break;
                 }
 
@@ -2570,11 +2644,13 @@ namespace PD.Functions
                 switch (vm.Laser_type)
                 {
                     case "Agilent":
-                        vm.tls.SetWL(wl);
+                        //vm.tls.SetWL(wl);
+                        await Task.Run(() => vm.tls.SetWL(wl));
                         break;
 
                     case "Golight":
-                        vm.tls_GL.SetWL((float)wl);
+                        //vm.tls_GL.SetWL((float)wl);
+                        await Task.Run(() => vm.tls_GL.SetWL((float)wl));
                         break;
                 }
 
@@ -2639,11 +2715,13 @@ namespace PD.Functions
                 switch (vm.Laser_type)
                 {
                     case "Agilent":
-                        vm.tls.SetPower(power);
+                        //vm.tls.SetPower(power);
+                        await Task.Run(() => vm.tls.SetPower(power));
                         break;
 
                     case "Golight":
-                        vm.tls_GL.SetPower(power);
+                        //vm.tls_GL.SetPower(power);
+                        await Task.Run(() => vm.tls_GL.SetPower(power));
                         break;
                 }
 
@@ -2970,6 +3048,7 @@ namespace PD.Functions
             }
             catch { vm.Str_cmd_read = "Write Dac Error"; }
         }
+
 
         public async Task Get_Dac(string cmd)
         {
@@ -3565,6 +3644,89 @@ namespace PD.Functions
             return power;
         }
 
+        public async Task<List<DataPoint>> OSA_Scan()
+        {
+            List<DataPoint> result = new List<DataPoint>();
+
+            //OSA Setting
+            try
+            {
+                if (!vm.isOSAConnected)
+                {
+                    vm.Str_Status = "OSA Initializing";
+                    vm.OSA.protocol = 0;
+                    vm.OSA.BoardNumber = vm.tls_BoardNumber;
+                    vm.OSA.Addr = vm.tls_Addr;
+                    vm.OSA.Open();
+                    vm.OSA.init();
+
+                    vm.isOSAConnected = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                vm.Str_cmd_read = "OSA Setting Error";
+                MessageBox.Show(ex.StackTrace.ToString());
+            }
+
+            await Task.Delay(200);
+
+            //OSA Scanning
+            try
+            {
+                vm.Str_Status = "OSA Scanning";
+
+                int points = Convert.ToInt32((vm.float_WL_Scan_End - vm.float_WL_Scan_Start) / vm.float_WL_Scan_Gap + 1);
+
+                //vm.OSA.SetResolution(vm.OSA_RBW);
+
+                //Cal l OSA scan function
+                string rawdata = vm.OSA.StartTrace(vm.float_WL_Scan_Start, vm.float_WL_Scan_End, vm.float_WL_Scan_Gap, vm.OSA_Sensitivity, vm.OSA_RBW);
+
+                #region Query data
+                //string rawdata = vm.OSA.Read(17 * points); // set length of geting attenuation, 1 raw = 17 byte
+                //await Task.Delay(500);
+
+                int counter = 0;
+                while (rawdata == "-100" && counter < 10)
+                {
+                    vm.OSA.SendCommand("TRAC:DATA:Y? TRA");
+                    rawdata = vm.OSA.Read(17 * points);
+                    counter++;
+                }
+                if (rawdata == "-100")
+                    Console.WriteLine("-999,Time Limit Exceeded to complete operation");
+                double osastep = vm.float_WL_Scan_Gap;
+                string str_wl_il = vm.OSA.GetAllPower(rawdata, osastep, vm.float_WL_Scan_Start, vm.float_WL_Scan_End);
+                #endregion
+
+                #region Analyze data from osa
+                string[] list_s = str_wl_il.Split(',');
+
+                if (list_s.Length > 1)
+                {
+                    for (int i = 1; i < list_s.Length; i++)
+                    {
+                        if (i % 2 == 1)
+                        {
+                            if (double.TryParse(list_s[i - 1], out double wl) && double.TryParse(list_s[i], out double IL))
+                                result.Add(new DataPoint(wl, IL));
+                        }
+                    }
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                vm.Str_cmd_read = "OSA Scan Error";
+                MessageBox.Show(ex.StackTrace.ToString());
+            }
+
+            vm.Str_Status = "OSA Scan End";
+
+            return result;
+        }
+
         public void Save_Calibration_Data(string Data_Type)
         {
             #region Delete and Save Bear say to txt file
@@ -3693,6 +3855,78 @@ namespace PD.Functions
             #endregion
         }
 
+        public void Save_BR_Data()
+        {
+            for (int i = 0; i < vm.list_BR_DAC_WL.Count; i++)
+            {
+                if (vm.Plot_Series[i].Points.Count == 0) continue;
+
+                string WL_Dac_Now = vm.list_BR_DAC_WL[i];
+                string INOUT = vm.BR_INOut ? "OUT" : "IN";
+                string ProductType = "";
+                if (vm.list_GaugeModels.First().GaugeSN.Length > 7)
+                {
+                    switch (vm.list_GaugeModels.First().GaugeSN.ToUpper()[5])
+                    {
+                        case 'U':
+                            ProductType = "UTF";
+                            break;
+
+                        case 'A':
+                            ProductType = "UFA";
+                            break;
+
+                        case 'C':
+                            ProductType = "CTF";
+                            break;
+
+                        case 'M':
+                            ProductType = "UFA";
+                            break;
+                    }
+                }
+
+                string filePath = Path.Combine(vm.txt_BR_Save_Path, $"{vm.list_GaugeModels.First().GaugeSN}-{WL_Dac_Now}-{INOUT}.txt");
+
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    if (File.Exists(filePath))
+                        File.Create(filePath).Close();
+
+                    using (StreamWriter sr = new StreamWriter(filePath))
+                    {
+                        sr.WriteLine($"\"{vm.list_GaugeModels.First().GaugeSN}-{WL_Dac_Now}-{INOUT}\",4,\"{ProductType} BR\"");
+                        sr.WriteLine($"\"Traces\",1,0");
+                        sr.WriteLine($"2,1,{vm.float_WL_Scan_Start},{vm.float_WL_Scan_End},{vm.float_WL_Scan_Gap},{(Math.Abs(vm.float_WL_Scan_End - vm.float_WL_Scan_Start) / vm.float_WL_Scan_Gap) + 1}");
+                        sr.WriteLine($"-9999,0,-1,-1,-1,{(Math.Abs(vm.float_WL_Scan_End - vm.float_WL_Scan_Start) / vm.float_WL_Scan_Gap) + 1}");
+
+                        foreach (DataPoint dp in vm.Plot_Series[i].Points)
+                        {
+                            if (vm.dB_or_dBm)
+                                sr.WriteLine($"{dp.X},{dp.Y + vm.BR_Diff}");  //dB mode
+                            else
+                            {
+                                double ref_value = 0;
+
+                                RefModel rm = vm.Ref_memberDatas.Where(r => r.Wavelength == dp.X).FirstOrDefault();
+
+                                if (rm != null) ref_value = rm.Ch_1;
+
+                                sr.WriteLine($"{dp.X},{dp.Y + vm.BR_Diff - ref_value}");  //dBm mode, chart points IL wasn't minus ref value, have to convert dBm to dB to save data.
+                            }
+                        }
+
+                        sr.WriteLine($"\"Points,1\"");
+                        sr.WriteLine($"1,0,-6969,0");
+
+                        sr.Close();
+                    }
+                }
+            }
+
+            vm.Str_cmd_read = "Saved";
+        }
+
         public int Save_ChartNow_Data(string path, Dictionary<string, string> dic_keyPairs)
         {
             using (System.IO.StreamWriter file =
@@ -3746,6 +3980,104 @@ namespace PD.Functions
             }
         }
 
+        public void Reset_Chart(int LineSeriesCount)
+        {
+            for (int i = 0; i < LineSeriesCount; i++)
+            {
+                vm.list_Chart_UI_Models.Add(new Chart_UI_Model()
+                {
+                    Button_Color = i < vm.list_brushes.Count() ? vm.list_brushes[i] : vm.list_brushes[i - vm.list_brushes.Count()],
+                    Button_Channel = i + 1,
+                    Button_Content = $"Ch {i+1}",
+                    Button_IsChecked = true,
+                    Button_IsVisible = Visibility.Visible,
+                    Button_Tag = "../../Resources/right-arrow.png"
+                });
+
+                OxyPlot.Series.LineSeries lineSerie = new OxyPlot.Series.LineSeries
+                {
+                    Title = $"Ch {i + 1}",
+                    FontSize = 20,
+                    StrokeThickness = 1.8,
+                    MarkerType = MarkerType.Circle,
+                    MarkerSize = 0,  //4
+                    Smooth = false,
+                    MarkerFill = vm.list_OxyColor[i],
+                    Color = vm.list_OxyColor[i],
+                    CanTrackerInterpolatePoints = true,
+                    TrackerFormatString = vm.Chart_x_title + " : {2}\n" + vm.Chart_y_title + " : {4}",
+                    LineLegendPosition = OxyPlot.Series.LineLegendPosition.None,
+                    IsVisible = vm.list_Chart_UI_Models[i].Button_IsChecked
+                };
+
+                vm.Plot_Series.Add(lineSerie);
+                vm.PlotViewModel.Series.Add(vm.Plot_Series[i]);
+            }
+        }
+
+        public void Reset_Chart(List<string> lineTitles)
+        {
+            vm.Plot_Series.Clear();
+            vm.PlotViewModel_BR.Series.Clear();
+
+            vm.list_Chart_UI_Models.Clear();
+
+            //若lineTitles的參數量多於16(color list的預設數)，則需擴充color list
+            int expand_times = 5;
+            for (int i = 0; i < expand_times; i++)
+            {
+                if (lineTitles.Count > vm.list_brushes.Count)
+                {
+                    vm.list_brushes.AddRange(vm.list_brushes);
+                    vm.list_OxyColor.AddRange(vm.list_OxyColor);
+                }
+                else
+                    break;
+            }
+
+            if (lineTitles.Count > vm.list_brushes.Count)
+            {
+                vm.Str_cmd_read = $"List LineTitle count > {expand_times * 16}";
+                //vm.Save_Log(new LogMember() { Status = "Station Initializing", Message = vm.Str_cmd_read });
+                return;
+            }
+
+            for (int i = 0; i < lineTitles.Count; i++)
+            {
+                vm.list_Chart_UI_Models.Add(new Chart_UI_Model()
+                {
+                    Button_Color = i < vm.list_brushes.Count() ? vm.list_brushes[i] : vm.list_brushes[i - vm.list_brushes.Count()],
+                    Button_Channel = i + 1,
+                    Button_Content = lineTitles[i],
+                    Button_IsChecked = true,
+                    Button_IsVisible = Visibility.Visible,
+                    Button_Tag = "../../Resources/right-arrow.png"
+                });
+
+                OxyPlot.Series.LineSeries lineSerie = new OxyPlot.Series.LineSeries
+                {
+                    Title = lineTitles[i],
+                    FontSize = 20,
+                    StrokeThickness = 1.8,
+                    MarkerType = MarkerType.Circle,
+                    MarkerSize = 0,  //4
+                    Smooth = false,
+                    MarkerFill = vm.list_OxyColor[i],
+                    Color = vm.list_OxyColor[i],
+                    CanTrackerInterpolatePoints = true,
+                    TrackerFormatString = vm.Chart_x_title + " : {2}\n" + vm.Chart_y_title + " : {4}",
+                    LineLegendPosition = OxyPlot.Series.LineLegendPosition.None,
+                    IsVisible = vm.list_Chart_UI_Models[i].Button_IsChecked
+                };
+
+                vm.Plot_Series.Add(lineSerie);
+                vm.PlotViewModel.Series.Add(vm.Plot_Series[i]);
+            }
+
+            vm.Update_ALL_PlotView();
+        }
+
+
         public async Task Save_Chart()
         {
             ChartModel nowChartModel = new ChartModel(vm.ChartNowModel);
@@ -3768,6 +4100,7 @@ namespace PD.Functions
             foreach (OxyPlot.Series.LineSeries ls in vm.Plot_Series)
             {
                 OxyPlot.Series.LineSeries serie = new OxyPlot.Series.LineSeries();
+                serie.Title = ls.Title;
 
                 serie.Points.AddRange(ls.Points);
                 nowChartModel.Plot_Series.Add(serie);
@@ -3787,11 +4120,6 @@ namespace PD.Functions
 
             if (vm.station_type.Equals("Testing") || vm.station_type.Equals("UTF600")  || vm.station_type.Equals("Hermetic_Test") || vm.IsDistributedSystem)
             {
-                //if (vm.timer3_count > 28800)  //Default 28800 , two hours
-                //    vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
-
-                //double sec = (double)Math.Round((decimal)vm.timer3_count * vm.Int_Read_Delay / 1000, 2);
-
                 if (vm.isTimerOn)
                 {
                     if (X > vm.int_timer_timespan)
@@ -3815,7 +4143,7 @@ namespace PD.Functions
 
 
                 vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
-                vm.PlotViewModel.InvalidatePlot(vm.is_update_chart);
+                vm.Update_ALL_PlotView();
             }
 
             //PD mode
@@ -3829,7 +4157,7 @@ namespace PD.Functions
 
 
                 vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
-                vm.PlotViewModel.InvalidatePlot(vm.is_update_chart);
+                vm.Update_ALL_PlotView();
             }
 
             else
@@ -3856,7 +4184,7 @@ namespace PD.Functions
                 vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
 
                 vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
-                vm.PlotViewModel.InvalidatePlot(vm.is_update_chart);
+                vm.Update_ALL_PlotView();
             }
             #endregion
         }
@@ -3887,7 +4215,6 @@ namespace PD.Functions
                     if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
                     {
                         power = vm.ChartNowModel.list_dataPoints[i].Last().Y;
-                        //power = vm.Chart_All_DataPoints[i].Last().Y;
                         vm.maxIL[i] = power;
                         vm.minIL[i] = power;
                     }
@@ -3900,7 +4227,6 @@ namespace PD.Functions
                     if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
                     {
                         power = vm.ChartNowModel.list_dataPoints[i].Last().Y;
-                        //power = vm.Chart_All_DataPoints[i].Last().Y;
                         vm.maxIL[i] = power > vm.maxIL[i] ? power : vm.maxIL[i];
                         vm.minIL[i] = power < vm.minIL[i] ? power : vm.minIL[i];
 
@@ -3921,13 +4247,13 @@ namespace PD.Functions
                     }
                 }
             }
+
+            vm.Update_ALL_PlotView();
             #endregion
         }
 
         public void Update_DeltaIL()
         {
-            #region Cal. Delta IL   
-
             double power = 0;
            
             for (int i = 0; i < vm.ch_count; i++)
@@ -3935,7 +4261,7 @@ namespace PD.Functions
                 if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
                 {
                     power = vm.Double_Powers[i];
-                    //power = vm.Chart_All_DataPoints[i].Last().Y;
+
                     vm.maxIL[i] = power > vm.maxIL[i] ? power : vm.maxIL[i];
                     vm.minIL[i] = power < vm.minIL[i] ? power : vm.minIL[i];
 
@@ -3955,8 +4281,8 @@ namespace PD.Functions
                         vm.Plot_Series[i].Title = $"ch{i + 1}, Delta IL : {deltaIL}";
                 }
             }
-            #endregion
-        }
 
+            vm.Update_ALL_PlotView();
+        }
     }
 }

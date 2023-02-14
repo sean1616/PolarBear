@@ -1049,9 +1049,7 @@ namespace PD.NavigationPages
                     {
                         string s = Directory.GetParent(RefPath).ToString();
                         if (!analysis.CheckDirectoryExist(s))
-                        {
                             Directory.CreateDirectory(s);  //Creat ref folder
-                        }
 
                         if (analysis.CheckDirectoryExist(s))
                             File.AppendAllText(RefPath, "");  //Creat txt file
@@ -1064,6 +1062,19 @@ namespace PD.NavigationPages
 
                 if (msgBoxResult != MessageBoxResult.Cancel)
                 {
+                    string savePath = @"D:\";
+                    if (!vm.CheckDirectoryExist(@"D:"))
+                    {
+                        MessageBox.Show($"D槽不存在，更改路徑為{vm.CurrentPath}");
+                        savePath = vm.CurrentPath;
+                    }
+
+                    if (!vm.CheckDirectoryExist(Path.Combine(savePath, @"\Ref\")))
+                    {
+                        savePath = vm.CurrentPath;
+                        Directory.CreateDirectory(Path.Combine(savePath, @"\Ref\"));
+                    }
+
                     vm.Str_Status = "Get Ref";
                     vm.dB_or_dBm = false;
 
@@ -1076,13 +1087,12 @@ namespace PD.NavigationPages
                         for (int ch = 0; ch < vm.ch_count; ch++)
                         {
                             RefName = $"Ref{ch + 1}.txt";
-                            RefPath = Path.Combine(@"D:\Ref\", RefName);
+                            RefPath = Path.Combine(savePath , @"\Ref\", RefName);
 
                             if (File.Exists(RefPath))
                             {
                                 File.Delete(RefPath);
                                 File.AppendAllText(RefPath, "");
-
                             }
                         }
 
@@ -1106,9 +1116,13 @@ namespace PD.NavigationPages
                             for (int ch = 0; ch < vm.ch_count; ch++)
                             {
                                 if (vm.BoolAllGauge || vm.list_GaugeModels[ch].boolGauge)
-                                    if (!vm.Ref_Dictionaries[ch].ContainsKey(wl))
-                                        if (!list_wl.Contains(wl))
-                                            list_wl.Add(wl);
+                                {
+                                    if (vm.Ref_Dictionaries[ch].ContainsKey(wl))
+                                        continue;
+
+                                    if (!list_wl.Contains(wl))
+                                        list_wl.Add(wl);
+                                }
                             }
                         }
                     }
@@ -1143,14 +1157,21 @@ namespace PD.NavigationPages
                                         if (vm.station_type.Equals("Hermetic_Test"))
                                         {
                                             RefName = string.Format("Ref{0}.txt", vm.switch_index);
-                                            RefPath = Path.Combine(@"D:\Ref\", RefName);
+                                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
 
                                             await vm.Port_Switch_ReOpen();
                                             vm.port_Switch.Write(string.Format("SW0 {0}", vm.switch_index));
                                         }
+                                        else
+                                        {
+                                            RefName = $"Ref{ch + 1}.txt";
+                                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+                                        }
+
                                         IL = await cmd.Get_PM_Value((vm.switch_index - 1));
 
-                                        string msg = string.Format("{0},{1}", Math.Round(wl, 2).ToString(), IL.ToString());
+                                        //string msg = string.Format("{0},{1}", Math.Round(wl, 2).ToString(), IL.ToString());
+                                        string msg = $"{Math.Round(wl, 2)},{IL}";
 
                                         File.AppendAllText(RefPath, msg + "\r");
 
@@ -1198,7 +1219,7 @@ namespace PD.NavigationPages
                                         string msg = $"{wl},{IL}\r";
 
                                         RefName = $"Ref{ch + 1}.txt";
-                                        RefPath = Path.Combine(@"D:\Ref\", RefName);
+                                        RefPath = Path.Combine(savePath, @"\Ref\", RefName);
 
                                         File.AppendAllText(RefPath, msg);  //Add new line to ref file
 

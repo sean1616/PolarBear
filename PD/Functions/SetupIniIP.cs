@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using IniParser;
+using IniParser.Model;
 
 namespace PD.Functions
 {
@@ -31,6 +33,61 @@ namespace PD.Functions
             StringBuilder temp = new StringBuilder(255);
             int i = GetPrivateProfileString(Section, Key, "", temp, 255, inipath);
             return temp.ToString();
+        }
+
+        //ini read all sections
+        public List<string> IniReadAllSections(string inipath)
+        {
+            List<string> results = new List<string>();
+
+            var parser = new FileIniDataParser();
+            IniData data = parser.ReadFile(inipath);
+            foreach (var section in data.Sections)
+            {
+                Console.WriteLine(section.SectionName);
+                results.Add(section.SectionName);
+            }
+            return results;
+        }
+
+        //ini read all key's name in a section
+        public List<string> IniReadAllKeyNames(string inipath, string section)
+        {
+            List<string> results = new List<string>();
+
+            var parser = new FileIniDataParser();
+            IniData data = parser.ReadFile(inipath);
+            foreach (var s in data.Sections)
+            {
+                if (s.SectionName.Equals(section))
+                {
+                    foreach(KeyData kd in s.Keys)
+                    {
+                        results.Add(kd.KeyName);
+                    }
+                }
+            }
+            return results;
+        }
+
+        //ini read all keys in a section
+        public Dictionary<string, string> IniReadAllKeys(string inipath, string section)
+        {
+            Dictionary<string, string> results = new Dictionary<string, string>();
+
+            var parser = new FileIniDataParser();
+            IniData data = parser.ReadFile(inipath);
+            foreach (var s in data.Sections)
+            {
+                if (s.SectionName.Equals(section))
+                {
+                    foreach (KeyData kd in s.Keys)
+                    {
+                        results.Add(kd.KeyName, kd.Value);
+                    }
+                }
+            }
+            return results;
         }
     }
 }

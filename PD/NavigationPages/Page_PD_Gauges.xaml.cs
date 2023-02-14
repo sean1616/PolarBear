@@ -34,6 +34,9 @@ namespace PD.NavigationPages
         bool _isDrag = false;
         Analysis anly;
 
+        readonly public System.Windows.Media.Animation.Storyboard sb_bear_shake;
+        readonly public System.Windows.Media.Animation.Storyboard sb_bear_reset;
+
         public Page_PD_Gauges(ComViewModel vm)
         {
             InitializeComponent();
@@ -60,6 +63,30 @@ namespace PD.NavigationPages
             vm.Bool_Gauge.CopyTo(vm.bo_temp_gauge, 0);
 
             anly = new Analysis(vm);
+
+            sb_bear_shake = FindResource("Storyboard_Bear_Shake") as System.Windows.Media.Animation.Storyboard;
+            sb_bear_reset = FindResource("Storyboard_Bear_Reset") as System.Windows.Media.Animation.Storyboard;
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //一個plotModel同一時間只能供給一個plotview使用，頁面切換時需重新指派
+            vm.PlotViewModel_Chart = new PlotModel();
+            vm.PlotViewModel_TF2 = new PlotModel();
+            vm.PlotViewModel_BR = new PlotModel();
+            vm.PlotViewModel_UTF600 = new PlotModel();
+            vm.PlotViewModel_Testing = vm.PlotViewModel;
+
+            vm.Update_ALL_PlotView();
+
+            if (sb_bear_shake != null)
+                sb_bear_shake.Begin();
+
+            if (sb_bear_reset != null)
+            {
+                sb_bear_reset.Begin();
+                sb_bear_reset.Pause();
+            }
         }
 
         private async void TextBox_Dac_KeyDown(object sender, RoutedEventArgs e)
@@ -1681,6 +1708,6 @@ namespace PD.NavigationPages
             }
         }
 
-       
+        
     }
 }

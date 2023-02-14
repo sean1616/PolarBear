@@ -274,62 +274,8 @@ namespace PD.NavigationPages
             _slider.Value = Math.Round(percentOfpoint * (_slider.Maximum - _slider.Minimum) + _slider.Minimum, 2);
         }
 
-        private void txt_WL_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            //if (e.Key == Key.Enter)
-            //{
-            //    double wl = Convert.ToDouble(txt_WL.Text);
 
-            //    if (!vm.IsGoOn) cmd.Set_WL(wl, false, true);
-            //    else
-            //        vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = txt_WL.Text });
-            //}
-            //else if (e.Key == Key.Up)
-            //{
-            //    double wl = Convert.ToDouble(txt_WL.Text) + 0.01;
-
-            //    if (!vm.IsGoOn)
-            //        try
-            //        {
-            //            txt_WL.Text = (wl).ToString();
-            //            cmd.Set_WL(wl, false, true);
-            //        }
-            //        catch { }
-            //    else
-            //        vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
-
-            //    vm.Double_Laser_Wavelength = wl;
-            //}
-            //else if (e.Key == Key.Down)
-            //{
-            //    double wl = Convert.ToDouble(txt_WL.Text) - 0.01;
-
-            //    if (!vm.IsGoOn)
-            //        try
-            //        {
-            //            txt_WL.Text = (wl).ToString();
-            //            cmd.Set_WL(wl, false, true);
-            //        }
-            //        catch { }
-            //    else
-            //        vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
-
-            //    vm.Double_Laser_Wavelength = wl;
-            //}
-        }
-
-        private void txt_PM_WL_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            //if (e.Key == Key.Enter)
-            //{
-            //    vm.pm.SetWL(Convert.ToDouble(txt_PM_WL.Text));
-            //    try
-            //    {
-            //        vm.Double_PM_Wavelength = vm.pm.ReadWL();
-            //    }
-            //    catch { }
-            //}
-        }
+       
 
 
         private void btn_PDL_connect_Click(object sender, RoutedEventArgs e)
