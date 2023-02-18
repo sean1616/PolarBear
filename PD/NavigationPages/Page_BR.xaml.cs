@@ -21,6 +21,8 @@ using DiCon.UCB.Communication;
 using OxyPlot;
 using OxyPlot.Series;
 using OxyPlot.Axes;
+using OxyPlot.Annotations;
+using ValueGetter;
 
 namespace PD.NavigationPages
 {
@@ -36,10 +38,10 @@ namespace PD.NavigationPages
         bool _isDrag = false;
         Analysis anly;
 
-        readonly public System.Windows.Media.Animation.Storyboard sb_bear_shake;
-        readonly public System.Windows.Media.Animation.Storyboard sb_bear_reset;
+        //readonly public System.Windows.Media.Animation.Storyboard sb_bear_shake;
+        //readonly public System.Windows.Media.Animation.Storyboard sb_bear_reset;
 
-        List<string> WL_Special_List;
+        //List<string> WL_Special_List;
         public Dictionary<string, string> dict_WL_to_Dac;
 
         public Page_BR(ComViewModel vm)
@@ -76,8 +78,6 @@ namespace PD.NavigationPages
             vm.PlotViewModel.MouseDown += PlotViewModel_MouseDown;
             //vm.PlotViewModel.MouseUp += PlotViewModel_MouseUp;
 
-            sb_bear_shake = FindResource("Storyboard_Bear_Shake") as System.Windows.Media.Animation.Storyboard;
-            sb_bear_reset = FindResource("Storyboard_Bear_Reset") as System.Windows.Media.Animation.Storyboard;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -88,23 +88,32 @@ namespace PD.NavigationPages
             vm.PlotViewModel_TF2 = new PlotModel();
             vm.PlotViewModel_UTF600 = new PlotModel();
             vm.PlotViewModel_BR = vm.PlotViewModel;
+            vm.PlotViewModel.LegendPlacement = LegendPlacement.Outside;
 
             vm.Update_ALL_PlotView();
 
-            if (sb_bear_shake != null)
-                sb_bear_shake.Begin();
+            vm.sb_bear_shake = FindResource("Storyboard_Bear_Shake") as System.Windows.Media.Animation.Storyboard;
+            vm.sb_bear_reset = FindResource("Storyboard_Bear_Reset") as System.Windows.Media.Animation.Storyboard;
 
-            if (sb_bear_reset != null)
+            if (vm.sb_bear_shake != null)
+                vm.sb_bear_shake.Begin();
+
+            if (vm.sb_bear_reset != null)
             {
-                sb_bear_reset.Begin();
-                sb_bear_reset.Pause();
+                vm.sb_bear_reset.Begin();
+                vm.sb_bear_reset.Pause();
             }
 
-            WL_Special_List = new List<string>();
+            vm.WL_Special_List = new List<string>();
             dict_WL_to_Dac = new Dictionary<string, string>();
 
             if (double.TryParse(vm.Ini_Read("Scan", "BR_Diff"), out double dif))
                 vm.BR_Diff = dif;
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            vm.PlotViewModel.LegendPlacement = LegendPlacement.Inside;
         }
 
 
@@ -399,7 +408,7 @@ namespace PD.NavigationPages
 
         private void tbtn_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Testing) return;
             if (gaugetxt_focus) return;
             ToggleButton obj = (ToggleButton)sender;
             obj.IsChecked = !obj.IsChecked;
@@ -1154,7 +1163,7 @@ namespace PD.NavigationPages
 
         private async void Btn_WL_Click(object sender, RoutedEventArgs e)
         {
-            if (!vm.station_type.Equals("Hermetic_Test")) return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
 
             Button obj = (Button)sender;
 
@@ -1232,7 +1241,7 @@ namespace PD.NavigationPages
 
         private async void Btn_Voltage_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Testing) return;
 
             Button obj = (Button)sender;
 
@@ -1406,7 +1415,7 @@ namespace PD.NavigationPages
 
         private async void gauge_PreviewMouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
 
             if (!vm.Is_switch_mode) return;
 
@@ -1691,9 +1700,385 @@ namespace PD.NavigationPages
             Tbtn_BR_INOUT.txtbox_content = "BR In";
         }
 
-        private void btn_Get_Ref_Click(object sender, RoutedEventArgs e)
+        private async void btn_Get_Ref_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
 
+                MessageBoxResult msgBoxResult = MessageBox.Show("Cover old ref.txt ?", "Get Ref", MessageBoxButton.YesNoCancel);
+
+                if (msgBoxResult == MessageBoxResult.Cancel)
+                    return;
+
+                #region Initial setting
+                vm.isStop = false;
+
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                decimal scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
+
+                anly.JudgeAllBoolGauge();
+
+                string RefName = String.Empty;
+                string RefPath = String.Empty;
+
+                //File name setting
+                for (int ch = 0; ch < vm.ch_count; ch++)
+                {
+                    RefName = $"Ref{ch + 1}.txt";
+                    RefPath = Path.Combine(@"D:\Ref\", RefName);
+
+                    if (!File.Exists(RefPath))
+                    {
+                        string s = Directory.GetParent(RefPath).ToString();
+                        if (!anly.CheckDirectoryExist(s))
+                            Directory.CreateDirectory(s);  //Creat ref folder
+
+                        if (anly.CheckDirectoryExist(s))
+                            File.AppendAllText(RefPath, "");  //Creat txt file
+                        else
+                            return;  //If Ref folder still not exist, return.
+                    }
+                }
+
+                string savePath = @"D:\";
+                if (!vm.CheckDirectoryExist(@"D:"))
+                {
+                    MessageBox.Show($"D槽不存在，更改路徑為{vm.CurrentPath}");
+                    savePath = vm.CurrentPath;
+                }
+
+                if (!vm.CheckDirectoryExist(Path.Combine(savePath, @"\Ref\")))
+                {
+                    savePath = vm.CurrentPath;
+                    Directory.CreateDirectory(Path.Combine(savePath, @"\Ref\"));
+                }
+
+                vm.Str_Status = "Get Ref";
+                vm.dB_or_dBm = false;
+
+                cmd.Clean_Chart();
+                #endregion
+
+                //TLS mode
+                if (!vm.is_BR_OSA)
+                {
+                    List<double> list_wl = new List<double>();
+
+                    if (msgBoxResult == MessageBoxResult.Yes)
+                    {
+                        for (int ch = 0; ch < vm.ch_count; ch++)
+                        {
+                            RefName = $"Ref{ch + 1}.txt";
+                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+
+                            if (File.Exists(RefPath))
+                            {
+                                File.Delete(RefPath);
+                                File.AppendAllText(RefPath, "");
+                            }
+                        }
+
+                        for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
+                        {
+                            list_wl.Add(wl);
+                        }
+
+                        vm.Ref_memberDatas.Clear();
+
+                        for (int i = 0; i < vm.Ref_Dictionaries.Count; i++)
+                        {
+                            vm.Ref_Dictionaries[i].Clear();
+                        }
+                    }
+
+                    else if (msgBoxResult == MessageBoxResult.No)
+                    {
+                        //add specific channel ref to ref.txt
+                        for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
+                        {
+                            for (int ch = 0; ch < vm.ch_count; ch++)
+                            {
+                                if (vm.BoolAllGauge || vm.list_GaugeModels[ch].boolGauge)
+                                {
+                                    if (vm.Ref_Dictionaries[ch].ContainsKey(wl))
+                                        continue;
+
+                                    if (!list_wl.Contains(wl))
+                                        list_wl.Add(wl);
+                                }
+                            }
+                        }
+                    }
+
+                    bool tempBool = vm.Is_FastScan_Mode;
+                    vm.Is_FastScan_Mode = false;
+
+                    //Scan Points
+                    foreach (double wl in list_wl)
+                    {
+                        if (vm.isStop) break;
+
+                        await cmd.Set_WL(wl, false);
+
+                        vm.Double_Laser_Wavelength = Math.Round(wl, 2);
+
+                        vm.Str_cmd_read = Math.Round(wl, 2).ToString();
+
+                        await Task.Delay(vm.Int_Set_WL_Delay);
+
+                        double IL = 0;
+
+                        if (!vm.IsDistributedSystem)
+                        {
+                            //PM mode
+                            if (vm.PD_or_PM)
+                            {
+                                for (int ch = 0; ch < vm.ch_count; ch++)
+                                {
+                                    if (vm.BoolAllGauge || vm.list_GaugeModels[ch].boolGauge)
+                                    {
+                                        vm.switch_index = ch + 1;
+                                        if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
+                                        {
+                                            RefName = string.Format("Ref{0}.txt", vm.switch_index);
+                                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+
+                                            await vm.Port_Switch_ReOpen();
+                                            vm.port_Switch.Write(string.Format("SW0 {0}", vm.switch_index));
+                                        }
+                                        else
+                                        {
+                                            RefName = $"Ref{ch + 1}.txt";
+                                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+                                        }
+
+                                        IL = await cmd.Get_PM_Value((vm.switch_index - 1));
+
+                                        string msg = $"{Math.Round(wl, 2)},{IL}";
+
+                                        File.AppendAllText(RefPath, msg + "\r");
+
+                                        vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+
+                                        vm.Ref_memberDatas.Add(new RefModel()
+                                        {
+                                            Wavelength = Math.Round(wl, 2),
+                                            Ch_1 = vm.Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
+                                            Ch_2 = vm.Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
+                                            Ch_3 = vm.Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
+                                            Ch_4 = vm.Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
+                                            Ch_5 = vm.Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
+                                            Ch_6 = vm.Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
+                                            Ch_7 = vm.Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
+                                            Ch_8 = vm.Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
+                                            Ch_9 = vm.Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
+                                            Ch_10 = vm.Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
+                                            Ch_11 = vm.Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
+                                            Ch_12 = vm.Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
+                                            Ch_13 = vm.Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
+                                            Ch_14 = vm.Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
+                                            Ch_15 = vm.Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
+                                            Ch_16 = vm.Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
+                                        });
+                                    }
+                                }
+                            }
+                            //PD mode
+                            else
+                            {
+                                await cmd.Get_PD_Value(vm.Selected_Comport);
+
+                                vm.Ref_memberDatas.Add(new RefModel());
+                                vm.Ref_memberDatas.Last().Wavelength = Math.Round(wl, 2);
+
+                                for (int ch = 0; ch < vm.ch_count; ch++)
+                                {
+                                    if (vm.BoolAllGauge || vm.list_GaugeModels[ch].boolGauge)
+                                    {
+                                        IL = vm.Double_Powers[ch];
+                                        vm.Save_All_PD_Value[ch].Add(new DataPoint(Math.Round(wl, 2), IL));
+                                        vm.list_GaugeModels[ch].GaugeValue = IL.ToString();
+
+                                        string msg = $"{wl},{IL}\r";
+
+                                        RefName = $"Ref{ch + 1}.txt";
+                                        RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+
+                                        File.AppendAllText(RefPath, msg);  //Add new line to ref file
+
+                                        vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+
+                                        vm.Ref_memberDatas.Last().Wavelength = Math.Round(wl, 2);   //Add a new data to grid ref
+
+                                        //get all properties and it's values in the last of vm.Ref_memberDatas
+                                        var props = vm.Ref_memberDatas.Last().GetPropertiesFromCache();
+
+                                        foreach (var prop in props)
+                                        {
+                                            //Set value to which property name is match channel now
+                                            if (prop.Name == $"Ch_{ch + 1}")
+                                            {
+                                                prop.SetValue(vm.Ref_memberDatas.Last(), vm.Ref_Dictionaries[0][Math.Round(wl, 2)]);
+                                            }
+                                        }
+                                    }
+                                }
+                                vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+
+                                vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+                            }
+                        }
+                        //Distribution system
+                        else
+                        {
+                            for (int ch = 0; ch < vm.ch_count; ch++)
+                            {
+                                await cmd.Get_Power(ch, true);
+                                IL = vm.Double_Powers[ch];
+                                File.AppendAllText(RefPath, $"{Math.Round(wl, 2)},{IL}\r");
+
+                                vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+
+                                vm.Ref_memberDatas.Add(new RefModel()
+                                {
+                                    Wavelength = Math.Round(wl, 2),
+                                    Ch_1 = vm.Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
+                                    Ch_2 = vm.Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
+                                    Ch_3 = vm.Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
+                                    Ch_4 = vm.Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
+                                    Ch_5 = vm.Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
+                                    Ch_6 = vm.Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
+                                    Ch_7 = vm.Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
+                                    Ch_8 = vm.Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
+                                    Ch_9 = vm.Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
+                                    Ch_10 = vm.Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
+                                    Ch_11 = vm.Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
+                                    Ch_12 = vm.Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
+                                    Ch_13 = vm.Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
+                                    Ch_14 = vm.Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
+                                    Ch_15 = vm.Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
+                                    Ch_16 = vm.Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
+                                });
+                            }
+                        }
+                    }
+
+                    vm.Is_FastScan_Mode = tempBool;
+
+                    if (!vm.PD_or_PM && !vm.IsDistributedSystem)
+                    {
+                        if (vm.port_PD != null)
+                        {
+                            if (vm.port_PD.IsOpen)
+                            {
+                                vm.port_PD.DiscardInBuffer();
+                                vm.port_PD.DiscardOutBuffer();
+                                vm.port_PD.Close();
+                            }
+                        }
+                    }
+
+                    //Close TLS filter port for other control action
+                    cmd.Close_TLS_Filter();
+                }
+
+                //OSA mode
+                else
+                {
+                    List<DataPoint> list_WL_IL = await Task.Run(() => cmd.OSA_Scan());
+
+                    LineSeries ls = vm.Plot_Series[0];
+
+                    foreach (DataPoint dp in list_WL_IL)
+                    {
+                        ls.Points.Add(new DataPoint(dp.X, dp.Y));
+                    }
+
+                    ls.Title = "Ref";
+
+                    vm.Update_ALL_PlotView();
+                    await cmd.Save_Chart();
+
+                    RefName = $"Ref1.txt";
+                    RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+
+                    if (msgBoxResult == MessageBoxResult.Yes)
+                    {
+                        File.Create(RefPath).Close();
+
+                        StringBuilder sb = new StringBuilder();
+                        foreach (DataPoint dp in list_WL_IL)
+                            sb.Append($"{dp.X},{dp.Y}\r");
+
+                        File.AppendAllText(RefPath, sb.ToString());
+                    }
+                    else if (msgBoxResult == MessageBoxResult.No)
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        if (File.Exists(RefPath))
+                        {
+                            SortedDictionary<string, string> ref_dictionary = new SortedDictionary<string, string>();
+
+                            string[] arrayString = File.ReadAllLines(RefPath);
+
+                            for (int i = 0; i < arrayString.Length; i++)
+                            {
+                                string[] s = arrayString[i].Split(',');
+                                if (s.Length != 2)
+                                {
+                                    vm.Show_Bear_Window($"{RefName}內容有誤");
+                                    return;
+                                }
+
+                                if (!ref_dictionary.ContainsKey(s[0]))
+                                    ref_dictionary.Add(s[0], s[1]);
+                            }
+
+                            foreach (DataPoint dp in list_WL_IL)
+                            {
+                                if (ref_dictionary.Keys.Contains(dp.X.ToString()))
+                                    ref_dictionary.Remove(dp.X.ToString());
+
+                                ref_dictionary.Add(dp.X.ToString(), dp.Y.ToString());
+                            }
+
+                            File.Create(RefPath).Close();
+                            foreach (KeyValuePair<string, string> kp in ref_dictionary)
+                            {
+                                sb.Append($"{kp.Key},{kp.Value}\r");
+                            }
+                        }
+                        else  //Ref.txt file is not exist
+                        {
+                            foreach (DataPoint dp in list_WL_IL)
+                                sb.Append($"{dp.X},{dp.Y}\r");
+                        }
+                        File.AppendAllText(RefPath, sb.ToString());
+                    }
+                }
+
+                vm.Str_Status = "Get Ref End";
+
+                #region Get data from txt file and show
+
+                vm.Read_Ref(Path.Combine(savePath, @"\Ref\"));
+
+                scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
+                vm.msgModel.msg_3 = $"{Math.Round(scan_timespan, 1)} s";
+
+                //_Page_Ref_Grid = new Page_Ref_Grid(vm, txt_path.Text);
+
+                //pageTransitionControl.ShowPage(_Page_Ref_Grid);
+
+                //save_path = txt_path.Text;
+
+                //pageTransitionControl.CurrentPage.Name = "Grid";
+
+                //currentPage = false;
+                #endregion  
+            }
+            catch { }
         }
 
         //string preSelectItm = "";
@@ -1725,11 +2110,29 @@ namespace PD.NavigationPages
                 string[] list_s = key.Value.Split(',');
                 vm.list_BR_DAC_WL = new ObservableCollection<string>(list_s);
 
+                vm.PlotViewModel.Annotations.Clear();
+                vm.ChartNowModel.list_BR_Model.Clear();
+
+                foreach (string s in list_s)
+                {
+                    vm.PlotViewModel.Annotations.Add(new LineAnnotation()
+                    {
+                        Type = LineAnnotationType.Vertical,
+                        Color = OxyColors.Black,
+                        ClipByYAxis = false,
+                        X = 0,
+                        StrokeThickness = 0
+                    });
+
+                    vm.ChartNowModel.list_BR_Model.Add(new BR_Model() { Set_WL = s });
+                }
+
                 vm.Control_board_type = 2;
 
                 //For UFA, UFV board
                 dict_WL_to_Dac.Clear();
-                foreach(string s in keyNames)
+
+                foreach (string s in keyNames)
                 {
                     if (s.Contains("Dac_"))
                     {
@@ -1739,15 +2142,15 @@ namespace PD.NavigationPages
                             {
                                 string dacWL = k.Key.Replace("Dac_", "");
                                 if (!dict_WL_to_Dac.ContainsKey(dacWL))
+                                {
                                     dict_WL_to_Dac.Add(dacWL, k.Value);
+                                }
                             }
                         }
 
                         vm.Control_board_type = 0;
                     }
                 }
-
-                //cmd.Reset_Chart(vm.list_BR_DAC_WL.ToList());
 
 #if false
                 vm.Plot_Series.Clear();
@@ -1837,7 +2240,7 @@ namespace PD.NavigationPages
                     key = keys.Where(k => k.Key == "WL_Range").FirstOrDefault();
                     string[] list_wl_setting = key.Value.Split(',');  //Start WL, End WL, Gap
 
-                    WL_Special_List = list_wl_setting.ToList();
+                    vm.WL_Special_List = list_wl_setting.ToList();
                 }
 
 
@@ -1851,24 +2254,25 @@ namespace PD.NavigationPages
                 else
                     vm.Show_Bear_Window($"{Path.GetFileName(vm.BR_Scan_Para_Path)}\r無File_Path設定值");
 
-
-
             }
             else  //ComboxBox selected index = 0
             {
 
             }
-
-            //list_OSA_DAC_WL
         }
 
+        bool _is_OSA_WL_Working = false;
         private async void UC_OSA_WL_Button_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             UC_OSA_WL_Button obj = sender as UC_OSA_WL_Button;
 
-            string wl = obj.txtbox_content;
+            if (_is_OSA_WL_Working) return;
 
-            if (string.IsNullOrEmpty(wl)) return;
+            _is_OSA_WL_Working = true;
+
+            string WL = obj.txtbox_content;
+
+            if (string.IsNullOrEmpty(WL)) return;
 
             try
             {
@@ -1884,11 +2288,29 @@ namespace PD.NavigationPages
 
                 cmd.Reset_Chart(vm.list_BR_DAC_WL.ToList());
 
-                sb_bear_shake.Begin();
+                vm.sb_bear_shake.Begin();
 
                 for (int i = 0; i < vm.Plot_Series.Count; i++)
                 {
                     vm.Plot_Series[i].Points.Clear();
+
+                    if (vm.PlotViewModel.Annotations.Count > i)
+                    {
+                        LineAnnotation pat = vm.PlotViewModel.Annotations[i] as LineAnnotation;
+                        pat.StrokeThickness = 0;
+                        pat.Text = "";
+                    }
+                    else
+                    {
+                        vm.PlotViewModel.Annotations.Add(new LineAnnotation()
+                        {
+                            Type = LineAnnotationType.Vertical,
+                            Color = OxyColors.Black,
+                            ClipByYAxis = false,
+                            X = 0,
+                            StrokeThickness = 0
+                        });
+                    }
                 }
 
                 for (int i = 0; i < vm.ChartNowModel.list_dataPoints.Count; i++)
@@ -1896,6 +2318,15 @@ namespace PD.NavigationPages
                     vm.ChartNowModel.list_dataPoints[i].Clear();
                 }
 
+                for (int i = 0; i < vm.ChartNowModel.list_BR_Model.Count; i++)
+                {
+                    if (vm.ChartNowModel.list_BR_Model[i].Set_WL == WL)
+                    {
+                        vm.ChartNowModel.list_BR_Model[i].BR_WL = "";
+                        vm.ChartNowModel.list_BR_Model[i].BR = "";
+                    }
+                }
+                                
                 vm.Update_ALL_PlotView();
                 #endregion
 
@@ -1904,25 +2335,84 @@ namespace PD.NavigationPages
 
                 //dict_WL_to_Dac
                 if (dict_WL_to_Dac.Count != 0)
-                    vm.Str_Command = $"D1 {dict_WL_to_Dac[wl]}";
+                {
+                    vm.Str_Command = $"D1 {dict_WL_to_Dac[WL]}";
+
+                    if (dict_WL_to_Dac[WL].Split(',').Length == 3)
+                    {
+                        vm.list_GaugeModels.First().GaugeD0_1 = dict_WL_to_Dac[WL].Split(',')[0];
+                        vm.list_GaugeModels.First().GaugeD0_2 = dict_WL_to_Dac[WL].Split(',')[1];
+                        vm.list_GaugeModels.First().GaugeD0_3 = dict_WL_to_Dac[WL].Split(',')[2];
+                    }
+                }
                 else
-                    vm.Str_Command = $"WL {wl}";
+                    vm.Str_Command = $"WL {WL}";
 
                 await cmd.Write_Cmd(vm.Str_Command, true);
+
                 #endregion
 
-                vm.Str_cmd_read = $"WL : {wl}";
+                vm.Str_cmd_read = $"WL : {WL}";
 
-                //Call OSA scan and show Data function (one lineseries)
-                List<DataPoint> list_WL_IL = await Task.Run(() => cmd.OSA_Scan());
+                List<DataPoint> list_WL_IL = new List<DataPoint>();
 
-                LineSeries ls = vm.Plot_Series.Where(L => L.Title == wl.ToString()).FirstOrDefault();
+                if(vm.is_BR_OSA)
+                {
+                    //Call OSA scan and show Data function (one lineseries)
+                    list_WL_IL = await Task.Run(() => cmd.OSA_Scan());
+                }
+                //TLS mode
+                else
+                {
+                    vm.Str_Status = "WL Scan";
+
+                    #region Build scan wl list
+                    vm.wl_list.Clear();
+                    vm.wl_list = vm.WL_Special_List.Select(w => Convert.ToDouble(w)).ToList();
+                    #endregion
+
+                    foreach (double wl in vm.wl_list)
+                    {
+                        if (vm.isStop) break;
+
+                        await cmd.Set_WL(wl, false);
+
+                        if (wl == vm.wl_list.First())
+                            await Task.Delay(800);
+
+                        if (!(!vm.IsDistributedSystem && !vm.PD_or_PM && vm.Is_FastScan_Mode))
+                            await Task.Delay(vm.Int_Set_WL_Delay);
+
+                        vm.Double_Laser_Wavelength = wl;
+
+                        for (int ch = 0; ch < vm.ch_count; ch++)
+                        {
+                            if (vm.isStop) break;
+
+                            if (!vm.BoolAllGauge)
+                                if (!vm.list_GaugeModels[ch].boolGauge) continue;
+
+                            await cmd.Get_Power(ch, true);
+
+                            list_WL_IL.Add(new DataPoint(vm.Double_Laser_Wavelength, vm.Double_Powers[ch]));
+                        }
+
+                        //更新圖表
+                        #region Set Chart data points   
+
+                        vm.Update_ALL_PlotView();
+
+                        #endregion
+                    }
+                }
+
+                LineSeries ls = vm.Plot_Series.Where(L => L.Title == WL.ToString()).FirstOrDefault();
 
                 foreach (DataPoint dp in list_WL_IL)
                 {
                     double ref_value = 0;
 
-                    if(vm.dB_or_dBm)
+                    if(vm.dB_or_dBm && vm.is_BR_OSA)
                     {
                         RefModel rm = vm.Ref_memberDatas.Where(r => r.Wavelength == dp.X).FirstOrDefault();
 
@@ -1934,6 +2424,35 @@ namespace PD.NavigationPages
                         ls.Points.Add(new DataPoint(dp.X, dp.Y - vm.BR_Diff - ref_value));
                 }
 
+                //Calculate BR and it's wl peak position
+                for (int i = 0; i < vm.ChartNowModel.list_BR_Model.Count; i++)
+                {
+                    if(vm.ChartNowModel.list_BR_Model[i].Set_WL == WL)
+                    {
+                        double IL_Max = ls.Points.Where(p => p.Y == ls.Points.Max(s => s.Y)).FirstOrDefault().Y;
+                        double IL_Min = ls.Points.Where(p => p.Y == ls.Points.Min(s => s.Y)).FirstOrDefault().Y;
+
+                        vm.ChartNowModel.list_BR_Model[i].BR_WL = ls.Points.Where(p => p.Y == ls.Points.Max(s => s.Y)).FirstOrDefault().X.ToString();
+                        vm.ChartNowModel.list_BR_Model[i].BR = IL_Max.ToString("f1");
+
+                        vm.PlotViewModel.Axes[1].Maximum = IL_Max < 0 ? 0 : IL_Max;
+                        vm.PlotViewModel.Axes[1].Minimum = IL_Min - 10;
+
+                        LineAnnotation pat = vm.PlotViewModel.Annotations[i] as LineAnnotation;
+                        pat.StrokeThickness = 2;
+
+                        pat.X = ls.Points.Where(p => p.Y == ls.Points.Max(s => s.Y)).FirstOrDefault().X;
+
+                        pat.Text = $"{IL_Max.ToString("f3")}\r{pat.X.ToString("f2")}";
+                        pat.TextOrientation = AnnotationTextOrientation.Horizontal;
+
+                        if (i < 10)
+                            pat.TextLinePosition = 1 - (0.1 * i);  //Vertical postion of annotation title text
+                        else
+                            pat.TextLinePosition = 1 - (0.1 * (i - 10));  //Vertical postion of annotation title text
+                    }
+                }
+
                 vm.Update_ALL_PlotView();
 
                 vm.Str_cmd_read = vm.Str_cmd_read + $", {list_WL_IL.Count} points";
@@ -1943,10 +2462,12 @@ namespace PD.NavigationPages
 
                 vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
 
-                sb_bear_shake.Pause();
-                sb_bear_reset.Begin();
+                vm.sb_bear_shake.Pause();
+                vm.sb_bear_reset.Begin();
 
                 await cmd.Save_Chart();
+
+                _is_OSA_WL_Working = false;
 
                 if (!vm.isStop)
                     vm.Show_Bear_Window($"WL Scan 完成  ({Math.Round(scan_timespan, 1)} s)", false, "String", false);
@@ -1985,8 +2506,9 @@ namespace PD.NavigationPages
             }
             catch
             {
-                sb_bear_shake.Pause();
-                sb_bear_reset.Begin();
+                vm.sb_bear_shake.Pause();
+                vm.sb_bear_reset.Begin();
+                _is_OSA_WL_Working = false;
             }
         }
 
@@ -1997,5 +2519,58 @@ namespace PD.NavigationPages
             await cmd.Cmd_Write_RecieveData("SN?", true, vm.ch);
             vm.list_GaugeModels.First().GaugeSN = vm.Str_cmd_read;
         }
+
+        private void ALL_CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            bool judge = false;  //if one channel is not checked
+            foreach (Chart_UI_Model chUIModel in vm.list_Chart_UI_Models)
+            {
+                judge = chUIModel.Button_IsChecked;
+
+                if (!judge)
+                    break;
+            }
+
+            cbox_all.IsChecked = judge ? false : true;
+
+            for (int i = 0; i < vm.list_Chart_UI_Models.Count; i++)
+            {
+                vm.list_Chart_UI_Models[i].Button_IsChecked = !judge;
+
+                LineAnnotation lat = vm.PlotViewModel.Annotations[i] as LineAnnotation;
+                lat.StrokeThickness = 2;
+                lat.TextColor = OxyColors.Black;
+            }
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < vm.list_Chart_UI_Models.Count; i++)
+            {
+                if (vm.Plot_Series.Count > i)
+                {
+                    vm.Plot_Series[i].IsVisible = vm.list_Chart_UI_Models[i].Button_IsChecked;
+                    vm.Plot_Series[i].Color = vm.list_OxyColor[i];
+
+                    LineAnnotation lat = vm.PlotViewModel.Annotations[i] as LineAnnotation;
+                    if(vm.list_Chart_UI_Models[i].Button_IsChecked)
+                    {
+                        lat.StrokeThickness = 2;
+                        lat.TextColor = OxyColors.Black;
+                    }
+                    else
+                    {
+                        lat.StrokeThickness = 0;
+                        lat.TextColor = OxyColors.Transparent;
+                    }
+
+                    lat.TextLinePosition = 1 - (0.1 * i);  //Vertical postion of annotation title text
+                }
+            }
+
+            vm.Update_ALL_PlotView();
+        }
+
+        
     }
 }

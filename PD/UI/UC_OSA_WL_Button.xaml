@@ -42,10 +42,10 @@
                                 Grid.RowSpan="3"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
-                                CornerRadius="15"
+                                CornerRadius="11"
                                 BorderThickness="2"
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                Margin="8"
+                                Margin="2"
                                 Background="Transparent" />
                             <Viewbox Grid.Row="1"
                                  Grid.Column="0">
@@ -68,13 +68,13 @@
                                  Value="True">
                                 <Setter TargetName="border"
                                     Property="BorderBrush"
-                                    Value="#FF257459" />
+                                    Value="#FF555555" /> 
                             </Trigger>
                             <Trigger Property="IsPressed"
                                  Value="True">
                                 <Setter TargetName="border"
                                     Property="Background"
-                                    Value="#FFDCDADA" />
+                                    Value="#FF26D0D8" />
                             </Trigger>
 
                             <!--<EventTrigger RoutedEvent="Button.MouseEnter">
@@ -120,18 +120,36 @@
         </Style>
 
     </UserControl.Resources>
+    
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="6*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Border x:Name="border_background"
                 Focusable="False"
                 Grid.Column="0"
                 Background="Transparent"
-                Grid.ColumnSpan="4" />
+                Grid.ColumnSpan="4" Grid.RowSpan="3" />
 
-        <Button Grid.Column="2" BorderBrush="{x:Null}"
-                Content="{Binding txtbox_content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_OSA_WL_Button}}}" Style="{DynamicResource style_FuncBtn}"
+        <Button Grid.Column="0" BorderBrush="{x:Null}"
+                Content="{Binding txtbox_content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_OSA_WL_Button}}}" Style="{DynamicResource style_FuncBtn}" Grid.Row="1" Margin="0,0,5,0"
                  />
+        <Border Grid.Column="0" BorderThickness="0,0,1.5,0" BorderBrush="#FF27917E" Grid.Row="1"/>
+        <Label Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15" FontWeight="Bold"
+               Content="{Binding txtbox_content_2, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_OSA_WL_Button}}}"
+               />
+        <Border Grid.Column="1" BorderThickness="0,0,1.5,0" BorderBrush="#FF27917E" Grid.Row="1"/>
+        <Label Grid.Column="2" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15" FontWeight="Bold"
+               Content="{Binding txtbox_content_3, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:UC_OSA_WL_Button}}}"
+               />
+
+
     </Grid>
 </UserControl>

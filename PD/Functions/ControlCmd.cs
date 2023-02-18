@@ -191,7 +191,7 @@ namespace PD.Functions
                             {
                                 if (!vm.PD_or_PM)
                                 {
-                                    if (vm.station_type.Equals("Fast_Calibration"))
+                                    if (vm.station_type == ComViewModel.StationTypes.Fast_Calibration)
                                         await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "PD?", Type = "PD" });
                                     else
                                         await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "P0?", Type = "PD" });
@@ -256,7 +256,7 @@ namespace PD.Functions
                                         //PD mode
                                         if (!vm.PD_or_PM)
                                         {
-                                            if (vm.station_type.Equals("Fast_Calibration"))
+                                            if (vm.station_type == ComViewModel.StationTypes.Fast_Calibration)
                                                 await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "PD?", Type = "PD" });
                                             else
                                                 await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "P0?", Type = "PD" });
@@ -330,7 +330,7 @@ namespace PD.Functions
 
                     break;
                 case "PD?":
-                    if (vm.station_type.Equals("Fast_Calibration"))
+                    if (vm.station_type == ComViewModel.StationTypes.Fast_Calibration)
                     {
                         if (!vm.PD_or_PM)  //PD mode
                         {
@@ -394,7 +394,7 @@ namespace PD.Functions
                     if (!vm.PD_or_PM)  //PD mode
                     {
                         //16 channel
-                        if (vm.station_type.Equals("Chamber_S_16ch"))
+                        if (vm.station_type == ComViewModel.StationTypes.Chamber_S_16ch)
                         {
                             await vm.Port_ReOpen(vm.PD_A_ChannelModel.Board_Port);
                             await vm.Port_PD_B_ReOpen(vm.PD_B_ChannelModel.Board_Port);
@@ -1691,7 +1691,7 @@ namespace PD.Functions
                     break;
 
                 default:
-                    if (string.Compare(vm.station_type, "UV_Curing") == 0)
+                    if (string.Compare(vm.station_type.ToString(), "UV_Curing") == 0)
                     {
                         vm.port_PD.Write(cm.Command);
                         await Task.Delay(200);
@@ -1816,7 +1816,7 @@ namespace PD.Functions
             else  //PM mode
             {
                 string str_selected_com;
-                if (vm.station_type.Equals("Hermetic_Test"))
+                if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                 {
                     for (int ch = 0; ch < vm.ch_count; ch++)
                     {
@@ -2484,7 +2484,7 @@ namespace PD.Functions
         {
             try
             {
-                if (vm.station_type.Equals("Hermetic_Test"))
+                if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                 {
                     if (vm.selected_band.Equals("C Band"))
                     {
@@ -2614,7 +2614,7 @@ namespace PD.Functions
                                 vm.Double_PM_Wavelength = vm.pm.ReadWL();
                 }
 
-                if (vm.station_type.Equals("Testing"))
+                if (vm.station_type== ComViewModel.StationTypes.Testing)
                 {
                     if (vm.float_WL_Ref.Count != 0)
                         vm.Double_PM_Ref = vm.float_WL_Ref[0];
@@ -2697,7 +2697,7 @@ namespace PD.Functions
                                 vm.Double_PM_Wavelength = vm.pm.ReadWL();
                 }
 
-                if (vm.station_type.Equals("Testing"))
+                if (vm.station_type == ComViewModel.StationTypes.Testing)
                 {
                     if (vm.float_WL_Ref.Count != 0)
                         vm.Double_PM_Ref = vm.float_WL_Ref[0];
@@ -3003,7 +3003,7 @@ namespace PD.Functions
 
             await vm.Port_ReOpen(selected_comport);
 
-            if (vm.station_type != "Hermetic_Test")
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test)
             {
                 return;
                 //If station is not Hermetic_Test, then we need a method to find out the name of this control board.
@@ -3104,7 +3104,7 @@ namespace PD.Functions
                 {
                     case "PM":
                         int ch = 1;
-                        if (vm.station_type.Equals("Hermetic_Test")) ch = vm.switch_index;
+                        if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test) ch = vm.switch_index;
 
                         double p = await Get_PM_Value((ch - 1));  //Y axis value
                         str = p.ToString();
@@ -3644,11 +3644,40 @@ namespace PD.Functions
             return power;
         }
 
+        private void OSA_Init()
+        {
+            try
+            {
+                if (!vm.isOSAConnected)
+                {
+                    vm.Str_Status = "OSA Initializing";
+                    vm.OSA.protocol = 0;
+                    vm.OSA.BoardNumber = vm.tls_BoardNumber;
+                    vm.OSA.Addr = vm.tls_Addr;
+                    vm.OSA.Open();
+                    vm.OSA.init();
+
+                    vm.isOSAConnected = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                vm.Str_cmd_read = "OSA Setting Error";
+                MessageBox.Show(ex.StackTrace.ToString());
+            }
+        }
+
         public async Task<List<DataPoint>> OSA_Scan()
         {
             List<DataPoint> result = new List<DataPoint>();
 
             //OSA Setting
+            //Task t = Task.Run(() => OSA_Init());
+            //if(!t.Wait(3000))
+            //{
+            //    vm.Str_cmd_read = "Connect to OSA Failed";
+            //    return result;
+            //}
             try
             {
                 if (!vm.isOSAConnected)
@@ -3895,10 +3924,10 @@ namespace PD.Functions
 
                     using (StreamWriter sr = new StreamWriter(filePath))
                     {
-                        sr.WriteLine($"\"{vm.list_GaugeModels.First().GaugeSN}-{WL_Dac_Now}-{INOUT}\",4,\"{ProductType} BR\"");
-                        sr.WriteLine($"\"Traces\",1,0");
-                        sr.WriteLine($"2,1,{vm.float_WL_Scan_Start},{vm.float_WL_Scan_End},{vm.float_WL_Scan_Gap},{(Math.Abs(vm.float_WL_Scan_End - vm.float_WL_Scan_Start) / vm.float_WL_Scan_Gap) + 1}");
-                        sr.WriteLine($"-9999,0,-1,-1,-1,{(Math.Abs(vm.float_WL_Scan_End - vm.float_WL_Scan_Start) / vm.float_WL_Scan_Gap) + 1}");
+                        //sr.WriteLine($"\"{vm.list_GaugeModels.First().GaugeSN}-{WL_Dac_Now}-{INOUT}\",4,\"{ProductType} BR\"");
+                        //sr.WriteLine($"\"Traces\",1,0");
+                        //sr.WriteLine($"2,1,{vm.float_WL_Scan_Start},{vm.float_WL_Scan_End},{vm.float_WL_Scan_Gap},{(Math.Abs(vm.float_WL_Scan_End - vm.float_WL_Scan_Start) / vm.float_WL_Scan_Gap) + 1}");
+                        //sr.WriteLine($"-9999,0,-1,-1,-1,{(Math.Abs(vm.float_WL_Scan_End - vm.float_WL_Scan_Start) / vm.float_WL_Scan_Gap) + 1}");
 
                         foreach (DataPoint dp in vm.Plot_Series[i].Points)
                         {
@@ -3912,12 +3941,12 @@ namespace PD.Functions
 
                                 if (rm != null) ref_value = rm.Ch_1;
 
-                                sr.WriteLine($"{dp.X},{dp.Y + vm.BR_Diff - ref_value}");  //dBm mode, chart points IL wasn't minus ref value, have to convert dBm to dB to save data.
+                                sr.WriteLine($"{dp.X},{Math.Round(dp.Y + vm.BR_Diff - ref_value, 3)}");  //dBm mode, chart points IL wasn't minus ref value, have to convert dBm to dB to save data.
                             }
                         }
 
-                        sr.WriteLine($"\"Points,1\"");
-                        sr.WriteLine($"1,0,-6969,0");
+                        //sr.WriteLine($"\"Points,1\"");
+                        //sr.WriteLine($"1,0,-6969,0");
 
                         sr.Close();
                     }
@@ -4106,6 +4135,8 @@ namespace PD.Functions
                 nowChartModel.Plot_Series.Add(serie);
             }
 
+            nowChartModel.list_BR_Model = new ObservableCollection<BR_Model>(vm.ChartNowModel.list_BR_Model);
+
             vm.list_ChartModels.Add(nowChartModel);
 
             vm.Chart_All_Datapoints_History.Add(vm.Chart_All_DataPoints);
@@ -4118,7 +4149,7 @@ namespace PD.Functions
         {
             #region Set Chart data points   
 
-            if (vm.station_type.Equals("Testing") || vm.station_type.Equals("UTF600")  || vm.station_type.Equals("Hermetic_Test") || vm.IsDistributedSystem)
+            if (vm.station_type == ComViewModel.StationTypes.Testing || vm.station_type == ComViewModel.StationTypes.UTF600 || vm.station_type== ComViewModel.StationTypes.Hermetic_Test || vm.IsDistributedSystem)
             {
                 if (vm.isTimerOn)
                 {

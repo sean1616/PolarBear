@@ -55,8 +55,6 @@ namespace PD.Models
         public string[] preDac { get; set; }
         public List<List<DataPoint>> list_dataPoints { get; set; }
 
-        //public List<LineSeries> PlotSerie = new List<LineSeries>();
-
         private double _TimeSpan = 0.0;
         public double TimeSpan
         {
@@ -265,7 +263,45 @@ namespace PD.Models
 
         #endregion
 
+        #region BR para
+        private ObservableCollection<BR_Model> _list_BR_Model = new ObservableCollection<BR_Model>() { new BR_Model() { Set_WL = "1548.5", BR_WL = "1558", BR = "-50" } };
+        public ObservableCollection<BR_Model> list_BR_Model
+        {
+            get { return _list_BR_Model; }
+            set
+            {
+                _list_BR_Model = value;
+                OnPropertyChanged_Normal("list_BR_Model");
+            }
+        }
+        #endregion
+
     }
+
+    public class BR_Model : NotifyBase
+    {
+        private string _Set_WL = "1548.5";
+        public string Set_WL
+        {
+            get { return _Set_WL; }
+            set { _Set_WL = value; OnPropertyChanged_Normal("Set_WL"); }
+        }
+
+        private string _BR_WL = "";
+        public string BR_WL
+        {
+            get { return _BR_WL; }
+            set { _BR_WL = value; OnPropertyChanged_Normal("BR_WL"); }
+        }
+
+        private string _BR = "";
+        public string BR
+        {
+            get { return _BR; }
+            set { _BR = value; OnPropertyChanged_Normal("BR"); }
+        }
+    }
+
 
     public class OpticalPropertyModel : NotifyBase
     {

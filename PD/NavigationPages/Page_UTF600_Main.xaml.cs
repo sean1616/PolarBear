@@ -36,8 +36,8 @@ namespace PD.NavigationPages
         bool _isDrag = false;
         Analysis anly;
 
-        readonly public System.Windows.Media.Animation.Storyboard sb_bear_shake;
-        readonly public System.Windows.Media.Animation.Storyboard sb_bear_reset;
+        //readonly public System.Windows.Media.Animation.Storyboard sb_bear_shake;
+        //readonly public System.Windows.Media.Animation.Storyboard sb_bear_reset;
 
         public Page_UTF600_Main(ComViewModel vm)
         {
@@ -73,8 +73,6 @@ namespace PD.NavigationPages
             vm.PlotViewModel.MouseDown += PlotViewModel_MouseDown;
             //vm.PlotViewModel.MouseUp += PlotViewModel_MouseUp;
 
-            sb_bear_shake = FindResource("Storyboard_Bear_Shake") as System.Windows.Media.Animation.Storyboard;
-            sb_bear_reset = FindResource("Storyboard_Bear_Reset") as System.Windows.Media.Animation.Storyboard;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -88,13 +86,16 @@ namespace PD.NavigationPages
 
             vm.Update_ALL_PlotView();
 
-            if (sb_bear_shake != null)
-                sb_bear_shake.Begin();
+            vm.sb_bear_shake = FindResource("Storyboard_Bear_Shake") as System.Windows.Media.Animation.Storyboard;
+            vm.sb_bear_reset = FindResource("Storyboard_Bear_Reset") as System.Windows.Media.Animation.Storyboard;
 
-            if (sb_bear_reset != null)
+            if (vm.sb_bear_shake != null)
+                vm.sb_bear_shake.Begin();
+
+            if (vm.sb_bear_reset != null)
             {
-                sb_bear_reset.Begin();
-                sb_bear_reset.Pause();
+                vm.sb_bear_reset.Begin();
+                vm.sb_bear_reset.Pause();
             }
         }
 
@@ -398,7 +399,7 @@ namespace PD.NavigationPages
 
         private void tbtn_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
             if (gaugetxt_focus) return;
             ToggleButton obj = (ToggleButton)sender;
             obj.IsChecked = !obj.IsChecked;
@@ -1153,7 +1154,7 @@ namespace PD.NavigationPages
 
         private async void Btn_WL_Click(object sender, RoutedEventArgs e)
         {
-            if (!vm.station_type.Equals("Hermetic_Test")) return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
 
             Button obj = (Button)sender;
 
@@ -1231,7 +1232,7 @@ namespace PD.NavigationPages
 
         private async void Btn_Voltage_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
 
             Button obj = (Button)sender;
 
@@ -1405,7 +1406,7 @@ namespace PD.NavigationPages
 
         private async void gauge_PreviewMouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
 
             if (!vm.Is_switch_mode) return;
 

@@ -1033,6 +1033,12 @@ namespace PD.NavigationPages
         {
             try
             {
+                MessageBoxResult msgBoxResult = MessageBox.Show("Cover old ref.txt ?", "Get Ref", MessageBoxButton.YesNoCancel);
+
+                if (msgBoxResult == MessageBoxResult.Cancel)
+                    return;
+
+                #region Initial setting
                 vm.isStop = false;
 
                 analysis.JudgeAllBoolGauge();
@@ -1040,6 +1046,7 @@ namespace PD.NavigationPages
                 string RefName = String.Empty;
                 string RefPath = String.Empty;
 
+                //File name setting
                 for (int ch = 0; ch < vm.ch_count; ch++)
                 {
                     RefName = $"Ref{ch + 1}.txt";
@@ -1058,28 +1065,28 @@ namespace PD.NavigationPages
                     }
                 }
 
-                MessageBoxResult msgBoxResult = MessageBox.Show("Cover old ref.txt ?", "Get Ref", MessageBoxButton.YesNoCancel);
-
-                if (msgBoxResult != MessageBoxResult.Cancel)
+                string savePath = @"D:\";
+                if (!vm.CheckDirectoryExist(@"D:"))
                 {
-                    string savePath = @"D:\";
-                    if (!vm.CheckDirectoryExist(@"D:"))
-                    {
-                        MessageBox.Show($"D槽不存在，更改路徑為{vm.CurrentPath}");
-                        savePath = vm.CurrentPath;
-                    }
+                    MessageBox.Show($"D槽不存在，更改路徑為{vm.CurrentPath}");
+                    savePath = vm.CurrentPath;
+                }
 
-                    if (!vm.CheckDirectoryExist(Path.Combine(savePath, @"\Ref\")))
-                    {
-                        savePath = vm.CurrentPath;
-                        Directory.CreateDirectory(Path.Combine(savePath, @"\Ref\"));
-                    }
+                if (!vm.CheckDirectoryExist(Path.Combine(savePath, @"\Ref\")))
+                {
+                    savePath = vm.CurrentPath;
+                    Directory.CreateDirectory(Path.Combine(savePath, @"\Ref\"));
+                }
 
-                    vm.Str_Status = "Get Ref";
-                    vm.dB_or_dBm = false;
+                vm.Str_Status = "Get Ref";
+                vm.dB_or_dBm = false;
 
-                    cmd.Clean_Chart();
+                cmd.Clean_Chart();
+                #endregion
 
+                //TLS mode
+                if (!vm.is_BR_OSA)
+                {
                     List<double> list_wl = new List<double>();
 
                     if (msgBoxResult == MessageBoxResult.Yes)
@@ -1087,7 +1094,7 @@ namespace PD.NavigationPages
                         for (int ch = 0; ch < vm.ch_count; ch++)
                         {
                             RefName = $"Ref{ch + 1}.txt";
-                            RefPath = Path.Combine(savePath , @"\Ref\", RefName);
+                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
 
                             if (File.Exists(RefPath))
                             {
@@ -1108,6 +1115,7 @@ namespace PD.NavigationPages
                             vm.Ref_Dictionaries[i].Clear();
                         }
                     }
+
                     else if (msgBoxResult == MessageBoxResult.No)
                     {
                         //add specific channel ref to ref.txt
@@ -1130,6 +1138,7 @@ namespace PD.NavigationPages
                     bool tempBool = vm.Is_FastScan_Mode;
                     vm.Is_FastScan_Mode = false;
 
+                    //Scan Points
                     foreach (double wl in list_wl)
                     {
                         if (vm.isStop) break;
@@ -1147,14 +1156,14 @@ namespace PD.NavigationPages
                         if (!vm.IsDistributedSystem)
                         {
                             //PM mode
-                            if (vm.PD_or_PM)  
+                            if (vm.PD_or_PM)
                             {
                                 for (int ch = 0; ch < vm.ch_count; ch++)
                                 {
                                     if (vm.BoolAllGauge || vm.list_GaugeModels[ch].boolGauge)
                                     {
                                         vm.switch_index = ch + 1;
-                                        if (vm.station_type.Equals("Hermetic_Test"))
+                                        if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                                         {
                                             RefName = string.Format("Ref{0}.txt", vm.switch_index);
                                             RefPath = Path.Combine(savePath, @"\Ref\", RefName);
@@ -1170,7 +1179,6 @@ namespace PD.NavigationPages
 
                                         IL = await cmd.Get_PM_Value((vm.switch_index - 1));
 
-                                        //string msg = string.Format("{0},{1}", Math.Round(wl, 2).ToString(), IL.ToString());
                                         string msg = $"{Math.Round(wl, 2)},{IL}";
 
                                         File.AppendAllText(RefPath, msg + "\r");
@@ -1228,7 +1236,7 @@ namespace PD.NavigationPages
                                         vm.Ref_memberDatas.Last().Wavelength = Math.Round(wl, 2);   //Add a new data to grid ref
 
                                         //get all properties and it's values in the last of vm.Ref_memberDatas
-                                        var props = vm.Ref_memberDatas.Last().GetPropertiesFromCache(); 
+                                        var props = vm.Ref_memberDatas.Last().GetPropertiesFromCache();
 
                                         foreach (var prop in props)
                                         {
@@ -1297,21 +1305,85 @@ namespace PD.NavigationPages
 
                     //Close TLS filter port for other control action
                     cmd.Close_TLS_Filter();
-
-                    vm.Str_Status = "Get Ref End";
-
-                    #region Get data from txt file and show
-                    _Page_Ref_Grid = new Page_Ref_Grid(vm, txt_path.Text);
-
-                    pageTransitionControl.ShowPage(_Page_Ref_Grid);
-
-                    save_path = txt_path.Text;
-
-                    pageTransitionControl.CurrentPage.Name = "Grid";
-
-                    currentPage = false;
-                    #endregion
                 }
+
+                //OSA mode
+                else
+                {
+                    List<DataPoint> list_WL_IL = await Task.Run(() => cmd.OSA_Scan());
+
+                    RefName = $"Ref1.txt";
+                    RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+
+                    if (msgBoxResult == MessageBoxResult.Yes)
+                    {
+                        File.Create(RefPath).Close();
+
+                        StringBuilder sb = new StringBuilder();
+                        foreach (DataPoint dp in list_WL_IL)
+                            sb.Append($"{dp.X},{dp.Y}\r");
+
+                        File.AppendAllText(RefPath, sb.ToString());
+                    }
+                    else if (msgBoxResult == MessageBoxResult.No)
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        if (File.Exists(RefPath))
+                        {
+                            SortedDictionary<string, string> ref_dictionary = new SortedDictionary<string, string>();
+
+                            string[] arrayString = File.ReadAllLines(RefPath);
+
+                            for (int i = 0; i < arrayString.Length; i++)
+                            {
+                                string[] s = arrayString[i].Split(',');
+                                if (s.Length != 2)
+                                {
+                                    vm.Show_Bear_Window($"{RefName}內容有誤");
+                                    return;
+                                }
+
+                                if (!ref_dictionary.ContainsKey(s[0]))
+                                    ref_dictionary.Add(s[0], s[1]);
+                            }
+
+                            foreach (DataPoint dp in list_WL_IL)
+                            {
+                                if (ref_dictionary.Keys.Contains(dp.X.ToString()))
+                                    ref_dictionary.Remove(dp.X.ToString());
+
+                                ref_dictionary.Add(dp.X.ToString(), dp.Y.ToString());
+                            }
+
+                            File.Create(RefPath).Close();
+                            foreach (KeyValuePair<string, string> kp in ref_dictionary)
+                            {
+                                sb.Append($"{kp.Key},{kp.Value}\r");
+                            }
+                        }
+                        else  //Ref.txt file is not exist
+                        {
+                            foreach (DataPoint dp in list_WL_IL)
+                                sb.Append($"{dp.X},{dp.Y}\r");
+                        }
+                        File.AppendAllText(RefPath, sb.ToString());
+                    }
+                }
+
+                vm.Str_Status = "Get Ref End";
+
+                #region Get data from txt file and show
+                _Page_Ref_Grid = new Page_Ref_Grid(vm, txt_path.Text);
+
+                pageTransitionControl.ShowPage(_Page_Ref_Grid);
+
+                save_path = txt_path.Text;
+
+                pageTransitionControl.CurrentPage.Name = "Grid";
+
+                currentPage = false;
+                #endregion  
             }
             catch { }
         }

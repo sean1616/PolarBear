@@ -48,7 +48,7 @@ namespace PD.NavigationPages
                         if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Switch_Comport"))) vm.Comport_Switch = vm.Ini_Read("Connection", "Switch_Comport");
 
                         if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Station")))
-                            vm.station_type = vm.Ini_Read("Connection", "Station");
+                            vm.station_type = (ComViewModel.StationTypes)Enum.Parse(typeof(ComViewModel.StationTypes), vm.Ini_Read("Connection", "Station"));
 
                         if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Type")))
                         {

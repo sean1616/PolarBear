@@ -682,7 +682,7 @@ namespace PD.ViewModel
 
         public void Save_Command<T>(T No, string command)
         {
-            if (station_type == "UV_Curing")
+            if (station_type == ComViewModel.StationTypes.UV_Curing)
             {
                 ComMembers.Add(new ComMember()
                 {
@@ -714,7 +714,7 @@ namespace PD.ViewModel
 
         public void Save_Command<T>(string status, string type, string command, string comport, T No)
         {
-            if (station_type == "UV_Curing")
+            if (station_type == ComViewModel.StationTypes.UV_Curing)
             {
                 ComMembers.Add(new ComMember()
                 {
@@ -743,7 +743,7 @@ namespace PD.ViewModel
 
         public void Save_Command<T>(string status, string type, string command, string comport, T No, string description)
         {
-            if (station_type == "UV_Curing")
+            if (station_type == ComViewModel.StationTypes.UV_Curing)
             {
                 ComMembers.Add(new ComMember()
                 {
@@ -773,7 +773,7 @@ namespace PD.ViewModel
 
         public void Save_Command(int No, string status, string type, string comport, string Ch, string command, string value1, string value2, string value3, string value4, string read, string description)
         {
-            if (station_type == "UV_Curing")
+            if (station_type == ComViewModel.StationTypes.UV_Curing)
             {
                 ComMembers.Add(new ComMember()
                 {
@@ -1296,6 +1296,139 @@ namespace PD.ViewModel
             }
         }
 
+        //List<Dictionary<double, double>> dictionaries = new List<Dictionary<double, double>>();
+        private void Read_Ref_Analyze(string path, int ch)
+        {
+            string filepath = $@"{path}\Ref{ch}.txt";
+            bool _isfileExis = File.Exists(filepath);
+
+            if (_isfileExis)  //判斷Ref.txt是否存在
+            {
+                try
+                {
+                    // Read the file and display it line by line.  
+                    string[] allTxt = File.ReadAllLines(filepath);
+
+                    //讀取Ref 並分析
+                    foreach (string s in allTxt)
+                    {
+                        string[] line_array = s.Split(',');
+
+                        if (line_array.Length == 2)
+                        {
+                            if (double.TryParse(line_array[0], out double data_WL) && double.TryParse(line_array[1], out double data_IL))
+                                Ref_Dictionaries[ch - 1].Add(data_WL, data_IL);          //Add ref to dictionary
+                        }
+                        else
+                            Save_Log("Gef ref", "Ref format is wrong", false);
+                    }
+
+                    //Ref_Dictionaries = dictionaries;
+                }
+                catch { }
+
+                //StreamReader file = new StreamReader(filepath);
+
+                //讀取Ref 並分析
+                //try
+                //{
+                //    while ((line = file.ReadLine()) != null)
+                //    {
+                //        string[] line_array = line.Split(',');
+
+                //        if (line_array.Length == 2)
+                //        {
+                //            double data_WL = Math.Round(Convert.ToDouble(line_array[0]),2);
+                //            double data_IL = Convert.ToDouble(line_array[1]);
+
+                //            if (!list_wl.Contains(data_WL))
+                //                list_wl.Add(data_WL);  //新增波長
+
+                //            dictionaries[ch - 1].Add(Math.Round(data_WL,2), data_IL);          //Add ref to dictionary                   
+                //        }
+                //        else
+                //            Save_Log("Gef ref", "Ref format is wrong", false);
+
+                //        counter++;
+                //    }
+
+                //    list_wl.Remove(0);
+                //}
+                //catch { }
+
+                //file.Close();
+
+            }
+        }
+
+        public void Read_Ref(string ref_folder_path)
+        {
+            list_wl = new List<double>();
+            Ref_memberDatas.Clear();
+
+            try
+            {
+                //System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                //sw.Reset();
+                //sw.Start();
+
+                Ref_Dictionaries.Clear();
+                for (int i = 0; i < 16; i++)
+                {
+                    Ref_Dictionaries.Add(new Dictionary<double, double>());  //Initialize dictionaries for all ref file
+                }
+
+                Parallel.For(1, Ref_Dictionaries.Count + 1, ch => { Read_Ref_Analyze(ref_folder_path, ch); });  //平行運算
+
+                double d = 0;
+                var v = Ref_Dictionaries[0].Keys.ToList(); ;
+
+                IEnumerable<double> unionKeys;
+
+                foreach (Dictionary<double, double> oneDict in Ref_Dictionaries)
+                {
+                    List<double> lw = oneDict.Keys.ToList();
+
+                    unionKeys = list_wl.Union(lw);
+                    list_wl = unionKeys.ToList();
+                }
+
+                //顯示讀取的Ref data
+                foreach (double wl in list_wl) 
+                {
+                    Ref_memberDatas.Add(new RefModel()
+                    {
+                        Wavelength = wl,
+                        Ch_1 = Ref_Dictionaries[0].ContainsKey(wl) ? Ref_Dictionaries[0][wl] : d,
+                        Ch_2 = Ref_Dictionaries[1].ContainsKey(wl) ? Ref_Dictionaries[1][wl] : d,
+                        Ch_3 = Ref_Dictionaries[2].ContainsKey(wl) ? Ref_Dictionaries[2][wl] : d,
+                        Ch_4 = Ref_Dictionaries[3].ContainsKey(wl) ? Ref_Dictionaries[3][wl] : d,
+                        Ch_5 = Ref_Dictionaries[4].ContainsKey(wl) ? Ref_Dictionaries[4][wl] : d,
+                        Ch_6 = Ref_Dictionaries[5].ContainsKey(wl) ? Ref_Dictionaries[5][wl] : d,
+                        Ch_7 = Ref_Dictionaries[6].ContainsKey(wl) ? Ref_Dictionaries[6][wl] : d,
+                        Ch_8 = Ref_Dictionaries[7].ContainsKey(wl) ? Ref_Dictionaries[7][wl] : d,
+                        Ch_9 = Ref_Dictionaries[8].ContainsKey(wl) ? Ref_Dictionaries[8][wl] : d,
+                        Ch_10 = Ref_Dictionaries[9].ContainsKey(wl) ? Ref_Dictionaries[9][wl] : d,
+                        Ch_11 = Ref_Dictionaries[10].ContainsKey(wl) ? Ref_Dictionaries[10][wl] : d,
+                        Ch_12 = Ref_Dictionaries[11].ContainsKey(wl) ? Ref_Dictionaries[11][wl] : d,
+                        Ch_13 = Ref_Dictionaries[12].ContainsKey(wl) ? Ref_Dictionaries[12][wl] : d,
+                        Ch_14 = Ref_Dictionaries[13].ContainsKey(wl) ? Ref_Dictionaries[13][wl] : d,
+                        Ch_15 = Ref_Dictionaries[14].ContainsKey(wl) ? Ref_Dictionaries[14][wl] : d,
+                        Ch_16 = Ref_Dictionaries[15].ContainsKey(wl) ? Ref_Dictionaries[15][wl] : d,
+                    });
+                }
+
+                //sw.Stop();
+
+                //Save_Log("Read Reference", ch_count.ToString(), "TimeSpan", sw.ElapsedMilliseconds.ToString() + " ms");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Read Ref.txt error");
+                MessageBox.Show(ex.StackTrace.ToString());
+            }
+        }
+
         private async void TXT_Power_KeyDown(KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -1759,7 +1892,7 @@ namespace PD.ViewModel
 
             //                            //get all properties and it's values in the last of Ref_memberDatas
             //                            var props = Ref_memberDatas.Last().GetPropertiesFromCache();
-
+            //                            System.Reflection.PropertyInfo
             //                            foreach (var prop in props)
             //                            {
             //                                //Set value to which property name is match channel now
@@ -1778,49 +1911,49 @@ namespace PD.ViewModel
             //            //Distribution system
             //            else
             //            {
-            //                for (int ch = 0; ch < vm.ch_count; ch++)
+            //                for (int ch = 0; ch < ch_count; ch++)
             //                {
             //                    await cmd.Get_Power(ch, true);
-            //                    IL = vm.Double_Powers[ch];
+            //                    IL = Double_Powers[ch];
             //                    File.AppendAllText(RefPath, $"{Math.Round(wl, 2)},{IL}\r");
 
-            //                    vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
+            //                    Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
 
-            //                    vm.Ref_memberDatas.Add(new RefModel()
+            //                    Ref_memberDatas.Add(new RefModel()
             //                    {
             //                        Wavelength = Math.Round(wl, 2),
-            //                        Ch_1 = vm.Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
-            //                        Ch_2 = vm.Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
-            //                        Ch_3 = vm.Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
-            //                        Ch_4 = vm.Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
-            //                        Ch_5 = vm.Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
-            //                        Ch_6 = vm.Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
-            //                        Ch_7 = vm.Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
-            //                        Ch_8 = vm.Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
-            //                        Ch_9 = vm.Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
-            //                        Ch_10 = vm.Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
-            //                        Ch_11 = vm.Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
-            //                        Ch_12 = vm.Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
-            //                        Ch_13 = vm.Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
-            //                        Ch_14 = vm.Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
-            //                        Ch_15 = vm.Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
-            //                        Ch_16 = vm.Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
+            //                        Ch_1 = Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
+            //                        Ch_2 = Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
+            //                        Ch_3 = Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
+            //                        Ch_4 = Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
+            //                        Ch_5 = Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
+            //                        Ch_6 = Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
+            //                        Ch_7 = Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
+            //                        Ch_8 = Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
+            //                        Ch_9 = Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
+            //                        Ch_10 = Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
+            //                        Ch_11 = Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
+            //                        Ch_12 = Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
+            //                        Ch_13 = Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
+            //                        Ch_14 = Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
+            //                        Ch_15 = Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
+            //                        Ch_16 = Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
             //                    });
             //                }
             //            }
             //        }
 
-            //        vm.Is_FastScan_Mode = tempBool;
+            //        Is_FastScan_Mode = tempBool;
 
-            //        if (!vm.PD_or_PM && !vm.IsDistributedSystem)
+            //        if (!PD_or_PM && !IsDistributedSystem)
             //        {
-            //            if (vm.port_PD != null)
+            //            if (port_PD != null)
             //            {
-            //                if (vm.port_PD.IsOpen)
+            //                if (port_PD.IsOpen)
             //                {
-            //                    vm.port_PD.DiscardInBuffer();
-            //                    vm.port_PD.DiscardOutBuffer();
-            //                    vm.port_PD.Close();
+            //                    port_PD.DiscardInBuffer();
+            //                    port_PD.DiscardOutBuffer();
+            //                    port_PD.Close();
             //                }
             //            }
             //        }
@@ -1828,18 +1961,18 @@ namespace PD.ViewModel
             //        //Close TLS filter port for other control action
             //        cmd.Close_TLS_Filter();
 
-            //        vm.Str_Status = "Get Ref End";
+            //        Str_Status = "Get Ref End";
 
             //        #region Get data from txt file and show
-            //        _Page_Ref_Grid = new Page_Ref_Grid(vm, txt_path.Text);
+            //        //_Page_Ref_Grid = new Page_Ref_Grid(vm, txt_path.Text);
 
-            //        pageTransitionControl.ShowPage(_Page_Ref_Grid);
+            //        //pageTransitionControl.ShowPage(_Page_Ref_Grid);
 
-            //        save_path = txt_path.Text;
+            //        //save_path = txt_path.Text;
 
-            //        pageTransitionControl.CurrentPage.Name = "Grid";
+            //        //pageTransitionControl.CurrentPage.Name = "Grid";
 
-            //        currentPage = false;
+            //        //currentPage = false;
             //        #endregion
             //    }
             //}
@@ -1852,7 +1985,9 @@ namespace PD.ViewModel
         public void Set_StationType(string station_type)
         {
             if (string.IsNullOrEmpty(station_type)) return;
+
             Ini_Write("Connection", "Station", station_type);
+
             if (station_type.Equals("Hermetic_Test") || station_type.Equals("Hermetic Test"))
             {
                 if (int.TryParse(Ini_Read("Connection", "Hermetic_ch_count"), out int i))
@@ -1970,11 +2105,61 @@ namespace PD.ViewModel
                     list_BR_Scan_Para = new ObservableCollection<string>(Ini_Read_All_Sections(BR_Scan_Para_Path));
 
                     if (list_BR_Scan_Para.Count > 0)
-                        OSA_Scan_Para = list_BR_Scan_Para.First();
+                    {
+                        OSA_Scan_Para = list_BR_Scan_Para.First();  //choose first para_order as default select
+
+                        string section = OSA_Scan_Para;
+                        Dictionary<string, string> keys = Ini_Read_All_Keys(BR_Scan_Para_Path, section);
+
+                        KeyValuePair<string, string> key = new KeyValuePair<string, string>();
+                        List<string> keyNames = Ini_Read_All_KeyNames(BR_Scan_Para_Path, section);
+
+                        //Set WL(DAC) to UI list
+                        key = keys.Where(k => k.Key == "WL").FirstOrDefault();
+                        string[] list_s = key.Value.Split(',');
+                        list_BR_DAC_WL = new ObservableCollection<string>(list_s);
+
+                        PlotViewModel.Annotations.Clear();
+                        ChartNowModel.list_BR_Model.Clear();
+
+                        foreach (string s in list_s)
+                        {
+                            PlotViewModel.Annotations.Add(new LineAnnotation()
+                            {
+                                Type = LineAnnotationType.Vertical,
+                                Color = OxyColors.Black,
+                                ClipByYAxis = false,
+                                X = 0,
+                                StrokeThickness = 0
+                            });
+
+                            ChartNowModel.list_BR_Model.Add(new BR_Model() { Set_WL = s });
+                        }
+
+                        //Set WL(TLS) to UI, Start WL, End WL, Gap
+                        if (keyNames.Contains("Ref_Range"))
+                        {
+                            key = keys.Where(k => k.Key == "Ref_Range").FirstOrDefault();
+                            string[] list_wl_setting = key.Value.Split(',');  //Start WL, End WL, Gap
+                            if (list_wl_setting.Length == 3)
+                            {
+                                if (double.TryParse(list_wl_setting[0], out double wl_start))
+                                    float_WL_Scan_Start = wl_start;
+
+                                if (double.TryParse(list_wl_setting[1], out double wl_end))
+                                    float_WL_Scan_End = wl_end;
+
+                                if (double.TryParse(list_wl_setting[2], out double wl_gap))
+                                    float_WL_Scan_Gap = wl_gap;
+                            }
+                        }
+                    }
                 }
 
                 Plot_Series.Clear();
                 PlotViewModel.Series.Clear();
+
+                PlotViewModel.Annotations.Clear();
 
                 list_Chart_UI_Models.Clear();
 
@@ -1990,6 +2175,8 @@ namespace PD.ViewModel
                     else
                         break;
                 }
+
+                ChartNowModel.list_BR_Model.Clear();
 
                 //根據BR_Scan_Dac的參數數量來新增對應的圖表線數
                 //Add Chart line series for Scan_Para count
@@ -2029,6 +2216,19 @@ namespace PD.ViewModel
                     }
 
                     PlotViewModel.InvalidatePlot(true);
+
+                    foreach (string s in list_BR_DAC_WL)
+                    {
+                        ChartNowModel.list_BR_Model.Add(new BR_Model() { Set_WL = s });
+                        PlotViewModel.Annotations.Add(new LineAnnotation()
+                        {
+                            Type = LineAnnotationType.Vertical,
+                            Color = OxyColors.Black,
+                            ClipByYAxis = false,
+                            X = 0,
+                            StrokeThickness = 0
+                        });
+                    }
                 }
                 else
                 {
@@ -2038,6 +2238,7 @@ namespace PD.ViewModel
 
                 is_update_chart = true;
                 isOSAConnected = false;
+                dB_or_dBm = true;
             }
 
             else if (station_type.Equals("UV_Curing") || station_type.Equals("UV Curing"))
@@ -2209,6 +2410,7 @@ namespace PD.ViewModel
                     {
                         Plot_Series.Clear();
                         PlotViewModel.Series.Clear();
+                        PlotViewModel.Annotations.Clear();
 
                         for (int i = 0; i < ChartNowModel.Plot_Series.Count; i++)
                         {
@@ -2236,6 +2438,16 @@ namespace PD.ViewModel
                             }
 
                             PlotViewModel.Series.Add(Plot_Series.Last());
+
+                            PlotViewModel.Annotations.Add(new LineAnnotation()
+                            {
+                                Type = LineAnnotationType.Vertical,
+                                Color = OxyColors.Black,
+                                ClipByYAxis = false,
+                                X = 0,
+                                StrokeThickness = 0,
+                                Text = $"{ChartNowModel.list_BR_Model[i].BR}\r{ChartNowModel.list_BR_Model[i].BR_WL}"
+                            });
                         }
                     }
                     else
@@ -2297,6 +2509,7 @@ namespace PD.ViewModel
                 {
                     Plot_Series.Clear();
                     PlotViewModel.Series.Clear();
+                    PlotViewModel.Annotations.Clear();
 
                     for (int i = 0; i < ChartNowModel.Plot_Series.Count; i++)
                     {
@@ -2324,6 +2537,15 @@ namespace PD.ViewModel
                         }
 
                         PlotViewModel.Series.Add(Plot_Series.Last());
+
+                        PlotViewModel.Annotations.Add(new LineAnnotation()
+                        {
+                            Type = LineAnnotationType.Vertical,
+                            Color = OxyColors.Black,
+                            ClipByYAxis = false,
+                            X = 0,
+                            StrokeThickness = 0
+                        });
                     }
                 }
                 else
@@ -2567,7 +2789,7 @@ namespace PD.ViewModel
 
                     Str_Command = "P0?";
 
-                    if (station_type == "Chamber_S_16ch")
+                    if (station_type == ComViewModel.StationTypes.Chamber_S_16ch)
                     {
                         await Port_ReOpen(PD_A_ChannelModel.Board_Port);
                         await Port_ReOpen(PD_B_ChannelModel.Board_Port);
@@ -3306,10 +3528,11 @@ namespace PD.ViewModel
             set { progressbar_value = value; }
         }
 
+        
+        private int _control_board_type = 0;  //0: UFV, 1: V, 2: MTF Board ...
         /// <summary>
         /// Control Board Type, 0=UFV, 1=V, 2=MTF Board
         /// </summary>
-        private int _control_board_type = 0;  //0: UFV, 1: V, 2: MTF Board ...
         public int Control_board_type
         {
             get { return _control_board_type; }
@@ -3419,6 +3642,9 @@ namespace PD.ViewModel
         //    }
         //}
 
+        public System.Windows.Media.Animation.Storyboard sb_bear_shake { get; set; }
+        public System.Windows.Media.Animation.Storyboard sb_bear_reset { get; set; }
+
         private Window_Bear winbear;
         public Window_Bear Winbear
         {
@@ -3442,50 +3668,6 @@ namespace PD.ViewModel
                 winswitch = value;
             }
         }
-
-        //private double _BW_05 = 0;
-        //public double BW_05
-        //{
-        //    get { return _BW_05; }
-        //    set
-        //    {
-        //        _BW_05 = value;
-        //        OnPropertyChanged("BW_05");
-        //    }
-        //}
-
-        //private double _BW_1_5 = 0;
-        //public double BW_1_5
-        //{
-        //    get { return _BW_1_5; }
-        //    set
-        //    {
-        //        _BW_1_5 = value;
-        //        OnPropertyChanged("BW_1_5");
-        //    }
-        //}
-
-        //private double _BW_3 = 0;
-        //public double BW_3
-        //{
-        //    get { return _BW_3; }
-        //    set
-        //    {
-        //        _BW_3 = value;
-        //        OnPropertyChanged("BW_3");
-        //    }
-        //}
-
-        //private double _BW_20 = 0;
-        //public double BW_20
-        //{
-        //    get { return _BW_20; }
-        //    set
-        //    {
-        //        _BW_20 = value;
-        //        OnPropertyChanged("BW_20");
-        //    }
-        //}
 
         private GridLength _BearBtnSize_Height = new GridLength(1, GridUnitType.Star);
         public GridLength BearBtnSize_Height
@@ -3626,17 +3808,6 @@ namespace PD.ViewModel
             }
         }
 
-        //private ObservableCollection<Visibility> _lineseries_visibility = new ObservableCollection<Visibility>(new Visibility[12]);
-        //public ObservableCollection<Visibility> LineSeries_Visible
-        //{
-        //    get { return _lineseries_visibility; }
-        //    set
-        //    {
-        //        _lineseries_visibility = value;
-        //        OnPropertyChanged("LineSeries_Visible");
-        //    }
-        //}
-
         private ObservableCollection<string> _list_ch_title = new ObservableCollection<string>() { "ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8" };
         public ObservableCollection<string> list_ch_title
         {
@@ -3692,33 +3863,46 @@ namespace PD.ViewModel
             }
         }
 
-        private string _station_type = "";
-        public string station_type
+        public enum StationTypes
+        {
+            Testing,
+            Hermetic_Test,
+            Chamber_S,
+            Chamber_S_16ch,
+            BR,
+            UV_Curing,
+            Fast_Calibration,
+            TF2,
+            UTF600
+        }
+
+        private StationTypes _station_type = StationTypes.Testing;
+        /// <summary>
+        /// Specifes the type of station
+        /// </summary>
+        public StationTypes station_type
         {
             get { return _station_type; }
             set
             {
                 _station_type = value;
 
-                if (value == null)
+                if (value.ToString() == null)
                     return;
 
-                Set_StationType(value);
+                Set_StationType(value.ToString());
 
                 OnPropertyChanged("station_type");
             }
         }
 
-        private string _station_type_No = "Testing";
-        public string station_type_No
+        private int _station_type_No = 0;
+        public int station_type_No
         {
             get { return _station_type_No; }
             set
             {
                 _station_type_No = value;
-
-                //Set_StationType(value);
-
                 OnPropertyChanged("station_type_No");
             }
         }
@@ -3770,7 +3954,6 @@ namespace PD.ViewModel
             }
         }
 
-
         private string _TF2_station_type = "Alignment";
         public string TF2_station_type
         {
@@ -3801,8 +3984,11 @@ namespace PD.ViewModel
             set
             {
                 _list_BR_DAC_WL = value;
+                OnPropertyChanged("list_BR_DAC_WL");
             }
         }
+
+        public List<string> WL_Special_List { get; set; }
 
         private ObservableCollection<string> _list_BR_Scan_Para = new ObservableCollection<string>() { "[3 Points (1575-1610)]", "[5 Points (1524-1569)]", "[5 Points (1260-1340)]" };
         public ObservableCollection<string> list_BR_Scan_Para
@@ -3811,6 +3997,7 @@ namespace PD.ViewModel
             set
             {
                 _list_BR_Scan_Para = value;
+                OnPropertyChanged("list_BR_Scan_Para");
             }
         }
 
@@ -3818,7 +4005,11 @@ namespace PD.ViewModel
         public string OSA_Scan_Para
         {
             get { return _OSA_Scan_Para; }
-            set { _OSA_Scan_Para = value; }
+            set
+            {
+                _OSA_Scan_Para = value;
+                OnPropertyChanged("OSA_Scan_Para");
+            }
         }
 
         private string _waterPrint1 = "Command";
@@ -3876,7 +4067,7 @@ namespace PD.ViewModel
                 if (value < 1) value = 1;
                 _ch_count = value;
 
-                if (station_type == "Hermetic_Test")
+                if (station_type == ComViewModel.StationTypes.Hermetic_Test)
                 {
                     if (value <= 4)
                     {
@@ -4218,7 +4409,7 @@ namespace PD.ViewModel
             }
         }
 
-        public enum_station e_stations = new enum_station();
+        //public enum_station e_stations = new enum_station();
 
 
         private List<string> _list_combox_Working_Table_Type_items =
@@ -4296,7 +4487,11 @@ namespace PD.ViewModel
         public ObservableCollection<string> list_combox_comports
         {
             get { return _list_combox_comports; }
-            set { _list_combox_comports = value; }
+            set
+            {
+                _list_combox_comports = value;
+                OnPropertyChanged("list_combox_comports");
+            }
         }
 
         private List<string> _list_combox_Product_items =
@@ -4350,46 +4545,6 @@ namespace PD.ViewModel
             }
         }
 
-        //private List<bool> _ischeck = new List<bool>();
-        //public List<bool> IsCheck
-        //{
-        //    get { return _ischeck; }
-        //    set
-        //    {
-        //        _ischeck = value;
-        //        List<Visibility> v_list = new List<Visibility>();
-        //        foreach (bool b in _ischeck)
-        //        {
-        //            if (b)
-        //                v_list.Add(Visibility.Visible);
-        //            else
-        //                v_list.Add(Visibility.Hidden);
-        //        }
-        //        if (v_list.Count > 0)
-        //        {
-        //            if (v_list.Count < 12)
-        //            {
-        //                for (int j = v_list.Count; j < LineSeries_Visible.Count; j++)
-        //                {
-        //                    v_list.Add(Visibility.Collapsed);
-        //                }
-        //            }
-
-        //            LineSeries_Visible = new ObservableCollection<Visibility>(v_list);
-        //        }
-        //        else
-        //        {
-        //            for (int i = 0; i < 12; i++)
-        //            {
-        //                v_list.Add(Visibility.Hidden);
-        //            }
-        //            LineSeries_Visible = new ObservableCollection<Visibility>(v_list);
-        //        }
-
-        //        OnPropertyChanged("IsCheck");
-        //    }
-        //}
-
         private Visibility _mainfunction_visibility = Visibility.Hidden;
         public Visibility Mainfunction_visibility
         {
@@ -4438,7 +4593,10 @@ namespace PD.ViewModel
         public bool isOSAConnected
         {
             get { return _isOSAConnected; }
-            set { _isOSAConnected = value; }
+            set
+            {
+                _isOSAConnected = value;
+            }
         }
 
         public string BR_Scan_Para_Path { get; set; }
@@ -4526,6 +4684,7 @@ namespace PD.ViewModel
             set
             {
                 _BR_INOut = value;
+                OnPropertyChanged("BR_INOut");
             }
         }
 
@@ -4539,12 +4698,8 @@ namespace PD.ViewModel
                 Ini_Write("Scan", "BR_Diff", value.ToString());
 
                 Str_cmd_read = $"BR Diff = {value} dB";
+                OnPropertyChanged("BR_Diff");
             }
-        }
-
-        private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
-        {
-            //timer3.Stop();
         }
 
         private List<string> _list_SN = new List<string>() { "", "", "", "", "", "", "", "", "", "", "", "" };
@@ -4779,13 +4934,6 @@ namespace PD.ViewModel
             }
         }
 
-        //private bool _HermeticData_Save_or_Read = false;
-        //public bool HermeticData_Save_or_Read
-        //{
-        //    get { return _HermeticData_Save_or_Read; }
-        //    set { _HermeticData_Save_or_Read = value; }
-        //}
-
         public List<double> wl_list { get; set; } = new List<double>();
         public int wl_list_index { get; set; } = 0;
 
@@ -4848,7 +4996,11 @@ namespace PD.ViewModel
         public string Laser_Wavelength
         {
             get { return _Laser_Wavelength; }
-            set { _Laser_Wavelength = value; }
+            set
+            {
+                _Laser_Wavelength = value;
+                OnPropertyChanged("Laser_Wavelength");
+            }
         }
 
         //int index = 0;
@@ -4873,6 +5025,8 @@ namespace PD.ViewModel
                             float_WL_Ref.Add(_Ref_dictionaries[ch].ContainsKey(_double_Laser_Wavelength) ? _Ref_dictionaries[ch][_double_Laser_Wavelength] : 0);
                         }
                     }
+
+                OnPropertyChanged("Double_Laser_Wavelength");
             }
         }
 
@@ -4880,7 +5034,11 @@ namespace PD.ViewModel
         public string PM_Wavelength
         {
             get { return _PM_Wavelength; }
-            set { _PM_Wavelength = value; }
+            set
+            {
+                _PM_Wavelength = value;
+                OnPropertyChanged("PM_Wavelength");
+            }
         }
 
         private double _double_PM_Wavelength;
@@ -4892,6 +5050,8 @@ namespace PD.ViewModel
                 _double_PM_Wavelength = value;
 
                 PM_Wavelength = _double_PM_Wavelength.ToString();
+
+                OnPropertyChanged("Double_PM_Wavelength");
             }
         }
 
@@ -5015,6 +5175,8 @@ namespace PD.ViewModel
                 double power = 0;
                 if (double.TryParse(value, out power))
                     Double_Laser_Power = power;
+
+                OnPropertyChanged("Laser_Power");
             }
         }
 
@@ -5022,7 +5184,11 @@ namespace PD.ViewModel
         public double Double_Laser_Power
         {
             get { return _double_Laser_Power; }
-            set { _double_Laser_Power = value; }
+            set
+            {
+                _double_Laser_Power = value;
+                OnPropertyChanged("Double_Laser_Power");
+            }
         }
 
         private SolidColorBrush[] _ref_Color = new SolidColorBrush[16];
@@ -5074,17 +5240,6 @@ namespace PD.ViewModel
                 OnPropertyChanged("tls_GL");
             }
         }
-
-        //private DiCon.Instrument.HP.GLTLS _tls_GL = new DiCon.Instrument.HP.GLTLS();
-        //public DiCon.Instrument.HP.GLTLS tls_GL
-        //{
-        //    get { return _tls_GL; }
-        //    set
-        //    {
-        //        _tls_GL = value;
-        //        OnPropertyChanged("tls_GL");
-        //    }
-        //}
 
         public HPOSA OSA { get; set; } = new HPOSA();
 
@@ -5378,18 +5533,6 @@ namespace PD.ViewModel
                 OnPropertyChanged("int_rough_scan_gap");
             }
         }
-
-        //private int _int_detail_scan_gap = 200;
-        //public int int_detail_scan_gap
-        //{
-        //    get { return _int_detail_scan_gap; }
-        //    set
-        //    {
-        //        _int_detail_scan_gap = value;
-        //        //Ini_Write("Productions", "Detail_Scan_Gap", value.ToString());  //創建ini file並寫入基本設定
-        //        OnPropertyChanged("int_detail_scan_gap");
-        //    }
-        //}
 
         private int _int_rough_scan_start = -65500;
         public int int_rough_scan_start
@@ -5693,24 +5836,6 @@ namespace PD.ViewModel
             }
         }
 
-        //private bool _IsArduinoOn = false;  //IsArduinoOn
-        //public bool IsArduinoOn
-        //{
-        //    get { return _IsArduinoOn; }
-        //    set
-        //    {
-        //        _IsArduinoOn = value;
-        //        if (value)
-        //            Chart_y_title = "Voltage(V)";
-        //        else
-        //            Chart_y_title = "Power(dBm)";
-
-        //        Ini_Write("Connection", "Is_Arduino_On", value.ToString());
-
-        //        OnPropertyChanged("IsArduinoOn");
-        //    }
-        //}
-
         private bool _IsArduinoConnected = false;  //IsArduinoConnected
         public bool IsArduinoConnected
         {
@@ -5755,6 +5880,8 @@ namespace PD.ViewModel
 
                 if (OSA != null)
                     OSA.BoardNumber = value;
+
+                OnPropertyChanged("OSA_BoardNumber");
             }
         }
 
@@ -5769,6 +5896,8 @@ namespace PD.ViewModel
 
                 if (OSA != null)
                     OSA.Addr = value;
+
+                OnPropertyChanged("OSA_Addr");
             }
         }
 
@@ -5780,6 +5909,8 @@ namespace PD.ViewModel
             {
                 _OSA_Sensitivity = value;
                 Ini_Write("Connection", "OSA_Sensitivity ", value.ToString());
+
+                OnPropertyChanged("OSA_Sensitivity");
             }
         }
 
@@ -5791,6 +5922,8 @@ namespace PD.ViewModel
             {
                 _OSA_RBW = value;
                 Ini_Write("Connection", "OSA_RBW ", value.ToString());
+
+                OnPropertyChanged("OSA_RBW");
             }
         }
 
@@ -5995,53 +6128,58 @@ namespace PD.ViewModel
             }
         }
 
-        private PlotModel _PlotViewModel;
+        private PlotModel _PlotViewModel = new PlotModel();
         public PlotModel PlotViewModel
         {
             get { return _PlotViewModel; }
-            set { _PlotViewModel = value; }
+            set
+            {
+                _PlotViewModel = value;
+                OnPropertyChanged("PlotViewModel");
+            }
         }
-
-        //private PlotModel _PlotViewModel_Temp;
-        //public PlotModel PlotViewModel_Temp
-        //{
-        //    get { return _PlotViewModel_Temp; }
-        //    set { _PlotViewModel_Temp = value; }
-        //}
 
         private PlotModel _PlotViewModel_Chart;
         public PlotModel PlotViewModel_Chart
         {
             get { return _PlotViewModel_Chart; }
-            set { _PlotViewModel_Chart = value; }
+            set
+            {
+                _PlotViewModel_Chart = value;
+                OnPropertyChanged("PlotViewModel_Chart");
+            }
         }
 
         private PlotModel _PlotViewModel_Testing;
         public PlotModel PlotViewModel_Testing
         {
             get { return _PlotViewModel_Testing; }
-            set { _PlotViewModel_Testing = value; }
+            set
+            {
+                _PlotViewModel_Testing = value;
+                OnPropertyChanged("PlotViewModel_Testing");
+            }
         }
 
         private PlotModel _PlotViewModel_UTF600;
         public PlotModel PlotViewModel_UTF600
         {
             get { return _PlotViewModel_UTF600; }
-            set { _PlotViewModel_UTF600 = value; }
+            set { _PlotViewModel_UTF600 = value; OnPropertyChanged("PlotViewModel_UTF600"); }
         }
 
         private PlotModel _PlotViewModel_BR;
         public PlotModel PlotViewModel_BR
         {
             get { return _PlotViewModel_BR; }
-            set { _PlotViewModel_BR = value; }
+            set { _PlotViewModel_BR = value; OnPropertyChanged("PlotViewModel_BR"); }
         }
 
         private PlotModel _PlotViewModel_TF2;
         public PlotModel PlotViewModel_TF2
         {
             get { return _PlotViewModel_TF2; }
-            set { _PlotViewModel_TF2 = value; }
+            set { _PlotViewModel_TF2 = value; OnPropertyChanged("PlotViewModel_TF2"); }
         }
 
         private List<List<DataPoint>> _chart_all_datapoints = new List<List<DataPoint>>() { new List<DataPoint>(16) };

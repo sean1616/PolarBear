@@ -58,28 +58,6 @@ namespace PD.NavigationPages
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            System.Windows.Controls.CheckBox chbox = (System.Windows.Controls.CheckBox)sender;
-            Chart_UI_Model uiModel = (Chart_UI_Model)chbox.DataContext;
-
-            vm.list_OxyColor = new List<OxyColor>()
-            {
-                OxyColors.Green, 
-                OxyColors.Red, 
-                OxyColors.Blue, 
-                OxyColors.Orange,                        
-                OxyColors.DarkGreen, 
-                OxyColors.Purple, 
-                OxyColors.Gray,
-                OxyColors.Chocolate,                        
-                OxyColors.LightSeaGreen, 
-                OxyColors.MediumVioletRed,
-                OxyColors.Coral, 
-                OxyColors.DarkTurquoise,                        
-                OxyColors.DarkKhaki, 
-                OxyColors.DarkCyan,
-                OxyColors.MediumPurple, 
-                OxyColors.OrangeRed,
-            };
 
             for (int i = 0; i < vm.list_Chart_UI_Models.Count; i++)
             {
@@ -88,6 +66,19 @@ namespace PD.NavigationPages
                     vm.Plot_Series[i].IsVisible = vm.list_Chart_UI_Models[i].Button_IsChecked;
                     vm.Plot_Series[i].Color = vm.list_OxyColor[i];
                 }
+
+                OxyPlot.Annotations.LineAnnotation lat = vm.PlotViewModel.Annotations[i] as OxyPlot.Annotations.LineAnnotation;
+                if (vm.list_Chart_UI_Models[i].Button_IsChecked)
+                {
+                    lat.StrokeThickness = 2;
+                    lat.TextColor = OxyColors.Black;
+                }
+                else
+                {
+                    lat.StrokeThickness = 0;
+                    lat.TextColor = OxyColors.Transparent;
+                }
+                lat.TextLinePosition = 1 - (0.1 * i);  //Vertical postion of annotation title text
             }
 
             vm.Update_ALL_PlotView();
@@ -104,18 +95,16 @@ namespace PD.NavigationPages
                     break;
             }
 
-            if (judge)
-            {
-                cbox_all.IsChecked = false;
-            }
-            else
-            {
-                cbox_all.IsChecked = true;
-            }
+            cbox_all.IsChecked = judge ? false : true;
 
             for (int i = 0; i < vm.list_Chart_UI_Models.Count; i++)
             {
                 vm.list_Chart_UI_Models[i].Button_IsChecked = !judge;
+
+                OxyPlot.Annotations.LineAnnotation lat = vm.PlotViewModel.Annotations[i] as OxyPlot.Annotations.LineAnnotation;
+                lat.StrokeThickness = 2;
+                lat.TextColor = OxyColors.Black;
+                lat.TextLinePosition = 1 - (0.1 * i);  //Vertical postion of annotation title text
             }
         }
 

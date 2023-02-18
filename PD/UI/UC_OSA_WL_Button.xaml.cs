@@ -35,16 +35,28 @@ namespace PD.UI
             get { return (string)GetValue(txtbox_content_Property); }
             set { SetValue(txtbox_content_Property, value); }
         }
+
+        public static readonly DependencyProperty txtbox_content_2_Property =
+                    DependencyProperty.Register("txtbox_content_2", typeof(string), typeof(UC_OSA_WL_Button),
+                    new UIPropertyMetadata(null));
+
+        public string txtbox_content_2 //提供內部binding之相依屬性
+        {
+            get { return (string)GetValue(txtbox_content_2_Property); }
+            set { SetValue(txtbox_content_2_Property, value); }
+        }
+
+        public static readonly DependencyProperty txtbox_content_3_Property =
+                    DependencyProperty.Register("txtbox_content_3", typeof(string), typeof(UC_OSA_WL_Button),
+                    new UIPropertyMetadata(null));
+
+        public string txtbox_content_3 //提供內部binding之相依屬性
+        {
+            get { return (string)GetValue(txtbox_content_3_Property); }
+            set { SetValue(txtbox_content_3_Property, value); }
+        }
         #endregion
 
-        //private void userControl_MouseEnter(object sender, MouseEventArgs e)
-        //{
-        //    border_background.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF98DEB5"));
-        //}
 
-        //private void userControl_MouseLeave(object sender, MouseEventArgs e)
-        //{
-        //    border_background.Background = Brushes.Transparent;
-        //}
     }
 }

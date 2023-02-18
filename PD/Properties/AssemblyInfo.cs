@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("GFI")]
 [assembly: AssemblyProduct("PD")]
-[assembly: AssemblyCopyright("Copyright ©  2021")]
+[assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,6 +51,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.5.6.2")]
-[assembly: AssemblyFileVersion("0.5.6.2")]
+[assembly: AssemblyVersion("0.5.6.3")]
+[assembly: AssemblyFileVersion("0.5.6.3")]
 [assembly: NeutralResourcesLanguage("en")]

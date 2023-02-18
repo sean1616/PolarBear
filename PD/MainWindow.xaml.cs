@@ -23,6 +23,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using OxyPlot.Annotations;
 
 namespace PD
 {
@@ -210,8 +211,11 @@ namespace PD
                 vm.Selected_Comport = vm.Ini_Read("Connection", "Comport");
                 vm.Comport_TLS_Filter = vm.Ini_Read("Connection", "Comport_TLS_Filter");
                 vm.Comport_Switch = vm.Ini_Read("Connection", "Comport_Switch");
-                vm.station_type = vm.Ini_Read("Connection", "Station");
-                if (string.IsNullOrEmpty(vm.station_type)) vm.station_type = "Testing";
+                //vm.station_type = (ComViewModel.StationTypes)Enum.Parse(typeof(ComViewModel.StationTypes) ,vm.Ini_Read("Connection", "Station"));
+                if (string.IsNullOrEmpty(vm.Ini_Read("Connection", "Station")))
+                    vm.station_type_No = 0;
+                else
+                    vm.station_type_No = (int)(ComViewModel.StationTypes)Enum.Parse(typeof(ComViewModel.StationTypes), vm.Ini_Read("Connection", "Station"));
 
                 vm.PD_A_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_PD_A");
                 vm.PD_B_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_PD_B");
@@ -449,7 +453,7 @@ namespace PD
                         }
                     }
 
-            if (vm.station_type.Equals("Hermetic_Test"))
+            if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
             {
                 vm.list_Board_Setting.Clear();
                 for (int i = 0; i < vm.ch_count; i++)
@@ -746,7 +750,7 @@ namespace PD
                         vm.Str_Status = "Stop";
                         if (!vm.PD_or_PM)
                             await cmd.Save_Chart();
-                        else if (vm.PD_or_PM && !vm.station_type.Equals("Hermetic_Test"))
+                        else if (vm.PD_or_PM && vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                             await cmd.Save_Chart();
                     }
 
@@ -862,9 +866,9 @@ namespace PD
                     vm.ComMembers.Clear();
                     vm.Save_cmd(new ComMember() { No = vm.Cmd_Count++.ToString(), Command = "P0?" });
 
-                    if (vm.station_type.Equals("Chamber_S_16ch"))
+                    if (vm.station_type == ComViewModel.StationTypes.Chamber_S_16ch)
                         vm.CommandListCycle_16ch();
-                    else if (vm.station_type.Equals("Fast_Calibration"))
+                    else if (vm.station_type == ComViewModel.StationTypes.Fast_Calibration)
                     {
                         vm.Chart_y_title = "Power (PD dac)";
                         await cmd.CommandListCycle();
@@ -1070,7 +1074,7 @@ namespace PD
                         int channel = i;
                         if (vm.IsGoOn)
                         {
-                            if (vm.station_type.Equals("Chamber_S_16ch"))
+                            if (vm.station_type == ComViewModel.StationTypes.Chamber_S_16ch)
                             {
                                 vm.Save_cmd(new ComMember()
                                 {
@@ -1107,7 +1111,7 @@ namespace PD
                             {
                                 if (i > 8 && i < 17) channel -= 8;
                                 string cmd = "D" + channel.ToString() + "?";
-                                if (vm.station_type.Equals("Chamber_S_16ch"))
+                                if (vm.station_type == ComViewModel.StationTypes.Chamber_S_16ch)
                                 {
                                     try { await vm.Port_ReOpen(vm.PD_A_ChannelModel.Board_Port); } catch { }
 
@@ -1132,7 +1136,7 @@ namespace PD
 
             else  //PM mode
             {
-                if (vm.station_type.Equals("Hermetic_Test"))
+                if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                 {
                     for (int ch = 0; ch < vm.ch_count; ch++)
                     {
@@ -1529,7 +1533,7 @@ namespace PD
             //PM mode
             else
             {
-                if (vm.station_type == "Hermetic_Test")
+                if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                 {
                     for (int i = 0; i < vm.ch_count; i++)
                     {
@@ -1673,7 +1677,7 @@ namespace PD
             //PM mode
             else
             {
-                if (vm.station_type.Equals("Testing"))
+                if (vm.station_type == ComViewModel.StationTypes.Testing)
                 {
                     GaugeModel gm = vm.list_GaugeModels[0];
                     if (vm.IsGoOn)
@@ -1701,7 +1705,7 @@ namespace PD
                         cmd.Set_Dac(vm.Selected_Comport, gm);
                     }
                 }
-                else if (vm.station_type == "Hermetic_Test")
+                else if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                 {
                     for (int i = 0; i < vm.ch_count; i++)
                     {
@@ -2070,7 +2074,7 @@ namespace PD
 
                         #region Set Switch
 
-                        if (vm.station_type.Equals("Hermetic_Test"))
+                        if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                         {
                             vm.switch_index = ch + 1;
 
@@ -2100,7 +2104,7 @@ namespace PD
 
                         if (vm.SN_Judge)
                         {
-                            if (vm.station_type.Equals("Hermetic_Test"))
+                            if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                             {
                                 if (!string.IsNullOrEmpty(vm.SNMembers[ch].ProductType))
                                 {
@@ -2118,7 +2122,7 @@ namespace PD
                             }
                         }
 
-                        if (vm.station_type.Equals("Hermetic_Test"))
+                        if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                         {
                             vm.Selected_Comport = vm.list_Board_Setting[ch][1];
 
@@ -2141,7 +2145,7 @@ namespace PD
                         vm.ChartNowModel.preDac = await anly.Analyze_PreDAC(vm.Selected_Comport, "1");
                         string[] preDac = vm.ChartNowModel.preDac;
                         if (preDac.Contains(string.Empty)) { vm.Save_Log(new LogMember() { Status = vm.Str_Status, isShowMSG = true, Message = "Get Dac error", Channel = (ch + 1).ToString() }); }
-                        else if (vm.station_type.Equals("Hermetic_Test")) { preDac[0] = "0"; preDac[1] = "0"; }
+                        else if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test) { preDac[0] = "0"; preDac[1] = "0"; }
 
                         //Scan V3
                         for (int dac = vm.int_V3_scan_start; dac <= vm.int_V3_scan_end; dac = dac + int_V3_gap_now)
@@ -2218,7 +2222,7 @@ namespace PD
 
                             #region Read Board Table
 
-                            if (vm.station_type.Equals("Hermetic_Test"))
+                            if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                             {
                                 if (vm.board_read[ch].Count == 0)
                                 {
@@ -2284,7 +2288,7 @@ namespace PD
             var elapsedMs = watch.ElapsedMilliseconds;
             vm.msgModel.msg_3 = string.Format("{0}s", (elapsedMs / 1000));
 
-            if (vm.station_type.Equals(nameof(vm.e_stations.Hermetic_Test)))
+            if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
             {
                 if (vm.ChartNowModel.list_dataPoints.Where(x => x.Count > 0).ToList().Count > 0)
                 {
@@ -3168,7 +3172,7 @@ namespace PD
         {
             try
             {
-                if (vm.station_type.Equals("Chamber_S_16ch"))
+                if (vm.station_type == ComViewModel.StationTypes.Chamber_S_16ch)
                 {
                     if (vm.port_PD.IsOpen)
                     {
@@ -3549,6 +3553,7 @@ namespace PD
         DiCon.UCB.Communication.RS232.RS232 rs232;
         DiCon.UCB.MTF.IMTFCommand tf;
 
+        bool _isAskPortStop = false;
         private async void combox_comport_DropDownOpened(object sender, EventArgs e)
         {
             vm.isStop = false;
@@ -3569,6 +3574,12 @@ namespace PD
 
             for (int i = 0; i < myPorts.Length; i++)
             {
+                if (_isAskPortStop)
+                {
+                    _isAskPortStop = false;
+                    break;
+                }
+
                 try
                 {
                     vm.list_combox_comports[i] = $"{myPorts[i]}  ~";
@@ -3586,10 +3597,12 @@ namespace PD
 
                     vm.list_combox_comports[i] = myPorts[i];  //寫入所有取得的com
 
-                    await Task.Delay(100);
+                    //await Task.Delay(100);
                 }
                 catch { }
             }
+
+            _isAskPortStop = false;
 
 #if false
 
@@ -3681,25 +3694,30 @@ namespace PD
 #endif
         }
 
-        private void combox_comport_DropDownClosed(object sender, EventArgs e)
+        private async void combox_comport_DropDownClosed(object sender, EventArgs e)
         {
             vm.isStop = true;
+            
 
             if (combox_comport.SelectedItem != null)
             {
                 vm.port_PD = new SerialPort(vm.Selected_Comport, vm.BoudRate, Parity.None, 8, StopBits.One);
+                _isAskPortStop = true;
             }
 
             vm.Ini_Write("Connection", "Comport", vm.Selected_Comport);  //創建ini file並寫入基本設定
 
             setting.GetPowerType_Setting();
+
+            await Task.Delay(330);
+            _isAskPortStop = false;
         }
 
         private void RBtn_Gauge_Page_Checked(object sender, RoutedEventArgs e)
         {
             switch (vm.station_type)
             {
-                case "TF2":
+                case ComViewModel.StationTypes.TF2:
                     if (_Page_TF2_Main == null)
                         _Page_TF2_Main = new Page_TF2_Main(vm);
 
@@ -3716,7 +3734,7 @@ namespace PD
 
                     break;
 
-                case "UTF600":
+                case ComViewModel.StationTypes.UTF600:
                     if (_Page_UTF600_Main == null)
                         _Page_UTF600_Main = new Page_UTF600_Main(vm);
 
@@ -3733,7 +3751,7 @@ namespace PD
 
                     break;
 
-                case "BR":
+                case ComViewModel.StationTypes.BR:
                     if (_Page_BR == null)
                         _Page_BR = new Page_BR(vm);
 
@@ -4034,7 +4052,7 @@ namespace PD
                 List<string> list_finalVoltage = new List<string>();
 
                 //氣密站：掃圖前先判斷產品序號且設定波長 , Animate start
-                if (vm.station_type.Equals("Hermetic_Test"))
+                if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                 {
                     if (vm.SN_Judge)
                     {
@@ -4064,17 +4082,12 @@ namespace PD
 
                     _Page_PD_Gauges.sb_bear_shake.Begin();
                 }
-                else if (vm.station_type.Equals("UTF600"))
+                else if (vm.station_type == ComViewModel.StationTypes.UTF600 || vm.station_type == ComViewModel.StationTypes.BR)
                 {
-                    _Page_UTF600_Main.sb_bear_shake.Begin();
+                    vm.sb_bear_shake.Begin();
                     vm.Is_switch_mode = false;
                 }
-                else if (vm.station_type.Equals("BR"))
-                {
-                    _Page_BR.sb_bear_shake.Begin();
-                    vm.Is_switch_mode = false;
-                }
-                else if (vm.station_type.Equals("TF2"))
+                else if (vm.station_type== ComViewModel.StationTypes.TF2)
                 {
                     vm.Is_switch_mode = false;
                 }
@@ -4086,14 +4099,14 @@ namespace PD
 
                 if (!vm.isStop)
                 {
-                    if (vm.selected_K_WL_Type.Equals("ALL Range") && !vm.is_BR_OSA)
+                    if (vm.selected_K_WL_Type.Equals("ALL Range") && vm.station_type != ComViewModel.StationTypes.BR)
                     {
                         if (!vm.PD_or_PM && !vm.IsDistributedSystem)
                             await WL_Scan_PDFC();  //Scan action for getting power from PD Fast Clibration
                         else
                             await WL_Scan();
                     }
-                    else if (vm.is_BR_OSA)
+                    else if (vm.station_type == ComViewModel.StationTypes.BR)
                     {
                         await WL_Scan_BR();
                     }
@@ -4103,20 +4116,10 @@ namespace PD
                 else
                     vm.Show_Bear_Window("Stop", false, "String", false);
 
-                if (vm.station_type.Equals("UTF600"))
+                if (vm.station_type == ComViewModel.StationTypes.UTF600 || vm.station_type == ComViewModel.StationTypes.BR)
                 {
-                    _Page_UTF600_Main.sb_bear_shake.Pause();
-                    _Page_UTF600_Main.sb_bear_reset.Begin();
-                }
-                else if (vm.station_type.Equals("BR"))
-                {
-                    _Page_BR.sb_bear_shake.Pause();
-                    _Page_BR.sb_bear_reset.Begin();
-                }
-                else if(!vm.station_type.Equals("TF2"))
-                {
-                    _Page_PD_Gauges.sb_bear_shake.Pause();
-                    _Page_PD_Gauges.sb_bear_reset.Begin();
+                    vm.sb_bear_shake.Pause();
+                    vm.sb_bear_reset.Begin();
                 }
 
                 vm.list_collection_GaugeModels.Add(new ObservableCollection<GaugeModel>());
@@ -4400,7 +4403,7 @@ namespace PD
                                         vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
                                     }
 
-                                    if (vm.station_type != "Hermetic_Test")
+                                    if (vm.station_type != ComViewModel.StationTypes.Testing)
                                         setting.Set_Laser_WL(best_wl);
 
                                     break;
@@ -5031,7 +5034,7 @@ namespace PD
                                         vm.List_bear_say = new List<List<string>>(_save_all_WL_and_IL);   //Show Data in row/column (UI)
                                     }
 
-                                    if (vm.station_type != "Hermetic_Test")
+                                    if (vm.station_type != ComViewModel.StationTypes.Testing)
                                         setting.Set_Laser_WL(best_wl);
 
                                     vm.Save_Log(vm.Str_Status, (ch + 1).ToString(), power.ToString(), "Gotcha!");
@@ -5393,7 +5396,7 @@ namespace PD
 
                         #region switch re-open && Switch write Cmd
 
-                        if (vm.station_type.Equals("Hermetic_Test") && vm.Is_switch_mode)
+                        if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test && vm.Is_switch_mode)
                         {
                             vm.switch_index = ch + 1;
                             try
@@ -5702,9 +5705,9 @@ namespace PD
                     vm.msgModel.msg_3 = Math.Round(scan_timespan, 1).ToString() + " s";  //Update Main UI timespan
                     #endregion
 
-                    if (vm.station_type == "TF2")
+                    if (vm.station_type == ComViewModel.StationTypes.TF2)
                         anly.BandWidth_Calculation(vm.opModel_1.WL_No);
-                    else if (vm.station_type == "Testing")
+                    else if (vm.station_type == ComViewModel.StationTypes.Testing)
                         anly.BandWidth_Calculation();
 
                     if (wl == vm.wl_list.First())
@@ -5716,7 +5719,7 @@ namespace PD
                         cmd.Update_DeltaIL();  //Update delta IL data in Chart UI
                 }
 
-                if (vm.station_type == "TF2")
+                if (vm.station_type == ComViewModel.StationTypes.TF2)
                 {
                     if (!vm.isStop)
                     {
@@ -5816,7 +5819,7 @@ namespace PD
                                                 if (!vm.list_GaugeModels[ch].boolGauge) continue;
 
                                             #region switch re-open && Switch write Cmd
-                                            if (vm.station_type.Equals("Hermetic_Test") && vm.Is_switch_mode)
+                                            if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test && vm.Is_switch_mode)
                                             {
                                                 vm.Str_cmd_read = "Ch " + (ch + 1).ToString() + " : " + WL.ToString();
                                                 vm.switch_index = ch + 1;
@@ -6280,14 +6283,42 @@ namespace PD
 
             vm.Update_ALL_PlotView_Title(vm.Chart_title, vm.Chart_x_title, vm.Chart_y_title);
 
+            //vm.PlotViewModel.Annotations.Clear();
+
             for (int i = 0; i < vm.Plot_Series.Count; i++)
             {
                 vm.Plot_Series[i].Points.Clear();
+
+                if(vm.PlotViewModel.Annotations.Count > i)
+                {
+                    LineAnnotation pat = vm.PlotViewModel.Annotations[i] as LineAnnotation;
+                    pat.StrokeThickness = 0;
+                    pat.Text = "";
+                    pat.ClipByXAxis = true;
+                }
+                else
+                {
+                    vm.PlotViewModel.Annotations.Add(new LineAnnotation()
+                    {
+                        Type = LineAnnotationType.Vertical,
+                        Color = OxyColors.Black,
+                        ClipByYAxis = false,
+                        X = 0,
+                        StrokeThickness = 0
+                    });
+                 
+                }
             }
 
             for (int i = 0; i < vm.ChartNowModel.list_dataPoints.Count; i++)
             {
                 vm.ChartNowModel.list_dataPoints[i].Clear();
+            }
+
+            for (int wl_idx = 0; wl_idx < vm.ChartNowModel.list_BR_Model.Count; wl_idx++)
+            {
+                vm.ChartNowModel.list_BR_Model[wl_idx].BR_WL = "";
+                vm.ChartNowModel.list_BR_Model[wl_idx].BR = "";
             }
 
             if (string.IsNullOrWhiteSpace(vm.Selected_Comport)) return false;
@@ -6310,19 +6341,73 @@ namespace PD
                     await cmd.Write_Cmd(vm.Str_Command, true);
 
                     await Task.Delay(vm.Int_Read_Delay);
+
+                    await D0_show();
                 }
                 catch { }
 
                 vm.Str_cmd_read = $"WL : {vm.list_BR_DAC_WL[wl_idx]}";
 
+                List<DataPoint> list_WL_IL = new List<DataPoint>();
+
                 //Call OSA scan and show Data function (one lineseries)
-                List<DataPoint> list_WL_IL = await Task.Run(() => cmd.OSA_Scan());
+                //List<DataPoint> list_WL_IL = await Task.Run(() => cmd.OSA_Scan());
+
+                if (vm.is_BR_OSA)
+                {
+                    //Call OSA scan and show Data function (one lineseries)
+                    list_WL_IL = await Task.Run(() => cmd.OSA_Scan());
+                }
+                //TLS mode
+                else
+                {
+                    vm.Str_Status = "WL Scan";
+
+                    #region Build scan wl list
+                    vm.wl_list.Clear();
+                    vm.wl_list = vm.WL_Special_List.Select(w => Convert.ToDouble(w)).ToList();
+                    #endregion
+
+                    foreach (double wl in vm.wl_list)
+                    {
+                        if (vm.isStop) break;
+
+                        await cmd.Set_WL(wl, false);
+
+                        if (wl == vm.wl_list.First())
+                            await Task.Delay(800);
+
+                        if (!(!vm.IsDistributedSystem && !vm.PD_or_PM && vm.Is_FastScan_Mode))
+                            await Task.Delay(vm.Int_Set_WL_Delay);
+
+                        vm.Double_Laser_Wavelength = wl;
+
+                        for (int ch = 0; ch < vm.ch_count; ch++)
+                        {
+                            if (vm.isStop) break;
+
+                            if (!vm.BoolAllGauge)
+                                if (!vm.list_GaugeModels[ch].boolGauge) continue;
+
+                            await cmd.Get_Power(ch, true);
+
+                            list_WL_IL.Add(new DataPoint(vm.Double_Laser_Wavelength, vm.Double_Powers[ch]));
+                        }
+
+                        //更新圖表
+                        #region Set Chart data points   
+
+                        vm.Update_ALL_PlotView();
+
+                        #endregion
+                    }
+                }
 
                 foreach (DataPoint dp in list_WL_IL)
                 {
                     double ref_value = 0;
 
-                    if (vm.dB_or_dBm)
+                    if (vm.dB_or_dBm && vm.is_BR_OSA)
                     {
                         RefModel rm = vm.Ref_memberDatas.Where(r => r.Wavelength == dp.X).FirstOrDefault();
 
@@ -6333,6 +6418,30 @@ namespace PD
                     vm.Plot_Series[wl_idx].Points.Add(new DataPoint(dp.X, dp.Y - vm.BR_Diff - ref_value));
                 }
 
+                //Calculate BR and it's wl peak position
+                double IL_Max = vm.Plot_Series[wl_idx].Points.Where(p => p.Y == vm.Plot_Series[wl_idx].Points.Max(s => s.Y)).FirstOrDefault().Y;
+                double IL_Min = vm.Plot_Series[wl_idx].Points.Where(p => p.Y == vm.Plot_Series[wl_idx].Points.Min(s => s.Y)).FirstOrDefault().Y;
+
+                vm.ChartNowModel.list_BR_Model[wl_idx].BR_WL = vm.Plot_Series[wl_idx].Points.Where(p => p.Y == vm.Plot_Series[wl_idx].Points.Max(s => s.Y)).FirstOrDefault().X.ToString();
+                vm.ChartNowModel.list_BR_Model[wl_idx].BR = IL_Max.ToString("f1");
+
+                vm.PlotViewModel.Axes[1].Maximum = IL_Max < 0 ? 0 : IL_Max;
+                vm.PlotViewModel.Axes[1].Minimum = IL_Min - 10;
+
+                LineAnnotation pat = vm.PlotViewModel.Annotations[wl_idx] as LineAnnotation;
+                pat.StrokeThickness = 2;
+                pat.X = vm.Plot_Series[wl_idx].Points.Where(p => p.Y == vm.Plot_Series[wl_idx].Points.Max(s => s.Y)).FirstOrDefault().X;
+                pat.MinimumY = IL_Min - 5;
+                pat.Text = $"{IL_Max}\r{pat.X.ToString("f2")}";
+                pat.TextOrientation = AnnotationTextOrientation.Horizontal;
+
+                if (wl_idx < 10)
+                    pat.TextLinePosition = 1 - (0.1 * wl_idx);  //Vertical postion of annotation title text
+                else
+                    pat.TextLinePosition = 1 - (0.1 * (wl_idx - 10));  //Vertical postion of annotation title text
+
+                vm.PlotViewModel.Axes[1].Maximum = vm.PlotViewModel.Axes[1].Maximum < 0 ? 0 : vm.PlotViewModel.Axes[1].Maximum;
+                vm.PlotViewModel.Axes[1].Minimum = vm.PlotViewModel.Axes[1].Minimum - 5;
                 vm.Update_ALL_PlotView();
 
                 vm.Str_cmd_read = vm.Str_cmd_read + $", {list_WL_IL.Count} points";
@@ -6593,6 +6702,8 @@ namespace PD
 
         private void btn_help_Click(object sender, RoutedEventArgs e)
         {
+
+            //vm.station_type = ComViewModel.StationTypes.Testing;
             vm.Show_Bear_Window("有 問 題 請 撥 5 1 7", false, "String_Step", false);
         }
 
@@ -6631,7 +6742,7 @@ namespace PD
 
         private async void K_DAC_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type.Equals("Hermetic_Test")) return;
+            if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test) return;
 
             bool _isGoOn = vm.IsGoOn;
             vm.IsGoOn = false;
@@ -6643,9 +6754,9 @@ namespace PD
 
         private void Btn_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type.Equals("Hermetic_Test"))
+            if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                 vm.Show_Bear_Window("Before or After ?", false, "String", true);
-            else if (vm.station_type.Equals("TF2"))
+            else if (vm.station_type == ComViewModel.StationTypes.TF2)
             {
                 if (string.IsNullOrEmpty(vm.UserID))
                 {
@@ -6740,7 +6851,7 @@ namespace PD
                     vm.Str_cmd_read = vm.opModel_1.SN;
                 }
             }
-            else if (vm.station_type.Equals("BR"))
+            else if (vm.station_type == ComViewModel.StationTypes.BR)
             {
                 #region 初始設定判斷
                 if (string.IsNullOrEmpty(vm.UserID))

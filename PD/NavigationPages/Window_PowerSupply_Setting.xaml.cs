@@ -294,7 +294,7 @@ namespace PD.NavigationPages
 
             #region Get Board From Server
 
-            if (vm.station_type.Equals("Hermetic_Test"))
+            if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
             {
                 vm.list_Board_Setting.Clear();
                 //vm.IsCheck.Clear();

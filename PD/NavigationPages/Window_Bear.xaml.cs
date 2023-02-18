@@ -211,7 +211,7 @@ namespace PD.NavigationPages
         int page_now = 1;
         private void Btn_page2_Click(object sender, RoutedEventArgs e)
         {
-            if(vm.station_type=="Hermetic_Test")   //to page 2
+            if(vm.station_type == ComViewModel.StationTypes.Testing)   //to page 2
             {
                 if (vm.List_bear_say.Count < 9) return;
                 if (page_now == 2) return;
@@ -231,7 +231,7 @@ namespace PD.NavigationPages
 
         private void Btn_page1_Click(object sender, RoutedEventArgs e)
         {
-            if(vm.station_type=="Hermetic_Test")   //to page 1
+            if(vm.station_type == ComViewModel.StationTypes.Hermetic_Test)   //to page 1
             {
                 if (page_now == 1) return;
                 page_now = 1;
@@ -270,11 +270,11 @@ namespace PD.NavigationPages
 
         private void grid_test_result_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
             
             if (e.Delta < 0)
             {
-                if (vm.station_type == "Hermetic_Test")  //to page 2
+                if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)  //to page 2
                 {
                     if (vm.List_bear_say.Count < 9) return;
                     if (page_now == 2) return;
@@ -291,7 +291,7 @@ namespace PD.NavigationPages
             }
             else
             {
-                if (vm.station_type.Equals("Hermetic_Test"))  //to page 1
+                if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)  //to page 1
                 {
                     if (page_now == 1) return;
                     page_now = 1;
@@ -305,7 +305,7 @@ namespace PD.NavigationPages
         SerialPort savePort;
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
 
             Button obj = (Button)sender;
 

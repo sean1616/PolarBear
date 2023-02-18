@@ -133,6 +133,7 @@
                                   Grid.Row="2"
                                   Grid.Column="1"
                                   SelectedItem="{Binding station_type}"
+                                  SelectedIndex="{Binding station_type_No}"
                                   DropDownOpened="ComBox_DropDownOpened"
                                   DropDownClosed="ComBox_DropDownClosed"
                                   ItemsSource="{Binding list_combox_Working_Table_Type_items}"

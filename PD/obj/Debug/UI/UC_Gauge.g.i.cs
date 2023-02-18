@@ -177,7 +177,7 @@ namespace PD.UI {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.6.2;component/ui/uc_gauge.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.6.3;component/ui/uc_gauge.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\UI\UC_Gauge.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

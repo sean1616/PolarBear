@@ -30,21 +30,14 @@
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="0*" />
         </Grid.ColumnDefinitions>
+        
         <Grid Grid.Column="2"
               Background="#FF494949">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.2*" />
                 <RowDefinition />
                 <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="8*"/>
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
@@ -94,8 +87,7 @@
             <ScrollViewer x:Name="viewer"
                           VerticalScrollBarVisibility="Hidden"
                           Background="Transparent"
-                          Grid.Row="3"
-                          Grid.RowSpan="8">
+                          Grid.Row="3">
                 <ItemsControl x:Name="itms_gauges"
                               AllowDrop="True"
                               FocusManager.IsFocusScope="True"
@@ -121,13 +113,13 @@
             </ScrollViewer>
 
            
-            <Grid Grid.Row="12">
+            <Grid Grid.Row="4">
                 <Button Name="btn_Timer"
                         Content="Timer"
                         Style="{StaticResource style_FuncBtn_CenterAlign}"
                         Click="btn_Timer_Click" />
             </Grid>
-            <Grid Grid.Row="13">
+            <Grid Grid.Row="5">
                 <Button Name="btn_Save_Chart"
                         Content="Save"
                         Style="{StaticResource style_FuncBtn_CenterAlign}"

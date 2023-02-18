@@ -432,7 +432,7 @@ namespace PD.AnalysisModel
                     }
                 }
 
-                if (!vm.station_type.Equals("UTF600"))
+                if (vm.station_type != ComViewModel.StationTypes.UTF600)
                     return;
 
                 #region Cal. FOM

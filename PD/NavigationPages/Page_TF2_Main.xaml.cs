@@ -296,7 +296,7 @@ namespace PD.NavigationPages
 
         private void tbtn_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
             if (gaugetxt_focus) return;
             ToggleButton obj = (ToggleButton)sender;
             obj.IsChecked = !obj.IsChecked;
@@ -665,7 +665,7 @@ namespace PD.NavigationPages
 
         private async void Btn_WL_Click(object sender, RoutedEventArgs e)
         {
-            if (!vm.station_type.Equals("Hermetic_Test")) return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
 
             Button obj = (Button)sender;
 
@@ -744,7 +744,7 @@ namespace PD.NavigationPages
 
         private async void Btn_Voltage_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
 
             Button obj = (Button)sender;
 
@@ -926,7 +926,7 @@ namespace PD.NavigationPages
 
         private async void gauge_PreviewMouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
-            if (vm.station_type != "Hermetic_Test") return;
+            if (vm.station_type != ComViewModel.StationTypes.Hermetic_Test) return;
 
             if (!vm.Is_switch_mode) return;
 
