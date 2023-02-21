@@ -67,7 +67,7 @@ namespace PD
         public MainWindow()
         {
             InitializeComponent();
-
+            
             this.Left = System.Windows.Forms.Screen.AllScreens.FirstOrDefault().WorkingArea.Left;
             this.Top = System.Windows.Forms.Screen.AllScreens.FirstOrDefault().WorkingArea.Top;
 
@@ -220,9 +220,15 @@ namespace PD
                 vm.PD_A_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_PD_A");
                 vm.PD_B_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_PD_B");
 
+                //if (int.TryParse(vm.Ini_Read("Connection", "OSA_BoardNumber"), out int osa_BoardNo))
+                //    vm.OSA_BoardNumber = osa_BoardNo;
+
                 vm.product_type = vm.Ini_Read("Productions", "Product");
                 vm.Is_k_WL_manual_setting = Generic_GetINISetting(vm.Is_k_WL_manual_setting, "Scan", "is_k_WL_manual_setting");
                 vm.selected_K_WL_Type = String.IsNullOrEmpty(vm.Ini_Read("Productions", "K_WL_Type")) ? "ALL Range" : vm.Ini_Read("Productions", "K_WL_Type");
+
+                vm.OSA_BoardNumber = Generic_GetINISetting(vm.OSA_BoardNumber, "Connection", "OSA_BoardNumber");
+                vm.OSA_Addr = Generic_GetINISetting(vm.OSA_Addr, "Connection", "OSA_Addr");
 
                 vm.Is_FastScan_Mode = Generic_GetINISetting(vm.Is_FastScan_Mode, "Scan", "Is_FastScan_Mode");
 
@@ -270,10 +276,8 @@ namespace PD
 
                 if (vm.Ini_Read("Productions", "Unit") == "dBm")
                 {
-                    //run_dBm.Foreground = new SolidColorBrush(Colors.White);
                     vm.run_dBm_color = new SolidColorBrush(Colors.White);
                     vm.run_dB_color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
-                    //run_dB.Foreground = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
                     vm.str_Unit = "dBm";
                     vm.dB_or_dBm = false;
                 }
@@ -6451,6 +6455,8 @@ namespace PD
             }
 
             vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
+
+            vm.ChartNowModel.list_Annotation = new List<Annotation>(vm.PlotViewModel.Annotations);
 
             await cmd.Save_Chart();
 

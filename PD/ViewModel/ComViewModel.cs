@@ -1,8 +1,9 @@
 ﻿using System.Windows.Controls;
 using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Collections.Generic;
-using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.IO;
 using System.IO.Ports;
@@ -30,6 +31,7 @@ using DiCon.Instrument.HP;
 using DiCon.Instrument.HP.GLTLS;
 
 using AutoMapper;
+using Wpf_Control_Library;
 
 namespace PD.ViewModel
 {
@@ -37,13 +39,459 @@ namespace PD.ViewModel
     {
         public ComViewModel()
         {
-            
         }
 
         public void InitializeComViewModel()
         {
             #region Setting Page
+
+            Station_SettingUnit_Table.Add("ALL", new List<string>()
+            {
+                 "TLS_WL_Range",
+                "Station_Type",
+                "Control_Board_Type",
+                "Laser_Type",
+                "Read_Cmd_Delay",
+                "Write_Cmd_Delay",
+                "Set_WL_Delay",
+                "Lambda_Scan_Delay",
+                "SN_Judge",
+                "SN_AutoTab",
+                "TLS_Filter",
+                "BR_OSA",
+                "Switch_Mode",
+                "Update_Chart",
+                "IL_Decimal_Place",
+
+                "K_WL_Type",
+                "WL_Scan_Start",
+                "WL_Scan_End",
+                "WL_Scan_Gap",
+                "TF_Scan_Gap",
+                "TF_Scan_Start",
+                "TF_Scan_End",
+                "V3_Scan_Gap",
+                "V3_Scan_Start",
+                "V3_Scan_End",
+                "K_WL_Manual_Setting",
+                "Fast_Scan_Mode",
+                "OSA_Sensitivity",
+                "OSA_RBW",
+
+                "Auto_Connect_TLS",
+                "Distributed_System",
+                "PD_or_PM",
+                "TLS_TCPIP",
+                "TLS_BoardNum",
+                "TLS_Address",
+                "PM_BoardNum",
+                "PM_Address",
+                "PDL_BoardNum",
+                "PDL_Address",
+                "MultiMeter_Address",
+                "PM_Slot",
+                "PM_AveTime",
+                "OSA_BoardNum",
+                "OSA_Address",
+                "Channels_Count",
+                "BoudRate",
+                "Auto_Update",
+                "Unit_Y",
+                "Arduino_Mode",
+                "Selected_Arduino_Comport",
+
+                "Open_ini",
+                "Comport_Setting",
+                "Board_Table_Path",
+                "Hermetic_Data_Path",
+                "TF2_Data_Path",
+                "Auto_Update_Path",
+                "Chamber_Status_Path",
+                "Comport_Setting_Path",
+                "Calibration_Csv_Path",
+                "BR_Save_Path",
+                "SQL_Server_IP",
+                "Station_ID"
+            });
+
+            Station_SettingUnit_Table.Add("UTF600", new List<string>()
+            {
+                 "TLS_WL_Range",
+                "Station_Type",
+                //"Control_Board_Type",
+                "Laser_Type",
+                "Read_Cmd_Delay",
+                "Write_Cmd_Delay",
+                "Set_WL_Delay",
+                "Lambda_Scan_Delay",
+                //"SN_Judge",
+                //"SN_AutoTab",
+                "TLS_Filter",
+                "BR_OSA",
+                //"Switch_Mode",
+                //"Update_Chart",
+                "IL_Decimal_Place",
+
+                "K_WL_Type",
+                "WL_Scan_Start",
+                "WL_Scan_End",
+                "WL_Scan_Gap",
+                //"TF_Scan_Gap",
+                //"TF_Scan_Start",
+                //"TF_Scan_End",
+                //"V3_Scan_Gap",
+                //"V3_Scan_Start",
+                //"V3_Scan_End",
+                "K_WL_Manual_Setting",
+                "Fast_Scan_Mode",
+                //"OSA_Sensitivity",
+                //"OSA_RBW",
+
+                "Auto_Connect_TLS",
+                "Distributed_System",
+                "PD_or_PM",
+                "TLS_TCPIP",
+                "TLS_BoardNum",
+                "TLS_Address",
+                "PM_BoardNum",
+                "PM_Address",
+                "PDL_BoardNum",
+                "PDL_Address",
+                //"MultiMeter_Address",
+                "PM_Slot",
+                "PM_AveTime",
+                //"OSA_BoardNum",
+                //"OSA_Address",
+                "Channels_Count",
+                "BoudRate",
+                "Auto_Update",
+                //"Unit_Y",
+                //"Arduino_Mode",
+                //"Selected_Arduino_Comport",
+
+                "Open_ini",
+                "Comport_Setting",
+                //"Board_Table_Path",
+                //"Hermetic_Data_Path",
+                //"TF2_Data_Path",
+                "Auto_Update_Path",
+                //"Chamber_Status_Path",
+                "Comport_Setting_Path",
+                //"Calibration_Csv_Path",
+                //"BR_Save_Path",
+                //"SQL_Server_IP",
+                //"Station_ID"
+            });
+
+            Station_SettingUnit_Table.Add("TF2", new List<string>()
+            {
+                 "TLS_WL_Range",
+                "Station_Type",
+                "Control_Board_Type",
+                "Laser_Type",
+                "Read_Cmd_Delay",
+                "Write_Cmd_Delay",
+                "Set_WL_Delay",
+                "Lambda_Scan_Delay",
+                //"SN_Judge",
+                //"SN_AutoTab",
+                "TLS_Filter",
+                //"BR_OSA",
+                //"Switch_Mode",
+                "Update_Chart",
+                //"IL_Decimal_Place",
+
+                "K_WL_Type",
+                "WL_Scan_Start",
+                "WL_Scan_End",
+                "WL_Scan_Gap",
+                //"TF_Scan_Gap",
+                //"TF_Scan_Start",
+                //"TF_Scan_End",
+                //"V3_Scan_Gap",
+                //"V3_Scan_Start",
+                //"V3_Scan_End",
+                "K_WL_Manual_Setting",
+                "Fast_Scan_Mode",
+                //"OSA_Sensitivity",
+                //"OSA_RBW",
+
+                "Auto_Connect_TLS",
+                "Distributed_System",
+                "PD_or_PM",
+                "TLS_TCPIP",
+                "TLS_BoardNum",
+                "TLS_Address",
+                "PM_BoardNum",
+                "PM_Address",
+                //"PDL_BoardNum",
+                //"PDL_Address",
+                //"MultiMeter_Address",
+                "PM_Slot",
+                "PM_AveTime",
+                //"OSA_BoardNum",
+                //"OSA_Address",
+                "Channels_Count",
+                "BoudRate",
+                "Auto_Update",
+                //"Unit_Y",
+                //"Arduino_Mode",
+                //"Selected_Arduino_Comport",
+
+                "Open_ini",
+                "Comport_Setting",
+                "Board_Table_Path",
+                //"Hermetic_Data_Path",
+                "TF2_Data_Path",
+                "Auto_Update_Path",
+                //"Chamber_Status_Path",
+                "Comport_Setting_Path",
+                //"Calibration_Csv_Path",
+                //"BR_Save_Path",
+                //"SQL_Server_IP",
+                "Station_ID"
+            });
+
+
+
+            Station_SettingUnit_Table.Add("Testing", new List<string>()
+            {
+                 "TLS_WL_Range",
+                "Station_Type",
+                "Control_Board_Type",
+                "Laser_Type",
+                "Read_Cmd_Delay",
+                "Write_Cmd_Delay",
+                "Set_WL_Delay",
+                "Lambda_Scan_Delay",
+                //"SN_Judge",
+                //"SN_AutoTab",
+                "TLS_Filter",
+                //"BR_OSA",
+                //"Switch_Mode",
+                //"Update_Chart",
+                //"IL_Decimal_Place",
+
+                "K_WL_Type",
+                "WL_Scan_Start",
+                "WL_Scan_End",
+                "WL_Scan_Gap",
+                "TF_Scan_Gap",
+                "TF_Scan_Start",
+                "TF_Scan_End",
+                "V3_Scan_Gap",
+                "V3_Scan_Start",
+                "V3_Scan_End",
+                //"K_WL_Manual_Setting",
+                "Fast_Scan_Mode",
+                //"OSA_Sensitivity",
+                //"OSA_RBW",
+
+                "Auto_Connect_TLS",
+                "Distributed_System",
+                "PD_or_PM",
+                "TLS_TCPIP",
+                "TLS_BoardNum",
+                "TLS_Address",
+                "PM_BoardNum",
+                "PM_Address",
+                "PDL_BoardNum",
+                "PDL_Address",
+                //"MultiMeter_Address",
+                "PM_Slot",
+                "PM_AveTime",
+                //"OSA_BoardNum",
+                //"OSA_Address",
+                "Channels_Count",
+                "BoudRate",
+                "Auto_Update",
+                "Unit_Y",
+                //"Arduino_Mode",
+                //"Selected_Arduino_Comport",
+
+                "Open_ini",
+                "Comport_Setting",
+                "Board_Table_Path",
+                //"Hermetic_Data_Path",
+                //"TF2_Data_Path",
+                "Auto_Update_Path",
+                //"Chamber_Status_Path",
+                "Comport_Setting_Path",
+                //"Calibration_Csv_Path",
+                //"BR_Save_Path",
+                //"SQL_Server_IP",
+                "Station_ID"
+            });
+
+            Station_SettingUnit_Table.Add("BR", new List<string>()
+            {
+                 "TLS_WL_Range",
+                "Station_Type",
+                "Control_Board_Type",
+                "Laser_Type",
+                "Read_Cmd_Delay",
+                "Write_Cmd_Delay",
+                "Set_WL_Delay",
+                //"Lambda_Scan_Delay",
+                //"SN_Judge",
+                //"SN_AutoTab",
+                "TLS_Filter",
+                "BR_OSA",
+                //"Switch_Mode",
+                //"Update_Chart",
+                //"IL_Decimal_Place",
+
+                "K_WL_Type",
+                "WL_Scan_Start",
+                "WL_Scan_End",
+                "WL_Scan_Gap",
+                //"TF_Scan_Gap",
+                //"TF_Scan_Start",
+                //"TF_Scan_End",
+                //"V3_Scan_Gap",
+                //"V3_Scan_Start",
+                //"V3_Scan_End",
+                //"K_WL_Manual_Setting",
+                //"Fast_Scan_Mode",
+                "OSA_Sensitivity",
+                "OSA_RBW",
+
+                "Auto_Connect_TLS",
+                "Distributed_System",
+                "PD_or_PM",
+                "TLS_TCPIP",
+                "TLS_BoardNum",
+                "TLS_Address",
+                "PM_BoardNum",
+                "PM_Address",
+                //"PDL_BoardNum",
+                //"PDL_Address",
+                //"MultiMeter_Address",
+                "PM_Slot",
+                "PM_AveTime",
+                "OSA_BoardNum",
+                "OSA_Address",
+                "Channels_Count",
+                "BoudRate",
+                "Auto_Update",
+                //"Unit_Y",
+                //"Arduino_Mode",
+                //"Selected_Arduino_Comport",
+
+                "Open_ini",
+                "Comport_Setting",
+                "Board_Table_Path",
+                //"Hermetic_Data_Path",
+                //"TF2_Data_Path",
+                "Auto_Update_Path",
+                //"Chamber_Status_Path",
+                "Comport_Setting_Path",
+                //"Calibration_Csv_Path",
+                "BR_Save_Path",
+                //"SQL_Server_IP",
+                "Station_ID"
+            });
+
+            foreach (string st in list_combox_Working_Table_Type_items)
+            {
+                if (Station_SettingUnit_Table.ContainsKey(st))
+                    continue;
+
+                Station_SettingUnit_Table.Add(st, new List<string>()
+            {
+                 "TLS_WL_Range",
+                "Station_Type",
+                "Control_Board_Type",
+                "Laser_Type",
+                "Read_Cmd_Delay",
+                "Write_Cmd_Delay",
+                "Set_WL_Delay",
+                "Lambda_Scan_Delay",
+                "SN_Judge",
+                "SN_AutoTab",
+                "TLS_Filter",
+                "BR_OSA",
+                "Switch_Mode",
+                "Update_Chart",
+                "IL_Decimal_Place",
+
+                "K_WL_Type",
+                "WL_Scan_Start",
+                "WL_Scan_End",
+                "WL_Scan_Gap",
+                "TF_Scan_Gap",
+                "TF_Scan_Start",
+                "TF_Scan_End",
+                "V3_Scan_Gap",
+                "V3_Scan_Start",
+                "V3_Scan_End",
+                "K_WL_Manual_Setting",
+                "Fast_Scan_Mode",
+                "OSA_Sensitivity",
+                "OSA_RBW",
+
+                "Auto_Connect_TLS",
+                "Distributed_System",
+                "PD_or_PM",
+                "TLS_TCPIP",
+                "TLS_BoardNum",
+                "TLS_Address",
+                "PM_BoardNum",
+                "PM_Address",
+                "PDL_BoardNum",
+                "PDL_Address",
+                "MultiMeter_Address",
+                "PM_Slot",
+                "PM_AveTime",
+                "OSA_BoardNum",
+                "OSA_Address",
+                "Channels_Count",
+                "BoudRate",
+                "Auto_Update",
+                "Unit_Y",
+                "Arduino_Mode",
+                "Selected_Arduino_Comport",
+
+                "Open_ini",
+                "Comport_Setting",
+                "Board_Table_Path",
+                "Hermetic_Data_Path",
+                "TF2_Data_Path",
+                "Auto_Update_Path",
+                "Chamber_Status_Path",
+                "Comport_Setting_Path",
+                "Calibration_Csv_Path",
+                "BR_Save_Path",
+                "SQL_Server_IP",
+                "Station_ID"
+            });
+            }
+
+
+            //list_SettingUnitModels.Clear();
+
+            //list_SettingUnitModels.Add(new SettingUnitModel()
+            //{
+            //    UC_Type = UserControl_Mix.UC_Types.Text_Textbox,
+            //    Name = "TF Scan Gap",
+            //    TextBox_Value = "1000",
+            //});
+
+            //list_SettingUnitModels.Add(new SettingUnitModel()
+            //{
+            //    UC_Type = UserControl_Mix.UC_Types.Text_ToggleButton,
+            //    Name = "Fast Scan Mode",
+            //    Toggle_IsChecked = false
+            //});
+            //list_SettingUnitModels.Add(new SettingUnitModel()
+            //{
+            //    UC_Type = UserControl_Mix.UC_Types.Text_Textbox,
+            //    Name = "OSA Sensitivity",
+            //    TextBox_Value = OSA_Sensitivity.ToString(),
+            //});
+
             #endregion
+
 
             #region ICommand Setting
             //Cmd_TXT_Power_KeyDown = new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown, CanExecute);
@@ -57,7 +505,7 @@ namespace PD.ViewModel
             {
                 list_brushes.Add(new SolidColorBrush(Color.FromRgb(list_OxyColor[i].R, list_OxyColor[i].G, list_OxyColor[i].B)));
             }
-            
+
             #endregion
 
             #region PlotModel
@@ -163,6 +611,32 @@ namespace PD.ViewModel
             PlotViewModel_Chart = plotModel1;
 
             #endregion
+        }
+
+        public void SettingUnit_Tag_Setting()
+        {
+            //新增station標籤至Setting Unit
+            foreach (string stationNow in list_combox_Working_Table_Type_items)
+            {
+                if (!Station_SettingUnit_Table.ContainsKey(stationNow)) continue;
+
+                List<string> settingTable = Station_SettingUnit_Table[stationNow];
+
+                foreach (UIElementCollection stcP in list_stcP_children)
+                    foreach (System.Windows.UIElement child in stcP)
+                    {
+                        UserControl_Mix obj = (UserControl_Mix)child;
+                        if (obj == null) continue;
+                        //if (obj.txtbox_content == null) continue;
+
+                        if (obj.UC_Tags.Count == 0)
+                            obj.UC_Tags = new List<string>();
+
+                        if (obj.Tag != null)
+                            if (settingTable.Contains(obj.Tag.ToString()) && !obj.UC_Tags.Contains(stationNow))  //若Station setting table 包含此項目
+                                obj.UC_Tags.Add(stationNow); //新增Station type 標籤
+                    }
+            }
         }
 
         public LineAnnotation LineAnnotation_X_1 = new LineAnnotation()
@@ -413,6 +887,17 @@ namespace PD.ViewModel
             }
         }
 
+        private ObservableCollection<SettingUnitModel> _list_SettingUnitModels = new ObservableCollection<SettingUnitModel>() { new SettingUnitModel() { Name = "Item 1" } };
+        public ObservableCollection<SettingUnitModel> list_SettingUnitModels
+        {
+            get { return _list_SettingUnitModels; }
+            set
+            {
+                _list_SettingUnitModels = value;
+                OnPropertyChanged("list_SettingUnitModels");
+            }
+        }
+
         //public OC_GaugeModels OC_Gauges { get; set; }
 
         private List<ObservableCollection<GaugeModel>> _list_collection_GaugeModels = new List<ObservableCollection<GaugeModel>>();
@@ -565,7 +1050,7 @@ namespace PD.ViewModel
 
         public void Update_ALL_PlotView()
         {
-            if(PlotViewModel.PlotView != null)
+            if (PlotViewModel.PlotView != null)
                 PlotViewModel.InvalidatePlot(is_update_chart);
 
             if (PlotViewModel_Chart.PlotView != null)
@@ -586,7 +1071,7 @@ namespace PD.ViewModel
 
         public void Update_ALL_PlotView_Title(string Title, string X_Title, string Y_Title)
         {
-            if(PlotViewModel.PlotView!=null)
+            if (PlotViewModel.PlotView != null)
             {
                 PlotViewModel.Title = Title;
 
@@ -1394,7 +1879,7 @@ namespace PD.ViewModel
                 }
 
                 //顯示讀取的Ref data
-                foreach (double wl in list_wl) 
+                foreach (double wl in list_wl)
                 {
                     Ref_memberDatas.Add(new RefModel()
                     {
@@ -2233,7 +2718,7 @@ namespace PD.ViewModel
                 else
                 {
                     Str_cmd_read = $"WL參數量 > {expand_times * 16}";
-                    Save_Log(new LogMember() { Status="Station Initializing", Message = Str_cmd_read });
+                    Save_Log(new LogMember() { Status = "Station Initializing", Message = Str_cmd_read });
                 }
 
                 is_update_chart = true;
@@ -2372,6 +2857,37 @@ namespace PD.ViewModel
 
         }
 
+        public void Define_Setting_Unit(string tag)
+        {
+            //根據標籤調整Setting Unit是否顯示
+            foreach (UIElementCollection SettingUnits in list_stcP_children)
+                foreach (System.Windows.UIElement child in SettingUnits)
+                {
+                    UserControl_Mix obj = (UserControl_Mix)child;
+                    if (obj == null) continue;
+
+                    if (obj.UC_Tags == null) continue;
+
+                    if (obj.UC_Tags.Count == 0)
+                    {
+                        obj.Visibility = Visibility.Collapsed;
+                        continue;
+                    }
+
+                    if (obj.UC_Tags.Contains(tag))
+                    {
+                        obj.Visibility = Visibility.Visible;
+                        Console.WriteLine($"{obj.Tag.ToString()}: Visible");
+                    }
+                    else
+                    {
+                        obj.Visibility = Visibility.Collapsed;
+                        Console.WriteLine($"{obj.Tag.ToString()}: Collapsed");
+
+                    }
+                }
+        }
+
         public void Clean_Chart()
         {
             Save_PD_Value = new List<DataPoint>();
@@ -2432,7 +2948,7 @@ namespace PD.ViewModel
 
                             Plot_Series.Add(lineSerie);
 
-                            if(ChartNowModel.Plot_Series[i].Points.Count > 0)
+                            if (ChartNowModel.Plot_Series[i].Points.Count > 0)
                             {
                                 Plot_Series.Last().Points.AddRange(ChartNowModel.Plot_Series[i].Points);
                             }
@@ -2456,6 +2972,28 @@ namespace PD.ViewModel
                             Plot_Series[ch].Points.Clear();
                             Plot_Series[ch].Points.AddRange(ChartNowModel.Plot_Series[ch].Points);
                         }
+
+                    if (station_type == StationTypes.BR)
+                    {
+                        list_Chart_UI_Models.Clear();
+
+                        for (int i = 0; i < Plot_Series.Count; i++)
+                        {
+                            list_Chart_UI_Models.Add(new Chart_UI_Model()
+                            {
+                                Button_Content = Plot_Series[i].Title,
+                                Button_Color = new SolidColorBrush(Color.FromRgb(list_OxyColor[i].R, list_OxyColor[i].G, list_OxyColor[i].B)),
+                                Button_Channel = i,
+                                Button_IsChecked = true,
+                                Button_IsVisible = Visibility.Visible
+                            });
+                        }
+
+                        for (int i = 0; i < ChartNowModel.list_Annotation.Count; i++)
+                        {
+                            PlotViewModel.Annotations.Add(ChartNowModel.list_Annotation[i]);
+                        }
+                    }
 
                     Update_ALL_PlotView();
 
@@ -2531,7 +3069,7 @@ namespace PD.ViewModel
 
                         Plot_Series.Add(lineSerie);
 
-                        if(ChartNowModel.Plot_Series[i].Points.Count > 0)
+                        if (ChartNowModel.Plot_Series[i].Points.Count > 0)
                         {
                             Plot_Series.Last().Points.AddRange(ChartNowModel.Plot_Series[i].Points);
                         }
@@ -2554,6 +3092,28 @@ namespace PD.ViewModel
                         Plot_Series[ch].Points.Clear();
                         Plot_Series[ch].Points.AddRange(ChartNowModel.Plot_Series[ch].Points);
                     }
+
+                if(station_type == StationTypes.BR)
+                {
+                    list_Chart_UI_Models.Clear();
+
+                    for (int i = 0; i < Plot_Series.Count; i++)
+                    {
+                        list_Chart_UI_Models.Add(new Chart_UI_Model()
+                        {
+                            Button_Content = Plot_Series[i].Title,
+                            Button_Color = new SolidColorBrush(Color.FromRgb(list_OxyColor[i].R, list_OxyColor[i].G, list_OxyColor[i].B)),
+                            Button_Channel = i,
+                            Button_IsChecked = true,
+                            Button_IsVisible = Visibility.Visible
+                        });
+                    }
+
+                    for (int i = 0; i < ChartNowModel.list_Annotation.Count; i++)
+                    {
+                        PlotViewModel.Annotations.Add(ChartNowModel.list_Annotation[i]);
+                    }
+                }
 
                 Update_ALL_PlotView();
 
@@ -3399,7 +3959,7 @@ namespace PD.ViewModel
             }
         }
 
-        private string _txt_Equip_Setting_Path = "";
+        private string _txt_Equip_Setting_Path = "D:/";
         public string txt_Equip_Setting_Path
         {
             get { return _txt_Equip_Setting_Path; }
@@ -3518,7 +4078,10 @@ namespace PD.ViewModel
         public int ch
         {
             get { return _Switch_Number; }
-            set { _Switch_Number = value; }
+            set
+            {
+                _Switch_Number = value;
+            }
         }
 
         private int progressbar_value = 0;
@@ -3528,7 +4091,6 @@ namespace PD.ViewModel
             set { progressbar_value = value; }
         }
 
-        
         private int _control_board_type = 0;  //0: UFV, 1: V, 2: MTF Board ...
         /// <summary>
         /// Control Board Type, 0=UFV, 1=V, 2=MTF Board
@@ -3536,15 +4098,24 @@ namespace PD.ViewModel
         public int Control_board_type
         {
             get { return _control_board_type; }
-            set { _control_board_type = value; }
+            set
+            {
+                if (value < 0) return;
+                _control_board_type = value;
+                OnPropertyChanged("Control_board_type");
+            }
         }
 
-        //private string _txt_control_board_type = "UFV";  //0: UFV, 1: V, 2: MTF Board ...
-        //public string Txt_Control_board_type
-        //{
-        //    get { return _txt_control_board_type; }
-        //    set { _txt_control_board_type = value; }
-        //}
+        private string _control_board_type_itm = "";  //UFV, V, MTF Board ...
+        public string Control_board_type_itm
+        {
+            get { return _control_board_type_itm; }
+            set
+            {
+                _control_board_type_itm = value;
+                OnPropertyChanged("Control_board_type_itm");
+            }
+        }
 
         private string comport_switch;
         public string Comport_Switch
@@ -3892,6 +4463,12 @@ namespace PD.ViewModel
 
                 Set_StationType(value.ToString());
 
+                if (list_stcP_children != null)
+                    if (list_stcP_children.Count > 0)
+                    {
+                        Define_Setting_Unit(station_type.ToString());
+                    }
+
                 OnPropertyChanged("station_type");
             }
         }
@@ -3906,6 +4483,12 @@ namespace PD.ViewModel
                 OnPropertyChanged("station_type_No");
             }
         }
+
+        public Dictionary<string, List<string>> Station_SettingUnit_Table { get; set; } = new Dictionary<string, List<string>>();
+
+        public List<UIElementCollection> list_stcP_children { get; set; } = new List<UIElementCollection>();
+
+
 
         public double center_WL { get; set; }
 
@@ -4115,20 +4698,20 @@ namespace PD.ViewModel
 
                     SolidColorBrush[] M_brushes = new SolidColorBrush[]
                         {
-                            Brushes.Green, 
-                            Brushes.Red, 
-                            Brushes.Blue, 
-                            Brushes.Orange,                        
-                            Brushes.DarkGreen, 
-                            Brushes.Purple, 
-                            Brushes.Gray, 
+                            Brushes.Green,
+                            Brushes.Red,
+                            Brushes.Blue,
+                            Brushes.Orange,
+                            Brushes.DarkGreen,
+                            Brushes.Purple,
+                            Brushes.Gray,
                             Brushes.Chocolate,
-                            Brushes.DarkGreen, 
-                            Brushes.MediumVioletRed, 
+                            Brushes.DarkGreen,
+                            Brushes.MediumVioletRed,
                             Brushes.Coral, Brushes.DarkTurquoise,
-                            Brushes.DarkKhaki, 
-                            Brushes.DarkCyan, 
-                            Brushes.MediumPurple, 
+                            Brushes.DarkKhaki,
+                            Brushes.DarkCyan,
+                            Brushes.MediumPurple,
                             Brushes.OrangeRed,
                         };
 
@@ -4289,7 +4872,7 @@ namespace PD.ViewModel
                         }
 
                         #endregion
-                        
+
                     }
 
                     //lisg gaue model setting
@@ -4437,7 +5020,7 @@ namespace PD.ViewModel
         }
 
         private List<string> _list_combox_Laser_Type_items =
-            new List<string>() { "Agilent", "Keysight" , "Golight" };
+            new List<string>() { "Agilent", "Keysight", "Golight" };
         public List<string> list_combox_Laser_Type_items
         {
             get { return _list_combox_Laser_Type_items; }
@@ -4691,7 +5274,7 @@ namespace PD.ViewModel
         private double _BR_Diff = -3.3;
         public double BR_Diff
         {
-            get { return _BR_Diff;}
+            get { return _BR_Diff; }
             set
             {
                 _BR_Diff = value;
@@ -4796,6 +5379,9 @@ namespace PD.ViewModel
                 Chart_y_title = $"Power ({str_Unit})";
 
                 Ini_Write("Productions", "Unit", str_Unit);
+
+                OnPropertyChanged("dB_or_dBm");
+
             }
         }
 
@@ -4803,14 +5389,18 @@ namespace PD.ViewModel
         public SolidColorBrush run_dBm_color
         {
             get { return _run_dBm_color; }
-            set { _run_dBm_color = value; }
+            set { _run_dBm_color = value;
+                OnPropertyChanged("run_dBm_color");
+            }
         }
 
         private SolidColorBrush _run_dB_color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF878787"));
         public SolidColorBrush run_dB_color
         {
             get { return _run_dB_color; }
-            set { _run_dB_color = value; }
+            set { _run_dB_color = value;
+                OnPropertyChanged("run_dB_color");
+            }
         }
 
         private bool _Auto_Connect_TLS = true;
@@ -5872,7 +6462,7 @@ namespace PD.ViewModel
         private int _OSA_BoardNumber = 0;
         public int OSA_BoardNumber
         {
-            get { return _tls_BoardNumber; }
+            get { return _OSA_BoardNumber; }
             set
             {
                 _OSA_BoardNumber = value;

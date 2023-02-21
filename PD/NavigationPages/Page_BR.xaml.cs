@@ -2091,11 +2091,9 @@ namespace PD.NavigationPages
             }
         }
 
-        private void ComBox_BR_Para_List_DropDownClosed(object sender, EventArgs e)
+        private async void ComBox_BR_Para_List_DropDownClosed(object sender, EventArgs e)
         {
             var obj = sender as ComboBox;
-
-            //if (obj.Items[obj.SelectedIndex].Equals(preSelectItm)) return;
 
             if(obj.SelectedIndex != -1)
             {
@@ -2110,22 +2108,42 @@ namespace PD.NavigationPages
                 string[] list_s = key.Value.Split(',');
                 vm.list_BR_DAC_WL = new ObservableCollection<string>(list_s);
 
+                //await cmd.Save_Chart();
+
+                cmd.Reset_Chart(vm.list_BR_DAC_WL.ToList());
+
                 vm.PlotViewModel.Annotations.Clear();
                 vm.ChartNowModel.list_BR_Model.Clear();
 
+                for (int i = 0; i < vm.Plot_Series.Count; i++)
+                {
+                    vm.Plot_Series[i].Points.Clear();
+
+                    if (vm.PlotViewModel.Annotations.Count > i)
+                    {
+                        LineAnnotation pat = vm.PlotViewModel.Annotations[i] as LineAnnotation;
+                        pat.StrokeThickness = 0;
+                        pat.Text = "";
+                    }
+                    else
+                    {
+                        vm.PlotViewModel.Annotations.Add(new LineAnnotation()
+                        {
+                            Type = LineAnnotationType.Vertical,
+                            Color = OxyColors.Black,
+                            ClipByYAxis = false,
+                            X = 0,
+                            StrokeThickness = 0
+                        });
+                    }
+                }
+
                 foreach (string s in list_s)
                 {
-                    vm.PlotViewModel.Annotations.Add(new LineAnnotation()
-                    {
-                        Type = LineAnnotationType.Vertical,
-                        Color = OxyColors.Black,
-                        ClipByYAxis = false,
-                        X = 0,
-                        StrokeThickness = 0
-                    });
-
                     vm.ChartNowModel.list_BR_Model.Add(new BR_Model() { Set_WL = s });
                 }
+
+                vm.Update_ALL_PlotView();
 
                 vm.Control_board_type = 2;
 
@@ -2151,70 +2169,6 @@ namespace PD.NavigationPages
                         vm.Control_board_type = 0;
                     }
                 }
-
-#if false
-                vm.Plot_Series.Clear();
-                vm.PlotViewModel_BR.Series.Clear();
-
-                vm.list_Chart_UI_Models.Clear();
-
-                //若BR_Scan_Dac的參數量多於16(color list的預設數)，則需擴充color list
-                int expand_times = 5;
-                for (int i = 0; i < expand_times; i++)
-                {
-                    if (vm.list_BR_DAC_WL.Count > vm.list_brushes.Count)
-                    {
-                        vm.list_brushes.AddRange(vm.list_brushes);
-                        vm.list_OxyColor.AddRange(vm.list_OxyColor);
-                    }
-                    else
-                        break;
-                }
-
-                if (vm.list_BR_DAC_WL.Count > vm.list_brushes.Count)
-                {
-                    vm.Str_cmd_read = $"WL參數量 > {expand_times * 16}";
-                    vm.Save_Log(new LogMember() { Status = "Station Initializing", Message = vm.Str_cmd_read });
-                    return;
-                }
-
-                //根據BR_Scan_Dac的參數數量來新增對應的圖表線數
-                //Add Chart line series for Scan_Para count
-                for (int i = 0; i < vm.list_BR_DAC_WL.Count; i++)
-                {
-                    vm.list_Chart_UI_Models.Add(new Chart_UI_Model()
-                    {
-                        Button_Color = i < vm.list_brushes.Count() ? vm.list_brushes[i] : vm.list_brushes[i - vm.list_brushes.Count()],
-                        Button_Channel = i + 1,
-                        Button_Content = $"{vm.list_BR_DAC_WL[i]}",
-                        Button_IsChecked = true,
-                        Button_IsVisible = Visibility.Visible,
-                        Button_Tag = "../../Resources/right-arrow.png"
-                    });
-
-                    LineSeries lineSerie = new LineSeries
-                    {
-                        Title = $"{vm.list_BR_DAC_WL[i]}",
-                        FontSize = 20,
-                        StrokeThickness = 1.8,
-                        MarkerType = MarkerType.Circle,
-                        MarkerSize = 0,  //4
-                        Smooth = false,
-                        MarkerFill = vm.list_OxyColor[i],
-                        Color = vm.list_OxyColor[i],
-                        CanTrackerInterpolatePoints = true,
-                        TrackerFormatString = vm.Chart_x_title + " : {2}\n" + vm.Chart_y_title + " : {4}",
-                        LineLegendPosition = LineLegendPosition.None,
-                        IsVisible = vm.list_Chart_UI_Models[i].Button_IsChecked
-                    };
-
-                    vm.Plot_Series.Add(lineSerie);
-
-                    vm.PlotViewModel_BR.Series.Add(vm.Plot_Series[i]);
-                }
-
-                vm.Update_ALL_PlotView(); 
-#endif
 
                 //Set WL(TLS) to UI, Start WL, End WL, Gap
                 if (keyNames.Contains("Ref_Range"))
@@ -2253,11 +2207,6 @@ namespace PD.NavigationPages
                 }
                 else
                     vm.Show_Bear_Window($"{Path.GetFileName(vm.BR_Scan_Para_Path)}\r無File_Path設定值");
-
-            }
-            else  //ComboxBox selected index = 0
-            {
-
             }
         }
 
@@ -2453,6 +2402,8 @@ namespace PD.NavigationPages
                     }
                 }
 
+                vm.ChartNowModel.list_Annotation = new List<Annotation>(vm.PlotViewModel.Annotations);
+
                 vm.Update_ALL_PlotView();
 
                 vm.Str_cmd_read = vm.Str_cmd_read + $", {list_WL_IL.Count} points";
@@ -2551,6 +2502,8 @@ namespace PD.NavigationPages
                 {
                     vm.Plot_Series[i].IsVisible = vm.list_Chart_UI_Models[i].Button_IsChecked;
                     vm.Plot_Series[i].Color = vm.list_OxyColor[i];
+
+                    if (i > vm.PlotViewModel.Annotations.Count) return;
 
                     LineAnnotation lat = vm.PlotViewModel.Annotations[i] as LineAnnotation;
                     if(vm.list_Chart_UI_Models[i].Button_IsChecked)

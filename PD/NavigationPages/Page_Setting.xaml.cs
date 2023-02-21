@@ -12,7 +12,10 @@ using System.Collections.ObjectModel;
 using WpfAnimatedGif;
 
 using PD;
+using PD.Models;
 using PD.ViewModel;
+
+using Wpf_Control_Library;
 
 namespace PD.NavigationPages
 {
@@ -52,23 +55,24 @@ namespace PD.NavigationPages
 
                         if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Type")))
                         {
-                            ComBox_Control_Board_Type.SelectedItem = vm.Ini_Read("Connection", "Control_Board_Type");
+                            vm.Control_board_type_itm = vm.Ini_Read("Connection", "Control_Board_Type");
+                            //ComBox_Control_Board_Type.SelectedItem = vm.Ini_Read("Connection", "Control_Board_Type");
 
-                            try
-                            {
-                                string control_board_type = ComBox_Control_Board_Type.SelectedItem.ToString();
-                                switch (control_board_type)
-                                {
-                                    case "UFV":
-                                        vm.Control_board_type = 0;
-                                        break;
+                            //try
+                            //{
+                            //    string control_board_type = ComBox_Control_Board_Type.SelectedItem.ToString();
+                            //    switch (control_board_type)
+                            //    {
+                            //        case "UFV":
+                            //            vm.Control_board_type = 0;
+                            //            break;
 
-                                    case "V":
-                                        vm.Control_board_type = 1;
-                                        break;
-                                }
-                            }
-                            catch { }
+                            //        case "V":
+                            //            vm.Control_board_type = 1;
+                            //            break;
+                            //    }
+                            //}
+                            //catch { }
                         }
 
                         vm.Golight_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_Golight");
@@ -76,9 +80,9 @@ namespace PD.NavigationPages
                 }
                 catch { }
             }
-            
+
             if (vm.Laser_type.Equals("Golight") && vm.Auto_Connect_TLS)
-            {               
+            {
                 if (!string.IsNullOrEmpty(vm.Golight_ChannelModel.Board_Port))
                 {
                     vm.tls_GL = new DiCon.Instrument.HP.GLTLS.GLTLS();
@@ -100,6 +104,42 @@ namespace PD.NavigationPages
                         Message = "Golight comport is null or empty"
                     });
             }
+
+            //Dictionary<string, List<string>> Station_SettingUnit_Table = new Dictionary<string, List<string>>();
+
+            //Station_SettingUnit_Table.Add("BR", new List<string>()
+            //{
+            //     "TLS_WL_Range",
+            //    "Station_Type",
+            //    "Control_Board_Type",
+            //    "Laser_Type",
+            //    "Read_Cmd_Delay",
+            //    "Write_Cmd_Delay",
+            //    "Set_WL_Delay",
+            //    "Lambda_Scan_Delay",
+            //    "SN_Judge",
+            //    "SN_AutoTab",
+            //    "TLS_Filter",
+            //    "BR_OSA",
+            //    "Switch_Mode",
+            //    "Update_Chart",
+            //    "IL_Decimal_Place",
+            //});
+
+
+            //UIElementCollection children = stcP_1.Children;
+            vm.list_stcP_children.Add(stcP_1.Children);
+            vm.list_stcP_children.Add(stcP_2.Children);
+            vm.list_stcP_children.Add(stcP_3.Children);
+            vm.list_stcP_children.Add(stcP_4.Children);
+
+            //新增station標籤至Setting Unit
+            vm.SettingUnit_Tag_Setting();
+
+            //Update Setting page ui
+            if (vm.list_stcP_children != null && vm.list_stcP_children.Count > 0)
+                vm.Define_Setting_Unit(vm.station_type.ToString());
+
         }
 
         int i, c = 1;
@@ -200,6 +240,7 @@ namespace PD.NavigationPages
         private void Img_gif_Loaded(object sender, RoutedEventArgs e)
         {
             _GIF_controller = ImageBehavior.GetAnimationController(Img_gif);
+            if (_GIF_controller == null) return;
             i = _GIF_controller.FrameCount;
             //_GIF_controller.CurrentFrame;
             _GIF_controller.GotoFrame(1);
@@ -208,7 +249,7 @@ namespace PD.NavigationPages
 
         private void BTN_INI_CLICK(object sender, RoutedEventArgs e)
         {
-            try 
+            try
             {
                 if (File.Exists(vm.ini_path))
                 {
@@ -302,6 +343,7 @@ namespace PD.NavigationPages
                 cbb.SelectedIndex = pre_combobox_index;
         }
 
+
         private void ComBox_Laser_Selection_DropDownClosed(object sender, EventArgs e)
         {
             ComboBox obj = (ComboBox)sender;
@@ -313,7 +355,7 @@ namespace PD.NavigationPages
                     string laserType = obj.SelectedItem.ToString();
 
                     vm.Laser_type = laserType;
-                    
+
                     vm.Ini_Write("Connection", "Laser_type", laserType);
                 }
                 catch (TimeoutException ex)
@@ -322,6 +364,6 @@ namespace PD.NavigationPages
                 }
             }
         }
-        
+
     }
 }

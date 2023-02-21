@@ -573,11 +573,6 @@
                 <ScrollViewer x:Name="scrolV" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="5" Grid.Row="3">
                         <ItemsControl x:Name="itms_DAC_WL"  HorizontalAlignment="Stretch"
                                  ItemsSource="{Binding ChartNowModel.list_BR_Model}"  >
-                            <!--<ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid Columns="1" Rows="12"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>-->
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <ui:UC_OSA_WL_Button txtbox_content="{Binding Set_WL}" txtbox_content_2="{Binding BR_WL}" txtbox_content_3="{Binding BR}" Height="55" PreviewMouseDown="UC_OSA_WL_Button_PreviewMouseDown"/>

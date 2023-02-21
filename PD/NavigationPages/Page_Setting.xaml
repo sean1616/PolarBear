@@ -1,4 +1,5 @@
-﻿<UserControl x:Name="userControl" x:Class="PD.NavigationPages.Page_Setting"
+﻿<UserControl x:Name="userControl"
+             x:Class="PD.NavigationPages.Page_Setting"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:cusTxtBox="clr-namespace:WpfControlLibrary1;assembly=Customized_TxtBox"
@@ -15,7 +16,7 @@
              Background="White"
              mc:Ignorable="d"
              FontFamily="Segoe Print"
-    xmlns:converters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro">
+             xmlns:converters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro">
 
     <UserControl.Resources>
         <Storyboard x:Key="Setting_Border">
@@ -49,7 +50,7 @@
                                               HorizontalAlignment="Left"
                                               VerticalAlignment="Top"
                                               TextBlock.FontFamily="Segoe Print"
-                                              TextBlock.Foreground="White"/>
+                                              TextBlock.Foreground="White" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="HasDropShadow"
@@ -66,7 +67,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
     </UserControl.Resources>
 
@@ -94,7 +95,7 @@
                 Grid.Column="1"
                 BorderBrush="Black"
                 BorderThickness="0,0,1,0" />
-        
+
         <Grid Grid.Row="0"
               Grid.Column="1"
               Margin="0,5,2,2"
@@ -110,17 +111,47 @@
             </Viewbox>
         </Grid>
 
+        <ScrollViewer VerticalScrollBarVisibility="Hidden"
+                      Grid.Row="1">
+        </ScrollViewer>
+
+        <!--<ScrollViewer x:Name="scrolV"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      Margin="5"
+                      Grid.Row="3"
+                      >
+            <ItemsControl x:Name="itms_DAC_WL"
+                          HorizontalAlignment="Stretch"
+                          ItemsSource="{Binding list_SettingUnitModels}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               txtbox_content="{Binding Name}"
+                                               txtbox_value="{Binding TextBox_Value}"
+                                               ItemSource="{Binding Combox_ItemSource}"
+                                               SelectedIndex="{Binding Combox_SelectedIndex}"
+                                               SelectedItem="{Binding Combox_SelectedItem}"
+                                               ToggleButton_IsChecked="False"
+                                               UC_Type_Select="{Binding UC_Type}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </ScrollViewer>-->
+
+
         <Grid Grid.Column="1"
               Grid.RowSpan="15"
               Grid.Row="1"
               Margin="0,0,1,0">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <Grid>
-                    <StackPanel x:Name="stcPnl_1" Orientation="Vertical" Visibility="Visible">
+                    <StackPanel x:Name="stcPnl_1"
+                                Orientation="Vertical"
+                                Visibility="Collapsed">
+
 
                         <ComboBox Name="ComBox_TLS_WL_Range"
-                                  Grid.Row="1"
-                                  Grid.Column="1"
                                   DropDownClosed="ComBox_TLS_WL_Range_DropDownClosed"
                                   ToolTip="TLS WL Range"
                                   Tag="All"
@@ -161,29 +192,29 @@
                                   Style="{StaticResource style_combobox_black}" />
 
                         <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                                txtbox_content="Read-Cmd Delay"
-                                                FontFamily="Segoe Print"
-                                                border_Background="#FF98DEB5"
-                                                Background="White"
+                                            txtbox_content="Read-Cmd Delay"
+                                            FontFamily="Segoe Print"
+                                            border_Background="#FF98DEB5"
+                                            Background="White"
                                             txtbox_value="{Binding Int_Read_Delay, Mode=TwoWay}" />
                         <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                                txtbox_content="Write-Cmd Delay"
+                                            txtbox_content="Write-Cmd Delay"
                                             FontFamily="Segoe Print"
                                             border_Background="#FF98DEB5"
                                             Background="White"
-                                                txtbox_value="{Binding Int_Write_Delay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            txtbox_value="{Binding Int_Write_Delay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                txtbox_content="Set-WL Delay"
+                                            txtbox_content="Set-WL Delay"
                                             FontFamily="Segoe Print"
                                             border_Background="#FF98DEB5"
                                             Background="White"
-                                                txtbox_value="{Binding Int_Set_WL_Delay, Mode=TwoWay}" />
+                                            txtbox_value="{Binding Int_Set_WL_Delay, Mode=TwoWay}" />
                         <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                txtbox_content="Lambda Scan Delay"
+                                            txtbox_content="Lambda Scan Delay"
                                             FontFamily="Segoe Print"
                                             border_Background="#FF98DEB5"
                                             Background="White"
-                                                txtbox_value="{Binding Int_Lambda_Scan_Delay, Mode=TwoWay}" />
+                                            txtbox_value="{Binding Int_Lambda_Scan_Delay, Mode=TwoWay}" />
                         <wpfuc:Text_ToggleButton Grid.Row="9"
                                                  Grid.Column="1"
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
@@ -232,19 +263,120 @@
                                                  Ischecked="{Binding is_update_chart, Mode=TwoWay}" />
 
                         <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                txtbox_content="IL decimal place"
+                                            txtbox_content="IL decimal place"
                                             FontFamily="Segoe Print"
                                             border_Background="#FF98DEB5"
                                             Background="White"
-                                                txtbox_value="{Binding decimal_place, Mode=TwoWay}" />
+                                            txtbox_value="{Binding decimal_place, Mode=TwoWay}" />
                     </StackPanel>
+
+                    <StackPanel x:Name="stcP_1"
+                                Grid.Row="1">
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               UC_Type_Select="ComboBox"
+                                               Tag="TLS_WL_Range"
+                                               ItemSource="{Binding list_combox_TLS_WL_Range_items}"
+                                               SelectedItem="{Binding selected_band, Mode=TwoWay}"
+                                               txtbox_content="Auto"
+                                               ComBox_DropDownClosed="ComBox_TLS_WL_Range_DropDownClosed" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               UC_Type_Select="ComboBox"
+                                               Tag="Station_Type"
+                                               ComBox_DropDownOpened="ComBox_DropDownOpened"
+                                               ComBox_DropDownClosed="ComBox_DropDownClosed"
+                                               SelectedItem="{Binding station_type, Mode=TwoWay}"
+                                               SelectedIndex="{Binding station_type_No}"
+                                               ItemSource="{Binding list_combox_Working_Table_Type_items}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               UC_Type_Select="ComboBox"
+                                               Tag="Control_Board_Type"
+                                               SelectedIndex="{Binding Control_board_type, Mode=TwoWay}"
+                                               SelectedItem="{Binding Control_board_type_itm, Mode=TwoWay}"
+                                               ItemSource="{Binding list_combox_Control_Board_Type_items}"
+                                               ComBox_DropDownClosed="ComBox_Control_Board_Type_DropDownClosed"
+                                               ComBox_DropDownOpened="ComBox_Control_Board_Type_DropDownOpened" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               UC_Type_Select="ComboBox"
+                                               Tag="Laser_Type"
+                                               SelectedItem="{Binding Laser_type}"
+                                               ItemSource="{Binding list_combox_Laser_Type_items}"
+                                               ComBox_DropDownClosed="ComBox_Laser_Selection_DropDownClosed" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               UC_Type_Select="Text_Textbox"
+                                               Tag="Read_Cmd_Delay"
+                                               txtbox_content="Read Cmd Delay"
+                                               txtbox_value="{Binding Int_Read_Delay, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Write_Cmd_Delay"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="Write Cmd Delay"
+                                               txtbox_value="{Binding Int_Write_Delay, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Set_WL_Delay"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="Set WL Delay"
+                                               txtbox_value="{Binding Int_Set_WL_Delay, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Lambda_Scan_Delay"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="Lambda Scan Delay"
+                                               txtbox_value="{Binding Int_Lambda_Scan_Delay, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="SN_Judge"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="SN Judge"
+                                               ToggleButton_IsChecked="{Binding SN_Judge}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="SN_AutoTab"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="SN Auto Tab"
+                                               ToggleButton_IsChecked="{Binding SN_AutoTab}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="TLS_Filter"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="TLS Filter"
+                                               ToggleButton_IsChecked="{Binding is_TLS_Filter}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="BR_OSA"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="BR OSA"
+                                               ToggleButton_IsChecked="{Binding is_BR_OSA}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Switch_Mode"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="Switch mode"
+                                               ToggleButton_IsChecked="{Binding Is_switch_mode}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Update_Chart"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="Update Chart"
+                                               ToggleButton_IsChecked="{Binding is_update_chart}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="IL_Decimal_Place"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="IL decimal place"
+                                               txtbox_value="{Binding decimal_place, Mode=TwoWay}" />
+
+                    </StackPanel>
+
                 </Grid>
             </ScrollViewer>
         </Grid>
-
-
-
-
 
 
         <!--Column 2-->
@@ -274,7 +406,8 @@
               Margin="0,0,1,0">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <Grid>
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical"
+                                Visibility="Collapsed">
                         <ComboBox Name="ComBox_K_WL_Type"
                                   Grid.Row="7"
                                   Grid.Column="1"
@@ -285,11 +418,16 @@
                                   ItemsSource="{Binding list_combox_K_WL_Type_items}"
                                   Style="{StaticResource style_combobox_black}">
                         </ComboBox>
-                        <cusTxtBox:UserControl1 Grid.Row="4"
+                        <!--<cusTxtBox:UserControl1 Grid.Row="4"
                                                 Grid.Column="1"
                                                 txtbox_content="WL Scan Start"
                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                                txtbox_value="{Binding float_WL_Scan_Start, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                txtbox_value="{Binding float_WL_Scan_Start, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
+
+                        <wpfuc:UserControl_Mix UC_Type_Select="Text_Textbox"
+                                               txtbox_content="WL Scan Start"
+                                               Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               txtbox_value="{Binding float_WL_Scan_Start, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <cusTxtBox:UserControl1 Grid.Row="5"
                                                 Grid.Column="1"
                                                 txtbox_content="WL Scan End"
@@ -330,14 +468,97 @@
                                                  Ischecked="{Binding Is_FastScan_Mode, Mode=TwoWay}" />
 
                         <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                                txtbox_content="OSA Sensitivity"
-                                                txtbox_value="{Binding OSA_Sensitivity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            txtbox_content="OSA Sensitivity"
+                                            txtbox_value="{Binding OSA_Sensitivity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <wpfuc:Text_TextBox Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                                txtbox_content="OSA RBW"
-                                                txtbox_value="{Binding OSA_RBW, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            txtbox_content="OSA RBW"
+                                            txtbox_value="{Binding OSA_RBW, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
 
                     </StackPanel>
+
+                    <StackPanel x:Name="stcP_2">
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               UC_Type_Select="ComboBox"
+                                               Tag="K_WL_Type"
+                                               ItemSource="{Binding list_combox_K_WL_Type_items}"
+                                               SelectedItem="{Binding selected_K_WL_Type, Mode=TwoWay}"
+                                               txtbox_content="Auto"
+                                               ComBox_DropDownClosed="ComBox_K_WL_Type_DropDownClosed" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="WL_Scan_Start"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="WL Scan Start"
+                                               txtbox_value="{Binding float_WL_Scan_Start, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="WL_Scan_End"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="WL Scan End"
+                                               txtbox_value="{Binding float_WL_Scan_End, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="WL_Scan_Gap"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="WL Scan Gap"
+                                               txtbox_value="{Binding float_WL_Scan_Gap, Mode=TwoWay}" />
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="TF_Scan_Gap"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="TF-Scan Gap"
+                                               txtbox_value="{Binding int_rough_scan_gap, Mode=TwoWay}" />
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="TF_Scan_Start"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="TF-Scan Start"
+                                               txtbox_value="{Binding int_rough_scan_start, Mode=TwoWay}" />
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="TF_Scan_End"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="TF-Scan End"
+                                               txtbox_value="{Binding int_rough_scan_stop, Mode=TwoWay}" />
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="V3_Scan_Gap"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="V3-Scan Gap"
+                                               txtbox_value="{Binding int_V3_scan_gap, Mode=TwoWay}" />
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="V3_Scan_Start"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="V3-Scan Start"
+                                               txtbox_value="{Binding int_V3_scan_start, Mode=TwoWay}" />
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="V3_Scan_End"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="V3-Scan End"
+                                               txtbox_value="{Binding int_V3_scan_end, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="K_WL_Manual_Setting"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="Manual Setting"
+                                               ToggleButton_IsChecked="{Binding Is_k_WL_manual_setting}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Fast_Scan_Mode"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="Fast Scan Mode"
+                                               ToggleButton_IsChecked="{Binding Is_FastScan_Mode}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="OSA_Sensitivity"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="OSA Sensitivity"
+                                               txtbox_value="{Binding OSA_Sensitivity, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="OSA_RBW"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="OSA RBW"
+                                               txtbox_value="{Binding OSA_RBW, Mode=TwoWay}" />
+                    </StackPanel>
+
                 </Grid>
             </ScrollViewer>
         </Grid>
@@ -376,7 +597,7 @@
               Margin="0,0,1,0">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <Grid>
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" Visibility="Collapsed">
                         <wpfuc:Text_ToggleButton Grid.Column="3"
                                                  Ischecked="{Binding Auto_Connect_TLS, Mode=TwoWay}"
                                                  FontFamily="Segoe Print"
@@ -483,14 +704,7 @@
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding Auto_Update, Mode=TwoWay}"
                                                  txtbox_content="Auto Update" />
-                        <wpfuc:Text_ToggleButton Grid.Row="11"
-                                                 Grid.Column="3"
-                                                 FontFamily="Segoe Print"
-                                                 border_Background="#FF98DEB5"
-                                                 Background="White"
-                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                                 txtbox_content="Arduino"
-                                                 Ischecked="{Binding IsArduinoOn, Mode=TwoWay}" />
+                      
 
 
 
@@ -501,8 +715,16 @@
                                  VerticalContentAlignment="Center"
                                  ToolTip="Chart Unit"
                                  controls:TextBoxHelper.ClearTextButton="True"
-                                 controls:TextBoxHelper.Watermark="Unit"
-                                 />
+                                 controls:TextBoxHelper.Watermark="Unit" />
+
+                        <wpfuc:Text_ToggleButton Grid.Row="11"
+                                                 Grid.Column="3"
+                                                 FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
+                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                 txtbox_content="Arduino"
+                                                 Ischecked="{Binding IsArduinoOn, Mode=TwoWay}" />
 
                         <ComboBox Name="ComBox_Arduino_Comport"
                                   Grid.Row="12"
@@ -511,6 +733,135 @@
                                   DropDownOpened="ComBox_Arduino_Comport_DropDownOpened"
                                   SelectedItem="{Binding Selected_Arduino_Comport}"
                                   Style="{StaticResource style_combobox_black}" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="stcP_3">
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Auto_Connect_TLS"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="Auto Connect"
+                                               ToggleButton_IsChecked="{Binding Auto_Connect_TLS}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Distributed_System"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="Distributed System"
+                                               ToggleButton_IsChecked="{Binding IsDistributedSystem}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="PD_or_PM"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="PD / PM"
+                                               ToggleButton_IsChecked="{Binding PD_or_PM}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="TLS_TCPIP"
+                                               UC_Type_Select="Text_Only"
+                                               txtbox_value="{Binding TLS_TCPIP}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="TLS_BoardNum"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="TLS BoardNum"
+                                               txtbox_value="{Binding tls_BoardNumber, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="TLS_Address"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="TLS Address"
+                                               txtbox_value="{Binding tls_Addr, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="PM_BoardNum"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="PM BoardNum"
+                                               txtbox_value="{Binding pm_BoardNumber, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="PM_Address"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="PM Address"
+                                               txtbox_value="{Binding pm_Addr, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="PDL_BoardNum"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="PDL BoardNum"
+                                               txtbox_value="{Binding pdl_BoardNumber, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="PDL_Address"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="PDL Address"
+                                               txtbox_value="{Binding pdl_Addr, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="MultiMeter_Address"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="MultiMeter Address"
+                                               txtbox_value="{Binding multiMeter_Addr, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="PM_Slot"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="PM Slot"
+                                               txtbox_value="{Binding PM_slot, Mode=TwoWay}" />
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="PM_AveTime"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="PM AverageTime"
+                                               txtbox_value="{Binding PM_AveTime, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="OSA_BoardNum"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="OSA BoardNum"
+                                               txtbox_value="{Binding OSA_BoardNumber, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="OSA_Address"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="OSA Address"
+                                               txtbox_value="{Binding OSA_Addr, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Channels_Count"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="Channels Count"
+                                               txtbox_value="{Binding ch_count, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="BoudRate"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="Boud Rate"
+                                               txtbox_value="{Binding BoudRate, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Auto_Update"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="Auto Update"
+                                               ToggleButton_IsChecked="{Binding Auto_Update}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Unit_Y"
+                                               UC_Type_Select="Text_Textbox"
+                                               txtbox_content="Unit Y"
+                                               txtbox_value="{Binding Unit_Y, Mode=TwoWay}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Arduino_Mode"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="Arduino Mode"
+                                               ToggleButton_IsChecked="{Binding IsArduinoOn}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               UC_Type_Select="ComboBox"
+                                               Tag="Selected_Arduino_Comport"
+                                               ComBox_DropDownOpened="ComBox_Arduino_Comport_DropDownOpened"
+                                               SelectedItem="{Binding Selected_Arduino_Comport, Mode=TwoWay}" />
+
+
                     </StackPanel>
                 </Grid>
             </ScrollViewer>
@@ -539,7 +890,7 @@
               Margin="0,0,1,0">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <Grid>
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" Visibility="Collapsed">
                         <uc:UC_Setting_Button x:Name="btn_ini"
                                               Grid.Row="1"
                                               txtbox_content="Open ini"
@@ -597,7 +948,7 @@
                                  ToolTip="Update Path"
                                  controls:TextBoxHelper.ClearTextButton="True"
                                  controls:TextBoxHelper.Watermark="Update Path"
-                                 FontFamily="Segoe Print" >
+                                 FontFamily="Segoe Print">
                         </TextBox>
 
                         <TextBox Name="txt_Chamber_Status_Path"
@@ -608,7 +959,7 @@
                                  ToolTip="Chamber Status Path"
                                  controls:TextBoxHelper.ClearTextButton="True"
                                  controls:TextBoxHelper.Watermark="Chamber Status Path"
-                                 FontFamily="Segoe Print" >
+                                 FontFamily="Segoe Print">
                         </TextBox>
 
                         <TextBox Name="txt_equipment_setting_Path"
@@ -629,8 +980,7 @@
                                  ToolTip="Calibration Csv Path"
                                  controls:TextBoxHelper.ClearTextButton="True"
                                  controls:TextBoxHelper.Watermark="Calibration Csv Path"
-                                 FontFamily="{Binding FontFamily, ElementName=userControl}"
-                                 />
+                                 FontFamily="{Binding FontFamily, ElementName=userControl}" />
 
                         <TextBox Name="txt_BR_save_Path"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
@@ -640,8 +990,7 @@
                                  ToolTip="BR Save Path"
                                  controls:TextBoxHelper.ClearTextButton="True"
                                  controls:TextBoxHelper.Watermark="BR Save Path"
-                                 FontFamily="{Binding FontFamily, ElementName=userControl}"
-                                 />
+                                 FontFamily="{Binding FontFamily, ElementName=userControl}" />
 
                         <TextBox Name="txt_Server_IP"
                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
@@ -663,7 +1012,7 @@
                                  controls:TextBoxHelper.Watermark="Station ID"
                                  FontFamily="Segoe Print" />
 
-                        <Image Name="Img_gif"
+                        <Image Name="Img_gif_2"
                                Grid.Row="9"
                                Grid.RowSpan="4"
                                Grid.Column="4"
@@ -676,6 +1025,98 @@
                                PreviewMouseRightButtonDown="Img_gif_MouseRightButtonDown" />
                         <Image Loaded="Img_gif_Loaded" />
                     </StackPanel>
+
+                    <StackPanel>
+                        
+                        <StackPanel x:Name="stcP_4">
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Open_ini"
+                                               UC_Type_Select="Text_Button"
+                                               txtbox_content="Open ini"
+                                               Text_Button_Click="BTN_INI_CLICK" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Comport_Setting"
+                                               UC_Type_Select="Text_Button"
+                                               txtbox_content="Comport Setting"
+                                               Text_Button_Click="BTN_SETTING_WINDOW_CLICK" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Board_Table_Path"
+                                               UC_Type_Select="Text_Only"
+                                               ToolTip="Board Table Path"
+                                               txtbox_value="{Binding txt_board_table_path}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Hermetic_Data_Path"
+                                               UC_Type_Select="Text_Only"
+                                               ToolTip="Hermetic Data Path"
+                                               txtbox_value="{Binding txt_save_wl_data_path}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="TF2_Data_Path"
+                                               UC_Type_Select="Text_Only"
+                                               ToolTip="TF2 Data Path"
+                                               txtbox_value="{Binding txt_save_TF2_wl_data_path}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Auto_Update_Path"
+                                               UC_Type_Select="Text_Only"
+                                               ToolTip="Auto_Update_Path"
+                                               txtbox_value="{Binding txt_Auto_Update_Path}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Chamber_Status_Path"
+                                               UC_Type_Select="Text_Only"
+                                               ToolTip="Chamber Status Path"
+                                               txtbox_value="{Binding txt_Chamber_Status_Path}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Comport_Setting_Path"
+                                               UC_Type_Select="Text_Only"
+                                               ToolTip="Comport Setting Path"
+                                               txtbox_value="{Binding txt_Equip_Setting_Path}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Calibration_Csv_Path"
+                                               UC_Type_Select="Text_Only"
+                                               ToolTip="Calibration Csv Path"
+                                               txtbox_value="{Binding txt_Calibration_Csv_Path}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="BR_Save_Path"
+                                               UC_Type_Select="Text_Only"
+                                               ToolTip="BR Save Path"
+                                               txtbox_value="{Binding txt_BR_Save_Path}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="SQL_Server_IP"
+                                               UC_Type_Select="Text_Only"
+                                               ToolTip="SQL Server IP"
+                                               txtbox_value="{Binding Server_IP}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Station_ID"
+                                               UC_Type_Select="Text_Only"
+                                               ToolTip="Station_ID"
+                                               txtbox_value="{Binding Station_ID}" />
+
+                       
+                    </StackPanel>
+                        <Image Name="Img_gif"
+                                   Grid.Row="9"
+                                   Grid.RowSpan="4"
+                                   Grid.Column="4"
+                                   gif:ImageBehavior.AnimatedSource="../Resources/byby_1.gif"
+                                   gif:ImageBehavior.AutoStart="False"
+                                   MouseEnter="Img_gif_MouseEnter"
+                                   MouseLeave="Img_gif_MouseLeave"
+                                   Opacity="0.05"
+                                   PreviewMouseLeftButtonDown="Img_gif_MouseLeftButtonDown"
+                                   PreviewMouseRightButtonDown="Img_gif_MouseRightButtonDown" />
+                        <Image Loaded="Img_gif_Loaded" />
+                    </StackPanel>
+
                 </Grid>
             </ScrollViewer>
         </Grid>
@@ -684,7 +1125,7 @@
         <ComboBox Name="ComBox_Cell_Base"
                   Grid.Row="0"
                   Grid.Column="0"
-                  Visibility="Hidden"/>
+                  Visibility="Hidden" />
 
 
         <!--<Image Grid.Row="8"

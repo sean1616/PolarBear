@@ -2104,6 +2104,8 @@ namespace PD.Functions
         {
             try
             {
+                if (vm.station_type == ComViewModel.StationTypes.BR && vm.is_BR_OSA) return;
+
                 switch (vm.Laser_type)
                 {
                     case "Agilent":
@@ -4136,6 +4138,8 @@ namespace PD.Functions
             }
 
             nowChartModel.list_BR_Model = new ObservableCollection<BR_Model>(vm.ChartNowModel.list_BR_Model);
+
+            nowChartModel.list_Annotation = new List<OxyPlot.Annotations.Annotation>(vm.ChartNowModel.list_Annotation);
 
             vm.list_ChartModels.Add(nowChartModel);
 

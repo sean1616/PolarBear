@@ -264,6 +264,18 @@ namespace PD.Models
         #endregion
 
         #region BR para
+
+        private List<OxyPlot.Annotations.Annotation> _list_Annotation = new List<OxyPlot.Annotations.Annotation>();
+        public List<OxyPlot.Annotations.Annotation> list_Annotation
+        {
+            get { return _list_Annotation; }
+            set
+            {
+                _list_Annotation = value;
+                OnPropertyChanged_Normal("list_Annotation");
+            }
+        }
+
         private ObservableCollection<BR_Model> _list_BR_Model = new ObservableCollection<BR_Model>() { new BR_Model() { Set_WL = "1548.5", BR_WL = "1558", BR = "-50" } };
         public ObservableCollection<BR_Model> list_BR_Model
         {
