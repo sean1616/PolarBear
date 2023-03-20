@@ -85,8 +85,6 @@ namespace PD
             grid_process_schedule.DataContext = vm.msgModel;
 
             Initializing();
-
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
