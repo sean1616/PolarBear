@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using PD;
 
 namespace PD.NavigationPages
 {
@@ -68,6 +69,8 @@ namespace PD.NavigationPages
             //timer_UI.Interval = 100;
             //timer_UI.Elapsed += Timer_UI_Elapsed;
             //timer_UI.Start();            
+
+            //((App)Application.Current).mainWindow.Show();
         }
 
         

@@ -38,6 +38,9 @@ namespace PD.NavigationPages
         bool _isDrag = false;
         Analysis anly;
 
+        bool isRightMouseinPlot = false;
+        bool _is_txtWL_already_click = false;
+
         //readonly public System.Windows.Media.Animation.Storyboard sb_bear_shake;
         //readonly public System.Windows.Media.Animation.Storyboard sb_bear_reset;
 
@@ -48,11 +51,10 @@ namespace PD.NavigationPages
         {
             InitializeComponent();
 
+            this.vm = vm;
             this.DataContext = vm;
 
-            this.vm = vm;
-
-            cmd = new ControlCmd(this.vm);
+            cmd = new ControlCmd(vm);
 
             grid_bear_say.DataContext = vm;
             viewer.DataContext = vm;  //將DataContext指給使用者控制項，必要!
@@ -88,7 +90,8 @@ namespace PD.NavigationPages
             vm.PlotViewModel_TF2 = new PlotModel();
             vm.PlotViewModel_UTF600 = new PlotModel();
             vm.PlotViewModel_BR = vm.PlotViewModel;
-            vm.PlotViewModel.LegendPlacement = LegendPlacement.Outside;
+            vm.PlotViewModel.IsLegendVisible = false;
+            //vm.PlotViewModel.LegendPlacement = LegendPlacement.Outside;
 
             vm.Update_ALL_PlotView();
 
@@ -116,7 +119,7 @@ namespace PD.NavigationPages
             vm.PlotViewModel.LegendPlacement = LegendPlacement.Inside;
         }
 
-
+        
         private void MainPlotView_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (e.RightButton == MouseButtonState.Released)
@@ -125,7 +128,6 @@ namespace PD.NavigationPages
             }
         }
 
-        bool isRightMouseinPlot = false;
         private void MainPlotView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!vm.PlotViewModel.Axes[0].Title.Contains("Wavelength") && !vm.PlotViewModel.Axes[0].Title.Contains("nm")) return;
@@ -453,7 +455,6 @@ namespace PD.NavigationPages
             _slider.Value = Math.Round(percentOfpoint * (_slider.Maximum - _slider.Minimum) + _slider.Minimum, 2);
         }
 
-        bool _is_txtWL_already_click = false;
 
         private async void txt_Dac_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -2091,7 +2092,7 @@ namespace PD.NavigationPages
             }
         }
 
-        private async void ComBox_BR_Para_List_DropDownClosed(object sender, EventArgs e)
+        private void ComBox_BR_Para_List_DropDownClosed(object sender, EventArgs e)
         {
             var obj = sender as ComboBox;
 
@@ -2108,12 +2109,12 @@ namespace PD.NavigationPages
                 string[] list_s = key.Value.Split(',');
                 vm.list_BR_DAC_WL = new ObservableCollection<string>(list_s);
 
-                //await cmd.Save_Chart();
-
                 cmd.Reset_Chart(vm.list_BR_DAC_WL.ToList());
 
                 vm.PlotViewModel.Annotations.Clear();
                 vm.ChartNowModel.list_BR_Model.Clear();
+
+                vm.WL_Special_List.Clear();
 
                 for (int i = 0; i < vm.Plot_Series.Count; i++)
                 {
@@ -2211,7 +2212,7 @@ namespace PD.NavigationPages
         }
 
         bool _is_OSA_WL_Working = false;
-        private async void UC_OSA_WL_Button_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private async void UC_BR_WL_Button_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             UC_OSA_WL_Button obj = sender as UC_OSA_WL_Button;
 
@@ -2230,6 +2231,7 @@ namespace PD.NavigationPages
                 #region Initial setting
 
                 vm.IsGoOn = false;
+                vm.isStop = false;
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
                 var elapsedMs = watch.ElapsedMilliseconds;
@@ -2295,7 +2297,15 @@ namespace PD.NavigationPages
                     }
                 }
                 else
+                {
                     vm.Str_Command = $"WL {WL}";
+                    vm.Save_Log(new LogMember()
+                    {
+                        Status = "BR Set Dac",
+                        Message = $"Set Board WL : {WL}",
+                        Result = "No UFA Dac Para"
+                    });
+                }
 
                 await cmd.Write_Cmd(vm.Str_Command, true);
 
@@ -2304,11 +2314,31 @@ namespace PD.NavigationPages
                 vm.Str_cmd_read = $"WL : {WL}";
 
                 List<DataPoint> list_WL_IL = new List<DataPoint>();
+                LineSeries ls = vm.Plot_Series.Where(L => L.Title == WL.ToString()).FirstOrDefault();
 
-                if(vm.is_BR_OSA)
+                if (vm.is_BR_OSA)
                 {
                     //Call OSA scan and show Data function (one lineseries)
                     list_WL_IL = await Task.Run(() => cmd.OSA_Scan());
+
+                    #region Show Datapoints on UI
+
+                    foreach (DataPoint dp in list_WL_IL)
+                    {
+                        double ref_value = 0;
+
+                        if (vm.dB_or_dBm && vm.is_BR_OSA)
+                        {
+                            RefModel rm = vm.Ref_memberDatas.Where(r => r.Wavelength == dp.X).FirstOrDefault();
+
+                            if (rm != null)
+                                ref_value = rm.Ch_1;
+                        }
+
+                        if (ls != null)
+                            ls.Points.Add(new DataPoint(dp.X, dp.Y - vm.BR_Diff - ref_value));
+                    }
+                    #endregion
                 }
                 //TLS mode
                 else
@@ -2317,7 +2347,34 @@ namespace PD.NavigationPages
 
                     #region Build scan wl list
                     vm.wl_list.Clear();
-                    vm.wl_list = vm.WL_Special_List.Select(w => Convert.ToDouble(w)).ToList();
+
+                    if (vm.WL_Special_List.Count > 0)
+                        vm.wl_list = vm.WL_Special_List.Select(w => Convert.ToDouble(w)).ToList();
+                    else
+                    {
+                        if (vm.float_WL_Scan_End >= vm.float_WL_Scan_Start)
+                        {
+                            for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
+                            {
+                                vm.wl_list.Add(Math.Round(wl, 2));
+                            }
+                        }
+                        else
+                        {
+                            for (double wl = vm.float_WL_Scan_Start; wl >= vm.float_WL_Scan_End; wl = wl - vm.float_WL_Scan_Gap)
+                            {
+                                vm.wl_list.Add(Math.Round(wl, 2));
+                            }
+                        }
+                    }
+
+                    vm.Save_Log(new LogMember()
+                    {
+                        Status = "BR WL Scan",
+                        Message = $"WL : {WL}",
+                        Result = $"Scan points : {vm.wl_list.Count}"
+                    });
+
                     #endregion
 
                     foreach (double wl in vm.wl_list)
@@ -2333,6 +2390,7 @@ namespace PD.NavigationPages
                             await Task.Delay(vm.Int_Set_WL_Delay);
 
                         vm.Double_Laser_Wavelength = wl;
+                        vm.Str_cmd_read = $"WL : {wl}";
 
                         for (int ch = 0; ch < vm.ch_count; ch++)
                         {
@@ -2346,31 +2404,21 @@ namespace PD.NavigationPages
                             list_WL_IL.Add(new DataPoint(vm.Double_Laser_Wavelength, vm.Double_Powers[ch]));
                         }
 
+
                         //更新圖表
-                        #region Set Chart data points   
+                        #region Set Chart data points  
+
+                        double ref_value = 0;
+
+                        DataPoint dp = list_WL_IL.Last();
+
+                        if (ls != null)
+                            ls.Points.Add(new DataPoint(dp.X, dp.Y - vm.BR_Diff - ref_value));
 
                         vm.Update_ALL_PlotView();
 
                         #endregion
                     }
-                }
-
-                LineSeries ls = vm.Plot_Series.Where(L => L.Title == WL.ToString()).FirstOrDefault();
-
-                foreach (DataPoint dp in list_WL_IL)
-                {
-                    double ref_value = 0;
-
-                    if(vm.dB_or_dBm && vm.is_BR_OSA)
-                    {
-                        RefModel rm = vm.Ref_memberDatas.Where(r => r.Wavelength == dp.X).FirstOrDefault();
-
-                        if (rm != null)
-                            ref_value = rm.Ch_1;
-                    }
-
-                    if (ls != null)
-                        ls.Points.Add(new DataPoint(dp.X, dp.Y - vm.BR_Diff - ref_value));
                 }
 
                 //Calculate BR and it's wl peak position

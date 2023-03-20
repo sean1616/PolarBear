@@ -13,10 +13,11 @@
              xmlns:wpfuc="clr-namespace:Wpf_Control_Library;assembly=Wpf_Control_Library"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              d:DesignHeight="1080"
-             d:DesignWidth="1920"             
-             Background="Transparent"   
+             d:DesignWidth="1920"
+             Background="Transparent"
              Style="{StaticResource UCAll}"
              Loaded="UserControl_Loaded"
+             FontWeight="Bold"
              mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -62,10 +63,11 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="3.6*" />
-            <RowDefinition Name="grid_second_rowdefinition" Height="*"/>
+            <RowDefinition Name="grid_second_rowdefinition"
+                           Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" >
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -84,15 +86,15 @@
         <Grid Background="White">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*" />
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <oxy:Plot x:Name="Plot_Chart"
+            <!--<oxy:Plot x:Name="Plot_Chart"
                       Title="Power"
                       Grid.Column="2"
-                      Grid.ColumnSpan="3"      
+                      Grid.ColumnSpan="3"
                       Margin="5,5,25,5"
                       Visibility="Visible"
                       FontFamily="Segoe Print">
@@ -103,7 +105,7 @@
                                     Position="Left" />
                 </oxy:Plot.Axes>
                 <oxy:Plot.Series>
-                    <oxy:LineSeries Name="No1"                                    
+                    <oxy:LineSeries Name="No1"
                                     Title="{Binding list_ch_title[0], FallbackValue=ch1}"
                                     ItemsSource="{Binding Chart_DataPoints, Mode=OneWay}"
                                     Visibility="{Binding LineSeries_Visible[0]}"
@@ -144,333 +146,582 @@
                                     Visibility="{Binding LineSeries_Visible[7]}"
                                     Color="Chocolate" />
                 </oxy:Plot.Series>
-            </oxy:Plot>
+            </oxy:Plot>-->
+
+            <!--Chart for Testing Mode-->
+            <oxy:PlotView x:Name="mainPlotView"
+                          Model="{Binding PlotViewModel_TF2, Mode=OneWay}"
+                          Background="White"
+                          BorderBrush="Black"
+                          Grid.Column="2"
+                          Grid.ColumnSpan="3"
+                          Margin="5,5,25,5"
+                          FontFamily="Segoe Print" />
         </Grid>
 
         <!--GaugeChart_visible-->
         <!--Optical Result for Testing Mode-->
         <Grid Visibility="Visible">
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="0.5*"/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.ColumnSpan="2" Grid.RowSpan="2" >
+            <Grid Grid.ColumnSpan="2"
+                  Grid.RowSpan="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition Height="9*"/>
+                    <RowDefinition />
+                    <RowDefinition Height="9*" />
                 </Grid.RowDefinitions>
 
-                <TextBox Text="{Binding opModel_1.SN, FallbackValue=SN, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                         BorderBrush="#FF6A6A6A" Margin="20,25,20,0"  Style="{StaticResource style_SN_txtbox_v2}" TextChanged="TextBox_SN_TextChanged"
-                        FontSize="18" FontFamily="Segoe Print"/>
+                <TextBox Text="{Binding opModel_1.SN, FallbackValue=SN, UpdateSourceTrigger=PropertyChanged}"
+                         HorizontalContentAlignment="Center"
+                         VerticalContentAlignment="Center"
+                         BorderBrush="#FF6A6A6A"
+                         Margin="20,25,20,0"
+                         Style="{StaticResource style_SN_txtbox_v2}"
+                         TextChanged="TextBox_SN_TextChanged"
+                         FontSize="18"
+                         FontFamily="Segoe Print" />
 
 
-                <Grid Grid.Column="0"   Margin="20,20,20,20" Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Row="1">
+                <Grid Grid.Column="0"
+                      Margin="20,20,20,20"
+                      Grid.ColumnSpan="2"
+                      Grid.RowSpan="2"
+                      Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
                         <RowDefinition />
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition Height="0.3*"/>
-                        <RowDefinition/>
-                        <RowDefinition Height="0.3*"/>
-                        <RowDefinition/>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition Height="0.3*" />
+                        <RowDefinition />
+                        <RowDefinition Height="0.3*" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Border Grid.ColumnSpan="5" Grid.RowSpan="10" BorderBrush="#FFD6D6D6" BorderThickness="1" CornerRadius="12"/>
-                    <Border Grid.ColumnSpan="5" CornerRadius="12,12,0,0" Background="#FF1FCCD4"/>
-                    <Border Grid.ColumnSpan="5" Background="#FF1FCCD4" Grid.Row="5"  CornerRadius="12,12,0,0"/>
+                    <Border Grid.ColumnSpan="5"
+                            Grid.RowSpan="10"
+                            BorderBrush="#FFD6D6D6"
+                            BorderThickness="1"
+                            CornerRadius="12" />
+                    <Border Grid.ColumnSpan="5"
+                            CornerRadius="12,12,0,0"
+                            Background="#FF1FCCD4" />
+                    <Border Grid.ColumnSpan="5"
+                            Background="#FF1FCCD4"
+                            Grid.Row="5" />
 
                     <TextBlock Text="WL T"
-                            FontFamily="Segoe Print"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
                                Foreground="White"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
                     <TextBlock Text="CWL"
-                           Grid.Column="1"
-                                Foreground="White"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Grid.Row="0" />
+                               Grid.Column="1"
+                               FontSize="15"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Grid.Row="0" />
                     <TextBlock Text="IL"
-                           Grid.Column="2"
-                           FontFamily="Segoe Print"
-                                Foreground="White"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Grid.Row="0" />
+                               FontSize="15"
+                               Grid.Column="2"
+                               FontFamily="Segoe Print"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Grid.Row="0" />
                     <TextBlock Text="PDL"
-                           Grid.Column="3"
-                           FontFamily="Segoe Print"
-                                Foreground="White"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Grid.Row="0" />
+                               FontSize="15"
+                               Grid.Column="3"
+                               FontFamily="Segoe Print"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Grid.Row="0" />
                     <TextBlock Text="Mic."
-                           Grid.Column="4"
-                           FontFamily="Segoe Print"
-                                Foreground="White"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Grid.Row="0" />
+                               Grid.Column="4"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Grid.Row="0" />
 
-                    <Button Style="{DynamicResource style_BearBtn}" Tag="1" Margin="7" Grid.Row="1"
-                            Content="{Binding opModel_1.WL_Setting_1}"  Click="Button_WL_Click"/>
-                    <Button Style="{DynamicResource style_BearBtn}" Tag="2" Margin="7"
-                            Content="{Binding opModel_1.WL_Setting_2}" Grid.Row="2" Click="Button_WL_Click"/>
-                    <Button Style="{DynamicResource style_BearBtn}" Tag="3" Margin="7"
-                            Content="{Binding opModel_1.WL_Setting_3}" Grid.Row="3" Click="Button_WL_Click"/>
-                    <Button Style="{DynamicResource style_BearBtn}" Tag="4" Margin="7"
-                            Content="   ?   nm" Grid.Row="4" Click="Button_WL_Click"/>
+                    <Button Style="{DynamicResource style_BearBtn}"
+                            Tag="1"
+                            Margin="7"
+                            Grid.Row="1"
+                            Content="{Binding opModel_1.WL_Setting_1}"
+                            Click="Button_WL_Click" />
+                    <Button Style="{DynamicResource style_BearBtn}"
+                            Tag="2"
+                            Margin="7"
+                            Content="{Binding opModel_1.WL_Setting_2}"
+                            Grid.Row="2"
+                            Click="Button_WL_Click" />
+                    <Button Style="{DynamicResource style_BearBtn}"
+                            Tag="3"
+                            Margin="7"
+                            Content="{Binding opModel_1.WL_Setting_3}"
+                            Grid.Row="3"
+                            Click="Button_WL_Click" />
+                    <Button Style="{DynamicResource style_BearBtn}"
+                            Tag="4"
+                            Margin="7"
+                            Content="   ?   nm"
+                            Grid.Row="4"
+                            Click="Button_WL_Click" />
 
                     <!--#region WL 1 OP-->
-                    <TextBlock 
-                           Grid.Row="1"
-                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_CWL, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="1"
-                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_IL, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="1"
+                               HorizontalAlignment="Center"
+                               FontSize="15"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_1_CWL, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="2"
+                               HorizontalAlignment="Center"
+                               FontSize="15"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_1_IL, Mode=TwoWay}" />
                     <!--<TextBlock 
                            Grid.Row="1"
                            Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_PDL, Mode=TwoWay}" />-->
-                    <Button Style="{DynamicResource style_BearBtn_FixFont}" Tag="1" Margin="7" 
-                            Content="{Binding opModel_1.WL_1_PDL, Mode=TwoWay}" Grid.Row="1" Grid.Column="3" Click="Button_PDL_Click"/>
-                    <TextBox Grid.Row="1" Grid.Column="4"  FontFamily="Segoe Print"  VerticalContentAlignment="Center"
+                    <Button Style="{DynamicResource style_BearBtn_FixFont}"
+                            Tag="1"
+                            Margin="7"
+                            Content="{Binding opModel_1.WL_1_PDL, Mode=TwoWay}"
+                            Grid.Row="1"
+                            FontSize="15"
+                            Grid.Column="3"
+                            Click="Button_PDL_Click" />
+                    <TextBox Grid.Row="1"
+                             Grid.Column="4"
+                             FontSize="15"
+                             FontFamily="Segoe Print"
+                             VerticalContentAlignment="Center"
                              HorizontalContentAlignment="Center"
-                               Text="{Binding opModel_1.WL_1_Mic,Mode=TwoWay}" />
+                             Text="{Binding opModel_1.WL_1_Mic,Mode=TwoWay}" />
                     <!--#endregion-->
 
                     <!--#region WL 2 OP-->
-                    <TextBlock 
-                           Grid.Row="2"
-                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_CWL, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="2"
-                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_IL, Mode=TwoWay}" />
-                    <Button Style="{DynamicResource style_BearBtn_FixFont}" Tag="2" Margin="7" 
-                            Content="{Binding opModel_1.WL_2_PDL, Mode=TwoWay}" Grid.Row="2" Grid.Column="3" Click="Button_PDL_Click"/>
-                    <TextBox Grid.Row="2" Grid.Column="4"  FontFamily="Segoe Print"  VerticalContentAlignment="Center"
+                    <TextBlock Grid.Row="2"
+                               Grid.Column="1"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_2_CWL, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="2"
+                               Grid.Column="2"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_2_IL, Mode=TwoWay}" />
+                    <Button Style="{DynamicResource style_BearBtn_FixFont}"
+                            Tag="2"
+                            FontSize="15"
+                            Margin="7"
+                            Content="{Binding opModel_1.WL_2_PDL, Mode=TwoWay}"
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            Click="Button_PDL_Click" />
+                    <TextBox Grid.Row="2"
+                             Grid.Column="4"
+                             FontSize="15"
+                             FontFamily="Segoe Print"
+                             VerticalContentAlignment="Center"
                              HorizontalContentAlignment="Center"
-                               Text="{Binding opModel_1.WL_2_Mic,Mode=TwoWay}" />
+                             Text="{Binding opModel_1.WL_2_Mic,Mode=TwoWay}" />
                     <!--#endregion-->
 
                     <!--#region WL 3 OP-->
-                    <TextBlock 
-                           Grid.Row="3"
-                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_CWL, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="3"
-                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_IL, Mode=TwoWay}" />
-                    <Button Style="{DynamicResource style_BearBtn_FixFont}" Tag="3" Margin="7" 
-                            Content="{Binding opModel_1.WL_3_PDL, Mode=TwoWay}" Grid.Row="3" Grid.Column="3" Click="Button_PDL_Click"/>
+                    <TextBlock Grid.Row="3"
+                               Grid.Column="1"
+                               HorizontalAlignment="Center"
+                               FontSize="15"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_3_CWL, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="3"
+                               Grid.Column="2"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_3_IL, Mode=TwoWay}" />
+                    <Button Style="{DynamicResource style_BearBtn_FixFont}"
+                            Tag="3"
+                            Margin="7"
+                            Content="{Binding opModel_1.WL_3_PDL, Mode=TwoWay}"
+                            Grid.Row="3"
+                            FontSize="15"
+                            Grid.Column="3"
+                            Click="Button_PDL_Click" />
 
-                    <TextBox Grid.Row="3" Grid.Column="4"  FontFamily="Segoe Print"  VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="3"
+                             Grid.Column="4"
+                             FontSize="15"
+                             FontFamily="Segoe Print"
+                             VerticalContentAlignment="Center"
                              HorizontalContentAlignment="Center"
-                               Text="{Binding opModel_1.WL_3_Mic,Mode=TwoWay}" />
+                             Text="{Binding opModel_1.WL_3_Mic,Mode=TwoWay}" />
                     <!--#endregion-->
 
                     <!--#region WL 4 OP-->
-                    <TextBlock 
-                           Grid.Row="4"
-                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_CWL, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="4"
-                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_IL, Mode=TwoWay}" />
-                    <Button Style="{DynamicResource style_BearBtn_FixFont}" Tag="4" Margin="7" 
-                            Content="{Binding opModel_1.WL_4_PDL, Mode=TwoWay}" Grid.Row="4" Grid.Column="3" Click="Button_PDL_Click"/>
+                    <TextBlock Grid.Row="4"
+                               Grid.Column="1"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_4_CWL, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="4"
+                               Grid.Column="2"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_4_IL, Mode=TwoWay}" />
+                    <Button Style="{DynamicResource style_BearBtn_FixFont}"
+                            Tag="4"
+                            Margin="7"
+                            Content="{Binding opModel_1.WL_4_PDL, Mode=TwoWay}"
+                            FontSize="15"
+                            Grid.Row="4"
+                            Grid.Column="3"
+                            Click="Button_PDL_Click" />
 
-                    <TextBox Grid.Row="4" Grid.Column="4" FontFamily="Segoe Print"  VerticalContentAlignment="Center"
+                    <TextBox Grid.Row="4"
+                             Grid.Column="4"
+                             FontSize="15"
+                             FontFamily="Segoe Print"
+                             VerticalContentAlignment="Center"
                              HorizontalContentAlignment="Center"
-                               Text="{Binding opModel_1.WL_4_Mic,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                             Text="{Binding opModel_1.WL_4_Mic,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <!--#endregion-->
 
 
                     <!--Title-->
                     <!--#region Title-->
                     <TextBlock Text="WL T"
-                            FontFamily="Segoe Print"
+                               FontFamily="Segoe Print"
                                Foreground="White"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" Grid.Row="5"/>
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="15"
+                               Grid.Row="5" />
                     <TextBlock Text="CWL"
-                           Grid.Column="1"
-                           FontFamily="Segoe Print"
-                                Foreground="White"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Grid.Row="5" />
-                    <Grid Grid.Row="5" Grid.Column="2">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBox Text="{Binding opModel_1.BW_Setting_1, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print" Background="#FF1FCCD4" Foreground="White"/>
-                            <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" Foreground="White"/>
+                               Grid.Column="1"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Grid.Row="5" />
+                    <Grid Grid.Row="5"
+                          Grid.Column="2">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <TextBox Text="{Binding opModel_1.BW_Setting_1, Mode=TwoWay}"
+                                     VerticalAlignment="Center"
+                                     BorderBrush="Transparent"
+                                     FontSize="15"
+                                     FontFamily="Segoe Print"
+                                     Background="#FF1FCCD4"
+                                     Foreground="White" />
+                            <TextBlock Text="BW"
+                                       VerticalAlignment="Center"
+                                       FontSize="15"
+                                       FontFamily="Segoe Print"
+                                       Foreground="White" />
                         </StackPanel>
                     </Grid>
-                    <Grid Grid.Row="5" Grid.Column="3">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBox Text="{Binding opModel_1.BW_Setting_2, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print" Background="#FF1FCCD4" Foreground="White"/>
-                            <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" Foreground="White"/>
+                    <Grid Grid.Row="5"
+                          Grid.Column="3">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <TextBox Text="{Binding opModel_1.BW_Setting_2, Mode=TwoWay}"
+                                     VerticalAlignment="Center"
+                                     BorderBrush="Transparent"
+                           FontSize="15"
+                                     FontFamily="Segoe Print"
+                                     Background="#FF1FCCD4"
+                                     Foreground="White" />
+                            <TextBlock Text="BW"
+                                       VerticalAlignment="Center"
+                                       FontSize="15"
+                                       FontFamily="Segoe Print"
+                                       Foreground="White" />
                         </StackPanel>
                     </Grid>
-                    <Grid Grid.Row="5" Grid.Column="4">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBox Text="{Binding opModel_1.BW_Setting_3, Mode=TwoWay}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print" Background="#FF1FCCD4" Foreground="White"/>
-                            <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" Foreground="White"/>
+                    <Grid Grid.Row="5"
+                          Grid.Column="4">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <TextBox Text="{Binding opModel_1.BW_Setting_3, Mode=TwoWay}"
+                                     VerticalAlignment="Center"
+                                     BorderBrush="Transparent"
+                                     FontSize="15"
+                                     FontFamily="Segoe Print"
+                                     Background="#FF1FCCD4"
+                                     Foreground="White" />
+                            <TextBlock Text="BW"
+                                       VerticalAlignment="Center"
+                                       FontSize="15"
+                                       FontFamily="Segoe Print"
+                                       Foreground="White" />
                         </StackPanel>
                     </Grid>
                     <!--#endregion-->
 
                     <!--#region WL button-->
-                    <Button Style="{DynamicResource style_BearBtn}" Tag="1" Margin="7"
-                            Content="{Binding opModel_1.WL_Setting_1}" Grid.Row="6" Click="Button_WL_Click"/>
-                    <Button Style="{DynamicResource style_BearBtn}" Tag="2" Margin="7"
-                            Content="{Binding opModel_1.WL_Setting_2}" Grid.Row="7" Click="Button_WL_Click"/>
-                    <Button Style="{DynamicResource style_BearBtn}" Tag="3" Margin="7"
-                            Content="{Binding opModel_1.WL_Setting_3}" Grid.Row="8" Click="Button_WL_Click"/>
-                    <Button Style="{DynamicResource style_BearBtn}" Tag="4" Margin="7"
-                            Content="   ?   nm" Grid.Row="9" Click="Button_WL_Click"/>
+                    <Button Style="{DynamicResource style_BearBtn}"
+                            Tag="1"
+                            Margin="7"
+                            Content="{Binding opModel_1.WL_Setting_1}"
+                            Grid.Row="6"
+                            Click="Button_WL_Click" />
+                    <Button Style="{DynamicResource style_BearBtn}"
+                            Tag="2"
+                            Margin="7"
+                            Content="{Binding opModel_1.WL_Setting_2}"
+                            Grid.Row="7"
+                            Click="Button_WL_Click" />
+                    <Button Style="{DynamicResource style_BearBtn}"
+                            Tag="3"
+                            Margin="7"
+                            Content="{Binding opModel_1.WL_Setting_3}"
+                            Grid.Row="8"
+                            Click="Button_WL_Click" />
+                    <Button Style="{DynamicResource style_BearBtn}"
+                            Tag="4"
+                            Margin="7"
+                            Content="   ?   nm"
+                            Grid.Row="9"
+                            Click="Button_WL_Click" />
                     <!--#endregion-->
 
                     <!--#region WL 1 BW-->
-                    <TextBlock 
-                           Grid.Row="6"
-                           FontFamily="Segoe Print"
-                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_CWL, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="6"
-                           FontFamily="Segoe Print"
-                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_BW_1, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="6"
-                           FontFamily="Segoe Print"
-                           Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_BW_2, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="6"
-                           FontFamily="Segoe Print"
-                           Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_1_BW_3, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="6"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Grid.Column="1"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_1_CWL, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="6"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Grid.Column="2"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_1_BW_1, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="6"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Grid.Column="3"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_1_BW_2, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="6"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Grid.Column="4"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_1_BW_3, Mode=TwoWay}" />
                     <!--#endregion-->
 
                     <!--#region WL 2 BW-->
-                    <TextBlock 
-                           Grid.Row="7"
-                           FontFamily="Segoe Print"
-                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_CWL, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="7"
-                           FontFamily="Segoe Print"
-                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_BW_1, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="7"
-                           FontFamily="Segoe Print"
-                           Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_BW_2, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="7"
-                           FontFamily="Segoe Print"
-                           Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_2_BW_3, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="7"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Grid.Column="1"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_2_CWL, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="7"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Grid.Column="2"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_2_BW_1, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="7"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Grid.Column="3"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_2_BW_2, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="7"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Grid.Column="4"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_2_BW_3, Mode=TwoWay}" />
                     <!--#endregion-->
 
                     <!--#region WL 3 BW-->
-                    <TextBlock 
-                           Grid.Row="8"
-                           FontFamily="Segoe Print"
-                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_CWL, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="8"
-                           FontFamily="Segoe Print"
-                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_BW_1, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="8"
-                           FontFamily="Segoe Print"
-                           Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_BW_2, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="8"
-                           FontFamily="Segoe Print"
-                           Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_3_BW_3, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="8"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Grid.Column="1"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_3_CWL, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="8"
+                               FontFamily="Segoe Print"
+                               FontSize="15"
+                               Grid.Column="2"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_3_BW_1, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="8"
+                               FontFamily="Segoe Print"
+                               Grid.Column="3"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_3_BW_2, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="8"
+                               FontFamily="Segoe Print"
+                               Grid.Column="4"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_3_BW_3, Mode=TwoWay}" />
                     <!--#endregion-->
 
                     <!--#region WL 4 BW-->
-                    <TextBlock 
-                           Grid.Row="9"
-                           FontFamily="Segoe Print"
-                           Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_CWL, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="9"
-                           FontFamily="Segoe Print"
-                           Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_BW_1, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="9"
-                           FontFamily="Segoe Print"
-                           Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_BW_2, Mode=TwoWay}" />
-                    <TextBlock 
-                           Grid.Row="9"
-                           FontFamily="Segoe Print"
-                           Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding opModel_1.WL_4_BW_3, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="9"
+                               FontFamily="Segoe Print"
+                               Grid.Column="1"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_4_CWL, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="9"
+                               FontFamily="Segoe Print"
+                               Grid.Column="2"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_4_BW_1, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="9"
+                               FontFamily="Segoe Print"
+                               Grid.Column="3"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_4_BW_2, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="9"
+                               FontFamily="Segoe Print"
+                               Grid.Column="4"
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding opModel_1.WL_4_BW_3, Mode=TwoWay}" />
                     <!--#endregion-->
-                    
+
                     <!--#region Mic. Limit-->
-                    <Border Grid.ColumnSpan="6" BorderBrush="#FFD6D6D6" BorderThickness="1" CornerRadius="12" Grid.Row="11"/>
-                    <Border Background="#FF1FCCD4" Grid.Row="11"  CornerRadius="12,0,0,12"/>
+                    <Border Grid.ColumnSpan="6"
+                            BorderBrush="#FFD6D6D6"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Grid.Row="11" />
+                    <Border Background="#FF1FCCD4"
+                            Grid.Row="11"
+                            CornerRadius="12,0,0,12" />
                     <TextBlock Text=" Mic.&#x0A;Range"
                                Foreground="White"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" Grid.Row="11"/>
-                    <Border Background="#FFBAF6F9" Grid.Row="11" Grid.Column="1"/>
-                    <TextBlock Text="Lower"
-                               Foreground="Black"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" Grid.Row="11" Grid.Column="1"/>
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Grid.Row="11" />
+                    <Border Background="#FFBAF6F9"
+                            Grid.Row="11"
+                            Grid.Column="1" />
+                    <Label Content="Lower"
+                           Foreground="Black"
+                           FontSize="15"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           Grid.Row="11"
+                           Grid.Column="1" />
 
                     <TextBox FontFamily="Segoe Print"
-                           Grid.Row="11"
+                             Grid.Row="11"
                              VerticalContentAlignment="Center"
                              HorizontalContentAlignment="Center"
-                           Grid.Column="2" Text="{Binding opModel_1.Mic_Lower_Limit, Mode=TwoWay}" />
+                             FontSize="15"
+                             Grid.Column="2"
+                             Text="{Binding opModel_1.Mic_Lower_Limit, Mode=TwoWay}" />
 
-                    <Border Background="#FFBAF6F9" Grid.Row="11" Grid.Column="3"/>
+                    <Border Background="#FFBAF6F9"
+                            Grid.Row="11"
+                            Grid.Column="3" />
                     <TextBlock Text="Upper"
                                Foreground="Black"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" Grid.Row="11" Grid.Column="3"/>
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="15"
+                               Grid.Row="11"
+                               Grid.Column="3" />
 
                     <TextBox FontFamily="Segoe Print"
-                           Grid.Row="11"
-                              VerticalContentAlignment="Center"
+                             Grid.Row="11"
+                             VerticalContentAlignment="Center"
                              HorizontalContentAlignment="Center"
-                           Grid.Column="4" Text="{Binding opModel_1.Mic_Upper_Limit, Mode=TwoWay}" />
+                             FontSize="15"
+                             Grid.Column="4"
+                             Text="{Binding opModel_1.Mic_Upper_Limit, Mode=TwoWay}" />
                     <!--#endregion-->
 
                     <!--#region Temp.-->
-                    <Border Grid.ColumnSpan="6" BorderBrush="#FFD6D6D6" BorderThickness="1" CornerRadius="12" Grid.Row="13" />
-                    <Border Background="#FF1FCCD4" Grid.Row="13"  CornerRadius="12,0,0,12"/>
+                    <Border Grid.ColumnSpan="6"
+                            BorderBrush="#FFD6D6D6"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Grid.Row="13" />
+                    <Border Background="#FF1FCCD4"
+                            Grid.Row="13"
+                            CornerRadius="12,0,0,12" />
                     <TextBlock Text="Temp."
                                Foreground="White"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" Grid.Row="13"/>
+                               FontSize="15"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Grid.Row="13" />
 
                     <TextBox FontFamily="Segoe Print"
-                           Grid.Row="13"
+                             Grid.Row="13"
                              VerticalContentAlignment="Center"
                              HorizontalContentAlignment="Center"
-                           Grid.Column="1" Text="{Binding opModel_1.HighPower_Temp, Mode=TwoWay}" />
+                             FontSize="15"
+                             Grid.Column="1"
+                             Text="{Binding opModel_1.HighPower_Temp, Mode=TwoWay}" />
 
                     <!--#endregion-->
 
@@ -479,7 +730,8 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="1" Name="grid_bear_say"
+        <Grid Grid.Row="1"
+              Name="grid_bear_say"
               Background="#FFF1F1F1">
             <Grid.DataContext>
                 <vm:ComViewModel />
@@ -503,7 +755,7 @@
             <Border Grid.Row="0"
                     Grid.Column="0"
                     Grid.ColumnSpan="10"
-                    Background="#FFE6E6E6"                    
+                    Background="#FFE6E6E6"
                     Focusable="False"
                     Grid.RowSpan="10"
                     PreviewMouseLeftButtonDown="Border_PreviewMouseLeftButtonDown" />
@@ -513,8 +765,7 @@
                      Grid.Column="1"
                      Visibility="Collapsed"
                      Margin="10">
-                <Border 
-                        Background="Transparent"
+                <Border Background="Transparent"
                         MouseEnter="image_MouseEnter"
                         MouseLeave="grid_sector_btns_MouseLeave"
                         Grid.Column="1">
@@ -583,7 +834,7 @@
                             <Viewbox>
                                 <sector_btn:Sector_BTN  x:Name="btn_pre"
                                                         grid_column="0"
-                                                        grid_row="1"                                                        
+                                                        grid_row="1"
                                                         Margin="0,10,10,10"
                                                         img_height="40"
                                                         img_width="40"
@@ -613,9 +864,9 @@
             </Viewbox>
 
             <Viewbox Grid.Column="1"
-                     Margin="10" Grid.RowSpan="3">
-                <Border 
-                        Background="Transparent"
+                     Margin="10"
+                     Grid.RowSpan="3">
+                <Border Background="Transparent"
                         MouseEnter="image_MouseEnter"
                         MouseLeave="grid_sector_btns_MouseLeave"
                         Grid.Column="1">
@@ -636,18 +887,19 @@
                         <!--Text in circle-->
                         <!--Text in circle-->
                         <Viewbox Grid.Row="1">
-                            <TextBlock Visibility="{Binding Visibility, ElementName=grid_sector_btns}" Text="PDL" Margin="15"/>
+                            <TextBlock Visibility="{Binding Visibility, ElementName=grid_sector_btns}"
+                                       Text="PDL"
+                                       Margin="15" />
                         </Viewbox>
 
                         <!--Buttons-->
                         <Grid Grid.Row="0"
-                             
                               Visibility="Visible"
                               Grid.RowSpan="3"
                               Grid.Column="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="46*"/>
-                                <ColumnDefinition Width="9*"/>
+                                <ColumnDefinition Width="46*" />
+                                <ColumnDefinition Width="9*" />
                             </Grid.ColumnDefinitions>
                             <!--Right-->
                             <Viewbox Grid.ColumnSpan="2">
@@ -655,7 +907,7 @@
                                                        Arc_EndAngle="135"
                                                        Grid.ColumnSpan="2"
                                                        grid_column="2"
-                                    ToolTip="PDL Stop"
+                                                       ToolTip="PDL Stop"
                                                        grid_row="1"
                                                        Margin="10,10,0,10"
                                                        img_height="40"
@@ -665,27 +917,25 @@
                             </Viewbox>
                             <!--Left-->
                             <Viewbox Grid.ColumnSpan="2">
-                                <sector_btn:Sector_BTN  
-                                                        grid_column="0"
-                                                        grid_row="1"                                                        
-                                                        Margin="0,10,10,10"
-                                                        img_height="26"
-                                                        img_width="26"
-                                    ToolTip="PDL Start"
-                                                        rotate_angle="90"
-                                                        ButtonBase.Click="Sector_BTN_PDL_Start_Click"
-                                                        Tag="../Resources/output-onlinepngtools (13).png"
-                                                        Arc_StartAngle="225"
-                                                        Arc_EndAngle="315" />
+                                <sector_btn:Sector_BTN grid_column="0"
+                                                       grid_row="1"
+                                                       Margin="0,10,10,10"
+                                                       img_height="26"
+                                                       img_width="26"
+                                                       ToolTip="PDL Start"
+                                                       rotate_angle="90"
+                                                       ButtonBase.Click="Sector_BTN_PDL_Start_Click"
+                                                       Tag="../Resources/output-onlinepngtools (13).png"
+                                                       Arc_StartAngle="225"
+                                                       Arc_EndAngle="315" />
                             </Viewbox>
                             <!--Up-->
                             <Viewbox Grid.ColumnSpan="2">
-                                <sector_btn:Sector_BTN 
-                                                       grid_column="1"
+                                <sector_btn:Sector_BTN grid_column="1"
                                                        grid_row="0"
                                                        img_height="28"
                                                        img_width="28"
-                                    ToolTip="PDL Reset"
+                                                       ToolTip="PDL Reset"
                                                        Margin="10,0,10,10"
                                                        ButtonBase.Click="Sector_BTN_PDL_Connect_Click"
                                                        Tag="../Resources/output-onlinepngtools (15).png"
@@ -694,13 +944,12 @@
                             </Viewbox>
                             <!--Down-->
                             <Viewbox Grid.ColumnSpan="2">
-                                <sector_btn:Sector_BTN 
-                                                       grid_column="1"
+                                <sector_btn:Sector_BTN grid_column="1"
                                                        grid_row="2"
                                                        img_height="28"
                                                        img_width="28"
                                                        Margin="10,10,10,0"
-                                    ToolTip="Auto Cal PDL"
+                                                       ToolTip="Auto Cal PDL"
                                                        Tag="../Resources/output-onlinepngtools (7).png"
                                                        rotate_angle="0"
                                                        ButtonBase.Click="Sector_BTN_PDL_IsAutoCal_Click"
@@ -713,17 +962,20 @@
             </Viewbox>
 
 
-            <Button Name="btn_bearsay_visual" HorizontalAlignment="Left"
+            <Button Name="btn_bearsay_visual"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Visibility="Collapsed"
-                    Grid.Column="1" Grid.Row="1"
+                    Grid.Column="1"
+                    Grid.Row="1"
                     Width="30"
-                    Height="30" Content="V"
-                    Click="btn_bearsay_visual_Click"
-                    />
+                    Height="30"
+                    Content="V"
+                    Click="btn_bearsay_visual_Click" />
 
             <Grid Grid.Column="2"
-                  Grid.RowSpan="3" Visibility="Hidden">
+                  Grid.RowSpan="3"
+                  Visibility="Hidden">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
@@ -800,8 +1052,7 @@
                                FontFamily="{Binding FontFamily, ElementName=txt_WL}"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left" />
-                    <ToggleButton 
-                                  Grid.Column="2"
+                    <ToggleButton Grid.Column="2"
                                   Grid.Row="1"
                                   HorizontalAlignment="Right"
                                   MaxWidth="48"
@@ -869,36 +1120,36 @@
             </Grid>
 
             <Grid  Grid.Column="2"
-                    Grid.RowSpan="3" >
+                   Grid.RowSpan="3">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
-                <wpfuc:Text_ToggleButton Grid.Row="3" 
-                                                 txtbox_content="Auto PDL"
-                                                 border_Background="#FF98DEB5"
-                                                 Background="#FFE6E6E6"
-                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                                 Ischecked="{Binding opModel_1.Is_PDL_Auto_Scan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" />
+                <wpfuc:Text_ToggleButton Grid.Row="3"
+                                         txtbox_content="Auto PDL"
+                                         border_Background="#FF98DEB5"
+                                         Background="#FFE6E6E6"
+                                         Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                         Ischecked="{Binding opModel_1.Is_PDL_Auto_Scan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" />
                 <wpfuc:Text_TextBox Grid.Row="2"
-                                                txtbox_content="PDL Scan Time"
-                                                Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                                txtbox_value="{Binding opModel_1.PDL_Scan_Time, FallbackValue=15, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" />
-                <uc:UC_Setting_Button x:Name="btn_Open_Location"
-                                              Grid.Row="1"
-                                     txtbox_content="Save Location"
-                                              ButtonBase.Click="btn_Open_Location_Click"
-                                              Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}" />
+                                    txtbox_content="PDL Scan Time"
+                                    Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                    txtbox_value="{Binding opModel_1.PDL_Scan_Time, FallbackValue=15, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" />
+                <wpfuc:Text_Button x:Name="btn_Open_Location"
+                                   Grid.Row="1"
+                                   txtbox_content="Save Location"
+                                   ButtonBase.Click="btn_Open_Location_Click"
+                                   Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}" />
 
-                <ComboBox Name="ComBox_TF2_Station"
-                                  Grid.Row="0"
-                          SelectedItem="{Binding TF2_station_type}"
-                          ItemsSource="{Binding list_TF2_station_type}"
-                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                  Style="{StaticResource style_combobox_black}" >                   
-                </ComboBox>
+                <wpfuc:UC_ComboBox Name="ComBox_TF2_Station"
+                                   Grid.Row="0"
+                                   SelectedItem="{Binding TF2_station_type}"
+                                   ItemSource="{Binding list_TF2_station_type}"
+                                   Background="#FFE6E6E6"
+                                   Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}">
+                </wpfuc:UC_ComboBox>
 
             </Grid>
 
@@ -956,7 +1207,7 @@
                                      HorizontalContentAlignment="Center"
                                      FontFamily="Segoe Print"
                                      BorderBrush="Transparent"
-                                KeyDown="TextBox_WL_Scan_KeyDown"
+                                     KeyDown="TextBox_WL_Scan_KeyDown"
                                      Text="{Binding float_WL_Scan_Start}"
                                      MinWidth="50" />
                         </Viewbox>
@@ -969,8 +1220,7 @@
                     </Grid>
                     <Grid Grid.Row="2"
                           Margin="5,0,5,0">
-                        <Slider 
-                                IsSnapToTickEnabled="True"
+                        <Slider IsSnapToTickEnabled="True"
                                 Maximum="{Binding float_TLS_WL_Range[1]}"
                                 Minimum="{Binding float_TLS_WL_Range[0]}"
                                 Mouse.PreviewMouseDown="slider_PreviewMouseDown"
@@ -1175,8 +1425,7 @@
                     </Grid>
                     <Grid Grid.Row="2"
                           Margin="5,0,5,0">
-                        <Slider 
-                                IsSnapToTickEnabled="True"
+                        <Slider IsSnapToTickEnabled="True"
                                 Maximum="{Binding float_TLS_WL_Range[1]}"
                                 Minimum="{Binding float_TLS_WL_Range[0]}"
                                 Mouse.PreviewMouseDown="slider_PreviewMouseDown"
@@ -1408,8 +1657,8 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.1*" />
-                            <ColumnDefinition Width="1.5*"/>
-                            <ColumnDefinition Width="1.5*"/>
+                            <ColumnDefinition Width="1.5*" />
+                            <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Wavelength"
                                    Grid.Column="1"

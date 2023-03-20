@@ -9,7 +9,9 @@ using PD.Models;
 using PD.ViewModel;
 using PD.Functions;
 using System.Threading.Tasks;
-using DiCon.Instrument.HP;
+//using DiCon.Instrument.HP;
+using PD.GPIB;
+
 using OxyPlot;
 
 namespace PD.NavigationPages
@@ -217,7 +219,7 @@ namespace PD.NavigationPages
             {
                 switch (vm.Laser_type)
                 {
-                    case "Agilent":
+                    case ComViewModel.LaserType.Agilent:
                         vm.tls.setUnit(unit);
                         if (unit == 0)
                             unit = 1; //dBm
@@ -225,8 +227,16 @@ namespace PD.NavigationPages
                             unit = 0; //uW
                         break;
 
-                    case "Golight":
+                    case ComViewModel.LaserType.Golight:
                         vm.tls_GL.setUnit(unit);
+                        if (unit == 0)
+                            unit = 1; //dBm
+                        else
+                            unit = 0; //uW
+                        break;
+
+                    default:
+                        vm.tls.setUnit(unit);
                         if (unit == 0)
                             unit = 1; //dBm
                         else

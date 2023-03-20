@@ -645,8 +645,8 @@ namespace PD.NavigationPages
         //ICommunication icomm;
         //DiCon.UCB.Communication.RS232.RS232 rs232;
         //DiCon.UCB.MTF.IMTFCommand tf;
-          
-       
+
+
         private void btn_bearsay_visual_Click(object sender, RoutedEventArgs e)
         {
             grid_second_rowdefinition.Height = new GridLength(0, GridUnitType.Star);
@@ -1170,12 +1170,12 @@ namespace PD.NavigationPages
 
             #endregion
 
-            if(!string.IsNullOrEmpty(vm.opModel_1.SN))
-                if(vm.opModel_1.SN.Length > 5)
+            if (!string.IsNullOrEmpty(vm.opModel_1.SN))
+                if (vm.opModel_1.SN.Length > 5)
                 {
                     if (vm.opModel_1.SN[6] == 'A')
-                        Read_TF2_WL_Setting(vm.csv_product_TF2_wl_setting_path, no+3);
-                    else if(vm.opModel_1.SN[6] == 'B')
+                        Read_TF2_WL_Setting(vm.csv_product_TF2_wl_setting_path, no + 3);
+                    else if (vm.opModel_1.SN[6] == 'B')
                         Read_TF2_WL_Setting(vm.csv_product_TF2_wl_setting_path, no);
                 }
 
@@ -1232,7 +1232,7 @@ namespace PD.NavigationPages
 
                                     if (WL_No == 1)
                                         vm.opModel_1.WL_Setting_1 = str_wl + "_nm";
-                                    else if (WL_No ==2)
+                                    else if (WL_No == 2)
                                         vm.opModel_1.WL_Setting_2 = str_wl + "_nm";
                                     else if (WL_No == 3)
                                         vm.opModel_1.WL_Setting_3 = str_wl + "_nm";
@@ -1279,7 +1279,7 @@ namespace PD.NavigationPages
 
                 vm.Str_cmd_read = "PDL Scan Stop";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.StackTrace.ToString());
             }
@@ -1291,7 +1291,7 @@ namespace PD.NavigationPages
 
             var txtbox = sender as TextBox;
 
-            if(txtbox.Tag.ToString() == "Start")
+            if (txtbox.Tag.ToString() == "Start")
             {
                 if (double.TryParse(txtbox.Text, out double wl))
                     vm.float_WL_Scan_Start = wl;
@@ -1347,15 +1347,117 @@ namespace PD.NavigationPages
             if (vm.opModel_1.SN.Length != 12) return;
 
             int index = ComBox_TF2_Station.SelectedIndex;
-            if (index < 2) return;
+            //if (index < 2) return;
 
-            //往前一站找資料
-            string path = Path.Combine(vm.txt_save_TF2_wl_data_path, $"{vm.opModel_1.SN}_{vm.list_TF2_station_type[index - 1]}.csv");
-            if (!File.Exists(path)) return;
+            //找歷史資料
+            string path = Path.Combine(vm.txt_save_TF2_wl_data_path, $"{vm.opModel_1.SN}_{vm.list_TF2_station_type[index]}.csv");
+            if (!File.Exists(path))
+            {
+                vm.Str_cmd_read = "No Data Found";
+                return;
+            }
 
 
             var dataTable = CSVFunctions.Read_CSV(path);
 
+            if (dataTable == null || dataTable.Rows.Count == 0)
+            {
+                vm.Str_cmd_read = "No Data Found";
+                return;
+            }
+
+            //CWL
+            if (dataTable.Rows[0][1].ToString().Equals("CWL"))
+            {
+                if (double.TryParse(dataTable.Rows[1][1].ToString(), out double value1))
+                    vm.opModel_1.WL_1_CWL = value1;
+
+                if (double.TryParse(dataTable.Rows[2][1].ToString(), out double value2))
+                    vm.opModel_1.WL_2_CWL = value2;
+
+                if (double.TryParse(dataTable.Rows[3][1].ToString(), out double value3))
+                    vm.opModel_1.WL_3_CWL = value3;
+            }
+
+            //IL
+            if (dataTable.Rows[0][2].ToString().Equals("IL"))
+            {
+                if (double.TryParse(dataTable.Rows[1][2].ToString(), out double IL1))
+                    vm.opModel_1.WL_1_IL = IL1.ToString();
+
+                if (double.TryParse(dataTable.Rows[2][2].ToString(), out double IL2))
+                    vm.opModel_1.WL_2_IL = IL2.ToString();
+
+                if (double.TryParse(dataTable.Rows[3][2].ToString(), out double IL3))
+                    vm.opModel_1.WL_3_IL = IL3.ToString();
+            }
+
+            //PDL
+            if (dataTable.Rows[0][3].ToString().Equals("PDL"))
+            {
+                if (double.TryParse(dataTable.Rows[1][3].ToString(), out double PDL1))
+                    vm.opModel_1.WL_1_PDL = PDL1;
+
+                if (double.TryParse(dataTable.Rows[2][3].ToString(), out double PDL2))
+                    vm.opModel_1.WL_2_PDL = PDL2;
+
+                if (double.TryParse(dataTable.Rows[3][3].ToString(), out double PDL3))
+                    vm.opModel_1.WL_3_PDL = PDL3;
+            }
+
+            //MIC
+            if (dataTable.Rows[0][4].ToString().Equals("Mic"))
+            {
+                if (double.TryParse(dataTable.Rows[1][4].ToString(), out double Mic1))
+                    vm.opModel_1.WL_1_Mic = Mic1;
+
+                if (double.TryParse(dataTable.Rows[2][4].ToString(), out double Mic2))
+                    vm.opModel_1.WL_2_Mic = Mic2;
+
+                if (double.TryParse(dataTable.Rows[3][4].ToString(), out double Mic3))
+                    vm.opModel_1.WL_3_Mic = Mic3;
+            }
+
+            //0.5dB
+            if (dataTable.Rows[0][5].ToString().Equals("0.5dB"))
+            {
+                if (double.TryParse(dataTable.Rows[1][5].ToString(), out double value))
+                    vm.opModel_1.WL_1_BW_1 = value;
+
+                if (double.TryParse(dataTable.Rows[2][5].ToString(), out value))
+                    vm.opModel_1.WL_2_BW_1 = value;
+
+                if (double.TryParse(dataTable.Rows[3][5].ToString(), out value))
+                    vm.opModel_1.WL_3_BW_1 = value;
+            }
+
+            //3dB
+            if (dataTable.Rows[0][6].ToString().Equals("3dB"))
+            {
+                if (double.TryParse(dataTable.Rows[1][6].ToString(), out double value))
+                    vm.opModel_1.WL_1_BW_2 = value;
+
+                if (double.TryParse(dataTable.Rows[2][6].ToString(), out value))
+                    vm.opModel_1.WL_2_BW_2 = value;
+
+                if (double.TryParse(dataTable.Rows[3][6].ToString(), out value))
+                    vm.opModel_1.WL_3_BW_2 = value;
+            }
+
+            //20dB
+            if (dataTable.Rows[0][7].ToString().Equals("20dB"))
+            {
+                if (double.TryParse(dataTable.Rows[1][7].ToString(), out double value))
+                    vm.opModel_1.WL_1_BW_3 = value;
+
+                if (double.TryParse(dataTable.Rows[2][7].ToString(), out value))
+                    vm.opModel_1.WL_2_BW_3 = value;
+
+                if (double.TryParse(dataTable.Rows[3][7].ToString(), out value))
+                    vm.opModel_1.WL_3_BW_3 = value;
+            }
+
+            //Temp.
             if (dataTable.Rows[8][0].ToString().Equals("Temp."))
             {
                 if (double.TryParse(dataTable.Rows[8][1].ToString(), out double value))
@@ -1363,13 +1465,14 @@ namespace PD.NavigationPages
                         vm.opModel_1.HighPower_Temp = value;
             }
 
-            if (index >= 3)  //FinalTest Station
+            //Load Mic. Data
+            if (index >= 0)   //Test and FinalTest Station , default is 3
             {
                 if (dataTable.Rows[4][0].ToString().Equals("Mic. Lower"))
                 {
                     if (double.TryParse(dataTable.Rows[4][1].ToString(), out double value))
                     {
-                        if(value !=0)
+                        if (value != 0)
                             vm.opModel_1.Mic_Lower_Limit = value;
                     }
                 }
@@ -1381,6 +1484,8 @@ namespace PD.NavigationPages
                             vm.opModel_1.Mic_Upper_Limit = value;
                 }
             }
+
+            vm.Str_cmd_read = "Data Loaded";
         }
     }
 }

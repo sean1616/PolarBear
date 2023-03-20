@@ -61,24 +61,27 @@ namespace PD.NavigationPages
 
             for (int i = 0; i < vm.list_Chart_UI_Models.Count; i++)
             {
-                if(vm.Plot_Series.Count > i)
+                if (vm.Plot_Series.Count > i)
                 {
                     vm.Plot_Series[i].IsVisible = vm.list_Chart_UI_Models[i].Button_IsChecked;
                     vm.Plot_Series[i].Color = vm.list_OxyColor[i];
                 }
 
                 OxyPlot.Annotations.LineAnnotation lat = vm.PlotViewModel.Annotations[i] as OxyPlot.Annotations.LineAnnotation;
-                if (vm.list_Chart_UI_Models[i].Button_IsChecked)
+                if (lat != null)
                 {
-                    lat.StrokeThickness = 2;
-                    lat.TextColor = OxyColors.Black;
+                    if (vm.list_Chart_UI_Models[i].Button_IsChecked)
+                    {
+                        lat.StrokeThickness = 2;
+                        lat.TextColor = OxyColors.Black;
+                    }
+                    else
+                    {
+                        lat.StrokeThickness = 0;
+                        lat.TextColor = OxyColors.Transparent;
+                    }
+                    lat.TextLinePosition = 1 - (0.1 * i);  //Vertical postion of annotation title text
                 }
-                else
-                {
-                    lat.StrokeThickness = 0;
-                    lat.TextColor = OxyColors.Transparent;
-                }
-                lat.TextLinePosition = 1 - (0.1 * i);  //Vertical postion of annotation title text
             }
 
             vm.Update_ALL_PlotView();
@@ -111,6 +114,9 @@ namespace PD.NavigationPages
         private void btn_Save_Chart_Click(object sender, RoutedEventArgs e)
         {
             #region Save Chart
+
+            if (Plot_Chart.ActualHeight == 0 || Plot_Chart.ActualWidth == 0) return;
+
             RenderTargetBitmap renderTargetBitmap =
                new RenderTargetBitmap((int)Plot_Chart.ActualWidth, (int)Plot_Chart.ActualHeight, 96, 96, PixelFormats.Pbgra32);
             renderTargetBitmap.Render(Plot_Chart);
@@ -268,7 +274,7 @@ namespace PD.NavigationPages
             window.Show();
         }
 
-        
+
 
         //public Window_Bear_Grid window_Bear_Grid;
     }

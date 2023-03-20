@@ -129,7 +129,7 @@ namespace PD.NavigationPages
 
             if (vm.pageName_LogCmd == "page_log") return;
 
-            grid_cmdList_function.Visibility = Visibility.Collapsed;
+            //grid_cmdList_function.Visibility = Visibility.Collapsed;
 
             pageTransitionControl.ShowPage(_Page_Log);
 
@@ -798,6 +798,11 @@ namespace PD.NavigationPages
             vm._Page_Command.dataGrid.Items.Refresh();
 
             vm.Ini_Write("CommandList", "LastScript_Path", vm.LastScript_Path);
+        }
+
+        private void Btn_clean_all_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -203,7 +203,7 @@
                 <Viewbox Grid.Row="1"
                          Grid.Column="1"
                          Grid.ColumnSpan="3" HorizontalAlignment="Right">
-                    <TextBlock Text="5.5.5" x:Name="txt_version"
+                    <TextBlock Text="{Binding txt_now_version}" x:Name="txt_version"
                                FontFamily="Segoe Print" PreviewMouseLeftButtonDown="txt_version_PreviewMouseLeftButtonDown"/>
                 </Viewbox>
 

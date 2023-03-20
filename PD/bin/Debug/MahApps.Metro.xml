@@ -3659,6 +3659,17 @@
             Sets the size of the CheckBox itself.
             </summary>
         </member>
+        <member name="M:MahApps.Metro.Controls.CheckBoxHelper.GetCheckCornerRadius(System.Windows.UIElement)">
+            <summary>
+            Gets the CornerRadius of the CheckBox itself.
+            The CheckCornerRadius property allows users to control the roundness of the CheckBox corners independently by setting a radius value for each corner.
+            </summary>
+        </member>
+        <member name="M:MahApps.Metro.Controls.CheckBoxHelper.SetCheckCornerRadius(System.Windows.UIElement,System.Windows.CornerRadius)">
+            <summary>
+            Sets the CornerRadius of the CheckBox itself.
+            </summary>
+        </member>
         <member name="M:MahApps.Metro.Controls.CheckBoxHelper.GetCheckStrokeThickness(System.Windows.DependencyObject)">
             <summary>
             Gets the stroke thickness of the CheckBox itself.
@@ -9033,6 +9044,22 @@
             <param name="child">A node in a visual tree</param>
             <returns>All ancestors in visual tree of <paramref name="child"/> element</returns>
         </member>
+        <member name="M:MahApps.Metro.Controls.TreeHelper.GetVisualAncestry(System.Windows.DependencyObject)">
+            <summary>
+            Returns full visual ancestry, starting at the leaf.
+            <para>If element is not of <see cref="T:System.Windows.Media.Visual"/> or <see cref="T:System.Windows.Media.Media3D.Visual3D"/> the logical ancestry is used.</para>
+            </summary>
+            <param name="leaf">The starting object.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MahApps.Metro.Controls.TreeHelper.GetVisualAncestor``1(System.Windows.DependencyObject)">
+            <summary>
+            Tries to find and returns a visual ancestor, starting at the leaf.
+            <para>If element is not of <see cref="T:System.Windows.Media.Visual"/> or <see cref="T:System.Windows.Media.Media3D.Visual3D"/> the logical ancestry is used.</para>
+            </summary>
+            <param name="leaf">The starting object.</param>
+            <returns></returns>
+        </member>
         <member name="M:MahApps.Metro.Controls.TreeHelper.FindChild``1(System.Windows.DependencyObject,System.String)">
             <summary>
             Finds a Child of a given item in the visual tree. 
@@ -9391,9 +9418,34 @@
             <returns></returns>
             <throws><see cref="T:System.NotSupportedException"/></throws>
         </member>
+        <member name="T:MahApps.Metro.Converters.ColorToSolidColorBrushConverter">
+            <summary>
+            Converts a given <see cref="T:System.Windows.Media.Color"/> into a <see cref="T:System.Windows.Media.SolidColorBrush"/>.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Converters.ColorToSolidColorBrushConverter.DefaultInstance">
+            <summary>
+            Gets a static instance of the converter if needed.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Converters.ColorToSolidColorBrushConverter.FallbackBrush">
+            <summary>
+            Gets or Sets the brush which will be used if the conversion fails.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Converters.ColorToSolidColorBrushConverter.FallbackColor">
+            <summary>
+            Gets or Sets the color which will be used if the conversion fails.
+            </summary>
+        </member>
         <member name="T:MahApps.Metro.Converters.CornerRadiusBindingConverter">
             <summary>
             Converts a CornerRadius to a new CornerRadius. It's possible to ignore a side with the IgnoreRadius property.
+            </summary>
+        </member>
+        <member name="T:MahApps.Metro.Converters.CornerRadiusFilterConverter">
+            <summary>
+            Filters a CornerRadius by the given Filter property. Result can be a new CornerRadius or a value of it's 4 corners.
             </summary>
         </member>
         <member name="P:MahApps.Metro.Converters.HamburgerMenuItemAccessibleConverter.Default">
@@ -9593,7 +9645,7 @@
         </member>
         <member name="T:MahApps.Metro.Theming.MahAppsLibraryThemeProvider">
             <summary>
-            Provides theme resources from Fluent.Ribbon.
+            Provides theme resources from MahApps.Metro.
             </summary>
         </member>
         <member name="M:MahApps.Metro.Theming.MahAppsLibraryThemeProvider.#ctor">

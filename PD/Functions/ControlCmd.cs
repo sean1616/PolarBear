@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using PD.Models;
@@ -13,13 +14,15 @@ using PD.ViewModel;
 using PD.AnalysisModel;
 using PD.NavigationPages;
 using OxyPlot;
-using DiCon.Instrument.HP;
+//using DiCon.Instrument.HP;
+using PD.GPIB;
 using DiCon.UCB.Communication;
 using DiCon.UCB.Communication.RS232;
+using NationalInstruments.NI4882;
 
 namespace PD.Functions
 {
-    class ControlCmd 
+    class ControlCmd
     {
         ComViewModel vm;
         Analysis anly;
@@ -321,7 +324,7 @@ namespace PD.Functions
                     vm.port_PD.Write("ID?" + "\r");
                     await Task.Delay(vm.Int_Read_Delay);
 
-                    string statusMsg = await Cmd_RecieveData("ID?", false);
+                    string statusMsg = await Cmd_RecieveData_BufferJudge("ID?", false);
                     statusMsg = statusMsg.Equals(string.Empty) ? vm.Str_Status : statusMsg;
 
                     vm.port_PD.DiscardInBuffer();
@@ -342,7 +345,7 @@ namespace PD.Functions
 
                             await Task.Delay(vm.Int_Read_Delay);
 
-                            await Cmd_RecieveData("PD_Read", false);
+                            await Cmd_RecieveData_BufferJudge("PD_Read", false);
 
                             #region Set Chart data points                                           
 
@@ -374,7 +377,7 @@ namespace PD.Functions
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
-                            
+
                             vm.PlotViewModel.InvalidatePlot(true);
 
                             vm.timer2_count++;
@@ -383,10 +386,6 @@ namespace PD.Functions
                             #region Cal. Delta IL  
                             //Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);
                             #endregion
-                        }
-                        else  //PM mode
-                        {
-
                         }
                     }
                     break;
@@ -404,7 +403,7 @@ namespace PD.Functions
 
                             await Task.Delay(vm.Int_Read_Delay);
 
-                            await Cmd_RecieveData("P0_Read", false);
+                            await Cmd_RecieveData_BufferJudge("P0_Read", false);
 
                             #region Set A Chart data points                                           
                             //if (vm.timer2_count > 30000)  //Default 28800 , two hours
@@ -440,28 +439,9 @@ namespace PD.Functions
                             //vm.timer2_count++;
                             #endregion
 
-                            await Cmd_B_RecieveData("P0_Read", false);
+                            await Cmd_B_RecieveData_BufferJudge("P0_Read", false);
 
                             #region Set B Chart data points                                           
-                            //if (vm.timer2_count > 30000)  //Default 28800 , two hours
-                            //    vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
-
-                            //sec = (double)Math.Round((decimal)vm.timer2_count * vm.Int_Read_Delay / 1000, 2);
-
-                            //if (vm.isTimerOn)
-                            //{
-                            //    if (sec > vm.int_timer_timespan)
-                            //    {
-                            //        vm.IsGoOn = false;
-                            //        vm.isTimerOn = false;
-                            //    }
-
-                            //    // 更新Timer顯示的"剩餘時間"
-                            //    TimeSpan time = new TimeSpan(0, 0, vm.int_timer_timespan - (int)sec);
-                            //    vm.int_timer_hrs = time.Hours;
-                            //    vm.int_timer_min = time.Minutes;
-                            //    vm.int_timer_sec = time.Seconds;
-                            //}
 
                             for (int i = 8; i < vm.Double_Powers.Count + 8; i++)
                             {
@@ -469,7 +449,6 @@ namespace PD.Functions
                                                                                                          //vm.list_GaugeModels[i].GaugeEndAngle = anly.Read_PM_to_Gauge(vm.Double_Powers[i], (i + 1));
                                 vm.Save_All_PD_Value[i].Add(new DataPoint(sec, vm.Double_Powers[i - 8]));
                             }
-
 
                             vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
                             vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
@@ -486,7 +465,7 @@ namespace PD.Functions
                         {
                             if (string.IsNullOrEmpty(cm.Comport))
                             {
-                                if(string.IsNullOrEmpty(vm.Selected_Comport))
+                                if (string.IsNullOrEmpty(vm.Selected_Comport))
                                 {
                                     vm.isStop = true;
                                     vm.Save_Log(new LogMember() { isShowMSG = true, Message = "Comport is empty" });
@@ -501,12 +480,9 @@ namespace PD.Functions
 
                             await Task.Delay(vm.Int_Read_Delay);
 
-                            await Cmd_RecieveData("P0_Read", false);
+                            string result = await Cmd_RecieveData_BufferJudge("P0_Read", false);
 
                             #region Set Chart data points                                           
-                            //if (vm.timer2_count > 30000)  //Default 28800 , two hours
-                            //    vm.Save_PD_Value.RemoveAt(0);  //Make sure points count less than 36000
-
                             if (vm.timer2_count == 0)
                             {
                                 vm.maxIL = new List<double>(vm.Double_Powers);
@@ -552,8 +528,8 @@ namespace PD.Functions
                             //Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);
                             Update_DeltaIL();
                             #endregion
-                        }                      
-                    }                   
+                        }
+                    }
                     break;
                 case "PAUSE":
                     while (vm.lastCMD.YN)
@@ -928,7 +904,6 @@ namespace PD.Functions
                                 else
                                 {
                                     var_GETPOWER = vm.list_VariableModels[int.Parse(cm.Value_1)].VariableContent;
-                                    //if (!double.TryParse(cm.Value_1, out var_GETPOWER)) break;
                                 }
                             }
 
@@ -1164,7 +1139,7 @@ namespace PD.Functions
                         vm.pageName_LogCmd = "page_stringList";
                         CSVFunctions.Read_Ref_CSV(@cm.Value_1, vm.pageName_LogCmd, vm);
                     }
-                    break;               
+                    break;
 
                 case "SAVEPOWER":
                     if (vm.PD_or_PM)  //PM mode
@@ -1679,7 +1654,7 @@ namespace PD.Functions
                     break;
 
                 case "CLSPORT":
-                    if(vm.port_PD != null)
+                    if (vm.port_PD != null)
                     {
                         if (vm.port_PD.IsOpen)
                         {
@@ -1705,6 +1680,120 @@ namespace PD.Functions
             }
             return cmdMsg;
         }
+
+        /// <summary>
+        /// High resolution delay by SpinWait and Stopwatch
+        /// </summary>
+        /// <param name="millisecond"></param>
+        public static void Delay(int millisecond)
+        {
+            SpinWait sw = new SpinWait();
+            var swatch = Stopwatch.StartNew();
+
+            while (millisecond > swatch.ElapsedMilliseconds)
+            {
+                sw.SpinOnce();
+            }
+            swatch.Stop();
+        }
+
+        private async Task<string> Cmd_RecieveData_BufferJudge(string cmd, bool _is_port_close_after_CmdWrite)
+        {
+            string result = "";
+            try
+            {
+                if (!vm.port_PD.IsOpen) return result;
+
+                for (int i = 0; i < 7; i++)
+                {
+                    int size = vm.port_PD.BytesToRead;
+
+                    if (size == 0)
+                    {
+                        Delay(10);
+
+                        if (i != 6)
+                            continue;
+                        else return "";
+                    }
+                    else
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            Delay(5);
+
+                            if (size == vm.port_PD.BytesToRead)
+                                break;
+
+                            size = vm.port_PD.BytesToRead;
+                        }
+                    }
+
+                    byte[] dataBuffer = new byte[size];
+                    int length = vm.port_PD.Read(dataBuffer, 0, size);
+
+                    //Show read back message
+                    string msg = anly.Read_analysis(cmd, dataBuffer);
+
+                    #region Analyze Dx? and show data
+                    if (cmd.First() == 'D' && cmd.Count() == 7) //D1?, D2?...
+                    {
+                        int ch = int.Parse(cmd.ToCharArray(0, 3)[1].ToString());
+
+                        ObservableCollection<string> list_words = new ObservableCollection<string>();  //one channel list[v1.v2.v3]
+                        string[] words = msg.Split(',');  //V1,V2,V3 
+
+                        if (words.Length == 3)
+                        {
+                            vm.list_GaugeModels[ch - 1].GaugeD0_1 = words[0];
+                            vm.list_GaugeModels[ch - 1].GaugeD0_2 = words[1];
+                            vm.list_GaugeModels[ch - 1].GaugeD0_3 = words[2];
+                        }
+                        else if (words.Length == 2)
+                        {
+                            vm.list_GaugeModels[ch - 1].GaugeD0_1 = words[0];
+                            vm.list_GaugeModels[ch - 1].GaugeD0_2 = words[1];
+                        }
+                    }
+                    #endregion
+
+                    #region Get Board No.
+                    if (cmd.Equals("ID?"))
+                    {
+                        if (msg.Equals("DiCon Fiberoptics Inc, MEMS UFA"))
+                        {
+                            vm.port_PD.Write("SN?" + "\r");
+                            await Task.Delay(125);
+                            size = vm.port_PD.BytesToRead;
+                            dataBuffer = new byte[size];
+                            length = vm.port_PD.Read(dataBuffer, 0, size);
+                            result = anly.GetMessage(dataBuffer);
+                        }
+                    }
+                    else
+                    {
+                        result = msg;
+                    }
+
+                    #endregion
+
+                    result = msg;
+
+                    if (_is_port_close_after_CmdWrite)
+                    {
+                        vm.port_PD.DiscardInBuffer();       // RX
+                        vm.port_PD.DiscardOutBuffer();      // TX
+                        vm.port_PD.Close();
+                    }
+
+                    break;
+                }
+            }
+            catch { }
+
+            return result;
+        }
+
 
         private async Task<string> Cmd_RecieveData(string cmd, bool _is_port_close_after_CmdWrite)
         {
@@ -1901,67 +1990,92 @@ namespace PD.Functions
             }
         }
 
-        public async Task<string> Cmd_B_RecieveData(string cmd, bool _is_port_close_after_CmdWrite)
+        public async Task<string> Cmd_B_RecieveData_BufferJudge(string cmd, bool _is_port_close_after_CmdWrite)
         {
             string result = "";
             try
             {
                 if (vm.port_PD_B.IsOpen)
                 {
-                    int size = vm.port_PD_B.BytesToRead;
-                    byte[] dataBuffer = new byte[size];
-                    int length = vm.port_PD_B.Read(dataBuffer, 0, size);
-
-                    //Show read back message
-                    string msg = anly.Read_analysis(cmd, dataBuffer);
-
-                    #region Analyze Dx? and show data
-                    if (cmd.First() == 'D' && cmd.Count() == 7) //D1?, D2?...
+                    for (int i = 0; i < 7; i++)
                     {
-                        int ch = int.Parse(cmd.ToCharArray(0, 3)[1].ToString());
+                        int size = vm.port_PD_B.BytesToRead;
 
-                        ObservableCollection<string> list_words = new ObservableCollection<string>();  //one channel list[v1.v2.v3]
-                        string[] words = msg.Split(',');  //V1,V2,V3 
-
-                        if (words.Length == 3)
+                        if (size == 0)
                         {
-                            vm.list_GaugeModels[ch - 1].GaugeD0_1 = words[0];
-                            vm.list_GaugeModels[ch - 1].GaugeD0_2 = words[1];
-                            vm.list_GaugeModels[ch - 1].GaugeD0_3 = words[2];
+                            Delay(10);
+
+                            if (i != 6)
+                                continue;
+                            else return "";
                         }
-                        else if (words.Length == 2)
+                        else
                         {
-                            vm.list_GaugeModels[ch - 1].GaugeD0_1 = words[0];
-                            vm.list_GaugeModels[ch - 1].GaugeD0_2 = words[1];
-                        }
-                    }
-                    #endregion
+                            for (int j = 0; j < 3; j++)
+                            {
+                                Delay(5);
 
-                    #region Get Board No.
-                    if (cmd.Equals("ID?"))
-                    {
-                        if (msg.Equals("DiCon Fiberoptics Inc, MEMS UFA"))
+                                if (size == vm.port_PD_B.BytesToRead)
+                                    break;
+
+                                size = vm.port_PD_B.BytesToRead;
+                            }
+                        }
+
+                        byte[] dataBuffer = new byte[size];
+                        int length = vm.port_PD_B.Read(dataBuffer, 0, size);
+
+                        //Show read back message
+                        string msg = anly.Read_analysis(cmd, dataBuffer);
+
+                        #region Analyze Dx? and show data
+                        if (cmd.First() == 'D' && cmd.Count() == 7) //D1?, D2?...
                         {
-                            vm.port_PD_B.Write("SN?" + "\r");
-                            await Task.Delay(125);
-                            size = vm.port_PD_B.BytesToRead;
-                            dataBuffer = new byte[size];
-                            length = vm.port_PD_B.Read(dataBuffer, 0, size);
-                            result = anly.GetMessage(dataBuffer);
+                            int ch = int.Parse(cmd.ToCharArray(0, 3)[1].ToString());
+
+                            ObservableCollection<string> list_words = new ObservableCollection<string>();  //one channel list[v1.v2.v3]
+                            string[] words = msg.Split(',');  //V1,V2,V3 
+
+                            if (words.Length == 3)
+                            {
+                                vm.list_GaugeModels[ch - 1].GaugeD0_1 = words[0];
+                                vm.list_GaugeModels[ch - 1].GaugeD0_2 = words[1];
+                                vm.list_GaugeModels[ch - 1].GaugeD0_3 = words[2];
+                            }
+                            else if (words.Length == 2)
+                            {
+                                vm.list_GaugeModels[ch - 1].GaugeD0_1 = words[0];
+                                vm.list_GaugeModels[ch - 1].GaugeD0_2 = words[1];
+                            }
                         }
-                    }
-                    else
-                    {
-                        result = msg;
-                    }
+                        #endregion
 
-                    #endregion
+                        #region Get Board No.
+                        if (cmd.Equals("ID?"))
+                        {
+                            if (msg.Equals("DiCon Fiberoptics Inc, MEMS UFA"))
+                            {
+                                vm.port_PD_B.Write("SN?" + "\r");
+                                await Task.Delay(125);
+                                size = vm.port_PD_B.BytesToRead;
+                                dataBuffer = new byte[size];
+                                length = vm.port_PD_B.Read(dataBuffer, 0, size);
+                                result = anly.GetMessage(dataBuffer);
+                            }
+                        }
+                        else
+                        {
+                            result = msg;
+                        }
 
-                    if (_is_port_close_after_CmdWrite)
-                    {
-                        vm.port_PD_B.DiscardInBuffer();       // RX
-                        vm.port_PD_B.DiscardOutBuffer();      // TX
-                        vm.port_PD_B.Close();
+                        #endregion
+
+                        if (_is_port_close_after_CmdWrite)
+                        {
+                            vm.port_PD_B.DiscardInBuffer();       // RX
+                            vm.port_PD_B.DiscardOutBuffer();      // TX
+                            vm.port_PD_B.Close();
+                        }
                     }
                 }
             }
@@ -2018,7 +2132,7 @@ namespace PD.Functions
         {
             try
             {
-                if(vm.port_PD!=null)
+                if (vm.port_PD != null)
                     if (!vm.port_PD.IsOpen)
                     {
                         await vm.Port_ReOpen(vm.Selected_Comport);
@@ -2085,30 +2199,41 @@ namespace PD.Functions
 
         //}
 
-        private bool ConnectGolightTLS(DiCon.Instrument.HP.GLTLS.GLTLS port,  string portName)
+        private bool ConnectGolightTLS(DiCon.Instrument.HP.GLTLS.GLTLS port, string portName)
         {
             try
             {
                 port.Open(portName);
             }
-            catch(Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.StackTrace.ToString());
-                return false; 
+                return false;
             }
 
             return true;
         }
 
+
+
         public async Task Connect_TLS()
         {
             try
             {
-                if (vm.station_type == ComViewModel.StationTypes.BR && vm.is_BR_OSA) return;
+                if (vm.station_type == ComViewModel.StationTypes.BR && vm.is_BR_OSA)
+                {
+                    vm.Save_Log(new LogMember()
+                    {
+                        Status = "Connect TLS",
+                        Message = "Station type is BR and isOSA on",
+                        Result = "Connect Failed"
+                    });
+                    return;
+                }
 
                 switch (vm.Laser_type)
                 {
-                    case "Agilent":
+                    case ComViewModel.LaserType.Agilent:
 
                         #region Tunable Laser setting
                         if (!vm.isConnected)
@@ -2138,8 +2263,6 @@ namespace PD.Functions
                                 vm.tls.init();
 
                                 vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-
-                                
                             }
                             catch (Exception ex)
                             {
@@ -2147,12 +2270,14 @@ namespace PD.Functions
                                 vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
                                 MessageBox.Show(ex.StackTrace.ToString());
                             }
+
+                            return;
                         }
 
                         #endregion
 
                         #region PowerMeter Setting
-                        if(!vm.isConnected)
+                        if (!vm.isConnected)
                         {
                             vm.pm = new HPPM();
                             vm.pm.Addr = vm.pm_Addr;
@@ -2185,21 +2310,21 @@ namespace PD.Functions
 
                         break;
 
-                    case "Keysight":
+                    case ComViewModel.LaserType.Keysight:
 
                         #region Tunable Laser setting
                         if (!vm.isConnected)
                         {
                             vm.tls = new HPTLS();
+                            vm.tls.protocol = 1;
                             vm.tls.Addr_TCPIP = vm.TLS_TCPIP;
-                            vm.tls.BoardNumber = vm.tls_BoardNumber;
+                            //vm.tls.BoardNumber = vm.tls_BoardNumber;
 
                             try
                             {
                                 if (!vm.tls.Open())
                                 {
                                     vm.Str_cmd_read = "Connect Keysight TLS error, Check setting.";
-                                    //vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
                                     return;
                                 }
                                 else
@@ -2229,9 +2354,9 @@ namespace PD.Functions
 
                         break;
 
-                    case "Golight":
+                    case ComViewModel.LaserType.Golight:
 
-                        if(!vm.isConnected)
+                        if (!vm.isConnected)
                         {
                             if (!string.IsNullOrEmpty(vm.Golight_ChannelModel.Board_Port))
                             {
@@ -2291,6 +2416,83 @@ namespace PD.Functions
                         }
 
                         break;
+
+                    default:
+
+                        #region Tunable Laser setting
+                        if (!vm.isConnected)
+                        {
+                            vm.tls = new HPTLS();
+                            vm.tls.BoardNumber = vm.tls_BoardNumber;
+                            vm.tls.Addr = vm.tls_Addr;
+
+                            try
+                            {
+                                if (!vm.tls.Open())
+                                {
+                                    vm.Str_cmd_read = "GPIB Setting Error, Check Address.";
+                                    vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                    return;
+                                }
+                                else
+                                {
+                                    double d = vm.tls.ReadWL();
+                                    if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
+                                    {
+                                        vm.Str_cmd_read = "Laser Connection Failed";
+                                        vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                        return;
+                                    }
+                                }
+                                vm.tls.init();
+
+                                vm.Double_Laser_Wavelength = vm.tls.ReadWL();
+                            }
+                            catch (Exception ex)
+                            {
+                                vm.Str_cmd_read = "TLS GPIB Setting Error";
+                                vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
+
+                            return;
+                        }
+
+                        #endregion
+
+                        #region PowerMeter Setting
+                        if (!vm.isConnected)
+                        {
+                            vm.pm = new HPPM();
+                            vm.pm.Addr = vm.pm_Addr;
+                            vm.pm.Slot = vm.PM_slot;
+                            vm.pm.BoardNumber = vm.pm_BoardNumber;
+                            if (vm.pm.Open() == false)
+                            {
+                                vm.Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
+                                vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                return;
+                            }
+                            vm.pm.init();
+                            vm.pm.setUnit(1);
+                            vm.pm.AutoRange(true);
+                            vm.pm.aveTime(vm.PM_AveTime);
+
+                            try
+                            {
+                                if (vm.pm.Open())
+                                    vm.Double_PM_Wavelength = vm.pm.ReadWL();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
+                        }
+
+                        vm.isConnected = true;
+                        #endregion                      
+
+                        break;
                 }
             }
             catch (Exception ex)
@@ -2305,16 +2507,20 @@ namespace PD.Functions
             {
                 if (!vm.isConnected) await Connect_TLS();
 
-                if (vm.isConnected) 
-                { 
+                if (vm.isConnected)
+                {
                     switch (vm.Laser_type)
                     {
-                        case "Agilent":
+                        case ComViewModel.LaserType.Agilent:
                             vm.tls.SetActive(_laserActive);
                             break;
 
-                        case "Golight":
+                        case ComViewModel.LaserType.Golight:
                             vm.tls_GL.SetActive(_laserActive);
+                            break;
+
+                        case ComViewModel.LaserType.Keysight:
+                            vm.tls.SetActive(_laserActive);
                             break;
                     }
 
@@ -2326,7 +2532,7 @@ namespace PD.Functions
                 MessageBox.Show(ex.StackTrace.ToString());
             }
         }
-             
+
         HPPDL pdl;
 
         public void PDL_Connect()
@@ -2436,12 +2642,11 @@ namespace PD.Functions
 
         public void Lambda_Scan_Setting(double Start_WL, double End_WL)
         {
-            if (vm.Laser_type == "Agilent")
+            if (vm.Laser_type == ComViewModel.LaserType.Agilent)
             {
                 double StepWL = 0.16;   //nm, wavelength sweep step 要改為 0.16nm 這是固定值. 因為韌體在移動Mirror時, 就是以 0.16nm/4ms
-                               
+
                 lambda_scan.LambdaScan_STF_Mode_Setting(hp816x, vm.tls_Addr, Start_WL, End_WL, StepWL, m_HiSpeed, (int)vm.Double_Laser_Power);
-                
             }
         }
 
@@ -2562,14 +2767,16 @@ namespace PD.Functions
 
                 switch (vm.Laser_type)
                 {
-                    case "Agilent":
-                        //vm.tls.SetWL(wl);
+                    case ComViewModel.LaserType.Agilent:
                         await Task.Run(() => vm.tls.SetWL(wl));
                         break;
 
-                    case "Golight":
-                        //vm.tls_GL.SetWL((float)wl);
+                    case ComViewModel.LaserType.Golight:
                         await Task.Run(() => vm.tls_GL.SetWL((float)wl));
+                        break;
+
+                    case ComViewModel.LaserType.Keysight:
+                        await Task.Run(() => vm.tls.SetWL(wl));
                         break;
                 }
 
@@ -2582,14 +2789,12 @@ namespace PD.Functions
 
                 Set_TLS_Filter(wl, false);
 
-                //await Task.Delay(vm.Int_Read_Delay);
-
                 if (readback)
                 {
                     double wl_read = 0;
                     switch (vm.Laser_type)
                     {
-                        case "Agilent":
+                        case ComViewModel.LaserType.Agilent:
                             wl_read = vm.tls.ReadWL();
                             if (wl_read > 0)
                                 vm.Double_Laser_Wavelength = wl_read;
@@ -2597,7 +2802,7 @@ namespace PD.Functions
                                 vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
                             break;
 
-                        case "Golight":
+                        case ComViewModel.LaserType.Golight:
 
                             wl_read = vm.tls_GL.ReadWL();
 
@@ -2606,7 +2811,14 @@ namespace PD.Functions
 
                             if (wl_read != wl)
                                 vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "SetWL failed" });
+                            break;
 
+                        case ComViewModel.LaserType.Keysight:
+                            wl_read = vm.tls.ReadWL();
+                            if (wl_read > 0)
+                                vm.Double_Laser_Wavelength = wl_read;
+                            else
+                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
                             break;
                     }
 
@@ -2616,7 +2828,7 @@ namespace PD.Functions
                                 vm.Double_PM_Wavelength = vm.pm.ReadWL();
                 }
 
-                if (vm.station_type== ComViewModel.StationTypes.Testing)
+                if (vm.station_type == ComViewModel.StationTypes.Testing)
                 {
                     if (vm.float_WL_Ref.Count != 0)
                         vm.Double_PM_Ref = vm.float_WL_Ref[0];
@@ -2645,14 +2857,20 @@ namespace PD.Functions
 
                 switch (vm.Laser_type)
                 {
-                    case "Agilent":
-                        //vm.tls.SetWL(wl);
+                    case ComViewModel.LaserType.Agilent:
                         await Task.Run(() => vm.tls.SetWL(wl));
                         break;
 
-                    case "Golight":
-                        //vm.tls_GL.SetWL((float)wl);
+                    case ComViewModel.LaserType.Golight:
                         await Task.Run(() => vm.tls_GL.SetWL((float)wl));
+                        break;
+
+                    case ComViewModel.LaserType.Keysight:
+                        await Task.Run(() => vm.tls.SetWL(wl));
+                        break;
+
+                    default:
+                        await Task.Run(() => vm.tls.SetWL(wl));
                         break;
                 }
 
@@ -2672,7 +2890,7 @@ namespace PD.Functions
                     double wl_read = 0;
                     switch (vm.Laser_type)
                     {
-                        case "Agilent":
+                        case ComViewModel.LaserType.Agilent:
                             wl_read = vm.tls.ReadWL();
                             if (wl_read > 0)
                                 vm.Double_Laser_Wavelength = wl_read;
@@ -2680,7 +2898,7 @@ namespace PD.Functions
                                 vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
                             break;
 
-                        case "Golight":
+                        case ComViewModel.LaserType.Golight:
 
                             wl_read = vm.tls_GL.ReadWL();
 
@@ -2689,7 +2907,22 @@ namespace PD.Functions
 
                             if (wl_read != wl)
                                 vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "SetWL failed" });
+                            break;
 
+                        case ComViewModel.LaserType.Keysight:
+                            wl_read = vm.tls.ReadWL();
+                            if (wl_read > 0)
+                                vm.Double_Laser_Wavelength = wl_read;
+                            else
+                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
+                            break;
+
+                        default:
+                            wl_read = vm.tls.ReadWL();
+                            if (wl_read > 0)
+                                vm.Double_Laser_Wavelength = wl_read;
+                            else
+                                vm.Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
                             break;
                     }
 
@@ -2716,14 +2949,20 @@ namespace PD.Functions
 
                 switch (vm.Laser_type)
                 {
-                    case "Agilent":
-                        //vm.tls.SetPower(power);
+                    case ComViewModel.LaserType.Agilent:
                         await Task.Run(() => vm.tls.SetPower(power));
                         break;
 
-                    case "Golight":
-                        //vm.tls_GL.SetPower(power);
+                    case ComViewModel.LaserType.Golight:
                         await Task.Run(() => vm.tls_GL.SetPower(power));
+                        break;
+
+                    case ComViewModel.LaserType.Keysight:
+                        await Task.Run(() => vm.tls.SetPower(power));
+                        break;
+
+                    default:
+                        await Task.Run(() => vm.tls.SetPower(power));
                         break;
                 }
 
@@ -2737,6 +2976,47 @@ namespace PD.Functions
             }
             catch { vm.Save_Log("Set TLS Power", "Set Power Error", true); }
         }
+
+        //public void SendCommand(string cmd)
+        //{
+        //    try
+        //    {
+        //        if (vm.device != null)
+        //        {
+        //            vm.device.Write(cmd);
+        //        }
+        //    }
+        //    catch { }
+        //}
+
+        //public string ReadGPIB()
+        //{
+        //    try
+        //    {
+        //        if (vm.device != null)
+        //        {
+        //            return vm.device.ReadString();
+        //        }
+        //        return "-100";
+        //    }
+        //    catch 
+        //    {
+        //        return "-100";
+        //    }
+        //}
+
+        //public async void init_OSA()
+        //{
+        //    SendCommand("*RST");
+        //    SendCommand("DISP:WIND:TRAC:STAT TRB,ON");
+        //    SendCommand("INIT:CONT OFF");
+        //    SendCommand("*OPC?");
+        //    while (Convert.ToInt32(ReadGPIB()) != 1)
+        //    {
+        //        //Thread.Sleep(200);
+        //        await Task.Delay(200);
+        //    }
+        //}
 
         public bool Init_TLS_Filter()
         {
@@ -2808,7 +3088,7 @@ namespace PD.Functions
             catch
             {
                 vm.Str_cmd_read = "Set TLS Filter Error";
-                vm.Save_Log(new LogMember() { isShowMSG = false, Status = "Set TLS WL", Result = "Set TLS Filter Failed", Message = $"WL : {wl}" }) ;
+                vm.Save_Log(new LogMember() { isShowMSG = false, Status = "Set TLS WL", Result = "Set TLS Filter Failed", Message = $"WL : {wl}" });
             }
         }
 
@@ -3111,7 +3391,6 @@ namespace PD.Functions
                         double p = await Get_PM_Value((ch - 1));  //Y axis value
                         str = p.ToString();
 
-                        //vm.list_GaugeModels[ch - 1].GaugeValue = p.ToString();
                         break;
 
                     case "PD":
@@ -3180,7 +3459,7 @@ namespace PD.Functions
                     {
                         case "PM":
                             double p = await Get_PM_Value((ch));  //Y axis value
-                            
+
                             break;
 
                         case "PD":
@@ -3226,12 +3505,12 @@ namespace PD.Functions
                                         //Show read back message
                                         string msg = anly.Read_analysis("P0_Read", dataBuffer);
 
-                                        if (vm.Double_Powers[ch]!=0 && !string.IsNullOrEmpty(msg))
+                                        if (vm.Double_Powers[ch] != 0 && !string.IsNullOrEmpty(msg))
                                         {
                                             int loop = vm.Double_Powers.Count / vm.ch_count;
                                             for (int i = 0; i < loop; i++)
                                             {
-                                                vm.list_GaugeModels[ch].GaugeValue = vm.Double_Powers[ch + (8*i)].ToString();
+                                                vm.list_GaugeModels[ch].GaugeValue = vm.Double_Powers[ch + (8 * i)].ToString();
 
                                                 //Only distributedSystem will auto update chart
                                                 if (!vm.IsDistributedSystem && vm.Is_FastScan_Mode)
@@ -3441,8 +3720,8 @@ namespace PD.Functions
             {
                 if (vm.port_PD.IsOpen)
                 {
-                    vm.Str_Command = string.Concat("P", ch + 1, "?");
-                    vm.port_PD.Write("P0?" + "\r");
+                    vm.Str_Command = $"P{ch + 1}?";
+                    vm.port_PD.Write("P0?\r");
 
                     await Task.Delay(vm.Int_Read_Delay);
 
@@ -3468,12 +3747,17 @@ namespace PD.Functions
                     await vm.Port_ReOpen(comport);
             }
 
-            for (int i = 0; i < 3; i++)
+            if (!vm.port_PD.IsOpen)
             {
-                if (!vm.port_PD.IsOpen)
-                    await Task.Delay(100);
+                return new List<double>();
             }
-           
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    if (!vm.port_PD.IsOpen)
+            //        await Task.Delay(100);
+            //    else break;
+            //}
+
             vm.port_PD.Write(cmd + "\r");
 
             await Task.Delay(vm.Int_Read_Delay);
@@ -3485,25 +3769,25 @@ namespace PD.Functions
             //Show read back message
             string msg = anly.Read_analysis(cmd, dataBuffer);
 
-            double power = double.Parse(msg);
-            try
-            {
-                if (vm.dB_or_dBm)  //dB
-                {
-                    if (vm.float_WL_Ref.Count > 0)
-                        power = Math.Round(power - vm.float_WL_Ref[0], 4);
+            //double power = double.Parse(msg);
 
-                    vm.Double_Powers[ch - 1] = power;
-                }
-                else  //dBm
-                {
-                    vm.Double_Powers[ch - 1] = power;
-                }
-                //vm.list_GaugeModels[ch-1].GaugeValue = vm.Double_Powers[ch-1].ToString();
+            //try
+            //{
+            //    if (vm.dB_or_dBm)  //dB
+            //    {
+            //        if (vm.float_WL_Ref.Count > 0)
+            //            power = Math.Round(power - vm.float_WL_Ref[0], 4);
 
-                await Task.Delay(vm.Int_Set_WL_Delay);
-            }
-            catch (Exception ex) { MessageBox.Show(ex.StackTrace.ToString()); }
+            //        vm.Double_Powers[ch - 1] = power;
+            //    }
+            //    else  //dBm
+            //    {
+            //        vm.Double_Powers[ch - 1] = power;
+            //    }
+
+            //    await Task.Delay(vm.Int_Set_WL_Delay);
+            //}
+            //catch (Exception ex) { MessageBox.Show(ex.StackTrace.ToString()); }
 
             return vm.Double_Powers;
         }
@@ -3603,6 +3887,7 @@ namespace PD.Functions
             return listDD;
         }
 
+
         public async Task<string> Get_PD_Value(string comport)
         {
             if (!string.IsNullOrEmpty(comport))
@@ -3618,10 +3903,11 @@ namespace PD.Functions
             else
                 await Task.Delay(vm.Int_Write_Delay);
 
-            string str = await Cmd_RecieveData("P0_Read", false);
+            string str = await Cmd_RecieveData_BufferJudge("P0_Read", false);
+
             return str;
         }
-              
+
         public async Task<double> Get_PM_Value(int ch) //PM Value save in vm.Double_Powers
         {
             double power = 0;
@@ -3629,14 +3915,15 @@ namespace PD.Functions
             {
                 if (vm.dB_or_dBm)  //dB
                 {
-                    power = Math.Round(vm.pm.ReadPower() - vm.float_WL_Ref[0], vm.decimal_place);
-                    vm.Double_Powers[ch] = power;
+                    double refValue = vm.float_WL_Ref.Count > 0 ? vm.float_WL_Ref[0] : 0;
+
+                    power = Math.Round(vm.pm.ReadPower() - refValue, vm.decimal_place);
                 }
                 else  //dBm
-                {
                     power = Math.Round(vm.pm.ReadPower(), vm.decimal_place);
-                    vm.Double_Powers[ch] = power;
-                }
+
+                vm.Double_Powers[ch] = power;
+
                 vm.list_GaugeModels[ch].GaugeValue = vm.Double_Powers[ch].ToString();
 
                 await Task.Delay(vm.Int_Set_WL_Delay);
@@ -3686,8 +3973,8 @@ namespace PD.Functions
                 {
                     vm.Str_Status = "OSA Initializing";
                     vm.OSA.protocol = 0;
-                    vm.OSA.BoardNumber = vm.tls_BoardNumber;
-                    vm.OSA.Addr = vm.tls_Addr;
+                    vm.OSA.BoardNumber = vm.OSA_BoardNumber;
+                    vm.OSA.Addr = vm.OSA_Addr;
                     vm.OSA.Open();
                     vm.OSA.init();
 
@@ -3894,28 +4181,6 @@ namespace PD.Functions
 
                 string WL_Dac_Now = vm.list_BR_DAC_WL[i];
                 string INOUT = vm.BR_INOut ? "OUT" : "IN";
-                string ProductType = "";
-                if (vm.list_GaugeModels.First().GaugeSN.Length > 7)
-                {
-                    switch (vm.list_GaugeModels.First().GaugeSN.ToUpper()[5])
-                    {
-                        case 'U':
-                            ProductType = "UTF";
-                            break;
-
-                        case 'A':
-                            ProductType = "UFA";
-                            break;
-
-                        case 'C':
-                            ProductType = "CTF";
-                            break;
-
-                        case 'M':
-                            ProductType = "UFA";
-                            break;
-                    }
-                }
 
                 string filePath = Path.Combine(vm.txt_BR_Save_Path, $"{vm.list_GaugeModels.First().GaugeSN}-{WL_Dac_Now}-{INOUT}.txt");
 
@@ -3926,11 +4191,6 @@ namespace PD.Functions
 
                     using (StreamWriter sr = new StreamWriter(filePath))
                     {
-                        //sr.WriteLine($"\"{vm.list_GaugeModels.First().GaugeSN}-{WL_Dac_Now}-{INOUT}\",4,\"{ProductType} BR\"");
-                        //sr.WriteLine($"\"Traces\",1,0");
-                        //sr.WriteLine($"2,1,{vm.float_WL_Scan_Start},{vm.float_WL_Scan_End},{vm.float_WL_Scan_Gap},{(Math.Abs(vm.float_WL_Scan_End - vm.float_WL_Scan_Start) / vm.float_WL_Scan_Gap) + 1}");
-                        //sr.WriteLine($"-9999,0,-1,-1,-1,{(Math.Abs(vm.float_WL_Scan_End - vm.float_WL_Scan_Start) / vm.float_WL_Scan_Gap) + 1}");
-
                         foreach (DataPoint dp in vm.Plot_Series[i].Points)
                         {
                             if (vm.dB_or_dBm)
@@ -3946,9 +4206,6 @@ namespace PD.Functions
                                 sr.WriteLine($"{dp.X},{Math.Round(dp.Y + vm.BR_Diff - ref_value, 3)}");  //dBm mode, chart points IL wasn't minus ref value, have to convert dBm to dB to save data.
                             }
                         }
-
-                        //sr.WriteLine($"\"Points,1\"");
-                        //sr.WriteLine($"1,0,-6969,0");
 
                         sr.Close();
                     }
@@ -3996,7 +4253,16 @@ namespace PD.Functions
             vm.Save_PD_Value = new List<DataPoint>();
             vm.Save_All_PD_Value = Analysis.ListDefine<DataPoint>(vm.Save_All_PD_Value, vm.ch_count, new List<DataPoint>());
 
-            vm.ChartNowModel = new ChartModel(vm.ch_count);
+            if (vm.station_type == ComViewModel.StationTypes.BR)
+            {
+                ObservableCollection<BR_Model> cmTemp = new ObservableCollection<BR_Model>(vm.ChartNowModel.list_BR_Model);
+                vm.ChartNowModel = new ChartModel(vm.ch_count);
+                vm.ChartNowModel.list_BR_Model = new ObservableCollection<BR_Model>(cmTemp);
+            }
+            else
+                vm.ChartNowModel = new ChartModel(vm.ch_count);
+
+            vm.ChartNowModel.list_delta_IL.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
 
             vm.LineAnnotation_X_1.StrokeThickness = 0;
             vm.LineAnnotation_X_2.StrokeThickness = 0;
@@ -4019,7 +4285,7 @@ namespace PD.Functions
                 {
                     Button_Color = i < vm.list_brushes.Count() ? vm.list_brushes[i] : vm.list_brushes[i - vm.list_brushes.Count()],
                     Button_Channel = i + 1,
-                    Button_Content = $"Ch {i+1}",
+                    Button_Content = $"Ch {i + 1}",
                     Button_IsChecked = true,
                     Button_IsVisible = Visibility.Visible,
                     Button_Tag = "../../Resources/right-arrow.png"
@@ -4108,7 +4374,10 @@ namespace PD.Functions
             vm.Update_ALL_PlotView();
         }
 
-
+        /// <summary>
+        /// Save ChartNowModel into list_charts
+        /// </summary>
+        /// <returns></returns>
         public async Task Save_Chart()
         {
             ChartModel nowChartModel = new ChartModel(vm.ChartNowModel);
@@ -4153,7 +4422,10 @@ namespace PD.Functions
         {
             #region Set Chart data points   
 
-            if (vm.station_type == ComViewModel.StationTypes.Testing || vm.station_type == ComViewModel.StationTypes.UTF600 || vm.station_type== ComViewModel.StationTypes.Hermetic_Test || vm.IsDistributedSystem)
+            if (vm.station_type == ComViewModel.StationTypes.Testing
+                || vm.station_type == ComViewModel.StationTypes.UTF600
+                || vm.station_type == ComViewModel.StationTypes.Hermetic_Test
+                || vm.IsDistributedSystem)
             {
                 if (vm.isTimerOn)
                 {
@@ -4170,11 +4442,11 @@ namespace PD.Functions
                     vm.int_timer_sec = time.Seconds;
                 }
 
-                vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
+                //vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
 
-                vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
 
-                vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+                //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
 
 
                 vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
@@ -4184,11 +4456,11 @@ namespace PD.Functions
             //PD mode
             else if (!vm.PD_or_PM)
             {
-                vm.Save_All_PD_Value[ch].Add(new DataPoint(Math.Round(X, 2), Y));
+                //vm.Save_All_PD_Value[ch].Add(new DataPoint(Math.Round(X, 2), Y));
 
-                vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
 
-                vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+                //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
 
 
                 vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
@@ -4212,17 +4484,99 @@ namespace PD.Functions
                     vm.int_timer_sec = time.Seconds;
                 }
 
-                vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
+                //vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
 
-                vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
 
-                vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+                //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
 
                 vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
                 vm.Update_ALL_PlotView();
             }
             #endregion
         }
+
+        /// <summary>
+        /// Add a new datapoint into selected plotview series
+        /// </summary>
+        /// <param name="X">Datapoint.X</param>
+        /// <param name="Y">Datapoint.Y</param>
+        /// <param name="ch">Selected Channel (Series)</param>
+        public void Update_Chart_Data(double X, double Y, int ch)
+        {
+            #region Set Chart data points   
+
+            if (vm.station_type == ComViewModel.StationTypes.Testing
+                || vm.station_type == ComViewModel.StationTypes.UTF600
+                || vm.station_type == ComViewModel.StationTypes.Hermetic_Test
+                || vm.IsDistributedSystem)
+            {
+                if (vm.isTimerOn)
+                {
+                    if (X > vm.int_timer_timespan)
+                    {
+                        vm.IsGoOn = false;
+                        vm.isTimerOn = false;
+                    }
+
+                    // 更新Timer顯示的"剩餘時間"
+                    TimeSpan time = new TimeSpan(0, 0, vm.int_timer_timespan - (int)X);
+                    vm.int_timer_hrs = time.Hours;
+                    vm.int_timer_min = time.Minutes;
+                    vm.int_timer_sec = time.Seconds;
+                }
+
+                //vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
+
+                //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+
+                //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+
+
+                vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
+            }
+
+            //PD mode
+            else if (!vm.PD_or_PM)
+            {
+                //vm.Save_All_PD_Value[ch].Add(new DataPoint(Math.Round(X, 2), Y));
+
+                //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+
+                //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+
+
+                vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
+            }
+
+            else
+            {
+                if (vm.isTimerOn)
+                {
+                    if (X > vm.int_timer_timespan)
+                    {
+                        vm.IsGoOn = false;
+                        vm.isTimerOn = false;
+                    }
+
+                    // 更新Timer顯示的"剩餘時間"
+                    TimeSpan time = new TimeSpan(0, 0, vm.int_timer_timespan - (int)X);
+                    vm.int_timer_hrs = time.Hours;
+                    vm.int_timer_min = time.Minutes;
+                    vm.int_timer_sec = time.Seconds;
+                }
+
+                //vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
+
+                //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+
+                //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+
+                vm.Plot_Series[ch].Points.Add(new DataPoint(X, Y));
+            }
+            #endregion
+        }
+
 
         public void Update_DeltaIL(int dataCount)
         {
@@ -4235,7 +4589,7 @@ namespace PD.Functions
                 vm.list_ch_title.Clear();
                 for (int i = 0; i < vm.ch_count; i++)
                 {
-                    vm.list_ch_title.Add($"Ch{i+1}");
+                    vm.list_ch_title.Add($"Ch{i + 1}");
                     if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
                     {
                         vm.maxIL[i] = 0;
@@ -4249,6 +4603,8 @@ namespace PD.Functions
                 {
                     if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
                     {
+                        if (vm.ChartNowModel.list_dataPoints[i].Count <= 0) continue;
+
                         power = vm.ChartNowModel.list_dataPoints[i].Last().Y;
                         vm.maxIL[i] = power;
                         vm.minIL[i] = power;
@@ -4261,6 +4617,8 @@ namespace PD.Functions
                 {
                     if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
                     {
+                        if (vm.ChartNowModel.list_dataPoints[i].Count <= 0) continue;
+
                         power = vm.ChartNowModel.list_dataPoints[i].Last().Y;
                         vm.maxIL[i] = power > vm.maxIL[i] ? power : vm.maxIL[i];
                         vm.minIL[i] = power < vm.minIL[i] ? power : vm.minIL[i];
@@ -4290,7 +4648,7 @@ namespace PD.Functions
         public void Update_DeltaIL()
         {
             double power = 0;
-           
+
             for (int i = 0; i < vm.ch_count; i++)
             {
                 if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)

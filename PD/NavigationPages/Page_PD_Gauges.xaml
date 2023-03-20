@@ -164,7 +164,7 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <oxy:Plot x:Name="Plot_Chart"
+            <!--<oxy:Plot x:Name="Plot_Chart"
                       Title="Power"
                       Visibility="Collapsed"
                       Grid.Column="1"
@@ -219,7 +219,7 @@
                                     Visibility="{Binding LineSeries_Visible[7]}"
                                     Color="Chocolate" />
                 </oxy:Plot.Series>
-            </oxy:Plot>
+            </oxy:Plot>-->
 
             <oxy:PlotView x:Name="mainPlotView"
                           Visibility="{Binding GaugeChart_visible}"

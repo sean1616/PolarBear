@@ -64,8 +64,8 @@ namespace PD.NavigationPages
 
             anly = new Analysis(vm);
 
-            sb_bear_shake = FindResource("Storyboard_Bear_Shake") as System.Windows.Media.Animation.Storyboard;
-            sb_bear_reset = FindResource("Storyboard_Bear_Reset") as System.Windows.Media.Animation.Storyboard;
+            //sb_bear_shake = FindResource("Storyboard_Bear_Shake") as System.Windows.Media.Animation.Storyboard;
+            //sb_bear_reset = FindResource("Storyboard_Bear_Reset") as System.Windows.Media.Animation.Storyboard;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -79,13 +79,16 @@ namespace PD.NavigationPages
 
             vm.Update_ALL_PlotView();
 
-            if (sb_bear_shake != null)
-                sb_bear_shake.Begin();
+            vm.sb_bear_shake = FindResource("Storyboard_Bear_Shake") as System.Windows.Media.Animation.Storyboard;
+            vm.sb_bear_reset = FindResource("Storyboard_Bear_Reset") as System.Windows.Media.Animation.Storyboard;
 
-            if (sb_bear_reset != null)
+            if (vm.sb_bear_shake != null)
+                vm.sb_bear_shake.Begin();
+
+            if (vm.sb_bear_reset != null)
             {
-                sb_bear_reset.Begin();
-                sb_bear_reset.Pause();
+                vm.sb_bear_reset.Begin();
+                vm.sb_bear_reset.Pause();
             }
         }
 
@@ -1611,8 +1614,8 @@ namespace PD.NavigationPages
 
         private void ToggleBtn_LaserActive_Checked(object sender, RoutedEventArgs e)
         {
-            vm.isConnected = false;
-            cmd.Set_TLS_Active(vm.isLaserActive);
+            //vm.isConnected = false;
+            //cmd.Set_TLS_Active(vm.isLaserActive);
         }
 
         private void TextBox_WL_Scan_KeyDown(object sender, KeyEventArgs e)

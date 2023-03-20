@@ -318,7 +318,7 @@ namespace PD.AnalysisModel
                 var orderedSeries = vm.Chart_DataPoints.OrderBy(o => o.Y).ToList();
 
                 int index_max = vm.Chart_DataPoints.IndexOf(orderedSeries.Last());
-                OxyPlot.DataPoint dp_IL_Max = orderedSeries.Last();
+                DataPoint dp_IL_Max = orderedSeries.Last();
                 double IL_Max = dp_IL_Max.Y;
 
                 double bwSetting = 0;
@@ -448,7 +448,6 @@ namespace PD.AnalysisModel
                     vm.ChartNowModel.FOM = 0;
 
                 #endregion
-
 
                 #region Cal. SMR
 
@@ -622,7 +621,6 @@ namespace PD.AnalysisModel
                 }
 
                 #endregion
-
             }
         }
 
@@ -925,16 +923,18 @@ namespace PD.AnalysisModel
 
                     if (vm.dB_or_dBm)   //dB
                     {
-                        int ch = 0;  //Channel No.
-                        foreach (string x in list_read_value)
+                        for (int i = 0; i < list_read_value.Count; i++)
                         {
-                            if (x != "")
+                            if (!string.IsNullOrEmpty(list_read_value[i]))
                             {
-                                double y = Math.Round(Convert.ToDouble(x) - vm.float_WL_Ref[ch], vm.decimal_place);  //y is 0~-64dB in double type
+                                double refValue = 0;
+                                if (vm.float_WL_Ref.Count > i)
+                                    refValue = vm.float_WL_Ref[i];
+
+                                double y = Math.Round(Convert.ToDouble(list_read_value[i]) - refValue, vm.decimal_place);  //y is 0~-64dB in double type
                                 list_dB_readpower.Add(y.ToString());
                                 vm.Double_Powers.Add(y);  //list 0~-64dBm in float type
                             }
-                            ch++;
                         }
                     }
                     else  //dBm
@@ -994,12 +994,31 @@ namespace PD.AnalysisModel
                     vm.Double_Powers = new List<double>();
                     list_dB_readpower = new List<string>();
 
-                    foreach (string x in list_read_value)
+                    if (vm.dB_or_dBm)   //dB
                     {
-                        if (!string.IsNullOrEmpty(x))
+                        for (int i = 0; i < list_read_value.Count; i++)
                         {
-                            double y = Math.Round(Convert.ToDouble(x), vm.decimal_place);  //y is 0~-64dBm in float type       
-                            vm.Double_Powers.Add(y);  //list 0~-64dBm in float type
+                            if (!string.IsNullOrEmpty(list_read_value[i]))
+                            {
+                                double refValue = 0;
+                                if (vm.float_WL_Ref.Count > i)
+                                    refValue = vm.float_WL_Ref[i];
+
+                                double y = Math.Round(Convert.ToDouble(list_read_value[i]) - refValue, vm.decimal_place);  //y is 0~-64dB in double type
+                                list_dB_readpower.Add(y.ToString());
+                                vm.Double_Powers.Add(y);  //list 0~-64dBm in float type
+                            }
+                        }
+                    }
+                    else  //dBm
+                    {
+                        foreach (string x in list_read_value)
+                        {
+                            if (!string.IsNullOrEmpty(x))
+                            {
+                                double y = Math.Round(Convert.ToDouble(x), vm.decimal_place);  //y is 0~-64dBm in float type       
+                                vm.Double_Powers.Add(y);  //list 0~-64dBm in float type
+                            }
                         }
                     }
 
@@ -1333,6 +1352,14 @@ namespace PD.AnalysisModel
             string txt = Encoding.ASCII.GetString(dataBuffer);
             list_read_value.Add(Encoding.ASCII.GetString(dataBuffer));
             return txt;
+        }
+
+        public string GetMessage_Indepen(byte[] dataBuffer)
+        {
+            dataBuffer = dataBuffer.Where(val => val != 10).ToArray(); //remove "10"    
+            dataBuffer = dataBuffer.Where(val => val != 13).ToArray(); //remove "13"    
+            dataBuffer = dataBuffer.Where(val => val != 62).ToArray(); //remove "62"   >   
+            return Encoding.ASCII.GetString(dataBuffer);
         }
 
         public CurveFittingResultModel CurFitting(List<DataPoint> list_datapoint)

@@ -6,7 +6,7 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:local="clr-namespace:PD.NavigationPages"
              xmlns:vm="clr-namespace:PD.ViewModel"
-             xmlns:fnc ="clr-namespace:PD.Functions"
+             xmlns:fnc="clr-namespace:PD.Functions"
              xmlns:sector_btn="clr-namespace:PD.UI"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="clr-namespace:PD.UI"
@@ -15,14 +15,14 @@
              xmlns:uc="clr-namespace:Wpf_Control_Library;assembly=Wpf_Control_Library"
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              d:DesignHeight="1080"
-             d:DesignWidth="1920"       
+             d:DesignWidth="1920"
              FontFamily="Segoe Print"
              FontWeight="ExtraBold"
              Style="{StaticResource UCAll}"
-             Background="Transparent"     
+             Background="Transparent"
              Loaded="UserControl_Loaded"
              mc:Ignorable="d">
-    
+
     <UserControl.Resources>
 
         <Style x:Key="BorderStyle1"
@@ -80,7 +80,7 @@
                                               VerticalAlignment="Top"
                                               TextBlock.FontSize="14"
                                               TextBlock.FontFamily="Segoe Print"
-                                              TextBlock.Foreground="Black"/>
+                                              TextBlock.Foreground="Black" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="HasDropShadow"
@@ -97,28 +97,39 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        <Storyboard x:Key="Storyboard_Bear_Shake" RepeatBehavior="Forever">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="image">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="15"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="-15"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="15"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.1" Value="-15"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="15"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:3.3" Value="-15"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:3.6" Value="0"/>
+
+        <Storyboard x:Key="Storyboard_Bear_Shake"
+                    RepeatBehavior="Forever">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)"
+                                           Storyboard.TargetName="image">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3"
+                                      Value="15" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9"
+                                      Value="-15" />
+                <EasingDoubleKeyFrame KeyTime="0:0:1.5"
+                                      Value="15" />
+                <EasingDoubleKeyFrame KeyTime="0:0:2.1"
+                                      Value="-15" />
+                <EasingDoubleKeyFrame KeyTime="0:0:2.7"
+                                      Value="15" />
+                <EasingDoubleKeyFrame KeyTime="0:0:3.3"
+                                      Value="-15" />
+                <EasingDoubleKeyFrame KeyTime="0:0:3.6"
+                                      Value="0" />
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Key="Storyboard_Bear_Reset">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="image">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)"
+                                           Storyboard.TargetName="image">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3"
+                                      Value="0" />
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
 
     </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource Storyboard_Bear_Reset}"/>
+            <BeginStoryboard Storyboard="{StaticResource Storyboard_Bear_Reset}" />
         </EventTrigger>
     </UserControl.Triggers>
 
@@ -129,10 +140,11 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="3.6*" />
-            <RowDefinition Name="grid_second_rowdefinition" Height="*"/>
+            <RowDefinition Name="grid_second_rowdefinition"
+                           Height="*" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer x:Name="viewer" 
+        <ScrollViewer x:Name="viewer"
                       Background="White">
             <ItemsControl x:Name="itms_gauges"
                           HorizontalAlignment="Left"
@@ -176,7 +188,7 @@
                                          bool_Gauge_ContinueSelect="{Binding GaugeContinueSelect}"
                                          Width="{Binding ActualWidth, ElementName=border_Standard, Mode=OneWay}"
                                          Height="{Binding ActualHeight, ElementName=border_Standard, Mode=OneWay}"
-                                         Margin="10"/>
+                                         Margin="10" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -185,88 +197,112 @@
         <!--Optical Result for Testing Mode-->
         <Grid Visibility="{Binding GaugeChart_visible}">
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.2*"/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="1.2*" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Border x:Name="border_Standard" Grid.Column="0" />
+            <Border x:Name="border_Standard"
+                    Grid.Column="0" />
 
-            <!--Chart for Testing Mode--> <oxy:PlotView x:Name="mainPlotView"
-                                          Model="{Binding PlotViewModel_UTF600, Mode=OneWay}"
-                                          Background="White"
-                                          BorderBrush="Black"
+            <!--Chart for Testing Mode-->
+            <oxy:PlotView x:Name="mainPlotView"
+                          Model="{Binding PlotViewModel_UTF600, Mode=OneWay}"
+                          Background="White"
+                          BorderBrush="Black"
                           Margin="15,5,25,5"
                           FontFamily="Segoe Print"
-                                         Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="2"
-                          >
+                          Grid.Column="1"
+                          Grid.ColumnSpan="3"
+                          Grid.RowSpan="2">
             </oxy:PlotView>
-           
+
 
 
             <!--Bandwidth information-->
-            <Grid Grid.Row="1" Margin="40,10,40,30">
+            <Grid Grid.Row="1"
+                  Margin="40,10,40,30">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
-                <Border Grid.ColumnSpan="3" Grid.RowSpan="7" BorderBrush="#FFD6D6D6" BorderThickness="1" CornerRadius="12"/>
-                <Border Grid.ColumnSpan="3" CornerRadius="12,12,0,0" x:Name="border_GridTitle"
-                    Background="#FF1FCCD4"
-                     />
-                <TextBlock x:Name="txt_titile_bw" Text="BW"
-                        FontFamily="Segoe Print"
+                <Border Grid.ColumnSpan="3"
+                        Grid.RowSpan="7"
+                        BorderBrush="#FFD6D6D6"
+                        BorderThickness="1"
+                        CornerRadius="12" />
+                <Border Grid.ColumnSpan="3"
+                        CornerRadius="12,12,0,0"
+                        x:Name="border_GridTitle"
+                        Background="#FF1FCCD4" />
+                <TextBlock x:Name="txt_titile_bw"
+                           Text="BW"
+                           FontFamily="Segoe Print"
                            Foreground="White"
                            FontSize="19"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
                 <TextBlock Text="Value"
-                       Grid.Column="1"
-                       FontFamily="Segoe Print"
+                           Grid.Column="1"
+                           FontFamily="Segoe Print"
                            FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
-                            Foreground="White"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Grid.Row="0" />
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Grid.Row="0" />
                 <TextBlock Text="CWL"
-                       Grid.Column="2"
-                       FontFamily="Segoe Print"
+                           Grid.Column="2"
+                           FontFamily="Segoe Print"
                            FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
-                            Foreground="White"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Grid.Row="0" />
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Grid.Row="0" />
 
                 <Grid Grid.Row="1">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Text="{Binding ChartNowModel.BW_Setting_1, Mode=TwoWay}" FontSize="{Binding FontSize, ElementName=txt_titile_bw}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
-                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                        <TextBox Text="{Binding ChartNowModel.BW_Setting_1, Mode=TwoWay}"
+                                 FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
+                                 VerticalAlignment="Center"
+                                 BorderBrush="Transparent"
+                                 FontFamily="Segoe Print" />
+                        <TextBlock Text="BW"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Segoe Print"
+                                   FontSize="{Binding FontSize, ElementName=txt_titile_bw}" />
                     </StackPanel>
                 </Grid>
                 <TextBlock x:Name="txt_BW_1"
-                       Grid.Row="1"
-                       FontFamily="Segoe Print"
+                           Grid.Row="1"
+                           FontFamily="Segoe Print"
                            FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_1, Mode=TwoWay}" />
+                           Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding ChartNowModel.BW_1, Mode=TwoWay}" />
                 <TextBlock x:Name="txt_BW_CWL_1"
-                       Grid.Row="1"
-                       FontFamily="Segoe Print"
+                           Grid.Row="1"
+                           FontFamily="Segoe Print"
                            FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
-                       Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_1, Mode=TwoWay}" />
+                           Grid.Column="2"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding ChartNowModel.BW_CWL_1, Mode=TwoWay}" />
 
                 <!--<Grid Grid.Row="2">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -284,72 +320,118 @@
                        Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_2, Mode=TwoWay}" />-->
 
                 <Grid Grid.Row="2">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Text="{Binding ChartNowModel.BW_Setting_3, Mode=TwoWay}" FontSize="{Binding FontSize, ElementName=txt_titile_bw}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
-                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                        <TextBox Text="{Binding ChartNowModel.BW_Setting_3, Mode=TwoWay}"
+                                 FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
+                                 VerticalAlignment="Center"
+                                 BorderBrush="Transparent"
+                                 FontFamily="Segoe Print" />
+                        <TextBlock Text="BW"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Segoe Print"
+                                   FontSize="{Binding FontSize, ElementName=txt_titile_bw}" />
                     </StackPanel>
                 </Grid>
                 <TextBlock x:Name="txt_BW_3"
-                       Grid.Row="2"
+                           Grid.Row="2"
                            FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
-                       FontFamily="Segoe Print"
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_3, Mode=TwoWay}" />
+                           FontFamily="Segoe Print"
+                           Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding ChartNowModel.BW_3, Mode=TwoWay}" />
                 <TextBlock x:Name="txt_BW_CWL_3"
-                       Grid.Row="2"
+                           Grid.Row="2"
                            FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
-                       FontFamily="Segoe Print"
-                       Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_3, Mode=TwoWay}" />
+                           FontFamily="Segoe Print"
+                           Grid.Column="2"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding ChartNowModel.BW_CWL_3, Mode=TwoWay}" />
 
                 <Grid Grid.Row="3">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Text="{Binding ChartNowModel.BW_Setting_4, Mode=TwoWay}" FontSize="{Binding FontSize, ElementName=txt_titile_bw}" VerticalAlignment="Center" BorderBrush="Transparent" FontFamily="Segoe Print"/>
-                        <TextBlock Text="BW" VerticalAlignment="Center" FontFamily="Segoe Print" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                        <TextBox Text="{Binding ChartNowModel.BW_Setting_4, Mode=TwoWay}"
+                                 FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
+                                 VerticalAlignment="Center"
+                                 BorderBrush="Transparent"
+                                 FontFamily="Segoe Print" />
+                        <TextBlock Text="BW"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Segoe Print"
+                                   FontSize="{Binding FontSize, ElementName=txt_titile_bw}" />
                     </StackPanel>
                 </Grid>
                 <TextBlock x:Name="txt_BW_4"
-                       Grid.Row="3"
+                           Grid.Row="3"
                            FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
-                       FontFamily="Segoe Print"
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_4, Mode=TwoWay}" />
+                           FontFamily="Segoe Print"
+                           Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding ChartNowModel.BW_4, Mode=TwoWay}" />
                 <TextBlock x:Name="txt_BW_CWL_4"
-                       Grid.Row="3"
+                           Grid.Row="3"
                            FontSize="{Binding FontSize, ElementName=txt_titile_bw}"
-                       FontFamily="Segoe Print"
-                       Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.BW_CWL_4, Mode=TwoWay}" />
+                           FontFamily="Segoe Print"
+                           Grid.Column="2"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding ChartNowModel.BW_CWL_4, Mode=TwoWay}" />
 
-                <TextBlock Grid.Row="4" FontFamily="Segoe Print"
-                       Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="FOM" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
-                <TextBlock Grid.Row="4" FontFamily="Segoe Print" x:Name="txt_FOM"
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ChartNowModel.FOM,Mode=TwoWay, FallbackValue=0}"
-                         FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
+                <TextBlock Grid.Row="4"
+                           FontFamily="Segoe Print"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="FOM"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}" />
+                <TextBlock Grid.Row="4"
+                           FontFamily="Segoe Print"
+                           x:Name="txt_FOM"
+                           Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding ChartNowModel.FOM,Mode=TwoWay, FallbackValue=0}"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}" />
 
-                <TextBlock Grid.Row="5" FontFamily="Segoe Print"
-                       Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="SMRR" FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
-                <TextBlock Grid.Row="5" FontFamily="Segoe Print" 
-                       Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                         Text="{Binding ChartNowModel.SMRR,Mode=TwoWay, FallbackValue=0}"
-                         FontSize="{Binding FontSize, ElementName=txt_titile_bw}"/>
+                <TextBlock Grid.Row="5"
+                           FontFamily="Segoe Print"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="SMRR"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}" />
+                <TextBlock Grid.Row="5"
+                           FontFamily="Segoe Print"
+                           Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding ChartNowModel.SMRR,Mode=TwoWay, FallbackValue=0}"
+                           FontSize="{Binding FontSize, ElementName=txt_titile_bw}" />
                 <ToggleButton Name="ToggleBtn_ShowSMRRPosition"
-                                      Grid.Column="2"
-                                      Grid.Row="5"
-                                      HorizontalAlignment="Center"
-                                      MaxWidth="48"
-                                      MinWidth="45"
-                                      MaxHeight="30"
+                              Grid.Column="2"
+                              Grid.Row="5"
+                              HorizontalAlignment="Center"
+                              MaxWidth="48"
+                              MinWidth="45"
+                              MaxHeight="30"
                               ToolTip="Show Annotation"
-                                      IsChecked="{Binding isSMRR_Annotation, Mode=TwoWay}"
-                                      Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">
+                              IsChecked="{Binding isSMRR_Annotation, Mode=TwoWay}"
+                              Style="{StaticResource SwitchTypeToggleButton_In_SettingPage}">
                     <ToggleButton.Background>
                         <LinearGradientBrush StartPoint="0,0"
-                                                     EndPoint="0,1">
+                                             EndPoint="0,1">
                             <GradientStop Offset="0"
-                                                  Color="#FFF3F3F3" />
+                                          Color="#FFF3F3F3" />
                             <GradientStop Offset="0.5"
-                                                  Color="#FFEBEBEB" />
+                                          Color="#FFEBEBEB" />
                             <GradientStop Offset="0.5"
-                                                  Color="#FFDDDDDD" />
+                                          Color="#FFDDDDDD" />
                             <GradientStop Offset="1"
-                                                  Color="#FF33D3C4" />
+                                          Color="#FF33D3C4" />
                         </LinearGradientBrush>
                     </ToggleButton.Background>
                 </ToggleButton>
@@ -357,7 +439,8 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="1" Name="grid_bear_say"
+        <Grid Grid.Row="1"
+              Name="grid_bear_say"
               Background="#FFF1F1F1">
             <Grid.DataContext>
                 <vm:ComViewModel />
@@ -380,7 +463,7 @@
             <Border Grid.Row="0"
                     Grid.Column="0"
                     Grid.ColumnSpan="9"
-                    Background="#FFE6E6E6"                    
+                    Background="#FFE6E6E6"
                     Focusable="False"
                     Grid.RowSpan="4"
                     PreviewMouseLeftButtonDown="Border_PreviewMouseLeftButtonDown" />
@@ -388,7 +471,7 @@
             <Viewbox Grid.Row="0"
                      Grid.RowSpan="3"
                      Grid.Column="1"
-                     Margin="10,10,10,10" >
+                     Margin="10,10,10,10">
                 <Border Grid.Row="1"
                         Grid.RowSpan="2"
                         CornerRadius="200"
@@ -407,13 +490,14 @@
                                Grid.RowSpan="3"
                                MouseEnter="image_MouseEnter"
                                Visibility="Visible"
-                               Source="../Resources/polar-bear.png" RenderTransformOrigin="0.5,0.5" >
+                               Source="../Resources/polar-bear.png"
+                               RenderTransformOrigin="0.5,0.5">
                             <Image.RenderTransform>
                                 <TransformGroup>
-                                    <ScaleTransform/>
-                                    <SkewTransform/>
-                                    <RotateTransform/>
-                                    <TranslateTransform/>
+                                    <ScaleTransform />
+                                    <SkewTransform />
+                                    <RotateTransform />
+                                    <TranslateTransform />
                                 </TransformGroup>
                             </Image.RenderTransform>
                         </Image>
@@ -446,8 +530,7 @@
                                                        Margin="10,10,0,10"
                                                        img_height="40"
                                                        img_width="40"
-                                                       Tag="../Resources/double_arrow.png"
-                                                        >
+                                                       Tag="../Resources/double_arrow.png">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                             <i:InvokeCommandAction Command="{Binding Next_Chart}" />
@@ -473,14 +556,14 @@
                             <Viewbox>
                                 <sector_btn:Sector_BTN  x:Name="btn_pre"
                                                         grid_column="0"
-                                                        grid_row="1"                                                        
+                                                        grid_row="1"
                                                         Margin="0,10,10,10"
                                                         img_height="40"
                                                         img_width="40"
                                                         rotate_angle="180"
                                                         Tag="../Resources/double_arrow.png"
                                                         Arc_StartAngle="225"
-                                                        Arc_EndAngle="315" >
+                                                        Arc_EndAngle="315">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                             <i:InvokeCommandAction Command="{Binding Pre_Chart}" />
@@ -507,17 +590,22 @@
                 </Border>
             </Viewbox>
 
-            <Button Name="btn_bearsay_visual" HorizontalAlignment="Left"
+            <Button Name="btn_bearsay_visual"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Visibility="Collapsed"
-                    Grid.Column="0" Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.Row="1"
                     Width="30"
-                    Height="30" Content="V"
-                    Click="btn_bearsay_visual_Click"
-                    />
+                    Height="30"
+                    Content="V"
+                    Click="btn_bearsay_visual_Click" />
 
             <Grid Grid.Column="2"
-                  Grid.RowSpan="3" Visibility="Hidden" Grid.ColumnSpan="2" Margin="0,0,334,0">
+                  Grid.RowSpan="3"
+                  Visibility="Hidden"
+                  Grid.ColumnSpan="2"
+                  Margin="0,0,334,0">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
@@ -594,8 +682,7 @@
                                FontFamily="{Binding FontFamily, ElementName=txt_WL}"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left" />
-                    <ToggleButton 
-                                  Grid.Column="2"
+                    <ToggleButton Grid.Column="2"
                                   Grid.Row="1"
                                   HorizontalAlignment="Right"
                                   MaxWidth="48"
@@ -689,9 +776,11 @@
                             <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
                         <Viewbox Grid.Column="1"
-                                   Grid.Row="1" HorizontalAlignment="Left">
+                                 Grid.Row="1"
+                                 HorizontalAlignment="Left">
                             <TextBlock Text="K WL Start"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}" Foreground="#FF094976"/>
+                                       FontFamily="{Binding FontFamily, ElementName=txt_WL}"
+                                       Foreground="#FF094976" />
                         </Viewbox>
 
                         <ToggleButton Name="ToggleBtn_MouseSelecteScanRange"
@@ -723,10 +812,11 @@
                     <Grid Grid.Row="1"
                           Margin="3">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition/>
+                            <RowDefinition Height="2*" />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
-                        <Viewbox MaxHeight="80" Grid.RowSpan="2">
+                        <Viewbox MaxHeight="80"
+                                 Grid.RowSpan="2">
                             <TextBox Tag="Start"
                                      Grid.Column="1"
                                      Margin="4,0,4,0"
@@ -736,18 +826,18 @@
                                      HorizontalContentAlignment="Center"
                                      FontFamily="Segoe Print"
                                      BorderBrush="Transparent"
-                                KeyDown="TextBox_WL_Scan_KeyDown"
+                                     KeyDown="TextBox_WL_Scan_KeyDown"
                                      Text="{Binding float_WL_Scan_Start, FallbackValue=1527}"
                                      MinWidth="50" />
                         </Viewbox>
-                        <Viewbox Grid.Row="1" HorizontalAlignment="Right" >
+                        <Viewbox Grid.Row="1"
+                                 HorizontalAlignment="Right">
                             <TextBlock Text=" nm" />
                         </Viewbox>
                     </Grid>
                     <Grid Grid.Row="2"
                           Margin="5,0,5,0">
-                        <Slider 
-                                IsSnapToTickEnabled="True"
+                        <Slider IsSnapToTickEnabled="True"
                                 Maximum="{Binding float_TLS_WL_Range[1]}"
                                 Minimum="{Binding float_TLS_WL_Range[0]}"
                                 Mouse.PreviewMouseDown="slider_PreviewMouseDown"
@@ -911,18 +1001,21 @@
                             <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
                         <Viewbox Grid.Column="1"
-                                   Grid.Row="1" HorizontalAlignment="Left">
+                                 Grid.Row="1"
+                                 HorizontalAlignment="Left">
                             <TextBlock Text="K WL End"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}" Foreground="#FFCB3B25"/>
+                                       FontFamily="{Binding FontFamily, ElementName=txt_WL}"
+                                       Foreground="#FFCB3B25" />
                         </Viewbox>
                     </Grid>
                     <Grid Grid.Row="1"
                           Margin="3">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition/>
+                            <RowDefinition Height="2*" />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
-                        <Viewbox MaxHeight="80" Grid.RowSpan="2">
+                        <Viewbox MaxHeight="80"
+                                 Grid.RowSpan="2">
                             <TextBox Tag="End"
                                      Grid.Column="1"
                                      Margin="4,0,4,0"
@@ -936,14 +1029,14 @@
                                      Text="{Binding float_WL_Scan_End, FallbackValue=1565}"
                                      MinWidth="50" />
                         </Viewbox>
-                        <Viewbox Grid.Row="1" HorizontalAlignment="Right" >
+                        <Viewbox Grid.Row="1"
+                                 HorizontalAlignment="Right">
                             <TextBlock Text=" nm" />
                         </Viewbox>
                     </Grid>
                     <Grid Grid.Row="2"
                           Margin="5,0,5,0">
-                        <Slider 
-                                IsSnapToTickEnabled="True"
+                        <Slider IsSnapToTickEnabled="True"
                                 Maximum="{Binding float_TLS_WL_Range[1]}"
                                 Minimum="{Binding float_TLS_WL_Range[0]}"
                                 Mouse.PreviewMouseDown="slider_PreviewMouseDown"
@@ -1106,12 +1199,17 @@
                             <ColumnDefinition Width="3.5*" />
                         </Grid.ColumnDefinitions>
                         <Viewbox Grid.Column="1"
-                                   Grid.Row="1" HorizontalAlignment="Left">
+                                 Grid.Row="1"
+                                 HorizontalAlignment="Left">
                             <TextBlock Text="K WL Gap"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                                       FontFamily="{Binding FontFamily, ElementName=txt_WL}" />
                         </Viewbox>
 
-                        <Button Grid.Column="3" Grid.Row="1" Click="Button_Click" HorizontalAlignment="Right" Visibility="Hidden"/>
+                        <Button Grid.Column="3"
+                                Grid.Row="1"
+                                Click="Button_Click"
+                                HorizontalAlignment="Right"
+                                Visibility="Hidden" />
                     </Grid>
                     <Grid Grid.Row="1"
                           Margin="3">
@@ -1164,14 +1262,15 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.1*" />
-                            <ColumnDefinition Width="3.5*"/>
-                            <ColumnDefinition Width="1.5*"/>
+                            <ColumnDefinition Width="3.5*" />
+                            <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
                         <Viewbox  Grid.Column="1"
                                   Grid.Row="1"
-                                   Grid.ColumnSpan="2" HorizontalAlignment="Left">
+                                  Grid.ColumnSpan="2"
+                                  HorizontalAlignment="Left">
                             <TextBlock Text="Wavelength"
-                                   FontFamily="{Binding FontFamily, ElementName=txt_WL}"/>
+                                       FontFamily="{Binding FontFamily, ElementName=txt_WL}" />
                         </Viewbox>
                         <ToggleButton Name="ToggleBtn_LaserActive"
                                       Grid.Column="3"
@@ -1202,11 +1301,12 @@
                           Grid.Column="6"
                           Margin="3">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition/>
+                            <RowDefinition Height="2*" />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <Viewbox x:Name="viewbox8"
-                                 MaxHeight="80" Grid.RowSpan="2">
+                                 MaxHeight="80"
+                                 Grid.RowSpan="2">
                             <TextBox Name="txt_WL"
                                      Grid.Column="1"
                                      Margin="4,0,4,0"
@@ -1217,10 +1317,12 @@
                                      FontFamily="Segoe Print"
                                      BorderBrush="Transparent"
                                      Text="{Binding Laser_Wavelength, FallbackValue=1548.5, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     MinWidth="50" >
-                                
+                                     MinWidth="50">
+
                                 <TextBox.InputBindings>
-                                    <KeyBinding Key="Enter" Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding Text, ElementName=txt_WL}" />
+                                    <KeyBinding Key="Enter"
+                                                Command="{Binding Cmd_Set_TLS_WL}"
+                                                CommandParameter="{Binding Text, ElementName=txt_WL}" />
                                 </TextBox.InputBindings>
                                 <!--<i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewKeyDown">
@@ -1229,13 +1331,14 @@
                                 </i:Interaction.Triggers>-->
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewKeyDown">
-                                        <ut:EventCommand Command="{Binding Cmd_TXT_TLS_WL_KeyDown}" 
-                                                         CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=InvokeParameter}"/>
+                                        <ut:EventCommand Command="{Binding Cmd_TXT_TLS_WL_KeyDown}"
+                                                         CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=InvokeParameter}" />
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </TextBox>
                         </Viewbox>
-                        <Viewbox Grid.Row="1" HorizontalAlignment="Right" >
+                        <Viewbox Grid.Row="1"
+                                 HorizontalAlignment="Right">
                             <TextBlock Text=" nm" />
                         </Viewbox>
                     </Grid>
@@ -1384,38 +1487,62 @@
                     </Grid>
 
                     <Grid Grid.Row="3"
-                          Grid.Column="6" Grid.RowSpan="2">
+                          Grid.Column="6"
+                          Grid.RowSpan="2">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[0], FallbackValue=1527}" Style="{DynamicResource ButtonStyle_TextOnly}" Margin="1" Tag="1">
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown"
+                                Content="{Binding List_Fix_WL[0], FallbackValue=1527}"
+                                Style="{DynamicResource ButtonStyle_TextOnly}"
+                                Margin="1"
+                                Tag="1">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[0], FallbackValue=1527}"/>
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}"
+                                                     CommandParameter="{Binding List_Fix_WL[0], FallbackValue=1527}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[1], FallbackValue=1548}"  Margin="1" Tag="2" Grid.Column="1" Style="{DynamicResource ButtonStyle_TextOnly}">
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown"
+                                Content="{Binding List_Fix_WL[1], FallbackValue=1548}"
+                                Margin="1"
+                                Tag="2"
+                                Grid.Column="1"
+                                Style="{DynamicResource ButtonStyle_TextOnly}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[1], FallbackValue=1548}"/>
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}"
+                                                     CommandParameter="{Binding List_Fix_WL[1], FallbackValue=1548}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[2], FallbackValue=1565}" Style="{DynamicResource ButtonStyle_TextOnly}" Margin="1" Tag="3" Grid.Column="2">
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown"
+                                Content="{Binding List_Fix_WL[2], FallbackValue=1565}"
+                                Style="{DynamicResource ButtonStyle_TextOnly}"
+                                Margin="1"
+                                Tag="3"
+                                Grid.Column="2">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[2], FallbackValue=1565}"/>
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}"
+                                                     CommandParameter="{Binding List_Fix_WL[2], FallbackValue=1565}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown" Content="{Binding List_Fix_WL[3], FallbackValue=1550}" Style="{DynamicResource ButtonStyle_TextOnly}" Margin="1" Tag="4" Grid.Column="3">
+                        <Button MouseRightButtonDown="Button_Fix_WL_Update_MouseRightButtonDown"
+                                Content="{Binding List_Fix_WL[3], FallbackValue=1550}"
+                                Style="{DynamicResource ButtonStyle_TextOnly}"
+                                Margin="1"
+                                Tag="4"
+                                Grid.Column="3">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}" CommandParameter="{Binding List_Fix_WL[3], FallbackValue=1550}"/>
+                                    <ut:EventCommand Command="{Binding Cmd_Set_TLS_WL}"
+                                                     CommandParameter="{Binding List_Fix_WL[3], FallbackValue=1550}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>

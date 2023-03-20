@@ -27,10 +27,13 @@ using PD.Models;
 using PD.AnalysisModel;
 using PD.NavigationPages;
 using PD.Utility;
-using DiCon.Instrument.HP;
+//using DiCon.Instrument.HP;
+using PD.GPIB;
+
 using DiCon.Instrument.HP.GLTLS;
 
-using AutoMapper;
+using NationalInstruments.NI4882;
+
 using Wpf_Control_Library;
 
 namespace PD.ViewModel
@@ -39,6 +42,8 @@ namespace PD.ViewModel
     {
         public ComViewModel()
         {
+            //byte adr = Convert.ToByte(OSA_Addr);
+            //device = new Device(OSA_BoardNumber, adr);
         }
 
         public void InitializeComViewModel()
@@ -110,6 +115,75 @@ namespace PD.ViewModel
                 "Comport_Setting_Path",
                 "Calibration_Csv_Path",
                 "BR_Save_Path",
+                "SQL_Server_IP",
+                "Station_ID"
+            });
+
+            Station_SettingUnit_Table.Add(StationTypes.Chamber_S.ToString(), new List<string>()
+            {
+                 "TLS_WL_Range",
+                "Station_Type",
+                "Control_Board_Type",
+                "Laser_Type",
+                "Read_Cmd_Delay",
+                "Write_Cmd_Delay",
+                "Set_WL_Delay",
+                "Lambda_Scan_Delay",
+                "SN_Judge",
+                "SN_AutoTab",
+                "TLS_Filter",
+                //"BR_OSA",
+                //"Switch_Mode",
+                "Update_Chart",
+                //"IL_Decimal_Place",
+
+                "K_WL_Type",
+                "WL_Scan_Start",
+                "WL_Scan_End",
+                "WL_Scan_Gap",
+                "TF_Scan_Gap",
+                "TF_Scan_Start",
+                "TF_Scan_End",
+                "V3_Scan_Gap",
+                "V3_Scan_Start",
+                "V3_Scan_End",
+                "K_WL_Manual_Setting",
+                "Fast_Scan_Mode",
+                //"OSA_Sensitivity",
+                //"OSA_RBW",
+
+                "Auto_Connect_TLS",
+                "Distributed_System",
+                "PD_or_PM",
+                "TLS_TCPIP",
+                "TLS_BoardNum",
+                "TLS_Address",
+                "PM_BoardNum",
+                "PM_Address",
+                "PDL_BoardNum",
+                "PDL_Address",
+                "MultiMeter_Address",
+                "PM_Slot",
+                "PM_AveTime",
+                //"OSA_BoardNum",
+                //"OSA_Address",
+                "Channels_Count",
+                "BoudRate",
+                "Auto_Update",
+                "Unit_Y",
+                //"Arduino_Mode",
+                //"Selected_Arduino_Comport",
+
+                "Open_ini",
+                "Comport_Setting",
+                "Board_Table_Path",
+                //"Hermetic_Data_Path",
+                //"TF2_Data_Path",
+                "Auto_Update_Path",
+                "Chamber_Status_Path",
+                "Comport_Setting_Path",
+                "Calibration_Csv_Path",
+                //"BR_Save_Path",
                 "SQL_Server_IP",
                 "Station_ID"
             });
@@ -252,8 +326,6 @@ namespace PD.ViewModel
                 "Station_ID"
             });
 
-
-
             Station_SettingUnit_Table.Add("Testing", new List<string>()
             {
                  "TLS_WL_Range",
@@ -335,7 +407,7 @@ namespace PD.ViewModel
                 //"Lambda_Scan_Delay",
                 //"SN_Judge",
                 //"SN_AutoTab",
-                "TLS_Filter",
+                //"TLS_Filter",
                 "BR_OSA",
                 //"Switch_Mode",
                 //"Update_Chart",
@@ -492,7 +564,6 @@ namespace PD.ViewModel
 
             #endregion
 
-
             #region ICommand Setting
             //Cmd_TXT_Power_KeyDown = new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown, CanExecute);
 
@@ -638,6 +709,9 @@ namespace PD.ViewModel
                     }
             }
         }
+
+        //public Device device;
+        
 
         public LineAnnotation LineAnnotation_X_1 = new LineAnnotation()
         {
@@ -1018,7 +1092,7 @@ namespace PD.ViewModel
         public ICommand Pre_Chart { get { return new Delegatecommand(btn_previous_chart_Click); } }
         public ICommand Next_Chart { get { return new Delegatecommand(btn_next_chart_Click); } }
 
-        public ICommand Get_Ref { get { return new Delegatecommand(Cmd_Get_Reference); } }
+        //public ICommand Get_Ref { get { return new Delegatecommand(Cmd_Get_Reference); } }
 
         public ICommand Cmd_TXT_Power_KeyDown { get { return new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown); } }
         //public ICommand Cmd_TXT_Set_Power_Content_KeyDown { get { return new DelegateCommand<KeyEventArgs>(TXT_Power_KeyDown, CanExecute); } }
@@ -1048,25 +1122,28 @@ namespace PD.ViewModel
             //SpinWait.SpinUntil(() => true, 1000);  //返回true會自動跳出等待狀態，不再休眠，繼續執行下面的代碼
         }
 
+        /// <summary>
+        /// Update Chart UI (update plotview)
+        /// </summary>
         public void Update_ALL_PlotView()
         {
             if (PlotViewModel.PlotView != null)
                 PlotViewModel.InvalidatePlot(is_update_chart);
 
-            if (PlotViewModel_Chart.PlotView != null)
-                PlotViewModel_Chart.InvalidatePlot(is_update_chart);
+            //if (PlotViewModel_Chart.PlotView != null)
+            //    PlotViewModel_Chart.InvalidatePlot(is_update_chart);
 
-            if (PlotViewModel_TF2.PlotView != null)
-                PlotViewModel_TF2.InvalidatePlot(is_update_chart);
+            //if (PlotViewModel_TF2.PlotView != null)
+            //    PlotViewModel_TF2.InvalidatePlot(is_update_chart);
 
-            if (PlotViewModel_UTF600.PlotView != null)
-                PlotViewModel_UTF600.InvalidatePlot(is_update_chart);
+            //if (PlotViewModel_UTF600.PlotView != null)
+            //    PlotViewModel_UTF600.InvalidatePlot(is_update_chart);
 
-            if (PlotViewModel_BR.PlotView != null)
-                PlotViewModel_BR.InvalidatePlot(is_update_chart);
+            //if (PlotViewModel_BR.PlotView != null)
+            //    PlotViewModel_BR.InvalidatePlot(is_update_chart);
 
-            if (PlotViewModel_Testing.PlotView != null)
-                PlotViewModel_Testing.InvalidatePlot(is_update_chart);
+            //if (PlotViewModel_Testing.PlotView != null)
+            //    PlotViewModel_Testing.InvalidatePlot(is_update_chart);
         }
 
         public void Update_ALL_PlotView_Title(string Title, string X_Title, string Y_Title)
@@ -1396,7 +1473,224 @@ namespace PD.ViewModel
             {
                 switch (Laser_type)
                 {
-                    case "Agilent":
+                    case ComViewModel.LaserType.Agilent:
+
+                        #region Tunable Laser setting
+                        if (!isConnected)
+                        {
+                            tls = new GPIB.HPTLS();
+                            tls.BoardNumber = tls_BoardNumber;
+                            tls.Addr = tls_Addr;
+
+                            try
+                            {
+                                if (!tls.Open())
+                                {
+                                    Str_cmd_read = "GPIB Setting Error, Check Address.";
+                                    Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                    return;
+                                }
+                                else
+                                {
+                                    double d = tls.ReadWL();
+                                    if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
+                                    {
+                                        Str_cmd_read = "Laser Connection Failed";
+                                        Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                        return;
+                                    }
+                                }
+                                tls.init();
+
+                                Double_Laser_Wavelength = tls.ReadWL();
+
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Str_cmd_read = $"{Laser_type} TLS Setting Error";
+                                Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
+                        }
+
+                        #endregion
+
+                        #region PowerMeter Setting
+                        if (!isConnected)
+                        {
+                            pm = new HPPM();
+                            pm.Addr = pm_Addr;
+                            pm.Slot = PM_slot;
+                            pm.BoardNumber = pm_BoardNumber;
+                            if (pm.Open() == false)
+                            {
+                                Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
+                                Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                return;
+                            }
+                            pm.init();
+                            pm.setUnit(1);
+                            pm.AutoRange(true);
+                            pm.aveTime(PM_AveTime);
+
+                            try
+                            {
+                                if (pm.Open())
+                                    Double_PM_Wavelength = pm.ReadWL();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
+                        }
+
+                        isConnected = true;
+                        #endregion                      
+
+                        break;
+
+                    case ComViewModel.LaserType.Golight:
+
+                        if (!isConnected)
+                        {
+                            if (!string.IsNullOrEmpty(Golight_ChannelModel.Board_Port))
+                            {
+                                var task = Task.Run(() => ConnectGolightTLS(tls_GL, Golight_ChannelModel.Board_Port));
+                                var result = (task.Wait(1500)) ? task.Result : false;
+
+                                if (result)
+                                {
+                                    //await Task.Run(async () => await ConnectGolightTLS(tls_GL, Golight_ChannelModel.Board_Port));
+
+                                    isConnected = true;
+
+                                    await Task.Delay(250);
+
+                                    string ReadWLMinMax = tls_GL.ReadWL_MinMax();
+                                    string[] wl_min_max = ReadWLMinMax.Split(',');
+
+                                    if (wl_min_max != null)
+                                    {
+                                        if (wl_min_max.Length == 2)
+                                        {
+                                            float_TLS_WL_Range[0] = float.Parse(wl_min_max[0]);
+                                            float_TLS_WL_Range[1] = float.Parse(wl_min_max[1]);
+                                        }
+                                    }
+
+                                    Save_Log(new Models.LogMember()
+                                    {
+                                        isShowMSG = false,
+                                        Message = "Golight TLS connected",
+                                    });
+
+                                    Save_Log(new Models.LogMember()
+                                    {
+                                        isShowMSG = false,
+                                        Message = "Get TLS WL Range",
+                                        Result = ReadWLMinMax
+                                    });
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Timeout");
+
+                                    Save_Log(new Models.LogMember()
+                                    {
+                                        isShowMSG = false,
+                                        Message = "Connect Golight TLS Fail"
+                                    });
+                                }
+                            }
+                            else
+                                Save_Log(new Models.LogMember()
+                                {
+                                    isShowMSG = true,
+                                    Message = "Golight comport is null or empty"
+                                });
+                        }
+
+                        break;
+
+                    case ComViewModel.LaserType.Keysight:
+
+                        #region Tunable Laser setting
+                        if (!isConnected)
+                        {
+                            tls = new HPTLS();
+                            tls.protocol = 1;
+                            tls.Addr_TCPIP = TLS_TCPIP;
+                            //tls.BoardNumber = tls_BoardNumber;
+                            //tls.Addr = tls_Addr;
+
+                            try
+                            {
+                                if (!tls.Open())
+                                {
+                                    Str_cmd_read = "TCPIP Setting Error, Check Address.";
+                                    Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                    return;
+                                }
+                                else
+                                {
+                                    double d = tls.ReadWL();
+                                    if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
+                                    {
+                                        Str_cmd_read = "Laser Connection Failed";
+                                        Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                        return;
+                                    }
+                                }
+                                tls.init();
+
+                                Double_Laser_Wavelength = tls.ReadWL();
+                            }
+                            catch (Exception ex)
+                            {
+                                Str_cmd_read = $"{Laser_type} TLS Setting Error";
+                                Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
+                        }
+
+                        #endregion
+
+                        #region PowerMeter Setting
+                        if (!isConnected)
+                        {
+                            pm = new HPPM();
+                            pm.Addr = pm_Addr;
+                            pm.Slot = PM_slot;
+                            pm.BoardNumber = pm_BoardNumber;
+                            if (pm.Open() == false)
+                            {
+                                Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
+                                Show_Bear_Window(Str_cmd_read, false, "String", false);
+                                return;
+                            }
+                            pm.init();
+                            pm.setUnit(1);
+                            pm.AutoRange(true);
+                            pm.aveTime(PM_AveTime);
+
+                            try
+                            {
+                                if (pm.Open())
+                                    Double_PM_Wavelength = pm.ReadWL();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
+                        }
+
+                        isConnected = true;
+                        #endregion                      
+
+                        break;
+
+                    default:
 
                         #region Tunable Laser setting
                         if (!isConnected)
@@ -1472,69 +1766,6 @@ namespace PD.ViewModel
                         #endregion                      
 
                         break;
-
-                    case "Golight":
-
-                        if (!isConnected)
-                        {
-                            if (!string.IsNullOrEmpty(Golight_ChannelModel.Board_Port))
-                            {
-                                var task = Task.Run(() => ConnectGolightTLS(tls_GL, Golight_ChannelModel.Board_Port));
-                                var result = (task.Wait(1500)) ? task.Result : false;
-
-                                if (result)
-                                {
-                                    //await Task.Run(async () => await ConnectGolightTLS(tls_GL, Golight_ChannelModel.Board_Port));
-
-                                    isConnected = true;
-
-                                    await Task.Delay(250);
-
-                                    string ReadWLMinMax = tls_GL.ReadWL_MinMax();
-                                    string[] wl_min_max = ReadWLMinMax.Split(',');
-
-                                    if (wl_min_max != null)
-                                    {
-                                        if (wl_min_max.Length == 2)
-                                        {
-                                            float_TLS_WL_Range[0] = float.Parse(wl_min_max[0]);
-                                            float_TLS_WL_Range[1] = float.Parse(wl_min_max[1]);
-                                        }
-                                    }
-
-                                    Save_Log(new Models.LogMember()
-                                    {
-                                        isShowMSG = false,
-                                        Message = "Golight TLS connected",
-                                    });
-
-                                    Save_Log(new Models.LogMember()
-                                    {
-                                        isShowMSG = false,
-                                        Message = "Get TLS WL Range",
-                                        Result = ReadWLMinMax
-                                    });
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Timeout");
-
-                                    Save_Log(new Models.LogMember()
-                                    {
-                                        isShowMSG = false,
-                                        Message = "Connect Golight TLS Fail"
-                                    });
-                                }
-                            }
-                            else
-                                Save_Log(new Models.LogMember()
-                                {
-                                    isShowMSG = true,
-                                    Message = "Golight comport is null or empty"
-                                });
-                        }
-
-                        break;
                 }
             }
             catch (Exception ex)
@@ -1568,12 +1799,20 @@ namespace PD.ViewModel
                 {
                     switch (Laser_type)
                     {
-                        case "Agilent":
+                        case LaserType.Agilent:
                             tls.SetActive(_laserActive);
                             break;
 
-                        case "Golight":
+                        case LaserType.Golight:
                             tls_GL.SetActive(_laserActive);
+                            break;
+
+                        case LaserType.Keysight:
+                            tls.SetActive(_laserActive);
+                            break;
+
+                        default:
+                            tls.SetActive(_laserActive);
                             break;
                     }
 
@@ -1594,12 +1833,20 @@ namespace PD.ViewModel
 
                 switch (Laser_type)
                 {
-                    case "Agilent":
+                    case LaserType.Agilent:
                         tls.SetPower(Double_Laser_Power);
                         break;
 
-                    case "Golight":
+                    case LaserType.Golight:
                         tls_GL.SetPower(Double_Laser_Power);
+                        break;
+
+                    case LaserType.Keysight:
+                        tls.SetPower(Double_Laser_Power);
+                        break;
+
+                    default:
+                        tls.SetPower(Double_Laser_Power);
                         break;
                 }
 
@@ -1636,12 +1883,20 @@ namespace PD.ViewModel
 
                 switch (Laser_type)
                 {
-                    case "Agilent":
+                    case LaserType.Agilent:
                         tls.SetWL(Double_Laser_Wavelength);
                         break;
 
-                    case "Golight":
+                    case LaserType.Golight:
                         tls_GL.SetWL((float)Double_Laser_Wavelength);
+                        break;
+
+                    case LaserType.Keysight:
+                        tls.SetWL(Double_Laser_Wavelength);
+                        break;
+
+                    default:
+                        tls.SetWL(Double_Laser_Wavelength);
                         break;
                 }
 
@@ -1683,12 +1938,20 @@ namespace PD.ViewModel
 
                 switch (Laser_type)
                 {
-                    case "Agilent":
+                    case LaserType.Agilent:
                         tls.SetWL(wl);
                         break;
 
-                    case "Golight":
+                    case LaserType.Golight:
                         tls_GL.SetWL((float)wl);
+                        break;
+
+                    case LaserType.Keysight:
+                        tls.SetWL(wl);
+                        break;
+
+                    default:
+                        tls.SetWL(wl);
                         break;
                 }
 
@@ -1708,7 +1971,7 @@ namespace PD.ViewModel
                     double wl_read = 0;
                     switch (Laser_type)
                     {
-                        case "Agilent":
+                        case LaserType.Agilent:
                             wl_read = tls.ReadWL();
                             if (wl_read > 0)
                                 Double_Laser_Wavelength = wl_read;
@@ -1716,7 +1979,7 @@ namespace PD.ViewModel
                                 Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
                             break;
 
-                        case "Golight":
+                        case LaserType.Golight:
 
                             wl_read = tls_GL.ReadWL();
 
@@ -1725,7 +1988,22 @@ namespace PD.ViewModel
 
                             if (wl_read != wl)
                                 Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "SetWL failed" });
+                            break;
 
+                        case LaserType.Keysight:
+                            wl_read = tls.ReadWL();
+                            if (wl_read > 0)
+                                Double_Laser_Wavelength = wl_read;
+                            else
+                                Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
+                            break;
+
+                        default:
+                            wl_read = tls.ReadWL();
+                            if (wl_read > 0)
+                                Double_Laser_Wavelength = wl_read;
+                            else
+                                Save_Log(new LogMember() { Result = "Read WL:" + wl_read.ToString(), Message = "ReadWL back error" });
                             break;
                     }
 
@@ -1935,6 +2213,9 @@ namespace PD.ViewModel
                             Set_TLS_Power();
                         else
                             Save_cmd(new ComMember() { YN = true, No = Cmd_Count.ToString(), Command = "SETPOWER", Type = "Agilent", Value_1 = Double_Laser_Power.ToString() });
+
+                        Str_Status = "Set TLS Power";
+                        Str_cmd_read = $"{Double_Laser_Power} dBm";
                     }
                 }
                 catch { }
@@ -2050,10 +2331,12 @@ namespace PD.ViewModel
                 if (port.PortName != comport)
                     port = new SerialPort(comport, boudRate, Parity.None, 8, StopBits.One);
 
-                if (!port.IsOpen)
-                    port_PD.Open();
+                await Task.Delay(10);
 
-                await Task.Delay(100);
+                if (!port.IsOpen)
+                    port.Open();
+
+                await Task.Delay(10);
             }
             catch (Exception ex) { Str_cmd_read = "Port Open Error"; Save_Log("Connection", Str_cmd_read, DateTime.Now.ToLongTimeString()); throw ex; }
         }
@@ -2177,293 +2460,6 @@ namespace PD.ViewModel
             }
         }
 
-        public async void Cmd_Get_Reference()
-        {
-            //try
-            //{
-            //    isStop = false;
-
-            //    analysis.JudgeAllBoolGauge();
-
-            //    string RefName = String.Empty;
-            //    string RefPath = String.Empty;
-
-            //    for (int ch = 0; ch < ch_count; ch++)
-            //    {
-            //        RefName = $"Ref{ch + 1}.txt";
-            //        RefPath = Path.Combine(@"D:\Ref\", RefName);
-
-            //        if (!File.Exists(RefPath))
-            //        {
-            //            string s = Directory.GetParent(RefPath).ToString();
-            //            if (!analysis.CheckDirectoryExist(s))
-            //                Directory.CreateDirectory(s);  //Creat ref folder
-
-            //            if (analysis.CheckDirectoryExist(s))
-            //                File.AppendAllText(RefPath, "");  //Creat txt file
-            //            else
-            //                return;  //If Ref folder still not exist, return.
-            //        }
-            //    }
-
-            //    MessageBoxResult msgBoxResult = MessageBox.Show("Cover old ref.txt ?", "Get Ref", MessageBoxButton.YesNoCancel);
-
-            //    if (msgBoxResult != MessageBoxResult.Cancel)
-            //    {
-            //        string savePath = @"D:\";
-            //        if (!CheckDirectoryExist(@"D:"))
-            //        {
-            //            MessageBox.Show($"D槽不存在，更改路徑為{CurrentPath}");
-            //            savePath = CurrentPath;
-            //        }
-
-            //        if (!CheckDirectoryExist(Path.Combine(savePath, @"\Ref\")))
-            //        {
-            //            savePath = CurrentPath;
-            //            Directory.CreateDirectory(Path.Combine(savePath, @"\Ref\"));
-            //        }
-
-            //        Str_Status = "Get Ref";
-            //        dB_or_dBm = false;
-
-            //        cmd.Clean_Chart();
-
-            //        List<double> list_wl = new List<double>();
-
-            //        if (msgBoxResult == MessageBoxResult.Yes)
-            //        {
-            //            for (int ch = 0; ch < ch_count; ch++)
-            //            {
-            //                RefName = $"Ref{ch + 1}.txt";
-            //                RefPath = Path.Combine(savePath, @"\Ref\", RefName);
-
-            //                if (File.Exists(RefPath))
-            //                {
-            //                    File.Delete(RefPath);
-            //                    File.AppendAllText(RefPath, "");
-            //                }
-            //            }
-
-            //            for (double wl = float_WL_Scan_Start; wl <= float_WL_Scan_End; wl = wl + float_WL_Scan_Gap)
-            //            {
-            //                list_wl.Add(wl);
-            //            }
-
-            //            Ref_memberDatas.Clear();
-
-            //            for (int i = 0; i < Ref_Dictionaries.Count; i++)
-            //            {
-            //                Ref_Dictionaries[i].Clear();
-            //            }
-            //        }
-            //        else if (msgBoxResult == MessageBoxResult.No)
-            //        {
-            //            //add specific channel ref to ref.txt
-            //            for (double wl = float_WL_Scan_Start; wl <= float_WL_Scan_End; wl = wl + float_WL_Scan_Gap)
-            //            {
-            //                for (int ch = 0; ch < ch_count; ch++)
-            //                {
-            //                    if (BoolAllGauge || list_GaugeModels[ch].boolGauge)
-            //                    {
-            //                        if (Ref_Dictionaries[ch].ContainsKey(wl))
-            //                            continue;
-
-            //                        if (!list_wl.Contains(wl))
-            //                            list_wl.Add(wl);
-            //                    }
-            //                }
-            //            }
-            //        }
-
-            //        bool tempBool = Is_FastScan_Mode;
-            //        Is_FastScan_Mode = false;
-
-            //        foreach (double wl in list_wl)
-            //        {
-            //            if (isStop) break;
-
-            //            await cmd.Set_WL(wl, false);
-
-            //            Double_Laser_Wavelength = Math.Round(wl, 2);
-
-            //            Str_cmd_read = Math.Round(wl, 2).ToString();
-
-            //            await Task.Delay(Int_Set_WL_Delay);
-
-            //            double IL = 0;
-
-            //            if (!IsDistributedSystem)
-            //            {
-            //                //PM mode
-            //                if (PD_or_PM)
-            //                {
-            //                    for (int ch = 0; ch < ch_count; ch++)
-            //                    {
-            //                        if (BoolAllGauge || list_GaugeModels[ch].boolGauge)
-            //                        {
-            //                            switch_index = ch + 1;
-            //                            if (station_type.Equals("Hermetic_Test"))
-            //                            {
-            //                                RefName = string.Format("Ref{0}.txt", switch_index);
-            //                                RefPath = Path.Combine(savePath, @"\Ref\", RefName);
-
-            //                                await Port_Switch_ReOpen();
-            //                                port_Switch.Write(string.Format("SW0 {0}", switch_index));
-            //                            }
-            //                            else
-            //                            {
-            //                                RefName = $"Ref{ch + 1}.txt";
-            //                                RefPath = Path.Combine(savePath, @"\Ref\", RefName);
-            //                            }
-
-            //                            IL = await cmd.Get_PM_Value((switch_index - 1));
-
-            //                            //string msg = string.Format("{0},{1}", Math.Round(wl, 2).ToString(), IL.ToString());
-            //                            string msg = $"{Math.Round(wl, 2)},{IL}";
-
-            //                            File.AppendAllText(RefPath, msg + "\r");
-
-            //                            Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
-
-            //                            Ref_memberDatas.Add(new RefModel()
-            //                            {
-            //                                Wavelength = Math.Round(wl, 2),
-            //                                Ch_1 = Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
-            //                                Ch_2 = Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
-            //                                Ch_3 = Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
-            //                                Ch_4 = Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
-            //                                Ch_5 = Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
-            //                                Ch_6 = Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
-            //                                Ch_7 = Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
-            //                                Ch_8 = Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
-            //                                Ch_9 = Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
-            //                                Ch_10 = Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
-            //                                Ch_11 = Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
-            //                                Ch_12 = Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
-            //                                Ch_13 = Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
-            //                                Ch_14 = Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
-            //                                Ch_15 = Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
-            //                                Ch_16 = Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
-            //                            });
-            //                        }
-            //                    }
-            //                }
-            //                //PD mode
-            //                else
-            //                {
-            //                    await cmd.Get_PD_Value(Selected_Comport);
-
-            //                    Ref_memberDatas.Add(new RefModel());
-            //                    Ref_memberDatas.Last().Wavelength = Math.Round(wl, 2);
-
-            //                    for (int ch = 0; ch < ch_count; ch++)
-            //                    {
-            //                        if (BoolAllGauge || list_GaugeModels[ch].boolGauge)
-            //                        {
-            //                            IL = Double_Powers[ch];
-            //                            Save_All_PD_Value[ch].Add(new DataPoint(Math.Round(wl, 2), IL));
-            //                            list_GaugeModels[ch].GaugeValue = IL.ToString();
-
-            //                            string msg = $"{wl},{IL}\r";
-
-            //                            RefName = $"Ref{ch + 1}.txt";
-            //                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
-
-            //                            File.AppendAllText(RefPath, msg);  //Add new line to ref file
-
-            //                            Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
-
-            //                            Ref_memberDatas.Last().Wavelength = Math.Round(wl, 2);   //Add a new data to grid ref
-
-            //                            //get all properties and it's values in the last of Ref_memberDatas
-            //                            var props = Ref_memberDatas.Last().GetPropertiesFromCache();
-            //                            System.Reflection.PropertyInfo
-            //                            foreach (var prop in props)
-            //                            {
-            //                                //Set value to which property name is match channel now
-            //                                if (prop.Name == $"Ch_{ch + 1}")
-            //                                {
-            //                                    prop.SetValue(Ref_memberDatas.Last(), Ref_Dictionaries[0][Math.Round(wl, 2)]);
-            //                                }
-            //                            }
-            //                        }
-            //                    }
-            //                    Chart_All_DataPoints = new List<List<DataPoint>>(Save_All_PD_Value);
-
-            //                    Chart_DataPoints = new List<DataPoint>(Chart_All_DataPoints[0]);  //A lineseries
-            //                }
-            //            }
-            //            //Distribution system
-            //            else
-            //            {
-            //                for (int ch = 0; ch < ch_count; ch++)
-            //                {
-            //                    await cmd.Get_Power(ch, true);
-            //                    IL = Double_Powers[ch];
-            //                    File.AppendAllText(RefPath, $"{Math.Round(wl, 2)},{IL}\r");
-
-            //                    Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
-
-            //                    Ref_memberDatas.Add(new RefModel()
-            //                    {
-            //                        Wavelength = Math.Round(wl, 2),
-            //                        Ch_1 = Ref_Dictionaries[0].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[0][Math.Round(wl, 2)] : 0,
-            //                        Ch_2 = Ref_Dictionaries[1].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[1][Math.Round(wl, 2)] : 0,
-            //                        Ch_3 = Ref_Dictionaries[2].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[2][Math.Round(wl, 2)] : 0,
-            //                        Ch_4 = Ref_Dictionaries[3].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[3][Math.Round(wl, 2)] : 0,
-            //                        Ch_5 = Ref_Dictionaries[4].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[4][Math.Round(wl, 2)] : 0,
-            //                        Ch_6 = Ref_Dictionaries[5].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[5][Math.Round(wl, 2)] : 0,
-            //                        Ch_7 = Ref_Dictionaries[6].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[6][Math.Round(wl, 2)] : 0,
-            //                        Ch_8 = Ref_Dictionaries[7].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[7][Math.Round(wl, 2)] : 0,
-            //                        Ch_9 = Ref_Dictionaries[8].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[8][Math.Round(wl, 2)] : 0,
-            //                        Ch_10 = Ref_Dictionaries[9].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[9][Math.Round(wl, 2)] : 0,
-            //                        Ch_11 = Ref_Dictionaries[10].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[10][Math.Round(wl, 2)] : 0,
-            //                        Ch_12 = Ref_Dictionaries[11].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[11][Math.Round(wl, 2)] : 0,
-            //                        Ch_13 = Ref_Dictionaries[12].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[12][Math.Round(wl, 2)] : 0,
-            //                        Ch_14 = Ref_Dictionaries[13].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[13][Math.Round(wl, 2)] : 0,
-            //                        Ch_15 = Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
-            //                        Ch_16 = Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
-            //                    });
-            //                }
-            //            }
-            //        }
-
-            //        Is_FastScan_Mode = tempBool;
-
-            //        if (!PD_or_PM && !IsDistributedSystem)
-            //        {
-            //            if (port_PD != null)
-            //            {
-            //                if (port_PD.IsOpen)
-            //                {
-            //                    port_PD.DiscardInBuffer();
-            //                    port_PD.DiscardOutBuffer();
-            //                    port_PD.Close();
-            //                }
-            //            }
-            //        }
-
-            //        //Close TLS filter port for other control action
-            //        cmd.Close_TLS_Filter();
-
-            //        Str_Status = "Get Ref End";
-
-            //        #region Get data from txt file and show
-            //        //_Page_Ref_Grid = new Page_Ref_Grid(vm, txt_path.Text);
-
-            //        //pageTransitionControl.ShowPage(_Page_Ref_Grid);
-
-            //        //save_path = txt_path.Text;
-
-            //        //pageTransitionControl.CurrentPage.Name = "Grid";
-
-            //        //currentPage = false;
-            //        #endregion
-            //    }
-            //}
-            //catch { }
-
-        }
         #endregion
 
         #region UI Command
@@ -2604,8 +2600,8 @@ namespace PD.ViewModel
                         string[] list_s = key.Value.Split(',');
                         list_BR_DAC_WL = new ObservableCollection<string>(list_s);
 
-                        PlotViewModel.Annotations.Clear();
                         ChartNowModel.list_BR_Model.Clear();
+                        PlotViewModel.Annotations.Clear();
 
                         foreach (string s in list_s)
                         {
@@ -2916,7 +2912,7 @@ namespace PD.ViewModel
                 if (int_chart_now > 1)
                 {
                     int_chart_now--;
-                    Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(Chart_All_Datapoints_History[int_chart_now - 1]);
+                    Chart_All_DataPoints = new List<List<DataPoint>>(Chart_All_Datapoints_History[int_chart_now - 1]);
                     if (Chart_All_DataPoints.Count == 0) return;
                     Chart_DataPoints = new List<OxyPlot.DataPoint>(Chart_All_DataPoints[0]);
 
@@ -2927,6 +2923,8 @@ namespace PD.ViewModel
                         Plot_Series.Clear();
                         PlotViewModel.Series.Clear();
                         PlotViewModel.Annotations.Clear();
+
+                        //ChartNowModel.list_BR_Model.Clear();
 
                         for (int i = 0; i < ChartNowModel.Plot_Series.Count; i++)
                         {
@@ -2955,6 +2953,8 @@ namespace PD.ViewModel
 
                             PlotViewModel.Series.Add(Plot_Series.Last());
 
+                            //ChartNowModel.list_BR_Model.Add(new BR_Model());
+
                             PlotViewModel.Annotations.Add(new LineAnnotation()
                             {
                                 Type = LineAnnotationType.Vertical,
@@ -2975,23 +2975,26 @@ namespace PD.ViewModel
 
                     if (station_type == StationTypes.BR)
                     {
-                        list_Chart_UI_Models.Clear();
-
-                        for (int i = 0; i < Plot_Series.Count; i++)
+                        if (list_Chart_UI_Models != null)
                         {
-                            list_Chart_UI_Models.Add(new Chart_UI_Model()
+                            list_Chart_UI_Models.Clear();
+
+                            for (int i = 0; i < Plot_Series.Count; i++)
                             {
-                                Button_Content = Plot_Series[i].Title,
-                                Button_Color = new SolidColorBrush(Color.FromRgb(list_OxyColor[i].R, list_OxyColor[i].G, list_OxyColor[i].B)),
-                                Button_Channel = i,
-                                Button_IsChecked = true,
-                                Button_IsVisible = Visibility.Visible
-                            });
-                        }
+                                list_Chart_UI_Models.Add(new Chart_UI_Model()
+                                {
+                                    Button_Content = Plot_Series[i].Title,
+                                    Button_Color = new SolidColorBrush(Color.FromRgb(list_OxyColor[i].R, list_OxyColor[i].G, list_OxyColor[i].B)),
+                                    Button_Channel = i,
+                                    Button_IsChecked = true,
+                                    Button_IsVisible = Visibility.Visible
+                                });
+                            }
 
-                        for (int i = 0; i < ChartNowModel.list_Annotation.Count; i++)
-                        {
-                            PlotViewModel.Annotations.Add(ChartNowModel.list_Annotation[i]);
+                            for (int i = 0; i < ChartNowModel.list_Annotation.Count; i++)
+                            {
+                                PlotViewModel.Annotations.Add(ChartNowModel.list_Annotation[i]);
+                            }
                         }
                     }
 
@@ -3030,11 +3033,9 @@ namespace PD.ViewModel
                     return;
 
                 if (Chart_All_Datapoints_History.Count <= int_chart_now)
-                {
-                    Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(Chart_All_Datapoints_History.Last());
-                }
+                    Chart_All_DataPoints = new List<List<DataPoint>>(Chart_All_Datapoints_History.Last());
                 else
-                    Chart_All_DataPoints = new List<List<OxyPlot.DataPoint>>(Chart_All_Datapoints_History[int_chart_now]);
+                    Chart_All_DataPoints = new List<List<DataPoint>>(Chart_All_Datapoints_History[int_chart_now]);
 
                 if (Chart_All_DataPoints.Count != 0)
                     Chart_DataPoints = new List<OxyPlot.DataPoint>(Chart_All_DataPoints[0]);  //Update Chart UI
@@ -3095,23 +3096,26 @@ namespace PD.ViewModel
 
                 if(station_type == StationTypes.BR)
                 {
-                    list_Chart_UI_Models.Clear();
-
-                    for (int i = 0; i < Plot_Series.Count; i++)
+                    if (list_Chart_UI_Models != null)
                     {
-                        list_Chart_UI_Models.Add(new Chart_UI_Model()
+                        list_Chart_UI_Models.Clear();
+
+                        for (int i = 0; i < Plot_Series.Count; i++)
                         {
-                            Button_Content = Plot_Series[i].Title,
-                            Button_Color = new SolidColorBrush(Color.FromRgb(list_OxyColor[i].R, list_OxyColor[i].G, list_OxyColor[i].B)),
-                            Button_Channel = i,
-                            Button_IsChecked = true,
-                            Button_IsVisible = Visibility.Visible
-                        });
-                    }
+                            list_Chart_UI_Models.Add(new Chart_UI_Model()
+                            {
+                                Button_Content = Plot_Series[i].Title,
+                                Button_Color = new SolidColorBrush(Color.FromRgb(list_OxyColor[i].R, list_OxyColor[i].G, list_OxyColor[i].B)),
+                                Button_Channel = i,
+                                Button_IsChecked = true,
+                                Button_IsVisible = Visibility.Visible
+                            });
+                        }
 
-                    for (int i = 0; i < ChartNowModel.list_Annotation.Count; i++)
-                    {
-                        PlotViewModel.Annotations.Add(ChartNowModel.list_Annotation[i]);
+                        for (int i = 0; i < ChartNowModel.list_Annotation.Count; i++)
+                        {
+                            PlotViewModel.Annotations.Add(ChartNowModel.list_Annotation[i]);
+                        }
                     }
                 }
 
@@ -3276,15 +3280,15 @@ namespace PD.ViewModel
         #endregion
 
         #region Instrument Command
-        public string ini_exist()
-        {
-            if (Directory.Exists(@"D:"))
-                ini_path = @"D:\PD\Instrument.ini";
-            else
-                ini_path = System.Environment.CurrentDirectory + @"\Instrument.ini";
+        //public string ini_exist()
+        //{
+        //    if (Directory.Exists(@"D:"))
+        //        ini_path = @"D:\PD\Instrument.ini";
+        //    else
+        //        ini_path = System.Environment.CurrentDirectory + @"\Instrument.ini";
 
-            return ini_path;
-        }
+        //    return ini_path;
+        //}
 
         public string Ini_Read(string Section, string key)
         {
@@ -4420,11 +4424,20 @@ namespace PD.ViewModel
             {
                 _TLS_TCPIP = value;
                 OnPropertyChanged("TLS_TCPIP");
+
+                Ini_Write("Connection", "TLS_TCPIP", _TLS_TCPIP);
             }
         }
 
-        private string _Laser_type = "Agilent";
-        public string Laser_type
+        public enum LaserType
+        {
+            Agilent,
+            Golight,
+            Keysight
+        }
+
+        private LaserType _Laser_type = LaserType.Agilent;
+        public LaserType Laser_type
         {
             get { return _Laser_type; }
             set
@@ -4433,6 +4446,17 @@ namespace PD.ViewModel
                 OnPropertyChanged("Laser_type");
             }
         }
+
+        //private string _Laser_type = "Agilent";
+        //public string Laser_type
+        //{
+        //    get { return _Laser_type; }
+        //    set
+        //    {
+        //        _Laser_type = value;
+        //        OnPropertyChanged("Laser_type");
+        //    }
+        //}
 
         public enum StationTypes
         {
@@ -4691,7 +4715,9 @@ namespace PD.ViewModel
                     PlotViewModel.Series.Clear();
                     //IsCheck.Clear();
                     list_Chart_UI_Models.Clear();
+                    PlotViewModel.Annotations.Clear();
 
+                 
                     board_read.Clear();
 
                     list_Board_Setting.Clear();
@@ -4765,6 +4791,15 @@ namespace PD.ViewModel
                         Plot_Series.Add(lineSerie);
 
                         PlotViewModel.Series.Add(Plot_Series[i]);
+
+                        PlotViewModel.Annotations.Add(new LineAnnotation()
+                        {
+                            Type = LineAnnotationType.Vertical,
+                            Color = OxyColors.Transparent,
+                            ClipByYAxis = false,
+                            X = 0,
+                            StrokeThickness = 0
+                        });
 
                         Double_Powers.Add(0);
                         ChartNowModel.list_dataPoints.Add(new List<DataPoint>());
@@ -4925,18 +4960,18 @@ namespace PD.ViewModel
                         #endregion
                     }
 
-                    for (int i = _ch_count; i < 16; i++)
-                    {
-                        list_Chart_UI_Models.Add(new Chart_UI_Model()
-                        {
-                            Button_Color = i < M_brushes.Count() ? M_brushes[i] : M_brushes[i - M_brushes.Count()],
-                            Button_Channel = (i + 1),
-                            Button_Content = string.Format("Ch {0}", (i + 1)),
-                            Button_IsChecked = false,
-                            Button_IsVisible = Visibility.Collapsed,
-                            Button_Tag = "../../Resources/right-arrow.png"
-                        });
-                    }
+                    //for (int i = _ch_count; i < 16; i++)
+                    //{
+                    //    list_Chart_UI_Models.Add(new Chart_UI_Model()
+                    //    {
+                    //        Button_Color = i < M_brushes.Count() ? M_brushes[i] : M_brushes[i - M_brushes.Count()],
+                    //        Button_Channel = (i + 1),
+                    //        Button_Content = string.Format("Ch {0}", (i + 1)),
+                    //        Button_IsChecked = false,
+                    //        Button_IsVisible = Visibility.Collapsed,
+                    //        Button_Tag = "../../Resources/right-arrow.png"
+                    //    });
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -5221,7 +5256,7 @@ namespace PD.ViewModel
 
                 if (_isGoOn)
                 {
-                    Save_cmd(new ComMember() { YN = true, Command = "TLSACT", Type = "Agilent", Value_1 = value.ToString(), No = Cmd_Count.ToString() });
+                    Save_cmd(new ComMember() { YN = true, Command = "TLSACT", Type = ComViewModel.LaserType.Agilent.ToString(), Value_1 = value.ToString(), No = Cmd_Count.ToString() });
                 }
                 else
                 {
@@ -5477,6 +5512,8 @@ namespace PD.ViewModel
                     BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_OSA_Para_List.ini");
                 else
                     BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_TLS_Para_List.ini");
+
+                OnPropertyChanged("is_BR_OSA");
             }
         }
 
@@ -5535,6 +5572,9 @@ namespace PD.ViewModel
             {
                 _float_WL_Scan_Start = value;
                 Ini_Write("Scan", "WL_Scan_Start", value.ToString());
+
+                OnPropertyChanged("float_WL_Scan_Start");
+
             }
         }
 
@@ -5546,6 +5586,8 @@ namespace PD.ViewModel
             {
                 _float_WL_Scan_End = value;
                 Ini_Write("Scan", "WL_Scan_End", value.ToString());
+
+                OnPropertyChanged("float_WL_Scan_End");
             }
         }
 
@@ -5557,6 +5599,8 @@ namespace PD.ViewModel
             {
                 _float_WL_Scan_Gap = value;
                 Ini_Write("Scan", "WL_Scan_Gap", value.ToString());
+
+                OnPropertyChanged("float_WL_Scan_Gap");
             }
         }
 
@@ -5831,10 +5875,11 @@ namespace PD.ViewModel
             }
         }
 
-        public HPOSA OSA { get; set; } = new HPOSA();
+        //public GPIB.HPTLS TLS { get; set; } = new GPIB.HPTLS();
+        public GPIB.HPOSA OSA { get; set; } = new GPIB.HPOSA();
 
-        private HPTLS _tls = new HPTLS();
-        public HPTLS tls
+        private GPIB.HPTLS _tls = new GPIB.HPTLS();
+        public GPIB.HPTLS tls
         {
             get { return _tls; }
             set
@@ -6119,7 +6164,7 @@ namespace PD.ViewModel
             set
             {
                 _int_rough_scan_gap = value;
-                //Ini_Write("Productions", "Rough_Scan_Gap", value.ToString());  //創建ini file並寫入基本設定
+                Ini_Write("Scan", "V12_Scan_Gap", value.ToString());
                 OnPropertyChanged("int_rough_scan_gap");
             }
         }
@@ -6131,6 +6176,7 @@ namespace PD.ViewModel
             set
             {
                 _int_rough_scan_start = value;
+                Ini_Write("Scan", "V12_Scan_Start", value.ToString());  
                 OnPropertyChanged("int_rough_scan_start");
             }
         }
@@ -6142,6 +6188,7 @@ namespace PD.ViewModel
             set
             {
                 _int_rough_scan_stop = value;
+                Ini_Write("Scan", "V12_Scan_End", value.ToString());  
                 OnPropertyChanged("int_rough_scan_stop");
             }
         }
@@ -6755,7 +6802,9 @@ namespace PD.ViewModel
         public PlotModel PlotViewModel_UTF600
         {
             get { return _PlotViewModel_UTF600; }
-            set { _PlotViewModel_UTF600 = value; OnPropertyChanged("PlotViewModel_UTF600"); }
+            set {
+                _PlotViewModel_UTF600 = value;
+                OnPropertyChanged("PlotViewModel_UTF600"); }
         }
 
         private PlotModel _PlotViewModel_BR;

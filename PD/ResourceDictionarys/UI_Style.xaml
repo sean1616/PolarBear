@@ -2025,10 +2025,10 @@
 
     <Style x:Key="style_PictureBtn"
            TargetType="{x:Type Button}">
-        <Setter Property="MaxHeight"
+        <!--<Setter Property="MaxHeight"
                 Value="30" />
         <Setter Property="MaxWidth"
-                Value="30" />
+                Value="30" />-->
         <Setter Property="Tag"
                 Value="" />
         <Setter Property="Template">
@@ -2037,12 +2037,12 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
-                            <RowDefinition Height="4*" />
+                            <RowDefinition Height="2*" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.4*" />
-                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="2*" />
                             <ColumnDefinition Width="0.4*" />
                         </Grid.ColumnDefinitions>
                         <Border x:Name="border"
@@ -2060,8 +2060,6 @@
                                  Grid.Column="1">
                             <Image HorizontalAlignment="Center"
                                    Source="{Binding Content.Source, RelativeSource={RelativeSource TemplatedParent}}" />
-                            <!--<Image HorizontalAlignment="Center"
-                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />-->
                         </Viewbox>
                         <Viewbox Grid.Row="1"
                                  Grid.Column="1">

@@ -35,97 +35,13 @@ namespace PD.NavigationPages
             this.vm = vm;
             this.DataContext = this.vm;
 
-            if (!vm.CheckDirectoryExist(@"D:\PD"))
-                vm.ini_path = Path.Combine(CurrentDirectory, "Instrument.ini");
-            else
-            {
-                try
-                {
-                    if (File.Exists(vm.ini_path))
-                    {
-                        vm.selected_band = vm.Ini_Read("Connection", "Band");
+            SettiingPage_Initialize();
+        }
 
-                        if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Laser_type")))
-                            vm.Laser_type = vm.Ini_Read("Connection", "Laser_type");
-
-                        if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Switch_Comport"))) vm.Comport_Switch = vm.Ini_Read("Connection", "Switch_Comport");
-
-                        if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Station")))
-                            vm.station_type = (ComViewModel.StationTypes)Enum.Parse(typeof(ComViewModel.StationTypes), vm.Ini_Read("Connection", "Station"));
-
-                        if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Type")))
-                        {
-                            vm.Control_board_type_itm = vm.Ini_Read("Connection", "Control_Board_Type");
-                            //ComBox_Control_Board_Type.SelectedItem = vm.Ini_Read("Connection", "Control_Board_Type");
-
-                            //try
-                            //{
-                            //    string control_board_type = ComBox_Control_Board_Type.SelectedItem.ToString();
-                            //    switch (control_board_type)
-                            //    {
-                            //        case "UFV":
-                            //            vm.Control_board_type = 0;
-                            //            break;
-
-                            //        case "V":
-                            //            vm.Control_board_type = 1;
-                            //            break;
-                            //    }
-                            //}
-                            //catch { }
-                        }
-
-                        vm.Golight_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_Golight");
-                    }
-                }
-                catch { }
-            }
-
-            if (vm.Laser_type.Equals("Golight") && vm.Auto_Connect_TLS)
-            {
-                if (!string.IsNullOrEmpty(vm.Golight_ChannelModel.Board_Port))
-                {
-                    vm.tls_GL = new DiCon.Instrument.HP.GLTLS.GLTLS();
-                    if (vm.tls_GL.Open(vm.Golight_ChannelModel.Board_Port))
-                    {
-                        vm.isConnected = true;
-                    }
-                    else
-                        vm.Save_Log(new Models.LogMember()
-                        {
-                            isShowMSG = true,
-                            Message = "Connect Golight TLS Fail"
-                        });
-                }
-                else
-                    vm.Save_Log(new Models.LogMember()
-                    {
-                        isShowMSG = true,
-                        Message = "Golight comport is null or empty"
-                    });
-            }
-
-            //Dictionary<string, List<string>> Station_SettingUnit_Table = new Dictionary<string, List<string>>();
-
-            //Station_SettingUnit_Table.Add("BR", new List<string>()
-            //{
-            //     "TLS_WL_Range",
-            //    "Station_Type",
-            //    "Control_Board_Type",
-            //    "Laser_Type",
-            //    "Read_Cmd_Delay",
-            //    "Write_Cmd_Delay",
-            //    "Set_WL_Delay",
-            //    "Lambda_Scan_Delay",
-            //    "SN_Judge",
-            //    "SN_AutoTab",
-            //    "TLS_Filter",
-            //    "BR_OSA",
-            //    "Switch_Mode",
-            //    "Update_Chart",
-            //    "IL_Decimal_Place",
-            //});
-
+        private void SettiingPage_Initialize()
+        {
+            List<DateTime> list_dt = new List<DateTime>();
+            list_dt.Add(DateTime.Now);
 
             //UIElementCollection children = stcP_1.Children;
             vm.list_stcP_children.Add(stcP_1.Children);
@@ -133,13 +49,24 @@ namespace PD.NavigationPages
             vm.list_stcP_children.Add(stcP_3.Children);
             vm.list_stcP_children.Add(stcP_4.Children);
 
+            list_dt.Add(DateTime.Now);
+
             //新增station標籤至Setting Unit
             vm.SettingUnit_Tag_Setting();
+
+            list_dt.Add(DateTime.Now);
 
             //Update Setting page ui
             if (vm.list_stcP_children != null && vm.list_stcP_children.Count > 0)
                 vm.Define_Setting_Unit(vm.station_type.ToString());
 
+            list_dt.Add(DateTime.Now);
+
+            for (int i = 1; i < list_dt.Count; i++)
+            {
+                TimeSpan tp = list_dt[i] - list_dt[i - 1];
+                Console.WriteLine($"{i} : {tp.TotalMilliseconds}");
+            }
         }
 
         int i, c = 1;
@@ -242,7 +169,6 @@ namespace PD.NavigationPages
             _GIF_controller = ImageBehavior.GetAnimationController(Img_gif);
             if (_GIF_controller == null) return;
             i = _GIF_controller.FrameCount;
-            //_GIF_controller.CurrentFrame;
             _GIF_controller.GotoFrame(1);
             _GIF_controller.Pause();
         }
@@ -354,7 +280,9 @@ namespace PD.NavigationPages
                 {
                     string laserType = obj.SelectedItem.ToString();
 
-                    vm.Laser_type = laserType;
+                    ComViewModel.LaserType LT;
+                    if (Enum.TryParse(laserType, out LT))
+                        vm.Laser_type = LT;
 
                     vm.Ini_Write("Connection", "Laser_type", laserType);
                 }
