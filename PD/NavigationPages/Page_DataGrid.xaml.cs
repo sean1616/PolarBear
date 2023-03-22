@@ -45,7 +45,7 @@ namespace PD.NavigationPages
         Analysis analysis;
         ControlCmd cmd;
 
-        string save_path = "";
+        //string save_path = "";
 
         public Page_DataGrid(ComViewModel vm)
         {
@@ -58,7 +58,13 @@ namespace PD.NavigationPages
 
             cmd = new ControlCmd(vm);
 
-            save_path = txt_path.Text;
+            if(vm.station_type == ComViewModel.StationTypes.BR)
+            {
+                if (vm.CheckDirectoryExist(vm.txt_BR_Ref_Path))
+                    vm.txt_ref_path = vm.txt_BR_Ref_Path;
+            }
+
+            //save_path = txt_path.Text;
 
             _Page_Ref_Grid = new Page_Ref_Grid(vm, txt_path.Text);
 
@@ -82,7 +88,7 @@ namespace PD.NavigationPages
             try
             {
                 //取得此層資料夾中所有資料夾
-                FldArray = System.IO.Directory.GetDirectories(path);
+                FldArray = Directory.GetDirectories(path);
 
                 combox_path.Items.Clear();
 
@@ -113,7 +119,7 @@ namespace PD.NavigationPages
 
             pageTransitionControl.ShowPage(_Page_Ref_Grid);
 
-            save_path = txt_path.Text;
+            //save_path = txt_path.Text;
 
             pageTransitionControl.CurrentPage.Name = "Grid";
 
@@ -126,7 +132,7 @@ namespace PD.NavigationPages
             _Page_Ref_Chart = new Page_Ref_Chart(vm, list_datapoint);
 
             pageTransitionControl.ShowPage(_Page_Ref_Chart);
-            save_path = txt_path.Text;
+            //save_path = txt_path.Text;
 
             pageTransitionControl.CurrentPage.Name = "Chart";
             currentPage = true;
@@ -192,7 +198,6 @@ namespace PD.NavigationPages
 
         private void Btn_select_all_Click(object sender, RoutedEventArgs e)
         {
-            //MessageBox.Show(pageTransitionControl.CurrentPage.Name);
             if (pageTransitionControl.CurrentPage.Name == "page_ref_grid")
             {
                 _Page_Ref_Grid.dataGrid.Focus();
@@ -211,7 +216,7 @@ namespace PD.NavigationPages
             Calculate_Ref_Chart_DataPoint();
             _Page_Ref_Chart = new Page_Ref_Chart(vm, list_datapoint);
             pageTransitionControl.ShowPage(_Page_Ref_Chart);
-            save_path = txt_path.Text;
+            //save_path = txt_path.Text;
         }
 
         private void btn_board_v_Click(object sender, RoutedEventArgs e)
@@ -722,7 +727,7 @@ namespace PD.NavigationPages
                     pageTransitionControl.ShowPage(_Page_Ref_Chart);
                 }
 
-                save_path = txt_path.Text;
+                //save_path = txt_path.Text;
             }
         }
 
@@ -919,6 +924,10 @@ namespace PD.NavigationPages
 
                 foreach (string s in FldArray)
                     combox_path.Items.Add(s);
+
+                if(vm.CheckDirectoryExist(vm.txt_BR_Ref_Path))
+                    combox_path.Items.Add(vm.txt_BR_Ref_Path);
+
                 combox_path.IsDropDownOpen = true;
             }
             catch { }
@@ -1033,7 +1042,7 @@ namespace PD.NavigationPages
         {
             try
             {
-                MessageBoxResult msgBoxResult = MessageBox.Show("Cover old ref.txt ?", "Get Ref", MessageBoxButton.YesNoCancel);
+                MessageBoxResult msgBoxResult = MessageBox.Show("Cover old Ref.txt ?", "Get Ref", MessageBoxButton.YesNoCancel);
 
                 if (msgBoxResult == MessageBoxResult.Cancel)
                     return;
@@ -1378,7 +1387,7 @@ namespace PD.NavigationPages
 
                 pageTransitionControl.ShowPage(_Page_Ref_Grid);
 
-                save_path = txt_path.Text;
+                //save_path = txt_path.Text;
 
                 pageTransitionControl.CurrentPage.Name = "Grid";
 
@@ -1400,7 +1409,7 @@ namespace PD.NavigationPages
 
             pageTransitionControl.ShowPage(_Page_Chamber_Status);
 
-            save_path = txt_path.Text;
+            //save_path = txt_path.Text;
 
             pageTransitionControl.CurrentPage.Name = "Chamber_Status";
 

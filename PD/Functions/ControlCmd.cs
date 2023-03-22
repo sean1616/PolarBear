@@ -2318,7 +2318,6 @@ namespace PD.Functions
                             vm.tls = new HPTLS();
                             vm.tls.protocol = 1;
                             vm.tls.Addr_TCPIP = vm.TLS_TCPIP;
-                            //vm.tls.BoardNumber = vm.tls_BoardNumber;
 
                             try
                             {
@@ -2340,7 +2339,7 @@ namespace PD.Functions
                                 vm.tls.init();
 
                                 vm.Double_Laser_Wavelength = vm.tls.ReadWL();
-                                vm.isConnected = true;
+                                //vm.isConnected = true;
                             }
                             catch (Exception ex)
                             {
@@ -2351,6 +2350,38 @@ namespace PD.Functions
                         }
 
                         #endregion
+
+                        #region PowerMeter Setting
+                        if (!vm.isConnected)
+                        {
+                            vm.pm = new HPPM();
+                            vm.pm.Addr = vm.pm_Addr;
+                            vm.pm.Slot = vm.PM_slot;
+                            vm.pm.BoardNumber = vm.pm_BoardNumber;
+                            if (vm.pm.Open() == false)
+                            {
+                                vm.Str_cmd_read = "PM GPIB Setting Error.  Check  Address.";
+                                vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
+                                return;
+                            }
+                            vm.pm.init();
+                            vm.pm.setUnit(1);
+                            vm.pm.AutoRange(true);
+                            vm.pm.aveTime(vm.PM_AveTime);
+
+                            try
+                            {
+                                if (vm.pm.Open())
+                                    vm.Double_PM_Wavelength = vm.pm.ReadWL();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.StackTrace.ToString());
+                            }
+                        }
+
+                        vm.isConnected = true;
+                        #endregion                      
 
                         break;
 
@@ -2778,6 +2809,10 @@ namespace PD.Functions
                     case ComViewModel.LaserType.Keysight:
                         await Task.Run(() => vm.tls.SetWL(wl));
                         break;
+
+                    default:
+                        await Task.Run(() => vm.tls.SetWL(wl));
+                        break;
                 }
 
                 if (!vm.IsDistributedSystem)
@@ -2828,11 +2863,8 @@ namespace PD.Functions
                                 vm.Double_PM_Wavelength = vm.pm.ReadWL();
                 }
 
-                if (vm.station_type == ComViewModel.StationTypes.Testing)
-                {
-                    if (vm.float_WL_Ref.Count != 0)
+                if (vm.station_type == ComViewModel.StationTypes.Testing && vm.float_WL_Ref.Count != 0)
                         vm.Double_PM_Ref = vm.float_WL_Ref[0];
-                }
             }
             catch { vm.Save_Log("Set WL", "Set WL Error", false); }
 

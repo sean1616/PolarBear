@@ -2025,10 +2025,6 @@
 
     <Style x:Key="style_PictureBtn"
            TargetType="{x:Type Button}">
-        <!--<Setter Property="MaxHeight"
-                Value="30" />
-        <Setter Property="MaxWidth"
-                Value="30" />-->
         <Setter Property="Tag"
                 Value="" />
         <Setter Property="Template">

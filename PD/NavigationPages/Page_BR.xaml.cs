@@ -119,7 +119,7 @@ namespace PD.NavigationPages
             vm.PlotViewModel.LegendPlacement = LegendPlacement.Inside;
         }
 
-        
+
         private void MainPlotView_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (e.RightButton == MouseButtonState.Released)
@@ -162,7 +162,7 @@ namespace PD.NavigationPages
         //        vm.Str_cmd_read = $"WL End :{Math.Round(position.X, 2)}";
         //    }
         //}
-       
+
         bool isPlotMouseDown = false;
         private void PlotViewModel_MouseDown(object sender, OxyMouseDownEventArgs e)
         {
@@ -739,7 +739,7 @@ namespace PD.NavigationPages
         ICommunication icomm;
         DiCon.UCB.Communication.RS232.RS232 rs232;
         DiCon.UCB.MTF.IMTFCommand tf;
-               
+
         private async void txt_V1_DAC_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -1670,7 +1670,7 @@ namespace PD.NavigationPages
 
                 if (double.TryParse(obj.Text, out double wl))
                 {
-                    if (!vm.IsGoOn) 
+                    if (!vm.IsGoOn)
                         cmd.Set_WL(wl, true, true);
                     else
                         vm.Save_cmd(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "SETWL", Value_1 = wl.ToString() });
@@ -1701,15 +1701,13 @@ namespace PD.NavigationPages
             Tbtn_BR_INOUT.txtbox_content = "BR In";
         }
 
-        private async void btn_Get_Ref_Click(object sender, RoutedEventArgs e)
+        private async void btn_Get_BR_Ref_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                MessageBoxResult msgBoxResult = MessageBox.Show("Cover old BR Ref.txt ?", "Get Ref", MessageBoxButton.YesNo);
 
-                MessageBoxResult msgBoxResult = MessageBox.Show("Cover old ref.txt ?", "Get Ref", MessageBoxButton.YesNoCancel);
-
-                if (msgBoxResult == MessageBoxResult.Cancel)
-                    return;
+                if (msgBoxResult == MessageBoxResult.No) return;
 
                 #region Initial setting
                 vm.isStop = false;
@@ -1721,12 +1719,26 @@ namespace PD.NavigationPages
 
                 string RefName = String.Empty;
                 string RefPath = String.Empty;
+                string RefPath_BaseFolder = String.Empty;
+
+                if (!vm.CheckDirectoryExist(@"D:"))
+                {
+                    MessageBox.Show($"D槽不存在");
+                    vm.Save_Log(new LogMember()
+                    {
+                        Status = "Get Ref",
+                        Message = "D槽不存在"
+                    });
+                    return;
+                }
+
+                vm.txt_ref_path = vm.txt_BR_Ref_Path;
 
                 //File name setting
                 for (int ch = 0; ch < vm.ch_count; ch++)
                 {
                     RefName = $"Ref{ch + 1}.txt";
-                    RefPath = Path.Combine(@"D:\Ref\", RefName);
+                    RefPath = Path.Combine(vm.txt_ref_path, RefName);
 
                     if (!File.Exists(RefPath))
                     {
@@ -1739,19 +1751,6 @@ namespace PD.NavigationPages
                         else
                             return;  //If Ref folder still not exist, return.
                     }
-                }
-
-                string savePath = @"D:\";
-                if (!vm.CheckDirectoryExist(@"D:"))
-                {
-                    MessageBox.Show($"D槽不存在，更改路徑為{vm.CurrentPath}");
-                    savePath = vm.CurrentPath;
-                }
-
-                if (!vm.CheckDirectoryExist(Path.Combine(savePath, @"\Ref\")))
-                {
-                    savePath = vm.CurrentPath;
-                    Directory.CreateDirectory(Path.Combine(savePath, @"\Ref\"));
                 }
 
                 vm.Str_Status = "Get Ref";
@@ -1770,7 +1769,7 @@ namespace PD.NavigationPages
                         for (int ch = 0; ch < vm.ch_count; ch++)
                         {
                             RefName = $"Ref{ch + 1}.txt";
-                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+                            RefPath = Path.Combine(vm.txt_ref_path, RefName);
 
                             if (File.Exists(RefPath))
                             {
@@ -1779,9 +1778,9 @@ namespace PD.NavigationPages
                             }
                         }
 
-                        for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
+                        for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = Math.Round(wl + vm.float_WL_Scan_Gap, 2))
                         {
-                            list_wl.Add(wl);
+                            list_wl.Add(Math.Round(wl, 2));
                         }
 
                         vm.Ref_memberDatas.Clear();
@@ -1791,28 +1790,15 @@ namespace PD.NavigationPages
                             vm.Ref_Dictionaries[i].Clear();
                         }
                     }
-
-                    else if (msgBoxResult == MessageBoxResult.No)
-                    {
-                        //add specific channel ref to ref.txt
-                        for (double wl = vm.float_WL_Scan_Start; wl <= vm.float_WL_Scan_End; wl = wl + vm.float_WL_Scan_Gap)
-                        {
-                            for (int ch = 0; ch < vm.ch_count; ch++)
-                            {
-                                if (vm.BoolAllGauge || vm.list_GaugeModels[ch].boolGauge)
-                                {
-                                    if (vm.Ref_Dictionaries[ch].ContainsKey(wl))
-                                        continue;
-
-                                    if (!list_wl.Contains(wl))
-                                        list_wl.Add(wl);
-                                }
-                            }
-                        }
-                    }
+                    else return;
 
                     bool tempBool = vm.Is_FastScan_Mode;
                     vm.Is_FastScan_Mode = false;
+
+                    vm.isLaserActive = true;
+                    vm.dB_or_dBm = false;
+
+                    await Task.Delay(500);
 
                     //Scan Points
                     foreach (double wl in list_wl)
@@ -1842,7 +1828,7 @@ namespace PD.NavigationPages
                                         if (vm.station_type == ComViewModel.StationTypes.Hermetic_Test)
                                         {
                                             RefName = string.Format("Ref{0}.txt", vm.switch_index);
-                                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+                                            RefPath = Path.Combine(RefPath, RefName);
 
                                             await vm.Port_Switch_ReOpen();
                                             vm.port_Switch.Write(string.Format("SW0 {0}", vm.switch_index));
@@ -1850,7 +1836,7 @@ namespace PD.NavigationPages
                                         else
                                         {
                                             RefName = $"Ref{ch + 1}.txt";
-                                            RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+                                            RefPath = Path.Combine(vm.txt_ref_path, RefName);
                                         }
 
                                         IL = await cmd.Get_PM_Value((vm.switch_index - 1));
@@ -1903,7 +1889,7 @@ namespace PD.NavigationPages
                                         string msg = $"{wl},{IL}\r";
 
                                         RefName = $"Ref{ch + 1}.txt";
-                                        RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+                                        RefPath = Path.Combine(vm.txt_ref_path, RefName);
 
                                         File.AppendAllText(RefPath, msg);  //Add new line to ref file
 
@@ -2001,7 +1987,7 @@ namespace PD.NavigationPages
                     await cmd.Save_Chart();
 
                     RefName = $"Ref1.txt";
-                    RefPath = Path.Combine(savePath, @"\Ref\", RefName);
+                    RefPath = Path.Combine(RefPath, RefName);
 
                     if (msgBoxResult == MessageBoxResult.Yes)
                     {
@@ -2063,20 +2049,13 @@ namespace PD.NavigationPages
 
                 #region Get data from txt file and show
 
-                vm.Read_Ref(Path.Combine(savePath, @"\Ref\"));
+                vm.txt_ref_path = vm.txt_BR_Ref_Path;
+
+                vm.Read_Ref(vm.txt_ref_path);
 
                 scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
                 vm.msgModel.msg_3 = $"{Math.Round(scan_timespan, 1)} s";
 
-                //_Page_Ref_Grid = new Page_Ref_Grid(vm, txt_path.Text);
-
-                //pageTransitionControl.ShowPage(_Page_Ref_Grid);
-
-                //save_path = txt_path.Text;
-
-                //pageTransitionControl.CurrentPage.Name = "Grid";
-
-                //currentPage = false;
                 #endregion  
             }
             catch { }
@@ -2096,7 +2075,7 @@ namespace PD.NavigationPages
         {
             var obj = sender as ComboBox;
 
-            if(obj.SelectedIndex != -1)
+            if (obj.SelectedIndex != -1)
             {
                 string section = vm.list_BR_Scan_Para[obj.SelectedIndex];
                 Dictionary<string, string> keys = vm.Ini_Read_All_Keys(vm.BR_Scan_Para_Path, section);
@@ -2155,7 +2134,7 @@ namespace PD.NavigationPages
                 {
                     if (s.Contains("Dac_"))
                     {
-                        foreach(KeyValuePair<string, string> k in keys)
+                        foreach (KeyValuePair<string, string> k in keys)
                         {
                             if (k.Key.Contains("Dac_"))
                             {
@@ -2277,7 +2256,7 @@ namespace PD.NavigationPages
                         vm.ChartNowModel.list_BR_Model[i].BR = "";
                     }
                 }
-                                
+
                 vm.Update_ALL_PlotView();
                 #endregion
 
@@ -2424,7 +2403,7 @@ namespace PD.NavigationPages
                 //Calculate BR and it's wl peak position
                 for (int i = 0; i < vm.ChartNowModel.list_BR_Model.Count; i++)
                 {
-                    if(vm.ChartNowModel.list_BR_Model[i].Set_WL == WL)
+                    if (vm.ChartNowModel.list_BR_Model[i].Set_WL == WL)
                     {
                         double IL_Max = ls.Points.Where(p => p.Y == ls.Points.Max(s => s.Y)).FirstOrDefault().Y;
                         double IL_Min = ls.Points.Where(p => p.Y == ls.Points.Min(s => s.Y)).FirstOrDefault().Y;
@@ -2554,7 +2533,7 @@ namespace PD.NavigationPages
                     if (i > vm.PlotViewModel.Annotations.Count) return;
 
                     LineAnnotation lat = vm.PlotViewModel.Annotations[i] as LineAnnotation;
-                    if(vm.list_Chart_UI_Models[i].Button_IsChecked)
+                    if (vm.list_Chart_UI_Models[i].Button_IsChecked)
                     {
                         lat.StrokeThickness = 2;
                         lat.TextColor = OxyColors.Black;
@@ -2572,6 +2551,6 @@ namespace PD.NavigationPages
             vm.Update_ALL_PlotView();
         }
 
-        
+
     }
 }

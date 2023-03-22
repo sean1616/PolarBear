@@ -1616,13 +1616,12 @@ namespace PD.ViewModel
                     case ComViewModel.LaserType.Keysight:
 
                         #region Tunable Laser setting
+
                         if (!isConnected)
                         {
                             tls = new HPTLS();
                             tls.protocol = 1;
                             tls.Addr_TCPIP = TLS_TCPIP;
-                            //tls.BoardNumber = tls_BoardNumber;
-                            //tls.Addr = tls_Addr;
 
                             try
                             {
@@ -2131,15 +2130,9 @@ namespace PD.ViewModel
 
             try
             {
-                //System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                //sw.Reset();
-                //sw.Start();
-
                 Ref_Dictionaries.Clear();
                 for (int i = 0; i < 16; i++)
-                {
                     Ref_Dictionaries.Add(new Dictionary<double, double>());  //Initialize dictionaries for all ref file
-                }
 
                 Parallel.For(1, Ref_Dictionaries.Count + 1, ch => { Read_Ref_Analyze(ref_folder_path, ch); });  //平行運算
 
@@ -2180,10 +2173,6 @@ namespace PD.ViewModel
                         Ch_16 = Ref_Dictionaries[15].ContainsKey(wl) ? Ref_Dictionaries[15][wl] : d,
                     });
                 }
-
-                //sw.Stop();
-
-                //Save_Log("Read Reference", ch_count.ToString(), "TimeSpan", sw.ElapsedMilliseconds.ToString() + " ms");
             }
             catch (Exception ex)
             {
@@ -2556,6 +2545,12 @@ namespace PD.ViewModel
                 ch_count = 1;
                 switch_index = 1;
                 Is_switch_mode = false;
+
+                if (CheckDirectoryExist(txt_BR_Ref_Path))
+                {
+                    txt_ref_path = txt_BR_Ref_Path;
+                    Read_Ref(txt_ref_path);
+                }
                 GaugeText_visible = Visibility.Visible;
                 GaugeTabEnable = false;
                 GaugeSize_Height = new GridLength(7, GridUnitType.Star);
@@ -3995,6 +3990,19 @@ namespace PD.ViewModel
             {
                 _txt_BR_Save_Path = value;
                 ini.IniWriteValue("Connection", "BR_Save_Path", value.ToString(), ini_path);
+                OnPropertyChanged("txt_BR_Save_Path");
+            }
+        }
+
+        private string _txt_BR_Ref_Path = @"D:\Ref_BR\";
+        public string txt_BR_Ref_Path
+        {
+            get { return _txt_BR_Ref_Path; }
+            set
+            {
+                _txt_BR_Ref_Path = value;
+                //ini.IniWriteValue("Connection", "Equip_Setting_Path", value.ToString(), ini_path);
+                OnPropertyChanged("txt_BR_Ref_Path");
             }
         }
 

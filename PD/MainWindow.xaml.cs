@@ -85,6 +85,8 @@ namespace PD
             grid_process_schedule.DataContext = vm.msgModel;
 
             Initializing();
+
+
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -3913,10 +3915,10 @@ namespace PD
 
                     //一個plotModel同一時間只能供給一個plotview使用，頁面切換時需重新指派
                     vm.PlotViewModel_Chart = new PlotModel();
-                    vm.PlotViewModel_TF2 = new PlotModel();
+                    vm.PlotViewModel_Testing = new PlotModel();
                     vm.PlotViewModel_UTF600 = new PlotModel();
                     vm.PlotViewModel_BR = new PlotModel();
-                    vm.PlotViewModel_Testing = vm.PlotViewModel;
+                    vm.PlotViewModel_TF2 = vm.PlotViewModel;
 
                     break;
 

@@ -190,3 +190,5 @@ git_stats/*
 StyleCop.Cache
 # bin
 obj
+PD/NavigationPages/Window_ChatGPT.xaml
+PD/NavigationPages/Window_ChatGPT.xaml.cs
