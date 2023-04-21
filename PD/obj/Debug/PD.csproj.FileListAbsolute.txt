@@ -617,14 +617,6 @@ D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\UI\UC_OSA_WL_Button.
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\INIFileParser.dll
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\INIFileParser.xml
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD.csprojAssemblyReference.cache
-D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\PD-v5.6.4.exe.config
-D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\PD-v5.6.4.exe
-D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\PD-v5.6.4.pdb
-D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.4_MarkupCompile.cache
-D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.4_MarkupCompile.lref
-D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.4.g.resources
-D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.4.exe
-D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.4.pdb
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\NationalInstruments.Common.dll
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\NationalInstruments.Common.xml
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\NavigationPages\Window1.g.cs
@@ -649,7 +641,6 @@ D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\Microsoft.Net.Http.H
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\System.Buffers.xml
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\System.Memory.xml
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\System.Numerics.Vectors.xml
-D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.4.exe.config
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\Microsoft.Win32.Primitives.dll
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\netstandard.dll
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\System.AppContext.dll
@@ -748,3 +739,12 @@ D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\System.Xml.XPath.dll
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\System.Xml.XPath.XDocument.dll
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\DiCon.Instrument.HP.dll
 D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\DiCon.Instrument.HP.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\PD-v5.6.5.exe.config
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\PD-v5.6.5.exe
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\bin\Debug\PD-v5.6.5.pdb
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.5.exe.config
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.5_MarkupCompile.cache
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.5_MarkupCompile.lref
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.5.g.resources
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.5.exe
+D:\sean_wu\C\source\repos\Polar_Bear\PolarBear\PD\obj\Debug\PD-v5.6.5.pdb

@@ -1170,13 +1170,35 @@ namespace PD.NavigationPages
 
             #endregion
 
+            vm.Save_Log(new LogMember()
+            {
+                Status = "Set Path",
+                Message = vm.csv_product_TF2_wl_setting_path
+            });
+
             if (!string.IsNullOrEmpty(vm.opModel_1.SN))
                 if (vm.opModel_1.SN.Length > 5)
                 {
-                    if (vm.opModel_1.SN[6] == 'A')
+                    string productType = vm.opModel_1.SN[6].ToString().ToUpper();
+                    if (productType == "A")
                         Read_TF2_WL_Setting(vm.csv_product_TF2_wl_setting_path, no + 3);
-                    else if (vm.opModel_1.SN[6] == 'B')
+                    else if (productType == "B")
                         Read_TF2_WL_Setting(vm.csv_product_TF2_wl_setting_path, no);
+                    else
+                        vm.Save_Log(new LogMember()
+                        {
+                            Status = "Product Type",
+                            Channel = vm.opModel_1.SN[6].ToString(),
+                            Message = "Special case ?"
+                        });
+
+                    vm.Save_Log(new LogMember()
+                    {
+                        Status = "Set WL",
+                        Channel = vm.opModel_1.SN[6].ToString(),
+                        Message = vm.float_WL_Scan_Start.ToString(),
+                        Result = vm.float_WL_Scan_End.ToString()
+                    });
                 }
 
             await Task.Delay(200);
@@ -1218,6 +1240,13 @@ namespace PD.NavigationPages
             try
             {
                 if (File.Exists(FilePath))
+                {
+                    vm.Save_Log(new LogMember()
+                    {
+                        Message = "File exist",
+                        Result = FilePath
+                    });
+
                     using (DataTable dtt = CSVFunctions.Read_CSV(FilePath))
                     {
                         if (dtt.Rows.Count > 0 && dtt.Rows.Count > WL_No)
@@ -1228,6 +1257,13 @@ namespace PD.NavigationPages
                                     string str_wl = dtt.Rows[WL_No][1].ToString();
                                     string str_start = dtt.Rows[WL_No][2].ToString();
                                     string str_end = dtt.Rows[WL_No][3].ToString();
+
+                                    vm.Save_Log(new LogMember()
+                                    {
+                                        Status = "Read Setting",
+                                        Message = str_start,
+                                        Result = str_end
+                                    });
                                     //string str_gap = dtt.Rows[WL_No][4].ToString();
 
                                     if (WL_No == 1)
@@ -1247,10 +1283,28 @@ namespace PD.NavigationPages
                                     //    vm.float_WL_Scan_Gap = gap;
                                 }
                         }
+
+                        else
+                            vm.Save_Log(new LogMember()
+                            {
+                                Status = "Read Setting",
+                                Message = "dtt.Rows.Count = 0"
+                            });
                     }
+                }
+                else
+                    vm.Save_Log(new LogMember()
+                    {
+                        Message = "File isn't exist",
+                        Result = FilePath
+                    });
             }
             catch
             {
+                vm.Save_Log(new LogMember()
+                {
+                    Message = "Read TF2 WL Setting failed",
+                });
             }
         }
 

@@ -84,7 +84,7 @@ namespace PD.UI {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.6.4;component/ui/uc_setting_togglebutton.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.6.5;component/ui/uc_setting_togglebutton.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\UI\UC_Setting_ToggleButton.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

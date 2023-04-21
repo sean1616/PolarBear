@@ -181,7 +181,7 @@
                     <RowDefinition Height="9*" />
                 </Grid.RowDefinitions>
 
-                <TextBox Text="{Binding opModel_1.SN, FallbackValue=SN, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding opModel_1.SN,Mode=TwoWay, FallbackValue=SN, UpdateSourceTrigger=PropertyChanged}"
                          HorizontalContentAlignment="Center"
                          VerticalContentAlignment="Center"
                          BorderBrush="#FF6A6A6A"
@@ -1145,7 +1145,7 @@
 
                 <wpfuc:UC_ComboBox Name="ComBox_TF2_Station"
                                    Grid.Row="0"
-                                   SelectedItem="{Binding TF2_station_type}"
+                                   SelectedItem="{Binding TF2_station_type, Mode=TwoWay}"
                                    ItemSource="{Binding list_TF2_station_type}"
                                    Background="#FFE6E6E6"
                                    Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}">

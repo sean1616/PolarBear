@@ -11,7 +11,7 @@ using System.Collections.ObjectModel;
 
 namespace PD.Models
 {
-    public class ChartModel : NotifyBase
+    public class ChartModel : OpticalPropertyModel
     {
         public ChartModel(int ch_count)
         {
@@ -103,38 +103,38 @@ namespace PD.Models
 
         #region BW 
 
-        private double _BW_Setting_1 = 0.5;
-        public double BW_Setting_1
-        {
-            get { return _BW_Setting_1; }
-            set
-            {
-                _BW_Setting_1 = value;
-                OnPropertyChanged_Normal("BW_Setting_1");
-            }
-        }
+        //private double _BW_Setting_1 = 0.5;
+        //public double BW_Setting_1
+        //{
+        //    get { return _BW_Setting_1; }
+        //    set
+        //    {
+        //        _BW_Setting_1 = value;
+        //        OnPropertyChanged_Normal("BW_Setting_1");
+        //    }
+        //}
 
-        private double _BW_Setting_2 = 1.5;
-        public double BW_Setting_2
-        {
-            get { return _BW_Setting_2; }
-            set
-            {
-                _BW_Setting_2 = value;
-                OnPropertyChanged_Normal("BW_Setting_2");
-            }
-        }
+        //private double _BW_Setting_2 = 1.5;
+        //public double BW_Setting_2
+        //{
+        //    get { return _BW_Setting_2; }
+        //    set
+        //    {
+        //        _BW_Setting_2 = value;
+        //        OnPropertyChanged_Normal("BW_Setting_2");
+        //    }
+        //}
 
-        private double _BW_Setting_3 = 3;
-        public double BW_Setting_3
-        {
-            get { return _BW_Setting_3; }
-            set
-            {
-                _BW_Setting_3 = value;
-                OnPropertyChanged_Normal("BW_Setting_3");
-            }
-        }
+        //private double _BW_Setting_3 = 3;
+        //public double BW_Setting_3
+        //{
+        //    get { return _BW_Setting_3; }
+        //    set
+        //    {
+        //        _BW_Setting_3 = value;
+        //        OnPropertyChanged_Normal("BW_Setting_3");
+        //    }
+        //}
 
         private double _BW_Setting_4 = 20;
         public double BW_Setting_4
@@ -326,7 +326,7 @@ namespace PD.Models
             set
             {
                 _SN = value;
-                OnPropertyChanged_Normal("SN");
+                OnPropertyChanged("SN");
             }
         }
 

@@ -2789,7 +2789,7 @@ namespace PD.Functions
                 if (string.IsNullOrEmpty(band))
                 {
                     vm.Str_cmd_read = "WL out of range";
-                    vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read, isShowMSG = false });
+                    vm.Save_Log(new LogMember() { Message = vm.Str_cmd_read,Result= wl.ToString(), isShowMSG = false });
                 }
                 else
                     vm.selected_band = band;

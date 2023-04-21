@@ -36,10 +36,9 @@ namespace PD.NavigationPages
         TextBox obj;
         string[] ch_v = new string[2];
         bool _isDrag = false;
-        Analysis anly;
-
         bool isRightMouseinPlot = false;
         bool _is_txtWL_already_click = false;
+        Analysis anly;
 
         //readonly public System.Windows.Media.Animation.Storyboard sb_bear_shake;
         //readonly public System.Windows.Media.Animation.Storyboard sb_bear_reset;
@@ -1811,7 +1810,10 @@ namespace PD.NavigationPages
 
                         vm.Str_cmd_read = Math.Round(wl, 2).ToString();
 
-                        await Task.Delay(vm.Int_Set_WL_Delay);
+                        if (wl == list_wl.First())
+                            await Task.Delay(1500);
+                        else
+                            await Task.Delay(vm.Int_Set_WL_Delay);
 
                         double IL = 0;
 

@@ -1259,6 +1259,8 @@
            TargetType="{x:Type ComboBox}">
         <Setter Property="Tag"
                 Value="" />
+        <Setter Property="Background"
+                Value="Transparent" />
         <Setter Property="BorderBrush"
                 Value="Gray" />
         <Setter Property="SnapsToDevicePixels"
@@ -1302,7 +1304,7 @@
                                       Focusable="false"
                                       Foreground="White"
                                       IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                      Style="{StaticResource style_FuncToggleBtn}" />
+                                      Style="{StaticResource style_FuncToggleBtn_Main}" />
                         <Viewbox Grid.Row="1"
                                  Grid.Column="0">
                             <!--<Image Source="{Binding Path=(local:UI_DependencyProperty.Image), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />-->
@@ -1375,12 +1377,12 @@
                                     Property="Visibility"
                                     Value="Hidden" />
                         </Trigger>
-                        <Trigger Property="IsMouseOver"
+                        <!--<Trigger Property="IsMouseOver"
                                  Value="True">
                             <Setter TargetName="ToggleButton"
                                     Property="Background"
                                     Value="#FF8D8D8D" />
-                        </Trigger>
+                        </Trigger>-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -2656,7 +2658,7 @@
                                AllowsTransparency="True"
                                Focusable="False"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
-                               Placement="Bottom"
+                               Placement="Right"
                                PopupAnimation="Slide">
                             <Grid x:Name="DropDown"
                                   MinWidth="{TemplateBinding ActualWidth}"

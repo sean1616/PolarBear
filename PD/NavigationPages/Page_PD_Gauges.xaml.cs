@@ -37,6 +37,8 @@ namespace PD.NavigationPages
         readonly public System.Windows.Media.Animation.Storyboard sb_bear_shake;
         readonly public System.Windows.Media.Animation.Storyboard sb_bear_reset;
 
+        bool _is_txtWL_already_click = false;
+
         public Page_PD_Gauges(ComViewModel vm)
         {
             InitializeComponent();
@@ -352,7 +354,7 @@ namespace PD.NavigationPages
             _slider.Value = Math.Round(percentOfpoint * (_slider.Maximum - _slider.Minimum) + _slider.Minimum, 2);
         }
 
-        bool _is_txtWL_already_click = false;
+        
         //private void txt_WL_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         //{
         //    if (_is_txtWL_already_click) return;

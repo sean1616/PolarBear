@@ -39,6 +39,8 @@ namespace PD.NavigationPages
         //readonly public System.Windows.Media.Animation.Storyboard sb_bear_shake;
         //readonly public System.Windows.Media.Animation.Storyboard sb_bear_reset;
 
+        bool isRightMouseinPlot { get; set; } = false;
+
         public Page_UTF600_Main(ComViewModel vm)
         {
             InitializeComponent();
@@ -99,7 +101,6 @@ namespace PD.NavigationPages
             }
         }
 
-
         private void MainPlotView_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (e.RightButton == MouseButtonState.Released)
@@ -107,8 +108,7 @@ namespace PD.NavigationPages
                 isRightMouseinPlot = false;
             }
         }
-
-        bool isRightMouseinPlot = false;
+        
         private void MainPlotView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!vm.PlotViewModel.Axes[0].Title.Contains("Wavelength") && !vm.PlotViewModel.Axes[0].Title.Contains("nm")) return;

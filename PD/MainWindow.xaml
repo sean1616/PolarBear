@@ -488,7 +488,7 @@
                                   MinWidth="40"
                                   MaxHeight="30"
                                   Margin="10,0,18,0"
-                                  IsChecked="{Binding dB_or_dBm}"
+                                  IsChecked="{Binding dB_or_dBm, Mode=TwoWay}"
                                   Style="{StaticResource SwitchTypeToggleButton}" />
                     <Viewbox Grid.Column="1"
                              Grid.Row="1"

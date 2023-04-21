@@ -325,9 +325,9 @@ namespace PD.AnalysisModel
                 double bw = 0;
                 double bw_cwl = 0;
 
-                for (int b = 1; b <= 4; b++)
+                for (int bw_Setting_Index = 1; bw_Setting_Index <= 4; bw_Setting_Index++)
                 {
-                    switch (b)
+                    switch (bw_Setting_Index)
                     {
                         case 1:
                             bwSetting = vm.ChartNowModel.BW_Setting_1;
@@ -341,8 +341,8 @@ namespace PD.AnalysisModel
                             bwSetting = vm.ChartNowModel.BW_Setting_3;
                             break;
 
-                        case 4:
-                            bwSetting = vm.ChartNowModel.BW_Setting_4;
+                        //case 4:
+                        //    bwSetting = vm.ChartNowModel.BW_Setting_4;
                             break;
                     }
 
@@ -408,26 +408,26 @@ namespace PD.AnalysisModel
                     //}
                     #endregion
 
-                    switch (b)
+                    switch (bw_Setting_Index)
                     {
                         case 1:
-                            vm.ChartNowModel.BW_1 = bw;
-                            vm.ChartNowModel.BW_CWL_1 = bw_cwl;
+                            vm.ChartNowModel.WL_1_BW_1 = bw;
+                            vm.ChartNowModel.WL_1_CWL = bw_cwl;
                             break;
 
                         case 2:
-                            vm.ChartNowModel.BW_2 = bw;
-                            vm.ChartNowModel.BW_CWL_2 = bw_cwl;
+                            vm.ChartNowModel.WL_2_BW_1 = bw;
+                            vm.ChartNowModel.WL_2_CWL = bw_cwl;
                             break;
 
                         case 3:
-                            vm.ChartNowModel.BW_3 = bw;
-                            vm.ChartNowModel.BW_CWL_3 = bw_cwl;
+                            vm.ChartNowModel.WL_3_BW_1 = bw;
+                            vm.ChartNowModel.WL_3_CWL = bw_cwl;
                             break;
 
                         case 4:
-                            vm.ChartNowModel.BW_4 = bw;
-                            vm.ChartNowModel.BW_CWL_4 = bw_cwl;
+                            vm.ChartNowModel.WL_4_BW_1 = bw;
+                            vm.ChartNowModel.WL_4_CWL = bw_cwl;
                             break;
                     }
                 }
@@ -438,9 +438,9 @@ namespace PD.AnalysisModel
                 #region Cal. FOM
 
                 double FOM = 0;
-                if (vm.ChartNowModel.BW_4 != 0)
+                if (vm.ChartNowModel.WL_1_BW_3 != 0)
                 {
-                    FOM = vm.ChartNowModel.BW_3 / vm.ChartNowModel.BW_4;
+                    FOM = vm.ChartNowModel.WL_1_BW_2 / vm.ChartNowModel.WL_1_BW_3;
 
                     vm.ChartNowModel.FOM = vm.ChartNowModel.FOM != FOM ? Math.Round(FOM, 3) : 0;
                 }

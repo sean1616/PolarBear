@@ -135,7 +135,7 @@ namespace PD.ViewModel
                 //"BR_OSA",
                 //"Switch_Mode",
                 "Update_Chart",
-                //"IL_Decimal_Place",
+                "IL_Decimal_Place",
 
                 "K_WL_Type",
                 "WL_Scan_Start",
@@ -540,28 +540,7 @@ namespace PD.ViewModel
             }
 
 
-            //list_SettingUnitModels.Clear();
-
-            //list_SettingUnitModels.Add(new SettingUnitModel()
-            //{
-            //    UC_Type = UserControl_Mix.UC_Types.Text_Textbox,
-            //    Name = "TF Scan Gap",
-            //    TextBox_Value = "1000",
-            //});
-
-            //list_SettingUnitModels.Add(new SettingUnitModel()
-            //{
-            //    UC_Type = UserControl_Mix.UC_Types.Text_ToggleButton,
-            //    Name = "Fast Scan Mode",
-            //    Toggle_IsChecked = false
-            //});
-            //list_SettingUnitModels.Add(new SettingUnitModel()
-            //{
-            //    UC_Type = UserControl_Mix.UC_Types.Text_Textbox,
-            //    Name = "OSA Sensitivity",
-            //    TextBox_Value = OSA_Sensitivity.ToString(),
-            //});
-
+          
             #endregion
 
             #region ICommand Setting
@@ -2874,7 +2853,6 @@ namespace PD.ViewModel
                     {
                         obj.Visibility = Visibility.Collapsed;
                         Console.WriteLine($"{obj.Tag.ToString()}: Collapsed");
-
                     }
                 }
         }
@@ -5120,9 +5098,9 @@ namespace PD.ViewModel
             }
         }
 
-        private List<string> _list_combox_Product_items =
-            new List<string>() { "CTF", "UFA", "UFA-T", "UFA(H)", "UTF", "UTF300(H)", "UTF400", "UTF450", "UTF500", "UTF550", "MTF" };
-        public List<string> list_combox_Product_items
+        private ObservableCollection<string> _list_combox_Product_items =
+            new ObservableCollection<string>() { "CTF", "UFA", "UFA-T", "UFA(H)", "UTF", "UTF300(H)", "UTF400", "UTF450", "UTF500", "UTF550", "MTF" };
+        public ObservableCollection<string> list_combox_Product_items
         {
             get { return _list_combox_Product_items; }
             set
