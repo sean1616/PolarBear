@@ -2268,6 +2268,14 @@ namespace PD.NavigationPages
                 //dict_WL_to_Dac
                 if (dict_WL_to_Dac.Count != 0)
                 {
+                    if (!dict_WL_to_Dac.ContainsKey(WL))
+                    {
+                        vm.Save_Log(new LogMember()
+                        {
+                            Message = $"WL_to_Dac Dictionary does not contain Key: {WL}"
+                        });
+                    }
+
                     vm.Str_Command = $"D1 {dict_WL_to_Dac[WL]}";
 
                     if (dict_WL_to_Dac[WL].Split(',').Length == 3)

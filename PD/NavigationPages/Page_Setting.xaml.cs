@@ -38,6 +38,9 @@ namespace PD.NavigationPages
             SettiingPage_Initialize();
         }
 
+        /// <summary>
+        /// 初始化設定頁面的UI項目
+        /// </summary>
         private void SettiingPage_Initialize()
         {
             List<DateTime> list_dt = new List<DateTime>();

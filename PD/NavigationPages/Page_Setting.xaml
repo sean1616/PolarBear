@@ -302,7 +302,7 @@
                         <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                UC_Type_Select="ComboBox"
                                                Tag="Laser_Type"
-                                               SelectedItem="{Binding Laser_type, Mode=TwoWay}"
+                                               SelectedItem="{Binding Laser_type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                ItemSource="{Binding list_combox_Laser_Type_items}"
                                                ComBox_DropDownClosed="ComBox_Laser_Selection_DropDownClosed" />
 
@@ -1090,6 +1090,12 @@
                                                    UC_Type_Select="Text_Only"
                                                    ToolTip="BR Save Path"
                                                    txtbox_value="{Binding txt_BR_Save_Path, Mode=TwoWay}" />
+
+                            <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                   Tag="BR_Scan_Para_Path"
+                                                   UC_Type_Select="Text_Only"
+                                                   ToolTip="BR Parameter Path"
+                                                   txtbox_value="{Binding BR_Scan_Para_Path, Mode=TwoWay}" />
 
                             <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                    Tag="SQL_Server_IP"

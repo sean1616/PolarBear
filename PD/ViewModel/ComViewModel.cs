@@ -115,6 +115,7 @@ namespace PD.ViewModel
                 "Comport_Setting_Path",
                 "Calibration_Csv_Path",
                 "BR_Save_Path",
+                "BR_Scan_Para_Path",
                 "SQL_Server_IP",
                 "Station_ID"
             });
@@ -460,6 +461,7 @@ namespace PD.ViewModel
                 "Comport_Setting_Path",
                 //"Calibration_Csv_Path",
                 "BR_Save_Path",
+                "BR_Scan_Para_Path",
                 //"SQL_Server_IP",
                 "Station_ID"
             });
@@ -2058,7 +2060,7 @@ namespace PD.ViewModel
                         if (line_array.Length == 2)
                         {
                             if (double.TryParse(line_array[0], out double data_WL) && double.TryParse(line_array[1], out double data_IL))
-                                Ref_Dictionaries[ch - 1].Add(data_WL, data_IL);          //Add ref to dictionary
+                                Ref_Dictionaries[ch - 1].Add(Math.Round(data_WL, 2), data_IL);          //Add ref to dictionary
                         }
                         else
                             Save_Log("Gef ref", "Ref format is wrong", false);
@@ -2550,10 +2552,15 @@ namespace PD.ViewModel
                 if (bool.TryParse(Ini_Read("Connection", "is_BR_OSA"), out bool isBROSA))
                     is_BR_OSA = isBROSA;
 
+                //if (is_BR_OSA)
+                //    BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_OSA_Para_List.ini");
+                //else
+                //    BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_TLS_Para_List.ini");
+
                 if (is_BR_OSA)
-                    BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_OSA_Para_List.ini");
+                    BR_Scan_Para_Path = @"\\192.168.2.4\OptiComm\tff\Data\calibration\BR\Polar bear\BR_OSA_Para_List.ini";
                 else
-                    BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_TLS_Para_List.ini");
+                    BR_Scan_Para_Path = @"\\192.168.2.4\OptiComm\tff\Data\calibration\BR\Polar bear\BR_TLS_Para_List.ini";
 
                 if (File.Exists(BR_Scan_Para_Path))
                 {
@@ -3972,6 +3979,18 @@ namespace PD.ViewModel
             }
         }
 
+        //private string _txt_BR_Para_Path = @"\\192.168.2.4\OptiComm\tff\Data\calibration\BR\Polar bear\";
+        //public string txt_BR_Para_Path
+        //{
+        //    get { return _txt_BR_Para_Path; }
+        //    set
+        //    {
+        //        _txt_BR_Para_Path = value;
+        //        ini.IniWriteValue("Connection", "BR_Para_Path", value.ToString(), ini_path);
+        //        OnPropertyChanged("txt_BR_Para_Path");
+        //    }
+        //}
+
         private string _txt_BR_Ref_Path = @"D:\Ref_BR\";
         public string txt_BR_Ref_Path
         {
@@ -5015,7 +5034,7 @@ namespace PD.ViewModel
 
         //public enum_station e_stations = new enum_station();
 
-
+            
         private List<string> _list_combox_Working_Table_Type_items =
             new List<string>() { "Testing", "Hermetic_Test", "Chamber_S", "Chamber_S_16ch", "BR", "UV_Curing", "Fast_Calibration", "TF2", "UTF600" };
         public List<string> list_combox_Working_Table_Type_items
@@ -5203,7 +5222,16 @@ namespace PD.ViewModel
             }
         }
 
-        public string BR_Scan_Para_Path { get; set; }
+        private string _BR_Scan_Para_Path = @"\\192.168.2.4\OptiComm\tff\Data\calibration\BR\Polar bear\";
+        public string BR_Scan_Para_Path
+        {
+            get { return _BR_Scan_Para_Path; }
+            set
+            {
+                _BR_Scan_Para_Path = value;
+                OnPropertyChanged("BR_Scan_Para_Path");
+            }
+        }
 
         private bool _isMouseSelecte_WLScanRange = false;
         public bool isMouseSelecte_WLScanRange

@@ -4420,11 +4420,11 @@ namespace PD
                             list_finalVoltage = await K_V3();   //K V3                
                     }
 
-                    vm.sb_bear_shake.Begin();
+                    vm.sb_bear_shake.Begin();  //Bear anime start
                 }
                 else if (vm.station_type == ComViewModel.StationTypes.UTF600 || vm.station_type == ComViewModel.StationTypes.BR)
                 {
-                    vm.sb_bear_shake.Begin();
+                    vm.sb_bear_shake.Begin();  //Bear anime start
                     vm.Is_switch_mode = false;
                 }
                 else if (vm.station_type == ComViewModel.StationTypes.TF2)
@@ -4434,7 +4434,7 @@ namespace PD
                 else
                 {
                     //_Page_PD_Gauges.sb_bear_shake.Begin();
-                    vm.sb_bear_shake.Begin();
+                    vm.sb_bear_shake.Begin();  //Bear anime start
                     vm.Is_switch_mode = false;
                 }
 

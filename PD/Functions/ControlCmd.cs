@@ -965,8 +965,7 @@ namespace PD.Functions
                                 double p = vm.Double_Powers[ch - 1];
                                 vm.list_GaugeModels[ch - 1].GaugeValue = Math.Round(p, vm.decimal_place).ToString();
                             }
-
-
+                            
                             double var_GETPOWER;
                             //X axis judgement
                             if (string.IsNullOrEmpty(cm.Value_1))
@@ -3801,25 +3800,29 @@ namespace PD.Functions
             //Show read back message
             string msg = anly.Read_analysis(cmd, dataBuffer);
 
-            //double power = double.Parse(msg);
+            if (msg != "ID?" && msg != "PD?" && msg != "P0?")
+            {
+                try
+                {
+                    if (double.TryParse(msg, out double power))
+                    {
+                        if (vm.dB_or_dBm)  //dB
+                        {
+                            if (vm.float_WL_Ref.Count > 0)
+                                power = Math.Round(power - vm.float_WL_Ref[0], 4);
 
-            //try
-            //{
-            //    if (vm.dB_or_dBm)  //dB
-            //    {
-            //        if (vm.float_WL_Ref.Count > 0)
-            //            power = Math.Round(power - vm.float_WL_Ref[0], 4);
+                            vm.Double_Powers[ch - 1] = power;
+                        }
+                        else  //dBm
+                        {
+                            vm.Double_Powers[ch - 1] = power;
+                        }
 
-            //        vm.Double_Powers[ch - 1] = power;
-            //    }
-            //    else  //dBm
-            //    {
-            //        vm.Double_Powers[ch - 1] = power;
-            //    }
-
-            //    await Task.Delay(vm.Int_Set_WL_Delay);
-            //}
-            //catch (Exception ex) { MessageBox.Show(ex.StackTrace.ToString()); }
+                        await Task.Delay(vm.Int_Set_WL_Delay);
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show(ex.StackTrace.ToString()); }
+            }
 
             return vm.Double_Powers;
         }
