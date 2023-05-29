@@ -36,6 +36,9 @@ using NationalInstruments.NI4882;
 
 using Wpf_Control_Library;
 
+using IniParser;
+using IniParser.Model;
+
 namespace PD.ViewModel
 {
     public class ComViewModel : NotifyBase
@@ -101,6 +104,7 @@ namespace PD.ViewModel
                 "Channels_Count",
                 "BoudRate",
                 "Auto_Update",
+                "SkipSelectStation",
                 "Unit_Y",
                 "Arduino_Mode",
                 "Selected_Arduino_Comport",
@@ -171,6 +175,7 @@ namespace PD.ViewModel
                 "Channels_Count",
                 "BoudRate",
                 "Auto_Update",
+                "SkipSelectStation",
                 "Unit_Y",
                 //"Arduino_Mode",
                 //"Selected_Arduino_Comport",
@@ -240,6 +245,7 @@ namespace PD.ViewModel
                 "Channels_Count",
                 "BoudRate",
                 "Auto_Update",
+                "SkipSelectStation",
                 //"Unit_Y",
                 //"Arduino_Mode",
                 //"Selected_Arduino_Comport",
@@ -309,6 +315,7 @@ namespace PD.ViewModel
                 "Channels_Count",
                 "BoudRate",
                 "Auto_Update",
+                "SkipSelectStation",
                 //"Unit_Y",
                 //"Arduino_Mode",
                 //"Selected_Arduino_Comport",
@@ -378,6 +385,7 @@ namespace PD.ViewModel
                 "Channels_Count",
                 "BoudRate",
                 "Auto_Update",
+                "SkipSelectStation",
                 "Unit_Y",
                 //"Arduino_Mode",
                 //"Selected_Arduino_Comport",
@@ -447,6 +455,7 @@ namespace PD.ViewModel
                 "Channels_Count",
                 "BoudRate",
                 "Auto_Update",
+                "SkipSelectStation",
                 //"Unit_Y",
                 //"Arduino_Mode",
                 //"Selected_Arduino_Comport",
@@ -542,7 +551,7 @@ namespace PD.ViewModel
             }
 
 
-          
+
             #endregion
 
             #region ICommand Setting
@@ -692,7 +701,7 @@ namespace PD.ViewModel
         }
 
         //public Device device;
-        
+
 
         public LineAnnotation LineAnnotation_X_1 = new LineAnnotation()
         {
@@ -798,7 +807,7 @@ namespace PD.ViewModel
         public System.Diagnostics.Stopwatch watch { get; set; }
         #endregion
 
-        public static SetupIniIP ini = new SetupIniIP();
+        //public static SetupIniIP ini = new SetupIniIP();
 
         #region List_Members
         public List<ScriptModel> list_scriptModels = new List<ScriptModel>();
@@ -1093,8 +1102,6 @@ namespace PD.ViewModel
         }
 
         #endregion
-
-
 
         //Commands
         public void AsyncDelay(int delay)
@@ -3074,7 +3081,7 @@ namespace PD.ViewModel
                         Plot_Series[ch].Points.AddRange(ChartNowModel.Plot_Series[ch].Points);
                     }
 
-                if(station_type == StationTypes.BR)
+                if (station_type == StationTypes.BR)
                 {
                     if (list_Chart_UI_Models != null)
                     {
@@ -3270,11 +3277,31 @@ namespace PD.ViewModel
         //    return ini_path;
         //}
 
+        public FileIniDataParser parser = new FileIniDataParser();
+        public IniData data = new IniData();
+
+        public bool Ini_Path(string ini_path)
+        {
+            try
+            {
+                if (!File.Exists(ini_path))
+                    return false;
+
+                data = parser.ReadFile(ini_path);  //設定ini parser路徑
+
+                return true;
+            }
+            catch { return false; }
+        }
+
         public string Ini_Read(string Section, string key)
         {
             string _ini_read;
             if (File.Exists(ini_path))
-                _ini_read = ini.IniReadValue(Section, key, ini_path);
+            {
+                //_ini_read = ini.IniReadValue(Section, key, ini_path);
+                _ini_read = String.IsNullOrEmpty(data[Section][key]) ? "" : data[Section][key];
+            }
             else
                 _ini_read = "";
 
@@ -3285,40 +3312,117 @@ namespace PD.ViewModel
         {
             if (!File.Exists(ini_path))
                 Directory.CreateDirectory(System.IO.Directory.GetParent(ini_path).ToString());  //建立資料夾
-            ini.IniWriteValue(Section, key, value, ini_path);  //創建ini file並寫入基本設定
+
+            data[Section][key] = value;
+            parser.WriteFile(ini_path, data);
+
+            //ini.IniWriteValue(Section, key, value, ini_path);  //創建ini file並寫入基本設定
         }
 
         public List<string> Ini_Read_All_Sections(string ini_path)
         {
-            List<string> result;
-            if (File.Exists(ini_path))
-                result = ini.IniReadAllSections(ini_path);
-            else
-                result = new List<string>();
+            //List<string> result;
+            //if (File.Exists(ini_path))
+            //    result = ini.IniReadAllSections(ini_path);
+            //else
+            //    result = new List<string>();
 
-            return result;
+            //return result;
+            List<string> results = new List<string>();
+
+            try
+            {
+                if (!File.Exists(ini_path))
+                    return results;
+
+                data = parser.ReadFile(ini_path);  //設定ini parser路徑
+
+                foreach (var section in data.Sections)
+                {
+                    Console.WriteLine(section.SectionName);
+                    results.Add(section.SectionName);
+                }
+
+                data = parser.ReadFile(this.ini_path);   //重設ini parser路徑
+            }
+            catch (Exception e) { MessageBox.Show(e.StackTrace.ToString()); }
+
+            return results;
         }
 
         public List<string> Ini_Read_All_KeyNames(string ini_path, string Section)
         {
-            List<string> result;
-            if (File.Exists(ini_path))
-                result = ini.IniReadAllKeyNames(ini_path, Section);
-            else
-                result = new List<string>();
+            //List<string> result;
+            //if (File.Exists(ini_path))
+            //    result = ini.IniReadAllKeyNames(ini_path, Section);
+            //else
+            //    result = new List<string>();
 
-            return result;
+            //return result;
+
+            List<string> results = new List<string>();
+
+            try
+            {
+                if (!File.Exists(ini_path))
+                    return results;
+
+                data = parser.ReadFile(ini_path);  //設定ini parser路徑
+
+
+                foreach (var s in data.Sections)
+                {
+                    if (s.SectionName.Equals(Section))
+                    {
+                        foreach (KeyData kd in s.Keys)
+                        {
+                            results.Add(kd.KeyName);
+                        }
+                    }
+                }
+
+                data = parser.ReadFile(this.ini_path);  //重設ini parser路徑
+            }
+            catch (Exception e) { MessageBox.Show(e.StackTrace.ToString()); }
+
+            return results;
         }
 
         public Dictionary<string, string> Ini_Read_All_Keys(string ini_path, string Section)
         {
-            Dictionary<string, string> result;
-            if (File.Exists(ini_path))
-                result = ini.IniReadAllKeys(ini_path, Section);
-            else
-                result = new Dictionary<string, string>();
+            //Dictionary<string, string> result;
+            //if (File.Exists(ini_path))
+            //result = ini.IniReadAllKeys(ini_path, Section);
+            //else
+            //    result = new Dictionary<string, string>();
 
-            return result;
+            //return result;
+
+            Dictionary<string, string> results = new Dictionary<string, string>();
+
+            try
+            {
+                if (!File.Exists(ini_path))
+                    return results;
+
+                data = parser.ReadFile(ini_path);  //設定ini parser路徑
+
+                foreach (var s in data.Sections)
+                {
+                    if (s.SectionName.Equals(Section))
+                    {
+                        foreach (KeyData kd in s.Keys)
+                        {
+                            results.Add(kd.KeyName, kd.Value);
+                        }
+                    }
+                }
+
+                data = parser.ReadFile(this.ini_path);  //重設ini parser路徑
+            }
+            catch (Exception e) { MessageBox.Show(e.StackTrace.ToString()); }
+
+            return results;
         }
         #endregion
 
@@ -3888,7 +3992,8 @@ namespace PD.ViewModel
             set
             {
                 _txt_board_table_path = value;
-                ini.IniWriteValue("Connection", "Control_Board_Table_Path", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "Control_Board_Table_Path", value.ToString(), ini_path);
+                Ini_Write("Connection", "Control_Board_Table_Path", value.ToString());
                 OnPropertyChanged("txt_board_table_path");
             }
         }
@@ -3900,7 +4005,8 @@ namespace PD.ViewModel
             set
             {
                 _txt_save_wl_data_path = value;
-                ini.IniWriteValue("Connection", "Save_Hermetic_Data_Path", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "Save_Hermetic_Data_Path", value.ToString(), ini_path);
+                Ini_Write("Connection", "Save_Hermetic_Data_Path", value.ToString());
                 OnPropertyChanged("txt_save_wl_data_path");
             }
         }
@@ -3914,7 +4020,8 @@ namespace PD.ViewModel
             set
             {
                 _txt_save_TF2_wl_data_path = value;
-                ini.IniWriteValue("Connection", "Save_TF2_Data_Path", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "Save_TF2_Data_Path", value.ToString(), ini_path);
+                Ini_Write("Connection", "Save_TF2_Data_Path", value.ToString());
                 OnPropertyChanged("txt_save_TF2_wl_data_path");
             }
         }
@@ -3926,7 +4033,8 @@ namespace PD.ViewModel
             set
             {
                 _txt_Auto_Update_Path = value;
-                ini.IniWriteValue("Connection", "Auto_Update_Path", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "Auto_Update_Path", value.ToString(), ini_path);
+                Ini_Write("Connection", "Auto_Update_Path", value.ToString());
                 OnPropertyChanged("txt_Auto_Update_Path");
             }
         }
@@ -3938,7 +4046,8 @@ namespace PD.ViewModel
             set
             {
                 _txt_Chamber_Status_Path = value;
-                ini.IniWriteValue("Connection", "Chamber_Status_Path", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "Chamber_Status_Path", value.ToString(), ini_path);
+                Ini_Write("Connection", "Chamber_Status_Path", value.ToString());
                 OnPropertyChanged("txt_Chamber_Status_Path");
             }
         }
@@ -3950,7 +4059,8 @@ namespace PD.ViewModel
             set
             {
                 _txt_Equip_Setting_Path = value;
-                ini.IniWriteValue("Connection", "Equip_Setting_Path", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "Equip_Setting_Path", value.ToString(), ini_path);
+                Ini_Write("Connection", "Equip_Setting_Path", value.ToString());
                 OnPropertyChanged("txt_Equip_Setting_Path");
             }
         }
@@ -3962,7 +4072,8 @@ namespace PD.ViewModel
             set
             {
                 _txt_Calibration_Csv_Path = value;
-                ini.IniWriteValue("Connection", "Calibration_Csv_Path", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "Calibration_Csv_Path", value.ToString(), ini_path);
+                Ini_Write("Connection", "Calibration_Csv_Path", value.ToString());
                 OnPropertyChanged("txt_Calibration_Csv_Path");
             }
         }
@@ -3974,7 +4085,8 @@ namespace PD.ViewModel
             set
             {
                 _txt_BR_Save_Path = value;
-                ini.IniWriteValue("Connection", "BR_Save_Path", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "BR_Save_Path", value.ToString(), ini_path);
+                Ini_Write("Connection", "BR_Save_Path", value.ToString());
                 OnPropertyChanged("txt_BR_Save_Path");
             }
         }
@@ -4010,7 +4122,8 @@ namespace PD.ViewModel
             set
             {
                 _Server_IP = value;
-                ini.IniWriteValue("Connection", "Server_IP", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "Server_IP", value.ToString(), ini_path);
+                Ini_Write("Connection", "Server_IP", value.ToString());
                 OnPropertyChanged("Server_IP");
             }
         }
@@ -4163,6 +4276,8 @@ namespace PD.ViewModel
             get { return comport_TLS_Filter; }
             set
             {
+                if (value == null) return;
+
                 comport_TLS_Filter = value;
                 Ini_Write("Connection", "Comport_TLS_Filter", value.ToString());  //創建ini file並寫入基本設定
                 OnPropertyChanged("Comport_TLS_Filter");
@@ -4573,7 +4688,8 @@ namespace PD.ViewModel
             set
             {
                 _TF2_station_type = value;
-                ini.IniWriteValue("Connection", "TF2_station_type", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "TF2_station_type", value.ToString(), ini_path);
+                Ini_Write("Connection", "TF2_station_type", value.ToString());
                 OnPropertyChanged("TF2_station_type");
             }
         }
@@ -4700,7 +4816,8 @@ namespace PD.ViewModel
                         GaugeGrid3_visible = Visibility.Visible;
                     }
 
-                    ini.IniWriteValue("Connection", "Hermetic_ch_count", value.ToString(), ini_path);
+                    //ini.IniWriteValue("Connection", "Hermetic_ch_count", value.ToString(), ini_path);
+                    Ini_Write("Connection", "Hermetic_ch_count", value.ToString());
                 }
 
                 OnPropertyChanged("ch_count");
@@ -4722,7 +4839,7 @@ namespace PD.ViewModel
                     list_Chart_UI_Models.Clear();
                     PlotViewModel.Annotations.Clear();
 
-                 
+
                     board_read.Clear();
 
                     list_Board_Setting.Clear();
@@ -5034,7 +5151,7 @@ namespace PD.ViewModel
 
         //public enum_station e_stations = new enum_station();
 
-            
+
         private List<string> _list_combox_Working_Table_Type_items =
             new List<string>() { "Testing", "Hermetic_Test", "Chamber_S", "Chamber_S_16ch", "BR", "UV_Curing", "Fast_Calibration", "TF2", "UTF600" };
         public List<string> list_combox_Working_Table_Type_items
@@ -5438,7 +5555,9 @@ namespace PD.ViewModel
         public SolidColorBrush run_dBm_color
         {
             get { return _run_dBm_color; }
-            set { _run_dBm_color = value;
+            set
+            {
+                _run_dBm_color = value;
                 OnPropertyChanged("run_dBm_color");
             }
         }
@@ -5447,7 +5566,9 @@ namespace PD.ViewModel
         public SolidColorBrush run_dB_color
         {
             get { return _run_dB_color; }
-            set { _run_dB_color = value;
+            set
+            {
+                _run_dB_color = value;
                 OnPropertyChanged("run_dB_color");
             }
         }
@@ -5459,21 +5580,38 @@ namespace PD.ViewModel
             set
             {
                 _Auto_Connect_TLS = value;
-                ini.IniWriteValue("Connection", "Auto_Connect_TLS", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "Auto_Connect_TLS", value.ToString(), ini_path);
+                Ini_Write("Connection", "Auto_Connect_TLS", value.ToString());
                 OnPropertyChanged("Auto_Connect_TLS");
             }
         }
 
-        private bool _Auto_Update = true;
+        private bool _Auto_Update = false;
         public bool Auto_Update
         {
             get { return _Auto_Update; }
             set
             {
                 _Auto_Update = value;
-                ini.IniWriteValue("Connection", "Auto_Update", value.ToString(), ini_path);
-                ini.IniWriteValue("Connection", "Auto_Update", value.ToString(), Path.Combine(CurrentPath, "Instrument.ini"));
+                //ini.IniWriteValue("Connection", "Auto_Update", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "Auto_Update", value.ToString(), Path.Combine(CurrentPath, "Instrument.ini"));
+
+                Ini_Write("Connection", "Auto_Update", value.ToString());
+
                 OnPropertyChanged("Auto_Update");
+            }
+        }
+
+        private bool _SkipSelectStation = true;
+        public bool SkipSelectStation
+        {
+            get { return _SkipSelectStation; }
+            set
+            {
+                _SkipSelectStation = value;
+                //ini.IniWriteValue("Connection", "SkipSelectStation", value.ToString(), ini_path);
+                Ini_Write("Connection", "SkipSelectStation", value.ToString());
+                OnPropertyChanged("SkipSelectStation");
             }
         }
 
@@ -5484,7 +5622,8 @@ namespace PD.ViewModel
             set
             {
                 _SN_Judge = value;
-                ini.IniWriteValue("Productions", "SN_Judge", value.ToString(), ini_path);
+                //ini.IniWriteValue("Productions", "SN_Judge", value.ToString(), ini_path);
+                Ini_Write("Connection", "SN_Judge", value.ToString());
                 OnPropertyChanged("SN_Judge");
             }
         }
@@ -5496,7 +5635,8 @@ namespace PD.ViewModel
             set
             {
                 _SN_AutoTab = value;
-                ini.IniWriteValue("Productions", "SN_AutoTab", value.ToString(), ini_path);
+                //ini.IniWriteValue("Productions", "SN_AutoTab", value.ToString(), ini_path);
+                Ini_Write("Connection", "SN_AutoTab", value.ToString());
                 OnPropertyChanged("SN_AutoTab");
             }
         }
@@ -5508,7 +5648,8 @@ namespace PD.ViewModel
             set
             {
                 _is_TLS_Filter = value;
-                ini.IniWriteValue("Connection", "is_TLS_Filter", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "is_TLS_Filter", value.ToString(), ini_path);
+                Ini_Write("Connection", "is_TLS_Filter", value.ToString());
                 OnPropertyChanged("is_TLS_Filter");
             }
         }
@@ -5520,7 +5661,8 @@ namespace PD.ViewModel
             set
             {
                 _is_BR_OSA = value;
-                ini.IniWriteValue("Connection", "is_BR_OSA", value.ToString(), ini_path);
+                //ini.IniWriteValue("Connection", "is_BR_OSA", value.ToString(), ini_path);
+                Ini_Write("Connection", "is_BR_OSA", value.ToString());
 
                 if (is_BR_OSA)
                     BR_Scan_Para_Path = Path.Combine(CurrentPath, "BR_OSA_Para_List.ini");
@@ -5987,7 +6129,8 @@ namespace PD.ViewModel
             set
             {
                 _is_k_WL_manual_setting = value;
-                ini.IniWriteValue("Scan", "is_k_WL_manual_setting", value.ToString(), ini_path);
+                //ini.IniWriteValue("Scan", "is_k_WL_manual_setting", value.ToString(), ini_path);
+                Ini_Write("Connection", "is_k_WL_manual_setting", value.ToString());
                 OnPropertyChanged("Is_k_WL_manual_setting");
             }
         }
@@ -5999,7 +6142,8 @@ namespace PD.ViewModel
             set
             {
                 _is_FastScan_Mode = value;
-                ini.IniWriteValue("Scan", "Is_FastScan_Mode", value.ToString(), ini_path);
+                //ini.IniWriteValue("Scan", "Is_FastScan_Mode", value.ToString(), ini_path);
+                Ini_Write("Connection", "Is_FastScan_Mode", value.ToString());
                 OnPropertyChanged("Is_FastScan_Mode");
             }
         }
@@ -6190,7 +6334,7 @@ namespace PD.ViewModel
             set
             {
                 _int_rough_scan_start = value;
-                Ini_Write("Scan", "V12_Scan_Start", value.ToString());  
+                Ini_Write("Scan", "V12_Scan_Start", value.ToString());
                 OnPropertyChanged("int_rough_scan_start");
             }
         }
@@ -6202,7 +6346,7 @@ namespace PD.ViewModel
             set
             {
                 _int_rough_scan_stop = value;
-                Ini_Write("Scan", "V12_Scan_End", value.ToString());  
+                Ini_Write("Scan", "V12_Scan_End", value.ToString());
                 OnPropertyChanged("int_rough_scan_stop");
             }
         }
@@ -6816,9 +6960,11 @@ namespace PD.ViewModel
         public PlotModel PlotViewModel_UTF600
         {
             get { return _PlotViewModel_UTF600; }
-            set {
+            set
+            {
                 _PlotViewModel_UTF600 = value;
-                OnPropertyChanged("PlotViewModel_UTF600"); }
+                OnPropertyChanged("PlotViewModel_UTF600");
+            }
         }
 
         private PlotModel _PlotViewModel_BR;

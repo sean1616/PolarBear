@@ -22,18 +22,18 @@ namespace PD.Functions
         int size, string filePath);
 
         //ini write
-        public void IniWriteValue(string Section, string Key, string Value, string inipath)
-        {
-            WritePrivateProfileString(Section, Key, Value, inipath);
-        }
+        //public void IniWriteValue(string Section, string Key, string Value, string inipath)
+        //{
+        //    WritePrivateProfileString(Section, Key, Value, inipath);
+        //}
 
         //ini read
-        public string IniReadValue(string Section, string Key, string inipath)
-        {
-            StringBuilder temp = new StringBuilder(255);
-            int i = GetPrivateProfileString(Section, Key, "", temp, 255, inipath);
-            return temp.ToString();
-        }
+        //public string IniReadValue(string Section, string Key, string inipath)
+        //{
+        //    StringBuilder temp = new StringBuilder(255);
+        //    int i = GetPrivateProfileString(Section, Key, "", temp, 255, inipath);
+        //    return temp.ToString();
+        //}
 
         //ini read all sections
         public List<string> IniReadAllSections(string inipath)

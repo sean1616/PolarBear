@@ -177,6 +177,8 @@ namespace PD
                 else
                     vm.ini_path = Path.Combine(CurrentDirectory, "Instrument.ini");
 
+                vm.data = vm.parser.ReadFile(vm.ini_path, System.Text.Encoding.Unicode);  //初始化ini parser
+
                 if (File.Exists(vm.ini_path))
                 {
                     vm.txt_Equip_Setting_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Equip_Setting_Path")) ? "" : vm.Ini_Read("Connection", "Equip_Setting_Path");
@@ -4076,45 +4078,6 @@ namespace PD
             pageTransitionControl.ShowPage(_Page_Setting);
         }
 
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            try
-            {
-                vm.port_PD.Close();
-            }
-            catch { }
-        }
-
-        //private Device device;
-
-        //private void SendCommand(string cmd)
-        //{
-        //    try
-        //    {
-        //        if (vm.device != null)
-        //        {
-        //            vm.device.Write(cmd);
-        //        }
-        //    }
-        //    catch { }
-        //}
-
-        //private string ReadGPIB()
-        //{
-        //    try
-        //    {
-        //        if (vm.device != null)
-        //        {
-        //            return vm.device.ReadString();
-        //        }
-        //        return "-100";
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return "-100";
-        //    }
-        //}
-
         private async void Btn_Send_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtBox_comment.Text)) //Check comment box is empty or not
@@ -7074,6 +7037,7 @@ namespace PD
         {
             if (vm.port_PD != null)
                 vm.port_PD.Close();
+
             System.Environment.Exit(System.Environment.ExitCode);
         }
 

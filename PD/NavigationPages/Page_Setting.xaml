@@ -705,7 +705,14 @@
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding Auto_Update, Mode=TwoWay}"
                                                  txtbox_content="Auto Update" />
-
+                        <wpfuc:Text_ToggleButton Grid.Row="10"
+                                                 Grid.Column="3"
+                                                 FontFamily="Segoe Print"
+                                                 border_Background="#FF98DEB5"
+                                                 Background="White"
+                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                                 Ischecked="{Binding SkipSelectStation, Mode=TwoWay}"
+                                                 txtbox_content="Skip Select Station" />
 
 
 

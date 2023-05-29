@@ -14,7 +14,6 @@
         Width="1257"
         Height="680"
         AllowsTransparency="True"
-        Closed="Window_Closed"
         Loaded="Window_Loaded"
         ResizeMode="NoResize"
         WindowState="Normal"
