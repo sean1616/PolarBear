@@ -9,6 +9,7 @@
         xmlns:Property="clr-namespace:PD.Models"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:pageTransitions="clr-namespace:WpfPageTransitions;assembly=WpfPageTransitions"
+        xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         xmlns:ui="clr-namespace:PD.UI"
         Title="{Binding Title}"
         Width="1257"
@@ -203,7 +204,7 @@
                          Grid.Column="1"
                          Grid.ColumnSpan="3" HorizontalAlignment="Right">
                     <TextBlock Text="{Binding txt_now_version}" x:Name="txt_version"
-                               FontFamily="Segoe Print" PreviewMouseLeftButtonDown="txt_version_PreviewMouseLeftButtonDown"/>
+                               FontFamily="Segoe Print" />
                 </Viewbox>
 
                 <Button Name="btn_port_setting"
@@ -317,7 +318,7 @@
                               Click="btn_GO_Click"
                               Content="{Binding Str_Go_Content, FallbackValue=Go}"
                               FontSize="{Binding Int_Fontsize}"
-                              IsChecked="{Binding IsGoOn, NotifyOnTargetUpdated=True}"
+                              IsChecked="{Binding IsGoOn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               Style="{DynamicResource style_FuncToggleBtn_Main}"
                               Background="#FF6B6D78"
                               Tag="../Resources/Stopwatch.png" >
@@ -392,11 +393,26 @@
                         Grid.Row="3"
                         Grid.ColumnSpan="2"
                         Click="btn_D0_Click"
-                        Property:UI_DependencyProperty.Image="Resources/Question.png"
+                        Foreground="White"
                         Content="DAC?"
                         FontSize="{Binding Int_Fontsize}"
                         Style="{DynamicResource style_FuncBtn}"
-                        Tag="../Resources/Question.png" />
+                        Tag="../Resources/Question.png">
+                </Button>
+
+                <!--<Button x:Name="btn_D0"
+                        Grid.Row="3"
+                        Grid.ColumnSpan="2"
+                        Click="btn_D0_Click"
+                        Foreground="White"
+                        FontSize="{Binding Int_Fontsize}"
+                        Style="{DynamicResource style_FuncBtn_materialIcon}"
+                        Tag="DAC?">
+                    <materialIcons:MaterialIcon Kind="InformationCircle"
+                                                Foreground="Black"
+                                                Visibility="Collapsed" />
+
+                </Button>-->
 
                 <ComboBox x:Name="ComBox_Calibration"
                           Grid.Row="4"

@@ -104,7 +104,7 @@ namespace PD.Functions
                         break;
 
                     default:
-                        choose_product_setting(0, 65500);
+                        choose_product_setting(-65500, 65500);
                         break;
                 }
             }
@@ -152,7 +152,7 @@ namespace PD.Functions
                         break;
 
                     case "UTF400":
-                        choose_product_setting(0, 65500);
+                        choose_product_setting(-65500, 65500);
                         if (vm.selected_band.Equals("C Band"))
                             K_WL_setting(1547 - bonus_wl, 1551 + bonus_wl, gap * 2); //1548.51 gap:0.6
                         else if (vm.selected_band.Equals("L Band"))
@@ -160,7 +160,7 @@ namespace PD.Functions
                         break;
 
                     case "UTF450":
-                        choose_product_setting(0, 65500);
+                        choose_product_setting(-65500, 65500);
                         if (vm.selected_band.Equals("C Band"))
                             K_WL_setting(1547 - bonus_wl, 1551 + bonus_wl, gap * 2); //1548.51 gap:0.6
                         else if (vm.selected_band.Equals("L Band"))
@@ -168,7 +168,7 @@ namespace PD.Functions
                         break;
 
                     case "UTF500":
-                        choose_product_setting(0, 65500);
+                        choose_product_setting(-65500, 65500);
                         if (vm.selected_band.Equals("C Band"))
                             K_WL_setting(1547 - bonus_wl, 1551 + bonus_wl, gap * 2); //1548.51 gap:0.6
                         else if (vm.selected_band.Equals("L Band"))
@@ -176,7 +176,15 @@ namespace PD.Functions
                         break;
 
                     case "UTF550":
-                        choose_product_setting(0, 65500);
+                        choose_product_setting(-65500, 65500);
+                        if (vm.selected_band.Equals("C Band"))
+                            K_WL_setting(1547 - bonus_wl, 1551 + bonus_wl, gap * 2); //1548.51 gap:0.6
+                        else if (vm.selected_band.Equals("L Band"))
+                            K_WL_setting(1589.1 - bonus_wl, 1592 + bonus_wl, gap * 2); //1590.5
+                        break;
+
+                    case "UTF600":
+                        choose_product_setting(-65500, 65500);
                         if (vm.selected_band.Equals("C Band"))
                             K_WL_setting(1547 - bonus_wl, 1551 + bonus_wl, gap * 2); //1548.51 gap:0.6
                         else if (vm.selected_band.Equals("L Band"))

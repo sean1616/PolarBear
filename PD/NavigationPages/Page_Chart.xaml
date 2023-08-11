@@ -31,6 +31,7 @@
             <ColumnDefinition Width="0*" />
         </Grid.ColumnDefinitions>
         
+        <!--Function buttons-->
         <Grid Grid.Column="2"
               Background="#FF494949">
             <Grid.RowDefinitions>
@@ -223,28 +224,20 @@
                                 Color="OrangeRed" />
             </oxy:Plot.Series>
         </oxy:Plot>
+        
         <oxy:PlotView x:Name="mainPlotView"
                       Model="{Binding PlotViewModel_Chart}"
-                      Background="White"
                       BorderBrush="Black"
-                      Margin="20,0,20,10"
                       FontFamily="Segoe Print"
-                      Grid.Column="1">
+                      Margin="10,0,20,10"
+                      Grid.Column="1"
+                      Background="Transparent">
         </oxy:PlotView>
 
-        <StackPanel Grid.Column="1" Orientation="Horizontal"
+        <!--<StackPanel Grid.Column="1" Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top">
-            <!--<wpfuc:Button_Icon_Only x:Name="btn_line_x"
-                                    Height="28"
-                                    Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                                    Margin="0,3,3,3"
-                                    BTN_Background="#FF8B8585"
-                                    BTN_Background_MouseOver="#FFC3C3C3"
-                                    CornerRadius="4"
-                                    Click="btn_line_x_Click"
-                                    ToolTip="Set X Min/Max"
-                                    ImgSource="../Resources/Box.png" />-->
+           
             <wpfuc:Button_Icon_Only x:Name="btn_PopupWindow"
                                     Height="30"
                                     Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
@@ -260,7 +253,7 @@
                                     IsTabStop="False"
                                     Click="btn_PopupWindow_Click" />
 
-        </StackPanel>
+        </StackPanel>-->
        
     </Grid>
 </UserControl>

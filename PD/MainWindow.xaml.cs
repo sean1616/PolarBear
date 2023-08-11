@@ -177,7 +177,7 @@ namespace PD
                 else
                     vm.ini_path = Path.Combine(CurrentDirectory, "Instrument.ini");
 
-                vm.data = vm.parser.ReadFile(vm.ini_path, System.Text.Encoding.Unicode);  //初始化ini parser
+                vm.data = vm.parser.ReadFile(vm.ini_path);  //初始化ini parser
 
                 if (File.Exists(vm.ini_path))
                 {
@@ -191,24 +191,26 @@ namespace PD
                     vm.txt_BR_Save_Path = string.IsNullOrEmpty(vm.Ini_Read("Connection", "BR_Save_Path")) ? vm.txt_BR_Save_Path : vm.Ini_Read("Connection", "BR_Save_Path");
 
                     //combox_comport.SelectedItem = vm.Ini_Read("Connection", "Comport");
-                    vm.Selected_Comport = vm.Ini_Read("Connection", "Comport");
-                    vm.Comport_TLS_Filter = vm.Ini_Read("Connection", "Comport_TLS_Filter");
-                    vm.Comport_Switch = vm.Ini_Read("Connection", "Comport_Switch");
-                    //vm.station_type = (ComViewModel.StationTypes)Enum.Parse(typeof(ComViewModel.StationTypes) ,vm.Ini_Read("Connection", "Station"));
-                    if (string.IsNullOrEmpty(vm.Ini_Read("Connection", "Station")))
-                        vm.station_type_No = 0;
-                    else
-                        vm.station_type_No = (int)(ComViewModel.StationTypes)Enum.Parse(typeof(ComViewModel.StationTypes), vm.Ini_Read("Connection", "Station"));
+                    vm.Selected_Comport = String.IsNullOrEmpty(vm.Ini_Read("Connection", "Comport")) ? vm.Selected_Comport : vm.Ini_Read("Connection", "Comport");
+                    vm.Comport_TLS_Filter = String.IsNullOrEmpty(vm.Ini_Read("Connection", "Comport_TLS_Filter")) ? vm.Comport_TLS_Filter : vm.Ini_Read("Connection", "Comport_TLS_Filter");
+                    vm.Comport_Switch = String.IsNullOrEmpty(vm.Ini_Read("Connection", "Comport_Switch")) ? vm.Comport_Switch : vm.Ini_Read("Connection", "Comport_Switch");
 
-                    vm.PD_A_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_PD_A");
-                    vm.PD_B_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_PD_B");
+                    vm.station_type_No = string.IsNullOrEmpty(vm.Ini_Read("Connection", "Station")) ? 0 :
+                        (int)(ComViewModel.StationTypes)Enum.Parse(typeof(ComViewModel.StationTypes), vm.Ini_Read("Connection", "Station"));
+                    //if (string.IsNullOrEmpty(vm.Ini_Read("Connection", "Station")))
+                    //    vm.station_type_No = 0;
+                    //else
+                    //    vm.station_type_No = (int)(ComViewModel.StationTypes)Enum.Parse(typeof(ComViewModel.StationTypes), vm.Ini_Read("Connection", "Station"));
+
+                    vm.PD_A_ChannelModel.Board_Port = String.IsNullOrEmpty(vm.Ini_Read("Connection", "COM_PD_A")) ? vm.PD_A_ChannelModel.Board_Port : vm.Ini_Read("Connection", "COM_PD_A");
+                    vm.PD_B_ChannelModel.Board_Port = String.IsNullOrEmpty(vm.Ini_Read("Connection", "COM_PD_B")) ? vm.PD_B_ChannelModel.Board_Port : vm.Ini_Read("Connection", "COM_PD_B");
 
                     //if (int.TryParse(vm.Ini_Read("Connection", "OSA_BoardNumber"), out int osa_BoardNo))
                     //    vm.OSA_BoardNumber = osa_BoardNo;
 
-                    vm.product_type = vm.Ini_Read("Productions", "Product");
+                    vm.product_type = String.IsNullOrEmpty(vm.Ini_Read("Productions", "Product")) ? vm.product_type : vm.Ini_Read("Productions", "Product");
                     vm.Is_k_WL_manual_setting = Generic_GetINISetting(vm.Is_k_WL_manual_setting, "Scan", "is_k_WL_manual_setting");
-                    vm.selected_K_WL_Type = String.IsNullOrEmpty(vm.Ini_Read("Productions", "K_WL_Type")) ? "ALL Range" : vm.Ini_Read("Productions", "K_WL_Type");
+                    vm.selected_K_WL_Type = String.IsNullOrEmpty(vm.Ini_Read("Productions", "K_WL_Type")) ? vm.selected_K_WL_Type : vm.Ini_Read("Productions", "K_WL_Type");
 
                     vm.OSA_BoardNumber = Generic_GetINISetting(vm.OSA_BoardNumber, "Connection", "OSA_BoardNumber");
                     vm.OSA_Addr = Generic_GetINISetting(vm.OSA_Addr, "Connection", "OSA_Addr");
@@ -226,6 +228,8 @@ namespace PD
 
                     vm.SN_AutoTab = Generic_GetINISetting(vm.SN_AutoTab, "Productions", "SN_AutoTab");
 
+                    vm.is_update_chart = Generic_GetINISetting(vm.is_update_chart, "Scan", "Is_update_chart");
+
                     vm.Int_Read_Delay = Generic_GetINISetting(vm.Int_Read_Delay, "Connection", "RS232_Delay_Time");
 
                     vm.Int_Write_Delay = Generic_GetINISetting(vm.Int_Write_Delay, "Connection", "RS232_Write_DelayTime");
@@ -238,7 +242,6 @@ namespace PD
                     vm.int_rough_scan_start = Generic_GetINISetting(vm.int_rough_scan_start, "Scan", "V12_Scan_Start");
                     vm.int_rough_scan_stop = Generic_GetINISetting(vm.int_rough_scan_stop, "Scan", "V12_Scan_End");
 
-
                     vm.int_V3_scan_start = Generic_GetINISetting(vm.int_V3_scan_start, "Scan", "V3_Scan_Start");
                     vm.int_V3_scan_end = Generic_GetINISetting(vm.int_V3_scan_end, "Scan", "V3_Scan_End");
                     vm.int_V3_scan_gap = Generic_GetINISetting(vm.int_V3_scan_gap, "Scan", "V3_Scan_Gap");
@@ -249,18 +252,25 @@ namespace PD
 
                     vm.float_WL_Scan_Gap = Generic_GetINISetting(vm.float_WL_Scan_Gap, "Scan", "WL_Scan_Gap");
 
+                    vm.Is_Curfit = Generic_GetINISetting(vm.Is_Curfit, "Scan", "Is_Curfit");
+                    vm.Is_2Curfit = Generic_GetINISetting(vm.Is_2Curfit, "Scan", "Is_2Curfit");
+
                     vm.List_Fix_WL[0] = String.IsNullOrEmpty(vm.Ini_Read("Scan", "Fix_WL_1")) ? "1530" : vm.Ini_Read("Scan", "Fix_WL_1");
                     vm.List_Fix_WL[1] = String.IsNullOrEmpty(vm.Ini_Read("Scan", "Fix_WL_2")) ? "1548" : vm.Ini_Read("Scan", "Fix_WL_2");
                     vm.List_Fix_WL[2] = String.IsNullOrEmpty(vm.Ini_Read("Scan", "Fix_WL_3")) ? "1565" : vm.Ini_Read("Scan", "Fix_WL_3");
                     vm.List_Fix_WL[3] = String.IsNullOrEmpty(vm.Ini_Read("Scan", "Fix_WL_4")) ? "1550" : vm.Ini_Read("Scan", "Fix_WL_4");
 
+                    vm.SkipSelectStation = Generic_GetINISetting(vm.SkipSelectStation, "Connection", "SkipSelectStation");
+
                     vm.IsDistributedSystem = Generic_GetINISetting(vm.IsDistributedSystem, "Connection", "IsDistributedSystem");
+
+                    vm.decimal_place = int.TryParse(vm.Ini_Read("Connection", "Decimal_Place"), out int rst) ? rst : vm.decimal_place;
 
                     if (vm.Ini_Read("Connection", "PD_or_PM") == "PM")
                     {
                         vm.PD_or_PM = true;
                         vm.Main_Color = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0085CA"));
-                        vm.Ini_Write("Connection", "PD_or_PM", "PM");
+                        //vm.Ini_Write("Connection", "PD_or_PM", "PM");
                     }
 
                     switch (vm.Ini_Read("Productions", "Unit").ToLower())
@@ -282,9 +292,9 @@ namespace PD
                 }
                 else
                 {
-                    Directory.CreateDirectory(Directory.GetParent(vm.ini_path).ToString());  //建立資料夾      
-                    vm.Ini_Write("Connection", "Comport", "COM2");  //創建ini file並寫入基本設定
-                    vm.Ini_Write("Productions", "Product", "CTF");
+                    //Directory.CreateDirectory(Directory.GetParent(vm.ini_path).ToString());  //建立資料夾      
+                    //vm.Ini_Write("Connection", "Comport", "COM2");  //創建ini file並寫入基本設定
+                    //vm.Ini_Write("Productions", "Product", "CTF");
                 }
                 #endregion
 
@@ -584,9 +594,9 @@ namespace PD
                 }
                 #endregion
             }
-            catch
+            catch (Exception ex)
             {
-                //using (Stream st )
+                MessageBox.Show(ex.StackTrace.ToString());
             }
             return true;
         }
@@ -657,10 +667,8 @@ namespace PD
                 if (Enum.TryParse(TLSType, out lt))
                 {
                     vm.Laser_type = lt;
-                    //vm.Laser_type = (ComViewModel.LaserType)Enum.Parse(typeof(ComViewModel.LaserType), TLSType);
                 }
             }
-
 
             if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Switch_Comport"))) vm.Comport_Switch = vm.Ini_Read("Connection", "Switch_Comport");
 
@@ -668,9 +676,7 @@ namespace PD
                 vm.station_type = (ComViewModel.StationTypes)Enum.Parse(typeof(ComViewModel.StationTypes), vm.Ini_Read("Connection", "Station"));
 
             if (!string.IsNullOrEmpty(vm.Ini_Read("Connection", "Control_Board_Type")))
-            {
                 vm.Control_board_type_itm = vm.Ini_Read("Connection", "Control_Board_Type");
-            }
 
             vm.Golight_ChannelModel.Board_Port = vm.Ini_Read("Connection", "COM_Golight");
 
@@ -882,7 +888,8 @@ namespace PD
                         if (!vm.isConnected && vm.PD_or_PM)  //檢查TLS是否連線，若無，則進行連線並取續TLS狀態
                             await cmd.Connect_TLS();
 
-                        if (!vm.PD_or_PM)   //PD mode
+                        //PD mode
+                        if (!vm.PD_or_PM)  
                         {
                             vm.Cmd_Count = 0;
 
@@ -2389,7 +2396,7 @@ namespace PD
                             double best_dac = data[0].X;
                             double best_IL = data.First().Y;
 
-                            if (vm.Bool_isCurfitting)
+                            if (vm.Is_Curfit)
                             {
                                 CurveFittingResultModel curveFittingResultModel = anly.CurFitting(vm.ChartNowModel.list_dataPoints[ch]);
                                 List<DataPoint> dataPoints = curveFittingResultModel.GetDrawLinePoints();
@@ -2501,6 +2508,9 @@ namespace PD
             vm.msgModel.msg_3 = "0 s";
             vm.ChartNowModel.TimeSpan = 0;
 
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             System.Windows.Threading.DispatcherTimer timespan_timer = new System.Windows.Threading.DispatcherTimer();
             timespan_timer.Interval = TimeSpan.FromSeconds(1);
             timespan_timer.Tick += Timespan_timer_Tick;
@@ -2510,27 +2520,38 @@ namespace PD
                 vm.sb_bear_shake.Begin();
 
             vm.Str_Status = "Calibration DAC";
-            if (combox_product.SelectedItem.ToString().Contains("UFA"))
+            if (combox_product.SelectedItem != null)
             {
-                await Reset_TF();
-                await K_V3();
+                if (combox_product.SelectedItem.ToString().Contains("UFA"))
+                {
+                    await Reset_TF();
+                    await K_V3();
 
-                timespan_timer.Stop();
-                vm.msgModel.msg_3 = "0 s";
-                vm.ChartNowModel.TimeSpan = 0;
-                timespan_timer.Start();
+                    //timespan_timer.Stop();
+                    vm.msgModel.msg_3 = "0 s";
+                    vm.ChartNowModel.TimeSpan = 0;
+                    //timespan_timer.Start();
+                }
+            }
+            else
+            {
+                vm.Save_Log(new LogMember() { Status = "K Dac", Message = "Production Type is Empty" });
+                vm.Str_Status = "Production Type is Empty";
             }
 
             if (vm.isStop)
             {
                 timespan_timer.Stop();
+                sw.Stop();
                 return;
             }
 
             if (vm.selected_K_WL_Type.Equals("ALL Range"))
                 await K_TF_Step();  //Step Scan  
             else if (vm.selected_K_WL_Type.Equals("Human Like"))
-                await K_TF_Iteration();  //Step Scan  
+                await K_TF_Iteration(); 
+            else if (vm.selected_K_WL_Type.Equals("Double Fit"))
+                await K_TF_DoubleFit();  
 
             if (vm.sb_bear_shake != null && vm.sb_bear_reset != null)
             {
@@ -2542,6 +2563,12 @@ namespace PD
             }
 
             timespan_timer.Stop();
+
+            decimal dt = (decimal)sw.Elapsed.TotalMilliseconds / (decimal)1000;
+            vm.msgModel.msg_3 = $"{Math.Round(dt, 2)}";
+            vm.ChartNowModel.TimeSpan = (double)dt;
+
+            sw.Stop();
         }
 
         private async Task K_TF_Step()
@@ -2704,7 +2731,6 @@ namespace PD
                 vm.Chart_x_title = "DAC"; //Rename Chart x axis title
                 vm.Str_Status = "Calibration TF";
 
-
                 await vm.Port_ReOpen(vm.Selected_Comport);
                 vm.Double_Powers = new List<double>();
 
@@ -2721,7 +2747,8 @@ namespace PD
                         {
                             if (vm.list_GaugeModels[ch].boolGauge)
                             {
-                                vm.port_PD.Write(string.Format("D{0} {1}\r", (ch + 1), dac));
+                                //vm.port_PD.Write(string.Format("D{0} {1}\r", (ch + 1), dac));
+                                vm.port_PD.Write($"D{ch + 1} {dac}\r");
 
                                 if (dac >= 0)
                                 {
@@ -2787,15 +2814,44 @@ namespace PD
                     {
                         if (vm.list_GaugeModels[i].boolGauge)
                         {
-                            List<DataPoint> data = vm.ChartNowModel.list_dataPoints[i].Where(x => x.Y == vm.ChartNowModel.list_dataPoints[i].Max(y => y.Y)).ToList();
-                            string command = string.Format("D{0} {1}", i + 1, data.First().X);
-                            vm.port_PD.Write(command + "\r");
-                            await Task.Delay(vm.Int_Read_Delay);
-                            if (data.First().X >= 0)
-                                vm.list_GaugeModels[i].GaugeD0_1 = data.First().X.ToString();
-                            else vm.list_GaugeModels[i].GaugeD0_2 = Math.Abs(data.First().X).ToString();
+                            DataPoint dp_best;
+                            DataPoint dp_best2;
+                            if (!vm.Is_Curfit)
+                            {
+                                List<DataPoint> data = vm.Plot_Series[i].Points.Where(x => x.Y == vm.Plot_Series[i].Points.Max(y => y.Y)).ToList();
+                                dp_best = data.First();
+                            }
+                            else
+                            {
+                                dp_best = anly.CurFit_BestPos(vm.Plot_Series[i].Points);
+                                dp_best2 = anly.CurFit_BestPos_MathNet(vm.Plot_Series[i].Points);
+                            }
 
-                            vm.list_GaugeModels[i].GaugeValue = data.First().Y.ToString();
+                            string command = $"D{i + 1} {dp_best.X}\r";
+                            vm.port_PD.Write(command);
+                            await Task.Delay(vm.Int_Read_Delay + 30);
+
+                            //Get Power
+                            if (vm.Is_Curfit)
+                            {
+                                try
+                                {
+                                    await cmd.Get_Power();
+
+                                    double power = vm.Double_Powers[i];
+                                    dp_best = new DataPoint(dp_best.X, power);
+                                }
+                                catch
+                                {
+                                    vm.Str_cmd_read = "Read IL Error.";
+                                }
+                            }
+
+                            if (dp_best.X >= 0)
+                                vm.list_GaugeModels[i].GaugeD0_1 = dp_best.X.ToString();
+                            else vm.list_GaugeModels[i].GaugeD0_2 = Math.Abs(dp_best.X).ToString();
+
+                            vm.list_GaugeModels[i].GaugeValue = dp_best.Y.ToString();
                         }
                     }
                 }
@@ -3386,6 +3442,426 @@ namespace PD
             await cmd.Save_Chart();
             vm.Str_Status = "K TF Stop";
         }
+
+        private async Task K_TF_DoubleFit()
+        {
+            #region Initial Setting      
+            cmd.Clean_Chart();
+            List<string> list_final_voltage = new List<string>();
+            vm.Chart_title = "Power X DAC";
+            vm.Chart_x_title = "DAC"; //Rename Chart x axis title
+            vm.Chart_y_title = vm.dB_or_dBm ? "IL (dB)" : $"IL (dBm)";
+
+            vm.Update_ALL_PlotView_Title(vm.Chart_title, vm.Chart_x_title, vm.Chart_y_title);
+
+            vm.Str_Status = "Calibration TF";
+            vm.Double_Powers = new List<double>();
+            vm.Double_Powers.AddRange(Enumerable.Repeat(0.0, vm.ch_count));
+
+            var watch = Stopwatch.StartNew();
+
+            anly.JudgeAllBoolGauge();
+
+            for (int i = 0; i < vm.Plot_Series.Count; i++)
+            {
+                vm.Plot_Series[i].Points.Clear();
+            }
+
+            for (int i = 0; i < vm.ChartNowModel.list_dataPoints.Count; i++)
+            {
+                vm.ChartNowModel.list_dataPoints[i] = new List<DataPoint>();
+            }
+            #endregion
+
+            #region Scan Range Calculation
+            List<int> list_scanDac = new List<int>();
+
+            if (vm.int_rough_scan_start < vm.int_rough_scan_stop)
+            {
+                for (int dac = vm.int_rough_scan_start; dac < vm.int_rough_scan_stop; dac = dac + vm.int_rough_scan_gap)
+                {
+                    list_scanDac.Add(dac);
+                }
+            }
+            else
+            {
+                for (int dac = vm.int_rough_scan_start; dac < vm.int_rough_scan_stop; dac = dac - vm.int_rough_scan_gap)
+                {
+                    list_scanDac.Add(dac);
+                }
+            }
+            #endregion
+
+            //PD mode, Scan all at the same time
+            if (!vm.PD_or_PM && vm.BoolAllGauge)
+            {
+                if (!vm.port_PD.IsOpen)
+                    await vm.Port_ReOpen(vm.Selected_Comport);
+
+                foreach (int dac in list_scanDac)
+                {
+                    if (vm.isStop) break;
+
+                    //Write Dac
+                    try
+                    {
+                        string command = $"D0 {dac},{dac},{dac},{dac},{dac},{dac},{dac},{dac}\r";
+                        vm.port_PD.Write(command);
+
+                        await Task.Delay(vm.Int_Write_Delay);//wait for chip stable
+
+                        if (dac.Equals(vm.int_rough_scan_start))
+                            await Task.Delay(120);  //first dac need more time for chip stable
+
+                        vm.Str_cmd_read = $"Dac : {dac}";
+                        for (int ch = 0; ch < vm.ch_count; ch++)
+                        {
+                            if (dac >= 0)
+                            {
+                                vm.list_GaugeModels[ch].GaugeD0_1 = dac.ToString();
+                                vm.list_GaugeModels[ch].GaugeD0_2 = "0";
+                            }
+                            else
+                            {
+                                vm.list_GaugeModels[ch].GaugeD0_1 = "0";
+                                vm.list_GaugeModels[ch].GaugeD0_2 = Math.Abs(dac).ToString();
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        vm.Save_Log("K TF", "Write Dac Error", true);
+                        vm.isStop = true;
+                    }
+
+                    //Get Power
+                    double power = 0;
+                    try
+                    {
+                        await cmd.Get_Power();
+
+                        for (int ch = 0; ch < vm.ch_count; ch++)
+                        {
+                            power = vm.Double_Powers[ch];
+                            vm.list_GaugeModels[ch].GaugeValue = Math.Round(power, 4).ToString();
+
+                            DataPoint dp = new DataPoint(dac, power);
+                            vm.ChartNowModel.list_dataPoints[ch].Add(dp);
+
+                            cmd.Update_Chart_Data(dac, power, ch);
+
+                            #region Cal. Delta IL    
+                            cmd.Update_DeltaIL(vm.ChartNowModel.list_dataPoints[ch].Count);
+                            #endregion
+                        }
+
+                        vm.Update_ALL_PlotView();
+                    }
+                    catch
+                    {
+                        vm.Str_cmd_read = "Read Power Meter Step Error.";
+                    }
+                }
+
+                //Findout Max power
+                try
+                {
+                    string CMD_Dac_all = string.Empty;
+
+                    for (int i = 0; i < vm.ch_count; i++)
+                    {
+                        if (vm.isStop) break;
+
+                        DataPoint data = vm.ChartNowModel.list_dataPoints[i].Where(x => x.Y == vm.ChartNowModel.list_dataPoints[i].Max(y => y.Y)).ToList().FirstOrDefault();
+
+                        if (i != vm.ch_count - 1)
+                            CMD_Dac_all += $"{data.X},";
+                        else
+                            CMD_Dac_all += $"{data.X}";
+
+                        if (data.X >= 0)
+                            vm.list_GaugeModels[i].GaugeD0_1 = data.X.ToString();
+                        else vm.list_GaugeModels[i].GaugeD0_2 = Math.Abs(data.X).ToString();
+
+                        vm.list_GaugeModels[i].GaugeValue = data.Y.ToString();
+                    }
+
+                    vm.port_PD.Write($"D0 {CMD_Dac_all}\r");
+                    await Task.Delay(vm.Int_Write_Delay);
+                }
+                catch { };
+            }
+
+            //PD selected mode
+            else if (!vm.PD_or_PM && !vm.BoolAllGauge)
+            {
+                if (!vm.port_PD.IsOpen)
+                    await vm.Port_ReOpen(vm.Selected_Comport);
+                //PD mode
+                vm.List_PDvalue_byV12 = new List<List<float>>(new List<float>[8]);
+                vm.Chart_title = "Power X DAC";
+                vm.Chart_x_title = "DAC"; //Rename Chart x axis title
+                vm.Str_Status = "Calibration TF";
+
+                await vm.Port_ReOpen(vm.Selected_Comport);
+                vm.Double_Powers = new List<double>();
+
+                foreach (int dac in list_scanDac)
+                {
+                    if (vm.isStop) break;
+
+                    vm.Str_cmd_read = dac.ToString();
+
+                    //Write Dac
+                    try
+                    {
+                        for (int ch = 0; ch < vm.ch_count; ch++)
+                        {
+                            if (vm.list_GaugeModels[ch].boolGauge)
+                            {
+                                //vm.port_PD.Write(string.Format("D{0} {1}\r", (ch + 1), dac));
+                                vm.port_PD.Write($"D{ch + 1} {dac}\r");
+
+                                if (dac >= 0)
+                                {
+                                    vm.list_GaugeModels[ch].GaugeD0_1 = dac.ToString();
+                                    vm.list_GaugeModels[ch].GaugeD0_2 = "0";
+                                }
+                                else
+                                {
+                                    vm.list_GaugeModels[ch].GaugeD0_1 = "0";
+                                    vm.list_GaugeModels[ch].GaugeD0_2 = Math.Abs(dac).ToString();
+                                }
+
+                                await Task.Delay(vm.Int_Write_Delay);//wait for chip stable
+
+                                if (dac.Equals(vm.int_rough_scan_start))
+                                    await Task.Delay(50);  //first dac need more time for chip stable           
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        vm.Save_Log("K TF", "Write Dac Error", true);
+                        vm.isStop = true;
+                    }
+
+                    //Get Power
+                    double power = 0;
+                    try
+                    {
+                        await cmd.Get_Power();
+                        //await anly.Cmd_Write_RecieveData("P0?", false);
+
+                        for (int ch = 0; ch < vm.ch_count; ch++)
+                        {
+                            if (vm.list_GaugeModels[ch].boolGauge)
+                            {
+                                power = vm.Double_Powers[ch];
+                                vm.list_GaugeModels[ch].GaugeValue = Math.Round(power, 4).ToString();
+
+                                DataPoint dp = new DataPoint(dac, power);
+                                vm.ChartNowModel.list_dataPoints[ch].Add(dp);
+
+                                #region Set Chart data points
+                                cmd.Update_Chart(dac, power, ch);
+                                #endregion
+
+                                #region Cal. Delta IL    
+                                cmd.Update_DeltaIL(vm.ChartNowModel.list_dataPoints[ch].Count);
+                                #endregion
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        vm.Str_cmd_read = "Read Power Meter Step Error.";
+                    }
+                }
+
+                //Findout Max power
+                try
+                {
+                    for (int i = 0; i < vm.ch_count; i++)
+                    {
+                        if (vm.list_GaugeModels[i].boolGauge)
+                        {
+                            DataPoint dp_best;
+                            DataPoint dp_best2;
+                            if (!vm.Is_Curfit)
+                            {
+                                List<DataPoint> data = vm.Plot_Series[i].Points.Where(x => x.Y == vm.Plot_Series[i].Points.Max(y => y.Y)).ToList();
+                                dp_best = data.First();
+                            }
+                            else
+                            {
+                                dp_best = anly.CurFit_BestPos(vm.Plot_Series[i].Points);
+                                dp_best2 = anly.CurFit_BestPos_MathNet(vm.Plot_Series[i].Points);
+                            }
+
+                            string command = $"D{i + 1} {dp_best.X}\r";
+                            vm.port_PD.Write(command);
+                            await Task.Delay(vm.Int_Read_Delay + 30);
+
+                            //Get Power
+                            if (vm.Is_Curfit)
+                            {
+                                try
+                                {
+                                    await cmd.Get_Power();
+
+                                    double power = vm.Double_Powers[i];
+                                    dp_best = new DataPoint(dp_best.X, power);
+                                }
+                                catch
+                                {
+                                    vm.Str_cmd_read = "Read IL Error.";
+                                }
+                            }
+
+                            if (dp_best.X >= 0)
+                                vm.list_GaugeModels[i].GaugeD0_1 = dp_best.X.ToString();
+                            else vm.list_GaugeModels[i].GaugeD0_2 = Math.Abs(dp_best.X).ToString();
+
+                            vm.list_GaugeModels[i].GaugeValue = dp_best.Y.ToString();
+                        }
+                    }
+                }
+                catch { };
+            }
+
+            //PM mode
+            else
+            {
+                for (int ch = 0; ch < vm.ch_count; ch++)
+                {
+                    if (vm.isStop) break;
+
+                    //PM mode
+                    vm.List_PMvalue_byV12 = new List<float>();
+                    vm.Chart_title = "Power X DAC";
+                    vm.Chart_x_title = "DAC"; //Rename Chart x axis title
+                    vm.Str_Status = "Calibration TF";
+
+                    await D0_show();
+
+                    if (vm.int_rough_scan_start > vm.int_rough_scan_stop)
+                        vm.int_rough_scan_gap = vm.int_rough_scan_gap * -1;
+
+                    for (int dac = vm.int_rough_scan_start; dac <= vm.int_rough_scan_stop; dac = dac + vm.int_rough_scan_gap)
+                    {
+                        if (vm.isStop) break;
+
+                        //Write Dac
+                        if (vm.Control_board_type == 0)  //control board : UFV
+                        {
+                            string dacV3 = vm.list_GaugeModels[ch].GaugeD0_3;
+
+                            if (dac >= 0)
+                            {
+                                vm.list_GaugeModels[ch].GaugeD0_1 = Math.Abs(dac).ToString();
+                                vm.list_GaugeModels[ch].GaugeD0_2 = "0";
+                            }
+                            else
+                            {
+                                vm.list_GaugeModels[ch].GaugeD0_1 = "0";
+                                vm.list_GaugeModels[ch].GaugeD0_2 = (Math.Abs(dac)).ToString();
+                            }
+
+                            vm.Str_Command = string.Format("D1 {0},{1},{2}", vm.list_GaugeModels[ch].GaugeD0_1, vm.list_GaugeModels[ch].GaugeD0_2, dacV3);
+                        }
+                        else     //control board : V
+                        {
+                            if (dac >= 0)
+                            {
+                                vm.list_GaugeModels[ch].GaugeD0_1 = Math.Abs(dac).ToString();
+                                vm.list_GaugeModels[ch].GaugeD0_2 = "0";
+                            }
+                            else
+                            {
+                                vm.list_GaugeModels[ch].GaugeD0_1 = "0";
+                                vm.list_GaugeModels[ch].GaugeD0_2 = (Math.Abs(dac)).ToString();
+                            }
+                            vm.Str_Command = string.Format("D1 {0},{1}", vm.list_GaugeModels[ch].GaugeD0_1, vm.list_GaugeModels[ch].GaugeD0_2);
+                        }
+
+                        vm.port_PD.Write(vm.Str_Command + "\r");
+
+                        if (dac == vm.int_rough_scan_start)
+                            await Task.Delay(vm.Int_Write_Delay + 50);
+                        else
+                            await Task.Delay(vm.Int_Write_Delay);
+
+                        //Get Power
+                        double power = Math.Round(vm.pm.ReadPower(), 4);
+                        vm.list_GaugeModels[ch].GaugeValue = power.ToString();
+
+                        //vm.kModel.dataPoints.Add(new DataPoint(dac, power));
+                        vm.ChartNowModel.list_dataPoints[ch].Add(new DataPoint(dac, power));
+
+                        await Task.Delay(vm.Int_Read_Delay / 2);
+                        vm.Str_cmd_read = (dac).ToString();
+
+                        #region Update Chart
+                        cmd.Update_Chart(dac, power, 0);
+                        #endregion
+
+                        #region Cal. Delta IL    
+                        cmd.Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);
+                        #endregion
+                    }
+
+                    try
+                    {
+                        //Set voltage at the best power
+                        List<DataPoint> dataPoints = vm.ChartNowModel.list_dataPoints[ch].Where(x => x.Y == vm.ChartNowModel.list_dataPoints[ch].Max(y => y.Y)).ToList();
+
+                        if (dataPoints.Count > 0)
+                        {
+                            int final_Dac = (int)dataPoints[0].X;
+                            if (final_Dac >= 0)
+                            {
+                                vm.list_GaugeModels[ch].GaugeD0_1 = Math.Abs(final_Dac).ToString();
+                                vm.list_GaugeModels[ch].GaugeD0_2 = "0";
+                            }
+                            else
+                            {
+                                vm.list_GaugeModels[ch].GaugeD0_1 = "0";
+                                vm.list_GaugeModels[ch].GaugeD0_2 = (Math.Abs(final_Dac)).ToString();
+                            }
+
+                        }
+
+                        if (vm.Control_board_type == 0)  //control board : UFV
+                        {
+                            vm.Str_Command = string.Format("D1 {0},{1},{2}", vm.list_GaugeModels[ch].GaugeD0_1, vm.list_GaugeModels[ch].GaugeD0_2, vm.list_GaugeModels[ch].GaugeD0_3);
+                        }
+                        else     //control board : V
+                        {
+                            vm.Str_Command = string.Format("D1 {0},{1}", vm.list_GaugeModels[ch].GaugeD0_1, vm.list_GaugeModels[ch].GaugeD0_2);
+                        }
+
+
+                        vm.port_PD.Write(vm.Str_Command + "\r");
+
+                        await Task.Delay(vm.Int_Read_Delay);
+
+                        await D0_show();
+
+                    }
+                    catch { }
+                }
+            }
+
+            await D0_show();
+            await cmd.Save_Chart();
+            vm.Str_Status = "K TF Stop";
+
+            var elapsedMs = watch.ElapsedMilliseconds;
+            vm.msgModel.msg_3 = string.Format("{0} s", (elapsedMs / 1000));
+            vm.ChartNowModel.TimeSpan = (elapsedMs / 1000);
+        }
+
 
         public async Task<string> WriteCmd_GetMessage(string cmd)
         {
@@ -4275,7 +4751,9 @@ namespace PD
         private void btn_Stop_Click(object sender, RoutedEventArgs e)
         {
             vm.IsGoOn = false;
-            vm.isStop = true;
+            //vm.isStop = true;
+
+            vm.Str_Status = "Stop";
 
             //if (win_waiting != null)
             //    if (win_waiting.ShowActivated)
@@ -4345,6 +4823,8 @@ namespace PD
                         Status = "K WL",
                         Message = vm.Str_cmd_read
                     });
+
+                    return;
                 }
             }
 
@@ -6131,6 +6611,7 @@ namespace PD
                     vm.ChartNowModel.list_dataPoints[i].Clear();
                 }
 
+                #region Scan by wl list
                 foreach (double wl in vm.wl_list)
                 {
                     Stopwatch sw = Stopwatch.StartNew();
@@ -6164,7 +6645,7 @@ namespace PD
 
                     vm.Double_Laser_Wavelength = wl;
 
-                    lm.Message = $"WL: {sw.ElapsedMilliseconds.ToString()}";
+                    lm.Message = $"WL: {sw.ElapsedMilliseconds}";
 
                     #region Get IL and set chart data points
 
@@ -6176,7 +6657,7 @@ namespace PD
                     vm.Str_cmd_read = $"WL : {WL}";
                     string str = await cmd.Get_Power();
 
-                    lm.Result = $"GetP: {sw.ElapsedMilliseconds.ToString()}";
+                    lm.Result = $"GetP: {sw.ElapsedMilliseconds}";
 
                     //Only distributedSystem will auto update chart
                     if (!vm.IsDistributedSystem && !string.IsNullOrEmpty(str))
@@ -6214,10 +6695,11 @@ namespace PD
                         cmd.Update_DeltaIL();  //Update delta IL data in Chart UI
                     #endregion
 
-                    lm.Time = $"{sw.ElapsedMilliseconds.ToString()}";
+                    lm.Time = $"{sw.ElapsedMilliseconds}";
 
                     vm.Save_Log(lm);
                 }
+                #endregion
 
                 if (vm.station_type == ComViewModel.StationTypes.TF2)
                 {
@@ -6456,6 +6938,7 @@ namespace PD
                     cmd.PDL_Connect();
                 }
                 else
+                {
                     for (int ch = 0; ch < vm.ch_count; ch++)  //Calculate the position with maximum IL and show data in UI
                     {
                         if (vm.ChartNowModel.list_dataPoints[ch].Count > 0)
@@ -6465,8 +6948,8 @@ namespace PD
 
                             vm.Double_Laser_Wavelength = maxIL_WL;
 
-                            if (vm.PD_or_PM)
-                                await cmd.Set_WL(maxIL_WL, false);
+                            //if (vm.PD_or_PM)
+                            //    await cmd.Set_WL(maxIL_WL, false);
 
                             vm.list_GaugeModels[ch].GaugeValue = vm.ChartNowModel.list_dataPoints[ch].Max(x => x.Y).ToString();
 
@@ -6474,16 +6957,17 @@ namespace PD
                             vm.list_GaugeModels[ch].GaugeBearSay_2 = vm.list_GaugeModels[ch].GaugeValue;
                         }
                     }
+                }
 
                 scan_timespan = watch.ElapsedMilliseconds / (decimal)1000;
                 vm.ChartNowModel.TimeSpan = (double)Math.Round(scan_timespan, 1);
                 await cmd.Save_Chart();
 
-                vm.msgModel.msg_3 = Math.Round(scan_timespan, 1).ToString() + " s";  //Update Main UI timespan
+                vm.msgModel.msg_3 = $"{Math.Round(scan_timespan, 1)} s";  //Update Main UI timespan
 
                 vm.Show_Bear_Window($"WL Scan 完成  ({Math.Round(scan_timespan, 1)} s)", false, "String", false);
 
-                int a = vm.list_ChartModels.Count;
+                //int a = vm.list_ChartModels.Count;
 
                 vm.Str_Status = "WL Scan Stop";
                 vm.Save_Log("WL Scan", "Stop", false);
@@ -7432,35 +7916,58 @@ namespace PD
             {
                 var dialog = new Microsoft.Win32.SaveFileDialog();
                 dialog.Title = "Save position";
-                dialog.InitialDirectory = CurrentDirectory;
+                //dialog.InitialDirectory = CurrentDirectory;
                 dialog.FileName = $"Data_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}";
                 dialog.Filter = "TXT (*.txt)|*.txt|All files (*.*)|*.*";
+
+                string fileNameBase = dialog.FileName;
 
                 bool? result = dialog.ShowDialog();
 
                 if (result == true)
                 {
                     string filePath = dialog.FileName;
+
+                    fileNameBase = Path.GetFileNameWithoutExtension(filePath);
+                    filePath = Path.GetDirectoryName(filePath);
+
                     if (!string.IsNullOrWhiteSpace(filePath))
                     {
-                        //Dictionary<double, string> dic_keyPairs = new Dictionary<double, string>();
                         Dictionary<string, string> dic_keyPairs = new Dictionary<string, string>();
-                        for (int i = 0; i < vm.list_GaugeModels.Count; i++)
+
+                        if (vm.ch_count == 1 && vm.Plot_Series.Count > 0)
                         {
-                            if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
+                            if (vm.Plot_Series.First().Points.Count == 0)
                             {
-                                dic_keyPairs.Clear();
+                                string path = Path.Combine(filePath, $"{fileNameBase}.txt");
 
-                                for (int j = 0; j < vm.Save_All_PD_Value[i].Count; j++)
+                                for (int j = 0; j < vm.Plot_Series.First().Points.Count; j++)
                                 {
-                                    dic_keyPairs.Add(vm.Save_All_PD_Value[i][j].X.ToString(), vm.Save_All_PD_Value[i][j].Y.ToString());
-                                    //dic_keyPairs.Add(vm.Double_Laser_Wavelength, $"{vm.list_GaugeModels[i].GaugeD0_1},{vm.list_GaugeModels[i].GaugeD0_2},{vm.list_GaugeModels[i].GaugeD0_3}");
-
+                                    dic_keyPairs.Add(vm.Plot_Series.First().Points[j].X.ToString(), vm.Plot_Series.First().Points[j].Y.ToString());
                                 }
 
-                                cmd.Save_ChartNow_Data(filePath, dic_keyPairs);
+                                cmd.Save_ChartNow_Data(path, dic_keyPairs);
                             }
                         }
+                        else
+                            for (int i = 0; i < vm.list_GaugeModels.Count; i++)
+                            {
+                                if (vm.list_GaugeModels[i].boolGauge || vm.BoolAllGauge)
+                                {
+                                    if (vm.Plot_Series[i].Points.Count == 0) continue;
+
+                                    string path = Path.Combine(filePath, $"{fileNameBase}_Ch{i + 1}.txt");
+
+                                    dic_keyPairs.Clear();
+
+                                    for (int j = 0; j < vm.Plot_Series[i].Points.Count; j++)
+                                    {
+                                        dic_keyPairs.Add(vm.Plot_Series[i].Points[j].X.ToString(), vm.Plot_Series[i].Points[j].Y.ToString());
+                                    }
+
+                                    cmd.Save_ChartNow_Data(path, dic_keyPairs);
+                                }
+                            }
 
                         vm.Show_Bear_Window("Data Saved", false, "String", false);
                     }
@@ -7608,52 +8115,6 @@ namespace PD
         {
             vm.list_combox_Calibration_items = new List<string>() { "Calibration", "DAC -> 0", "VOA -> 0", "TF -> 0", "K VOA", "K TF", "K TF (Rough)", "K TF (Detail)", "Curve Fitting", "K WL" };
             vm.Str_cmd_read = "Engineer";
-        }
-
-        private void txt_version_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            OxyPlot.Wpf.LineSeries ls = new OxyPlot.Wpf.LineSeries();
-            ls.MarkerType = MarkerType.Circle;
-            ls.MarkerSize = 5;
-            ls.MarkerFill = System.Windows.Media.Color.FromRgb(132, 220, 123);
-
-            cmd.Clean_Chart();
-
-            if (_Page_Chart.Plot_Chart.Series.Count > 16)
-            {
-                for (int i = 16; i < _Page_Chart.Plot_Chart.Series.Count; i++)
-                {
-                    _Page_Chart.Plot_Chart.Series.RemoveAt(i);
-                }
-            }
-
-            _Page_Chart.No1.MarkerSize = 6;
-            DataPoint dp = new DataPoint(0.5, 1);
-            List<DataPoint> list_curfit_testPoints = new List<DataPoint>()
-            {
-                new DataPoint (1000 , -12),
-                new DataPoint (2000 , -10),
-                new DataPoint ( 3000, -3),
-                new DataPoint ( 4000, -8),
-                new DataPoint ( 5000, -11 ),
-            };
-
-            ls.ItemsSource = list_curfit_testPoints;
-
-            _Page_Chart.Plot_Chart.Series.Add(ls);
-
-            CurveFittingResultModel curveFittingResultModel = anly.CurFitting(list_curfit_testPoints);
-            List<DataPoint> dataPoints = curveFittingResultModel.GetDrawLinePoints();
-
-            #region Set Chart data points   
-            foreach (DataPoint d in dataPoints)
-            {
-                vm.ChartNowModel.list_dataPoints[0].Add(d);
-                cmd.Update_Chart(d.X, d.Y, 0);
-            }
-            #endregion
-
-            MessageBox.Show("Best Dac: " + curveFittingResultModel.Best_X.ToString());
         }
 
         private void grid_Unit_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+                    xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
                     xmlns:local="clr-namespace:PD.Models" xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
 
     <!--  Fill Brushes  -->
@@ -1602,6 +1603,68 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="style_FuncBtn_materialIcon"
+           TargetType="{x:Type Button}">
+        <Setter Property="FontFamily"
+                Value="Segoe Print" />
+        <Setter Property="FontSize"
+                Value="15" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="1.5*" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border"
+                                Grid.Row="0"
+                                Grid.RowSpan="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Background="Transparent" />
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="0">
+                            <!--<Image HorizontalAlignment="Center"
+                                   Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />-->
+                            <materialIcons:MaterialIcon Kind="{Binding Content.Kind, RelativeSource={RelativeSource TemplatedParent}}"
+                                                        Foreground="{Binding Content.Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Viewbox>
+                        <Viewbox Grid.Row="1"
+                                 Grid.Column="1"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Tag}"
+                                       Foreground="White"
+                                   />
+                        </Viewbox>
+                        
+                        <!--<ContentPresenter x:Name="contentPresenter"
+                                              Grid.Row="1"
+                                              Grid.Column="1"
+                                              Focusable="False"
+                                              SnapsToDevicePixels="True" 
+                                              />-->
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#FF8D8D8D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
     <Style x:Key="style_FuncBtn_Laser"
            TargetType="{x:Type Button}">
@@ -3293,6 +3356,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border x:Name="border"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}">
                         <Grid>
                             <ScrollViewer x:Name="PART_ContentHost"

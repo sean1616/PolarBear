@@ -53,7 +53,7 @@ namespace PD.NavigationPages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/PD-v5.6.6;component/navigationpages/window_tls_setting.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/PD-v5.6.8;component/navigationpages/window_tls_setting.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NavigationPages\WIndow_TLS_Setting.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

@@ -10,6 +10,7 @@
         xmlns:vm="clr-namespace:PD.ViewModel"
         mc:Ignorable="d" Topmost="True"
         WindowStyle="None"
+        AllowsTransparency="True"
         Title="Chart Plot" Height="650" Width="900">
 
     <Window.Resources>

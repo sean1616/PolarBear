@@ -13,6 +13,7 @@ using PD.NavigationPages;
 using OxyPlot;
 using OxyPlot.Annotations;
 using System.Threading.Tasks;
+using MathNet.Numerics;
 
 namespace PD.AnalysisModel
 {
@@ -33,7 +34,7 @@ namespace PD.AnalysisModel
             this.vm = vm;
         }
 
-        public T Generic_GetINISetting<T>(T input, string region, string variable) where T : new ()
+        public T Generic_GetINISetting<T>(T input, string region, string variable) where T : new()
         {
             if (input is int)
             {
@@ -266,7 +267,7 @@ namespace PD.AnalysisModel
             return Product_type;
         }
 
-       static public string WL_Range_Analyze(double wl)
+        static public string WL_Range_Analyze(double wl)
         {
             //if (wl >= 1523 && wl <= 1620)
             //    return "C+L Band";
@@ -341,8 +342,8 @@ namespace PD.AnalysisModel
                             bwSetting = vm.ChartNowModel.BW_Setting_3;
                             break;
 
-                        //case 4:
-                        //    bwSetting = vm.ChartNowModel.BW_Setting_4;
+                            //case 4:
+                            //    bwSetting = vm.ChartNowModel.BW_Setting_4;
                             break;
                     }
 
@@ -596,9 +597,9 @@ namespace PD.AnalysisModel
                 {
                     vm.ChartNowModel.SMRR = Math.Round(list_SMR_Mountain.Last().Y, 2);
 
-                    if(vm.PointAnnotation_1.StrokeThickness != 8)
+                    if (vm.PointAnnotation_1.StrokeThickness != 8)
                     {
-                        if(vm.isSMRR_Annotation)
+                        if (vm.isSMRR_Annotation)
                             vm.PointAnnotation_1.StrokeThickness = 8;
 
                         vm.PointAnnotation_1.X = list_SMR_Mountain.Last().X;
@@ -630,7 +631,7 @@ namespace PD.AnalysisModel
             double bw = 0;
             double bw_cwl = 0;
 
-            double[,] List_BW_WL_Pos = new double[3,2];
+            double[,] List_BW_WL_Pos = new double[3, 2];
 
             if (vm.Chart_DataPoints.Count != 0)
             {
@@ -704,11 +705,11 @@ namespace PD.AnalysisModel
                         double BW = Math.Abs(wl_R - wl_L);
                         bw = Math.Round(BW, 2);
 
-                        List_BW_WL_Pos[b - 1, 0] = Math.Round(wl_L,2);
+                        List_BW_WL_Pos[b - 1, 0] = Math.Round(wl_L, 2);
                         List_BW_WL_Pos[b - 1, 1] = Math.Round(wl_R, 2);
 
                         if (b == 2)
-                            bw_cwl = Math.Abs(Math.Round((wl_R + wl_L) / 2, 2));                   
+                            bw_cwl = Math.Abs(Math.Round((wl_R + wl_L) / 2, 2));
                     }
 
                     #endregion
@@ -873,7 +874,7 @@ namespace PD.AnalysisModel
 
             return z;
         }
-                
+
         Random rdm = new Random();
         public string Read_analysis(string cmd, byte[] dataBuffer)
         {
@@ -913,8 +914,8 @@ namespace PD.AnalysisModel
                             str_read_value.Clear();
                         }
                     }
-                                
-                    if(list_read_value.Count <=0) return sb.ToString();
+
+                    if (list_read_value.Count <= 0) return sb.ToString();
 
                     list_read_value.RemoveAt(0);  //list dBm in string type
 
@@ -1420,12 +1421,224 @@ namespace PD.AnalysisModel
 
             return curveFittingResultModel;
         }
+             
 
-
-        public DataPoint CurFit(List<DataPoint> list_datapoint)
+        /// <summary>
+        /// Curfit Method
+        /// </summary>
+        /// <param name="list_datapoint">Data Points</param>
+        /// <param name="PolyFit">Polynomal Fit Order</param>
+        /// <returns></returns>
+        public DataPoint CurFit_BestPos(List<DataPoint> list_datapoint, int PolyFit_Order = 2)
         {
-            List<System.Drawing.PointF> point = new List<PointF>();
+            List<PointF> point = new List<PointF>();
             DataPoint curfitResult = new DataPoint();
+            List<double> BestCoeffs = new List<double>();
+
+            if (list_datapoint.Count < 1)
+            {
+                vm.ErrorCode = 21;
+            }
+            else
+            {
+                #region initialize
+                vm.List_curfit_resultDac.Clear();
+                vm.List_curfit_resultWL.Clear();
+                vm.Str_Status = "Curve Fitting";
+                double Best_X = 0;
+                vm.Str_cmd_read = " ";
+                #endregion
+
+                //int mid_index = (int)Math.Round((double)list_datapoint.Count / 2);
+                //double mid_X = list_datapoint[mid_index].X;
+
+                if(list_datapoint.Count < 3)
+                {
+                    vm.Str_cmd_read = $"Data point count < 3";
+                    return curfitResult;
+                }
+
+                foreach (DataPoint dp in list_datapoint)
+                    //point.Add(new PointF((float)(dp.X - mid_X), (float)dp.Y));
+                    point.Add(new PointF((float)(dp.X), (float)dp.Y));
+
+                // Find a good fit.
+                BestCoeffs = CurveFunctions.FindPolynomialLeastSquaresFit(point, PolyFit_Order);
+
+                if(BestCoeffs.Count != 3)
+                {
+                    vm.Str_cmd_read = $"Coeffs array count is not 3";
+                    vm.Save_Log(new LogMember()
+                    {
+                        Status = "Curfitting",
+                        Result = $"Coeffs array error"
+                    });
+
+                    return curfitResult;
+                }
+
+                if (PolyFit_Order == 2)
+                {
+                    Best_X = Math.Round((-1 * BestCoeffs[1] / (2 * BestCoeffs[2])));
+
+                    if(!double.TryParse(Best_X.ToString(), out double xx))
+                    {
+                        vm.Str_cmd_read = $"Best_X is not a number";
+                        vm.Save_Log(new LogMember()
+                        {
+                            Status = "Curfitting",
+                            Result = $"Best_X is not a number"
+                        });
+
+                        return curfitResult;
+                    }
+
+                    double Best_Y = (BestCoeffs[2] * Math.Pow(Best_X, 2)) + (BestCoeffs[1] * Best_X) + BestCoeffs[0];
+
+                    if (!double.TryParse(Best_Y.ToString(), out double yy))
+                    {
+                        vm.Str_cmd_read = $"Best_Y is not a number";
+                        vm.Save_Log(new LogMember()
+                        {
+                            Status = "Curfitting",
+                            Result = $"Best_Y is not a number"
+                        });
+
+                        return curfitResult;
+                    }
+
+                    //Best_X += mid_X;
+
+                    Console.WriteLine($"Best Pos : ({Best_X},{Best_Y})");
+
+                    vm.Str_cmd_read = $"Best Pos : ({Best_X},{Best_Y})";
+                    vm.Save_Log(new LogMember()
+                    {
+                        Status = "Curfitting",
+                        Result = $"Best Pos : ({Best_X},{Best_Y})"
+                    });
+
+                    curfitResult = new DataPoint(Best_X, Best_Y);
+                }
+                else
+                {
+                    vm.Str_cmd_read = $"Order != 2";
+                }
+            }
+
+            return curfitResult;
+        }
+
+        /// <summary>
+        /// MathNet - Curfit Method
+        /// </summary>
+        /// <param name="list_datapoint">Data Points</param>
+        /// <param name="PolyFit_Order">Polynomal Fit Order</param>
+        /// <returns></returns>
+        public DataPoint CurFit_BestPos_MathNet(List<DataPoint> list_datapoint, int PolyFit_Order = 2)
+        {
+            DataPoint curfitResult = new DataPoint();
+
+            double[] ary_x, ary_y, ary_coef;
+
+            if (list_datapoint.Count < 1)
+            {
+                vm.ErrorCode = 21;
+            }
+            else
+            {
+                #region initialize
+                vm.List_curfit_resultDac.Clear();
+                vm.List_curfit_resultWL.Clear();
+                vm.Str_Status = "Curve Fitting";
+                double Best_X = 0;
+                vm.Str_cmd_read = " ";
+                #endregion
+
+                if (list_datapoint.Count < 3)
+                {
+                    vm.Str_cmd_read = $"Data point count < 3";
+                    return curfitResult;
+                }
+
+                ary_x = list_datapoint.Select(x => x.X).ToArray();
+                ary_y = list_datapoint.Select(x => x.Y).ToArray();
+
+                ary_coef = Fit.Polynomial(ary_x, ary_y, PolyFit_Order);
+
+                if (ary_coef.Length != 3)
+                {
+                    vm.Str_cmd_read = $"Coeffs array count is not 3";
+                    vm.Save_Log(new LogMember()
+                    {
+                        Status = "Curfitting",
+                        Result = $"Coeffs array error"
+                    });
+
+                    return curfitResult;
+                }
+
+                if (PolyFit_Order == 2)
+                {
+                    Best_X = Math.Round((-1 * ary_coef[1] / (2 * ary_coef[2])));
+
+                    if (!double.TryParse(Best_X.ToString(), out double xx))
+                    {
+                        vm.Str_cmd_read = $"Best_X is not a number";
+                        vm.Save_Log(new LogMember()
+                        {
+                            Status = "Curfitting",
+                            Result = $"Best_X is not a number"
+                        });
+
+                        return curfitResult;
+                    }
+
+                    double Best_Y = (ary_coef[2] * Math.Pow(Best_X, 2)) + (ary_coef[1] * Best_X) + ary_coef[0];
+
+                    if (!double.TryParse(Best_Y.ToString(), out double yy))
+                    {
+                        vm.Str_cmd_read = $"Best_Y is not a number";
+                        vm.Save_Log(new LogMember()
+                        {
+                            Status = "Curfitting",
+                            Result = $"Best_Y is not a number"
+                        });
+
+                        return curfitResult;
+                    }
+
+                    //Best_X += mid_X;
+
+                    Console.WriteLine($"Best Pos : ({Best_X},{Best_Y})");
+
+                    vm.Str_cmd_read = $"Best Pos : ({Best_X},{Best_Y})";
+                    vm.Save_Log(new LogMember()
+                    {
+                        Status = "Curfitting",
+                        Result = $"Best Pos : ({Best_X},{Best_Y})"
+                    });
+
+                    curfitResult = new DataPoint(Best_X, Best_Y);
+                }
+                else
+                {
+                    vm.Str_cmd_read = $"Order != 2";
+                }
+            }
+
+            return curfitResult;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list_datapoint">Data Points</param>
+        /// <param name="PolyFit">Polynomal Fit Order</param>
+        /// <returns></returns>
+        public List<double> CurFit_Coef(List<DataPoint> list_datapoint, int PolyFit_Order = 2)
+        {
+            List<PointF> point = new List<PointF>();
             List<double> BestCoeffs = new List<double>();
             if (list_datapoint.Count < 1)
             {
@@ -1437,57 +1650,23 @@ namespace PD.AnalysisModel
                 vm.List_curfit_resultDac.Clear();
                 vm.List_curfit_resultWL.Clear();
                 vm.Str_Status = "Curve Fitting";
-                string Best_DAC = "";
                 vm.Str_cmd_read = " ";
-                int all_ch_count = vm.ch_count;
                 #endregion
 
-                for (int i = 0; i < all_ch_count; i++)
-                {
+                //int mid_i = (int)Math.Round((double)list_datapoint.Count / 2);
+                //double mid_X = Math.Round(list_datapoint[mid_i].X, 2);
 
-                    int mid_i = (int)Math.Round((double)list_datapoint.Count / 2);
-                    double mid_X = Math.Round(list_datapoint[mid_i].X, 2);
+                foreach (DataPoint dp in list_datapoint)
+                    point.Add(new PointF((float)(dp.X), (float)dp.Y));
+                    //point.Add(new PointF((float)(dp.X - list_datapoint[mid_i].X), (float)dp.Y));
 
-                    foreach (DataPoint dp in list_datapoint)
-                        point.Add(new PointF((float)(dp.X - list_datapoint[mid_i].X), (float)dp.Y));
-
-                    // Find a good fit.
-                    int degree = 2;
-                    BestCoeffs = CurveFunctions.FindPolynomialLeastSquaresFit(point, degree);
-
-                    if (degree == 2)
-                        Best_DAC = Math.Round((-1 * BestCoeffs[1] / (2 * BestCoeffs[2]))).ToString();
-
-                    string txt = "";
-                    foreach (double coeff in BestCoeffs)
-                    {
-                        txt += ", " + Math.Round(coeff, 10).ToString();
-                    }
-                    string coe = txt.Substring(1);
-
-                    string str_curfit_result = Best_DAC;  //If Curfit result is not a number , error occurs.
-
-                    vm.List_curfit_resultDac[i] = Convert.ToInt32(Best_DAC);
-
-                    vm.Str_cmd_read = vm.Str_cmd_read + "," + str_curfit_result;
-
-                    // 繪圖- CurveFit曲線
-                    double max_7points_dac = list_datapoint.LastOrDefault().X;
-                    double min_7points_dac = list_datapoint[0].X;
-                    double dac_gap = (max_7points_dac - min_7points_dac) / 100;
-
-                    list_datapoint.Clear();
-                    for (double x = min_7points_dac; x <= max_7points_dac; x = x + dac_gap)
-                    {
-                        list_datapoint.Add(new DataPoint(x, (BestCoeffs[2] * Math.Pow(x, 2) + BestCoeffs[1] * x + BestCoeffs[0])));
-                    }
-                }
-
-                vm.Str_cmd_read = vm.Str_cmd_read.Substring(2);
+                // Find a good fit.
+                BestCoeffs = CurveFunctions.FindPolynomialLeastSquaresFit(point, PolyFit_Order);
             }
 
-            return curfitResult;
+            return BestCoeffs;
         }
+
 
         public async Task<bool> CurFit_All(List<List<DataPoint>> Save_All_PD_Value, List<PointF> Points, List<double> BestCoeffs, string action)
         {

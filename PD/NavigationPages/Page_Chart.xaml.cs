@@ -115,17 +115,30 @@ namespace PD.NavigationPages
         {
             #region Save Chart
 
-            if (Plot_Chart.ActualHeight == 0 || Plot_Chart.ActualWidth == 0) return;
+            if (mainPlotView.ActualHeight == 0 || mainPlotView.ActualWidth == 0) return;
+
+            bool isDataCount = false;
+            for (int i = 0; i < vm.Plot_Series.Count; i++)
+            {
+                if (vm.Plot_Series[i].Points.Count > 0)
+                    isDataCount = true;
+            }
+
+            if (!isDataCount)
+            {
+                var rst = System.Windows.MessageBox.Show("無任何資料，仍要儲存？", "Save Data", MessageBoxButton.YesNo);
+                if (rst == MessageBoxResult.No) return;
+            }
 
             RenderTargetBitmap renderTargetBitmap =
-               new RenderTargetBitmap((int)Plot_Chart.ActualWidth, (int)Plot_Chart.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-            renderTargetBitmap.Render(Plot_Chart);
+               new RenderTargetBitmap((int)mainPlotView.ActualWidth + 30, (int)mainPlotView.ActualHeight + 10, 96, 96, PixelFormats.Pbgra32);
+            renderTargetBitmap.Render(mainPlotView);
             PngBitmapEncoder pngImage = new PngBitmapEncoder();
             pngImage.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "Save Data";
-            saveFileDialog.InitialDirectory = @"D:\PD";
+            //saveFileDialog.InitialDirectory = @"D:\PD";
             saveFileDialog.FileName = "Image001.jpg";
             saveFileDialog.Filter = "Image (*.jpg)|*.jpg|All files (*.*)|*.*";
 
@@ -141,7 +154,6 @@ namespace PD.NavigationPages
             }
 
             string folder = Directory.GetParent(img_filePath).ToString();
-            //await cmd.Save_Chart();
             #endregion
 
             #region Save Datapoint
@@ -213,9 +225,9 @@ namespace PD.NavigationPages
                 _stringBuilder.Append(",");
 
                 //資料Title
-                for (int i = 0; i < vm.Chart_All_DataPoints.Count; i++)
+                for (int i = 0; i < vm.Plot_Series.Count; i++)
                 {
-                    if (vm.Chart_All_DataPoints[i].Count != 0)
+                    if (vm.Plot_Series[i].Points.Count != 0)
                     {
                         _stringBuilder.Append("Ch " + (i + 1).ToString());
                         _stringBuilder.Append(",");
@@ -225,9 +237,14 @@ namespace PD.NavigationPages
                 _stringBuilder.AppendLine();
 
                 List<int> list_data_count = new List<int>();
-                foreach (List<OxyPlot.DataPoint> d in vm.Chart_All_DataPoints)
+                //foreach (List<OxyPlot.DataPoint> d in vm.Chart_All_DataPoints)
+                //{
+                //    list_data_count.Add(d.Count);
+                //}
+
+                foreach (var ls in vm.Plot_Series)
                 {
-                    list_data_count.Add(d.Count);
+                    list_data_count.Add(ls.Points.Count);
                 }
 
                 int max_dataCount = list_data_count.Max();
@@ -235,14 +252,14 @@ namespace PD.NavigationPages
                 //資料內容
                 for (int i = 0; i < max_dataCount; i++)
                 {
-                    _stringBuilder.Append(vm.Chart_All_DataPoints[0][i].X);
+                    _stringBuilder.Append(vm.Plot_Series[0].Points[i].X);
                     _stringBuilder.Append(",");
 
-                    for (int j = 0; j < vm.Chart_All_DataPoints.Count; j++)
+                    for (int j = 0; j < vm.Plot_Series.Count; j++)
                     {
                         try
                         {
-                            _stringBuilder.Append(vm.Chart_All_DataPoints[j][i].Y);
+                            _stringBuilder.Append(vm.Plot_Series[j].Points[i].Y);
                             _stringBuilder.Append(",");
                         }
                         catch { }
@@ -251,14 +268,11 @@ namespace PD.NavigationPages
                 }
 
                 File.AppendAllText(csvpath, _stringBuilder.ToString());  //Save string builder to csv
-
-                //string csvpath_rename = Application.StartupPath + @"\" + txtBox_name.Text + ".csv";
-                //File.Move(datapoint_filePath, csvpath_rename);
             }
 
             #endregion
 
-            vm.Show_Bear_Window("Saved", false, "String", false);
+            vm.Show_Bear_Window("Image & Data Saved", false, "String", false);
         }
 
         public Window_Bear_Timer window_Bear;
@@ -268,11 +282,11 @@ namespace PD.NavigationPages
             window_Bear.Show();
         }
 
-        private void btn_PopupWindow_Click(object sender, RoutedEventArgs e)
-        {
-            Window_Chart_Popup window = new Window_Chart_Popup(vm);
-            window.Show();
-        }
+        //private void btn_PopupWindow_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Window_Chart_Popup window = new Window_Chart_Popup(vm);
+        //    window.Show();
+        //}
 
 
 

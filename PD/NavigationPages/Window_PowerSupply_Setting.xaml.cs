@@ -234,7 +234,6 @@ namespace PD.NavigationPages
 
             bool? result = dialog.ShowDialog();
 
-
             //load channels setting csv file
             if (result == true)
             {

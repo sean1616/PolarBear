@@ -547,6 +547,18 @@
                                                ToggleButton_IsChecked="{Binding Is_FastScan_Mode}" />
 
                         <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Is_Curfit"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="Curfit Mode"
+                                               ToggleButton_IsChecked="{Binding Is_Curfit}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="Is_2Curfit"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="2-Curfit Mode"
+                                               ToggleButton_IsChecked="{Binding Is_2Curfit}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                Tag="OSA_Sensitivity"
                                                UC_Type_Select="Text_Textbox"
                                                txtbox_content="OSA Sensitivity"
@@ -705,15 +717,7 @@
                                                  Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                  Ischecked="{Binding Auto_Update, Mode=TwoWay}"
                                                  txtbox_content="Auto Update" />
-                        <wpfuc:Text_ToggleButton Grid.Row="10"
-                                                 Grid.Column="3"
-                                                 FontFamily="Segoe Print"
-                                                 border_Background="#FF98DEB5"
-                                                 Background="White"
-                                                 Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
-                                                 Ischecked="{Binding SkipSelectStation, Mode=TwoWay}"
-                                                 txtbox_content="Skip Select Station" />
-
+                     
 
 
                         <TextBox Name="txt_Y_Unit"
@@ -765,6 +769,7 @@
 
                         <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                Tag="TLS_TCPIP"
+                                               ToolTip="Keysight Laser IP"
                                                UC_Type_Select="Text_Only"
                                                txtbox_value="{Binding TLS_TCPIP, Mode=TwoWay}" />
 
@@ -850,6 +855,12 @@
                                                UC_Type_Select="Text_ToggleButton"
                                                txtbox_content="Auto Update"
                                                ToggleButton_IsChecked="{Binding Auto_Update}" />
+
+                        <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
+                                               Tag="SkipSelectStation"
+                                               UC_Type_Select="Text_ToggleButton"
+                                               txtbox_content="Skip Select Station"
+                                               ToggleButton_IsChecked="{Binding SkipSelectStation, Mode=TwoWay}" />
 
                         <wpfuc:UserControl_Mix Height="{Binding ActualHeight, ElementName=ComBox_Cell_Base, Mode=OneWay}"
                                                Tag="Unit_Y"

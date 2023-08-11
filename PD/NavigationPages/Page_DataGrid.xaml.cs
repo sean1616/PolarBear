@@ -1230,7 +1230,11 @@ namespace PD.NavigationPages
                                     if (vm.BoolAllGauge || vm.list_GaugeModels[ch].boolGauge)
                                     {
                                         IL = vm.Double_Powers[ch];
-                                        vm.Save_All_PD_Value[ch].Add(new DataPoint(Math.Round(wl, 2), IL));
+
+                                        cmd.Update_Chart(Math.Round(wl, 2), IL, ch);
+
+                                        //vm.Save_All_PD_Value[ch].Add(new DataPoint(Math.Round(wl, 2), IL));
+
                                         vm.list_GaugeModels[ch].GaugeValue = IL.ToString();
 
                                         string msg = $"{wl},{IL}\r";
@@ -1252,14 +1256,16 @@ namespace PD.NavigationPages
                                             //Set value to which property name is match channel now
                                             if (prop.Name == $"Ch_{ch + 1}")
                                             {
-                                                prop.SetValue(vm.Ref_memberDatas.Last(), vm.Ref_Dictionaries[0][Math.Round(wl, 2)]);
+                                                prop.SetValue(vm.Ref_memberDatas.Last(), vm.Ref_Dictionaries[ch][Math.Round(wl, 2)]);
                                             }
                                         }
+
                                     }
                                 }
-                                vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
 
-                                vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+                                //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+
+                                //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
                             }
                         }
                         //Distribution system
@@ -1270,6 +1276,8 @@ namespace PD.NavigationPages
                                 await cmd.Get_Power(ch, true);
                                 IL = vm.Double_Powers[ch];
                                 File.AppendAllText(RefPath, $"{Math.Round(wl, 2)},{IL}\r");
+
+                                cmd.Update_Chart(Math.Round(wl, 2), IL, ch);
 
                                 vm.Ref_Dictionaries[ch].Add(Math.Round(wl, 2), IL);
 
@@ -1293,6 +1301,17 @@ namespace PD.NavigationPages
                                     Ch_15 = vm.Ref_Dictionaries[14].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[14][Math.Round(wl, 2)] : 0,
                                     Ch_16 = vm.Ref_Dictionaries[15].ContainsKey(Math.Round(wl, 2)) ? vm.Ref_Dictionaries[15][Math.Round(wl, 2)] : 0,
                                 });
+                            }
+                        }
+
+                        //Auto-scrolling the view to end
+                        if (_Page_Ref_Grid.dataGrid.Items.Count > 0)
+                        {
+                            var border = VisualTreeHelper.GetChild(_Page_Ref_Grid.dataGrid, 0) as Decorator;
+                            if (border != null)
+                            {
+                                var scroll = border.Child as ScrollViewer;
+                                if (scroll != null) scroll.ScrollToEnd();
                             }
                         }
                     }

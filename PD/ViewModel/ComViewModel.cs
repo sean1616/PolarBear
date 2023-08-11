@@ -83,6 +83,8 @@ namespace PD.ViewModel
                 "V3_Scan_End",
                 "K_WL_Manual_Setting",
                 "Fast_Scan_Mode",
+                "Is_Curfit",
+                "Is_2Curfit",
                 "OSA_Sensitivity",
                 "OSA_RBW",
 
@@ -124,6 +126,79 @@ namespace PD.ViewModel
                 "Station_ID"
             });
 
+            Station_SettingUnit_Table.Add("Hermetic_Test", new List<string>()
+            {
+                 "TLS_WL_Range",
+                "Station_Type",
+                "Control_Board_Type",
+                "Laser_Type",
+                "Read_Cmd_Delay",
+                "Write_Cmd_Delay",
+                "Set_WL_Delay",
+                "Lambda_Scan_Delay",
+                "SN_Judge",
+                "SN_AutoTab",
+                //"TLS_Filter",
+                //"BR_OSA",
+                "Switch_Mode",
+                "Update_Chart",
+                "IL_Decimal_Place",
+
+                "K_WL_Type",
+                "WL_Scan_Start",
+                "WL_Scan_End",
+                "WL_Scan_Gap",
+                "TF_Scan_Gap",
+                "TF_Scan_Start",
+                "TF_Scan_End",
+                "V3_Scan_Gap",
+                "V3_Scan_Start",
+                "V3_Scan_End",
+                "K_WL_Manual_Setting",
+                "Fast_Scan_Mode",
+                "Is_Curfit",
+                "Is_2Curfit",
+                //"OSA_Sensitivity",
+                //"OSA_RBW",
+
+                "Auto_Connect_TLS",
+                "Distributed_System",
+                "PD_or_PM",
+                "TLS_TCPIP",
+                "TLS_BoardNum",
+                "TLS_Address",
+                "PM_BoardNum",
+                "PM_Address",
+                "PDL_BoardNum",
+                "PDL_Address",
+                //"MultiMeter_Address",
+                "PM_Slot",
+                "PM_AveTime",
+                //"OSA_BoardNum",
+                //"OSA_Address",
+                "Channels_Count",
+                "BoudRate",
+                "Auto_Update",
+                "SkipSelectStation",
+                //"Unit_Y",
+                //"Arduino_Mode",
+                //"Selected_Arduino_Comport",
+
+                "Open_ini",
+                "Comport_Setting",
+                "Board_Table_Path",
+                "Hermetic_Data_Path",
+                //"TF2_Data_Path",
+                "Auto_Update_Path",
+                //"Chamber_Status_Path",
+                "Comport_Setting_Path",
+                //"Calibration_Csv_Path",
+                //"BR_Save_Path",
+                //"BR_Scan_Para_Path",
+                "SQL_Server_IP",
+                "Station_ID"
+            });
+
             Station_SettingUnit_Table.Add(StationTypes.Chamber_S.ToString(), new List<string>()
             {
                  "TLS_WL_Range",
@@ -154,6 +229,8 @@ namespace PD.ViewModel
                 "V3_Scan_End",
                 "K_WL_Manual_Setting",
                 "Fast_Scan_Mode",
+                "Is_Curfit",
+                "Is_2Curfit",
                 //"OSA_Sensitivity",
                 //"OSA_RBW",
 
@@ -349,8 +426,8 @@ namespace PD.ViewModel
                 "TLS_Filter",
                 //"BR_OSA",
                 //"Switch_Mode",
-                //"Update_Chart",
-                //"IL_Decimal_Place",
+                "Update_Chart",
+                "IL_Decimal_Place",
 
                 "K_WL_Type",
                 "WL_Scan_Start",
@@ -364,6 +441,8 @@ namespace PD.ViewModel
                 "V3_Scan_End",
                 //"K_WL_Manual_Setting",
                 "Fast_Scan_Mode",
+                "Is_Curfit",
+                "Is_2Curfit",
                 //"OSA_Sensitivity",
                 //"OSA_RBW",
 
@@ -377,7 +456,7 @@ namespace PD.ViewModel
                 "PM_Address",
                 "PDL_BoardNum",
                 "PDL_Address",
-                //"MultiMeter_Address",
+                "MultiMeter_Address",
                 "PM_Slot",
                 "PM_AveTime",
                 //"OSA_BoardNum",
@@ -551,7 +630,6 @@ namespace PD.ViewModel
             }
 
 
-
             #endregion
 
             #region ICommand Setting
@@ -699,9 +777,6 @@ namespace PD.ViewModel
                     }
             }
         }
-
-        //public Device device;
-
 
         public LineAnnotation LineAnnotation_X_1 = new LineAnnotation()
         {
@@ -1011,7 +1086,7 @@ namespace PD.ViewModel
         /// <summary>
         /// IL gauge value round off to the ~ decimal place (Default: 3)
         /// </summary>
-        private int _decimal_place = 2;
+        private int _decimal_place = 4;
         public int decimal_place
         {
             get { return _decimal_place; }
@@ -1019,6 +1094,7 @@ namespace PD.ViewModel
             {
                 _decimal_place = value;
                 OnPropertyChanged("decimal_place");
+                Ini_Write("Connection", "Decimal_Place", _decimal_place.ToString());
             }
         }
 
@@ -1483,7 +1559,8 @@ namespace PD.ViewModel
                                     double d = tls.ReadWL();
                                     if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
                                     {
-                                        Str_cmd_read = "Laser Connection Failed";
+                                        //Str_cmd_read = "Laser Connection Failed";
+                                        Str_cmd_read = $"{Laser_type} Laser Connection Failed";
                                         Show_Bear_Window(Str_cmd_read, false, "String", false);
                                         return;
                                     }
@@ -1624,7 +1701,8 @@ namespace PD.ViewModel
                                     double d = tls.ReadWL();
                                     if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
                                     {
-                                        Str_cmd_read = "Laser Connection Failed";
+                                        //Str_cmd_read = "Laser Connection Failed";
+                                        Str_cmd_read = $"{Laser_type} Laser Connection Failed";
                                         Show_Bear_Window(Str_cmd_read, false, "String", false);
                                         return;
                                     }
@@ -1699,7 +1777,8 @@ namespace PD.ViewModel
                                     double d = tls.ReadWL();
                                     if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
                                     {
-                                        Str_cmd_read = "Laser Connection Failed";
+                                        //Str_cmd_read = "Laser Connection Failed";
+                                        Str_cmd_read = $"{Laser_type} Laser Connection Failed";
                                         Show_Bear_Window(Str_cmd_read, false, "String", false);
                                         return;
                                     }
@@ -2246,7 +2325,7 @@ namespace PD.ViewModel
                             break;
 
                         case Key.Down:
-                            TLS_WL += 0.01;
+                            TLS_WL -= 0.01;
                             Double_Laser_Wavelength = TLS_WL;
                             Laser_Wavelength = TLS_WL.ToString();
                             break;
@@ -2440,13 +2519,13 @@ namespace PD.ViewModel
         #endregion
 
         #region UI Command
-        public void Set_StationType(string station_type)
+        public void Set_StationType(StationTypes station_type)
         {
-            if (string.IsNullOrEmpty(station_type)) return;
+            if (string.IsNullOrEmpty(station_type.ToString())) return;
 
-            Ini_Write("Connection", "Station", station_type);
+            Ini_Write("Connection", "Station", station_type.ToString());
 
-            if (station_type.Equals("Hermetic_Test") || station_type.Equals("Hermetic Test"))
+            if (station_type.Equals(StationTypes.Hermetic_Test))
             {
                 if (int.TryParse(Ini_Read("Connection", "Hermetic_ch_count"), out int i))
                     ch_count = i;
@@ -2465,6 +2544,8 @@ namespace PD.ViewModel
 
                 PD_or_PM = true;
                 Is_switch_mode = true;
+                //Is_k_WL_manual_setting = true;
+                //SN_Judge = true;
 
                 foreach (GaugeModel gm in _list_GaugeModels)
                 {
@@ -2472,9 +2553,9 @@ namespace PD.ViewModel
                     gm.GaugeMode = Visibility.Visible;
                 }
 
-                is_update_chart = false;
+                is_update_chart = true;
             }
-            else if (station_type.Equals("Testing") || station_type.Equals("TF2"))
+            else if (station_type.Equals(StationTypes.Testing) || station_type.Equals(StationTypes.TF2))
             {
                 PD_or_PM = true;
                 BoudRate = 115200;
@@ -2500,7 +2581,7 @@ namespace PD.ViewModel
 
                 is_update_chart = true;
             }
-            else if (station_type.Equals("UTF600"))
+            else if (station_type.Equals(StationTypes.UTF600))
             {
                 PD_or_PM = true;
                 BoudRate = 115200;
@@ -2526,7 +2607,7 @@ namespace PD.ViewModel
 
                 is_update_chart = true;
             }
-            else if (station_type.Equals("BR"))
+            else if (station_type.Equals(StationTypes.BR))
             {
                 PD_or_PM = true;
                 BoudRate = 115200;
@@ -2710,7 +2791,7 @@ namespace PD.ViewModel
                 dB_or_dBm = true;
             }
 
-            else if (station_type.Equals("UV_Curing") || station_type.Equals("UV Curing"))
+            else if (station_type.Equals(StationTypes.UV_Curing))
             {
                 PD_or_PM = true;
                 //BoudRate = 9600;
@@ -2749,7 +2830,7 @@ namespace PD.ViewModel
 
                 is_update_chart = true;
             }
-            else if (station_type.Equals("Chamber_S_16ch"))
+            else if (station_type.Equals(StationTypes.Chamber_S_16ch))
             {
                 PD_or_PM = false;
                 BoudRate = 115200;
@@ -2782,7 +2863,7 @@ namespace PD.ViewModel
 
                 is_update_chart = true;
             }
-            else if (station_type == "Fast_Calibration")
+            else if (station_type == StationTypes.Fast_Calibration)
             {
                 PD_or_PM = false;
                 BoudRate = 115200;
@@ -3998,7 +4079,7 @@ namespace PD.ViewModel
             }
         }
 
-        private string _txt_save_wl_data_path = @"\\192.168.2.3\wdm_data\UFA HT\";
+        private string _txt_save_wl_data_path = @"\\192.168.2.4\OptiComm\ProductionLineData\WDM_Data\UFA HT\";
         public string txt_save_wl_data_path
         {
             get { return _txt_save_wl_data_path; }
@@ -4246,14 +4327,18 @@ namespace PD.ViewModel
             set
             {
                 comport_switch = value;
-                Ini_Write("Connection", "Comport_Switch", value.ToString());
-                OnPropertyChanged("Comport_Switch");
 
-                if (port_Switch != null)
+                if (comport_switch != null)
                 {
-                    if (!port_Switch.IsOpen)
+                    Ini_Write("Connection", "Comport_Switch", value.ToString());
+                    OnPropertyChanged("Comport_Switch");
+
+                    if (port_Switch != null)
                     {
-                        port_Switch.PortName = Comport_Switch;
+                        if (!port_Switch.IsOpen)
+                        {
+                            port_Switch.PortName = Comport_Switch;
+                        }
                     }
                 }
             }
@@ -4567,17 +4652,6 @@ namespace PD.ViewModel
             }
         }
 
-        //private string _Laser_type = "Agilent";
-        //public string Laser_type
-        //{
-        //    get { return _Laser_type; }
-        //    set
-        //    {
-        //        _Laser_type = value;
-        //        OnPropertyChanged("Laser_type");
-        //    }
-        //}
-
         public enum StationTypes
         {
             Testing,
@@ -4600,12 +4674,14 @@ namespace PD.ViewModel
             get { return _station_type; }
             set
             {
-                _station_type = value;
-
-                if (value.ToString() == null)
+                if (value == null)
                     return;
 
-                Set_StationType(value.ToString());
+                //if (value == _station_type) return;
+
+                _station_type = value;
+
+                Set_StationType(value);
 
                 if (list_stcP_children != null)
                     if (list_stcP_children.Count > 0)
@@ -5189,7 +5265,7 @@ namespace PD.ViewModel
         }
 
         private List<string> _list_combox_K_WL_Type_items =
-            new List<string>() { "ALL Range", "Human Like" };
+            new List<string>() { "ALL Range", "Human Like", "Double Fit" };
         public List<string> list_combox_K_WL_Type_items
         {
             get { return _list_combox_K_WL_Type_items; }
@@ -5623,7 +5699,7 @@ namespace PD.ViewModel
             {
                 _SN_Judge = value;
                 //ini.IniWriteValue("Productions", "SN_Judge", value.ToString(), ini_path);
-                Ini_Write("Connection", "SN_Judge", value.ToString());
+                Ini_Write("Productions", "SN_Judge", value.ToString());
                 OnPropertyChanged("SN_Judge");
             }
         }
@@ -5636,7 +5712,7 @@ namespace PD.ViewModel
             {
                 _SN_AutoTab = value;
                 //ini.IniWriteValue("Productions", "SN_AutoTab", value.ToString(), ini_path);
-                Ini_Write("Connection", "SN_AutoTab", value.ToString());
+                Ini_Write("Productions", "SN_AutoTab", value.ToString());
                 OnPropertyChanged("SN_AutoTab");
             }
         }
@@ -6130,7 +6206,7 @@ namespace PD.ViewModel
             {
                 _is_k_WL_manual_setting = value;
                 //ini.IniWriteValue("Scan", "is_k_WL_manual_setting", value.ToString(), ini_path);
-                Ini_Write("Connection", "is_k_WL_manual_setting", value.ToString());
+                Ini_Write("Scan", "is_k_WL_manual_setting", value.ToString());
                 OnPropertyChanged("Is_k_WL_manual_setting");
             }
         }
@@ -6142,9 +6218,32 @@ namespace PD.ViewModel
             set
             {
                 _is_FastScan_Mode = value;
-                //ini.IniWriteValue("Scan", "Is_FastScan_Mode", value.ToString(), ini_path);
-                Ini_Write("Connection", "Is_FastScan_Mode", value.ToString());
                 OnPropertyChanged("Is_FastScan_Mode");
+                Ini_Write("Connection", "Is_FastScan_Mode", value.ToString());
+            }
+        }
+
+        private bool _Is_Curfit = true;
+        public bool Is_Curfit
+        {
+            get { return _Is_Curfit; }
+            set
+            {
+                _Is_Curfit = value;
+                OnPropertyChanged("Is_Curfit");
+                Ini_Write("Scan", "Is_Curfit", value.ToString());
+            }
+        }
+
+        private bool _Is_2Curfit = true;
+        public bool Is_2Curfit
+        {
+            get { return _Is_2Curfit; }
+            set
+            {
+                _Is_2Curfit = value;
+                OnPropertyChanged("Is_2Curfit");
+                Ini_Write("Scan", "Is_2Curfit", value.ToString());
             }
         }
 
@@ -6158,6 +6257,7 @@ namespace PD.ViewModel
             {
                 _is_update_chart = value;
                 OnPropertyChanged("is_update_chart");
+                Ini_Write("Scan", "Is_update_chart", value.ToString());
             }
         }
 
@@ -6222,16 +6322,16 @@ namespace PD.ViewModel
             }
         }
 
-        private bool _bool_isCurfitting = false;
-        public bool Bool_isCurfitting
-        {
-            get { return _bool_isCurfitting; }
-            set
-            {
-                _bool_isCurfitting = value;
-                OnPropertyChanged("Bool_isCurfitting");
-            }
-        }
+        //private bool _bool_isCurfitting = false;
+        //public bool Bool_isCurfitting
+        //{
+        //    get { return _bool_isCurfitting; }
+        //    set
+        //    {
+        //        _bool_isCurfitting = value;
+        //        OnPropertyChanged("Bool_isCurfitting");
+        //    }
+        //}
 
         private List<int> list_curfit_resultDac = new List<int>();
         public List<int> List_curfit_resultDac
@@ -6579,6 +6679,7 @@ namespace PD.ViewModel
                 _isGoOn = value;
                 isStop = value ? false : true;
                 Str_Go_Content = value == false ? "Go" : "Stop";
+                OnPropertyChanged("IsGoOn");
             }
         }
 

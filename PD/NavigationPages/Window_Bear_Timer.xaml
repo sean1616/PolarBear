@@ -12,6 +12,7 @@
         Height="300"
         MaxHeight="840"
         Topmost="True"
+        AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None">
     <Window.DataContext>
@@ -90,7 +91,7 @@
     </Window.Triggers>
 
     <Grid Name="window_timer"
-          Background="Transparent">
+          Background="#FF5877AB">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.2*" />
             <ColumnDefinition />
@@ -109,6 +110,7 @@
             <RowDefinition Height="0.1*" />
             <RowDefinition Height="0.2*" />
         </Grid.RowDefinitions>
+        
         <Grid Grid.Row="0"
               Grid.Column="0"
               Grid.ColumnSpan="10">
@@ -116,7 +118,7 @@
                     MouseMove="border_title_MouseMove"
                     PreviewMouseLeftButtonDown="border_title_PreviewMouseLeftButtonDown"
                     MouseLeftButtonUp="border_title_MouseLeftButtonUp"
-                    Background="#FFC7C7C7" />
+                    Background="#FF646464" />
             <StackPanel HorizontalAlignment="Right"
                         Orientation="Horizontal">
                 <Button x:Name="btn_min"
@@ -146,13 +148,13 @@
             </StackPanel>
         </Grid>
 
-        <Image Grid.Row="1"
+        <!--<Image Grid.Row="1"
                Grid.RowSpan="4"
                Grid.Column="0"
                Grid.ColumnSpan="9"
                Source="../Resources/Iceland.jpg"
                Stretch="UniformToFill"
-               Cursor="Arrow" />
+               Cursor="Arrow" />-->
 
         <!--  Hour  -->
         <UC:UC_TimerBlock Grid.Row="2"

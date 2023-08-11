@@ -1207,10 +1207,14 @@ namespace PD.NavigationPages
                         #region Switch write Cmd
                         try
                         {
-                            vm.Str_Command = "SW0 " + gm.GaugeChannel;
-                            vm.port_Switch.Write(vm.Str_Command + "\r");
-                            //await Task.Delay(vm.Int_Write_Delay);
+                            //vm.Str_Command = "SW0 " + gm.GaugeChannel;
 
+                            vm.Str_Command = $"SW1 {gm.GaugeChannel}";
+                            vm.port_Switch.Write(vm.Str_Command + "\r");
+                            await Task.Delay(vm.Int_Write_Delay);
+
+                            vm.Str_Command = $"SW2 {gm.GaugeChannel}";
+                            vm.port_Switch.Write(vm.Str_Command + "\r");
                         }
                         catch { vm.Str_cmd_read = "Set Switch Error"; vm.Save_Log(vm.Str_Status, gm.GaugeChannel, vm.Str_cmd_read); }
                         #endregion
@@ -1466,7 +1470,13 @@ namespace PD.NavigationPages
                         {
                             if (vm.port_Switch.IsOpen)
                             {
-                                vm.Str_Command = "SW0 " + switch_index.ToString();
+                                //vm.Str_Command = "SW0 " + switch_index.ToString();
+
+                                vm.Str_Command = $"SW1 {switch_index}";
+                                vm.port_Switch.Write(vm.Str_Command + "\r");
+                                await Task.Delay(vm.Int_Write_Delay);
+
+                                vm.Str_Command = $"SW2 {switch_index}";
                                 vm.port_Switch.Write(vm.Str_Command + "\r");
                                 await Task.Delay(vm.Int_Write_Delay);
 

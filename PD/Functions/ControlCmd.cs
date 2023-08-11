@@ -263,6 +263,8 @@ namespace PD.Functions
                                                 await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "PD?", Type = "PD" });
                                             else
                                                 await CommandSwitch(new ComMember() { YN = true, No = vm.Cmd_Count.ToString(), Command = "P0?", Type = "PD" });
+
+                                            await Task.Delay(200);
                                         }
                                         //PM mode
                                         else
@@ -489,7 +491,8 @@ namespace PD.Functions
                                 vm.minIL = new List<double>(vm.Double_Powers);
                             }
 
-                            double sec = (double)Math.Round((decimal)vm.timer2_count * vm.Int_Read_Delay / 1000, 2);
+                            //double sec = (double)Math.Round((decimal)vm.timer2_count * vm.Int_Read_Delay / 1000, 2);
+                            double sec = vm.watch.Elapsed.TotalSeconds;
 
                             if (vm.isTimerOn)
                             {
@@ -510,23 +513,24 @@ namespace PD.Functions
                             {
                                 vm.list_GaugeModels[i].GaugeValue = vm.Double_Powers[i].ToString();  //Update gauge value
                                                                                                      //vm.list_GaugeModels[i].GaugeEndAngle = anly.Read_PM_to_Gauge(vm.Double_Powers[i], (i + 1));
-                                vm.Save_All_PD_Value[i].Add(new DataPoint(sec, vm.Double_Powers[i]));
+                                //vm.Save_All_PD_Value[i].Add(new DataPoint(sec, vm.Double_Powers[i]));
 
                                 if (vm.Plot_Series.Count > i)
                                     vm.Plot_Series[i].Points.Add(new DataPoint(sec, vm.Double_Powers[i]));
                             }
 
-                            vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
-                            vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
+                            //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
+                            //vm.Chart_DataPoints = new List<DataPoint>(vm.Chart_All_DataPoints[0]);  //A lineseries
 
                             vm.Update_ALL_PlotView();
 
-                            vm.timer2_count++;
+                            if (vm.timer2_count == 0)
+                                vm.timer2_count++;
                             #endregion
 
                             #region Cal. Delta IL  
                             //Update_DeltaIL(vm.ChartNowModel.list_dataPoints[0].Count);
-                            Update_DeltaIL();
+                            //Update_DeltaIL();
                             #endregion
                         }
                     }
@@ -1047,10 +1051,15 @@ namespace PD.Functions
                         {
                             if (vm.port_Switch.IsOpen)
                             {
-                                vm.Str_Command = "SW0 " + switch_index.ToString();
+                                //vm.Str_Command = "SW0 " + switch_index.ToString();
+
+                                vm.Str_Command = $"SW1 {switch_index}";
                                 vm.port_Switch.Write(vm.Str_Command + "\r");
-                                await Task.Delay(vm.Int_Write_Delay * 2);
-                                //System.Threading.Thread.Sleep(vm.Int_Write_Delay);
+                                await Task.Delay(vm.Int_Write_Delay);
+
+                                vm.Str_Command = $"SW2 {switch_index}";
+                                vm.port_Switch.Write(vm.Str_Command + "\r");
+                                await Task.Delay(vm.Int_Write_Delay);
 
                                 vm.switch_index = switch_index;
                                 vm.ch = switch_index - 1;   //Save Switch channel
@@ -2254,7 +2263,7 @@ namespace PD.Functions
                                     double d = vm.tls.ReadWL();
                                     if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
                                     {
-                                        vm.Str_cmd_read = "Laser Connection Failed";
+                                        vm.Str_cmd_read = $"{vm.Laser_type} Laser Connection Failed";
                                         vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
                                         return;
                                     }
@@ -2330,7 +2339,8 @@ namespace PD.Functions
                                     double d = vm.tls.ReadWL();
                                     if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
                                     {
-                                        vm.Str_cmd_read = "Laser Connection Failed";
+                                        //vm.Str_cmd_read = "Laser Connection Failed";
+                                        vm.Str_cmd_read = $"{vm.Laser_type} Laser Connection Failed";
                                         vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
                                         return;
                                     }
@@ -2395,8 +2405,6 @@ namespace PD.Functions
 
                                 if (result)
                                 {
-                                    //await Task.Run(async () => await ConnectGolightTLS(vm.tls_GL, vm.Golight_ChannelModel.Board_Port));
-
                                     vm.isConnected = true;
 
                                     await Task.Delay(250);
@@ -2469,7 +2477,8 @@ namespace PD.Functions
                                     double d = vm.tls.ReadWL();
                                     if (string.IsNullOrWhiteSpace(d.ToString()) || d < 0)
                                     {
-                                        vm.Str_cmd_read = "Laser Connection Failed";
+                                        //vm.Str_cmd_read = "Laser Connection Failed";
+                                        vm.Str_cmd_read = $"{vm.Laser_type} Laser Connection Failed";
                                         vm.Show_Bear_Window(vm.Str_cmd_read, false, "String", false);
                                         return;
                                     }
@@ -4137,7 +4146,9 @@ namespace PD.Functions
             DateTime dt = DateTime.Now;
             string a = dt.ToString("yyyy/MM/dd HH:mm:ss");
 
-            string filePath = string.Concat(vm.txt_save_wl_data_path, SNnumber, ".txt");
+            //string filePath = string.Concat(vm.txt_save_wl_data_path, SNnumber, ".txt");
+
+            string filePath = Path.Combine(vm.txt_save_wl_data_path, $"{SNnumber}.txt");
 
             if (File.Exists(filePath))
             {
@@ -4429,7 +4440,6 @@ namespace PD.Functions
                 nowChartModel.BearSay_List = bearSayList;
             }
 
-            //nowChartModel.Plot_Series = new ObservableCollection<OxyPlot.Series.LineSeries>(vm.Plot_Series);
             nowChartModel.Plot_Series = new ObservableCollection<OxyPlot.Series.LineSeries>();
 
             foreach (OxyPlot.Series.LineSeries ls in vm.Plot_Series)
@@ -4477,7 +4487,7 @@ namespace PD.Functions
                     vm.int_timer_sec = time.Seconds;
                 }
 
-                //vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
+                vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
 
                 //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
 
@@ -4519,7 +4529,7 @@ namespace PD.Functions
                     vm.int_timer_sec = time.Seconds;
                 }
 
-                //vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
+                vm.Save_All_PD_Value[ch].Add(vm.ChartNowModel.list_dataPoints[ch].Last());
 
                 //vm.Chart_All_DataPoints = new List<List<DataPoint>>(vm.Save_All_PD_Value);
 
